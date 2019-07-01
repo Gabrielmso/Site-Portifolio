@@ -1,0 +1,48 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
+html{
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+body{
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    margin-bottom: .5rem;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
+.h6, h6 {
+    font-size: 16px;
+}
+
+.h5, h5 {
+    font-size: 20px;
+}
+
+.h4, h4{
+    font-size: 24px;
+}
+
+.h3, h3 {
+    font-size: 28px;
+}
+
+.h2, h2 {
+    font-size: 32px;
+}
+
+.h1, h1 {
+    font-size: 40px;
+}
+
+p {
+    margin-top: 0;
+    margin-bottom: 16px;
+}
