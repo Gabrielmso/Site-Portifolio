@@ -1,28 +1,27 @@
 @charset "UTF-8";
-
 *::-moz-selection {
     background: rgba(213, 192, 107, 0.5);
-    color:#000000;
+    color: #000000;
 }
 
 *::selection {
     background: rgba(213, 192, 107, 0.5);
-    color:#000000;
+    color: #000000;
 }
 
-*::-webkit-scrollbar{
+*::-webkit-scrollbar {
     width: 10px;
 }
 
-*::-webkit-scrollbar-thumb{
+*::-webkit-scrollbar-thumb {
     min-height: 28px;
     background: rgb(78, 78, 78);
 }
 
-*::-webkit-scrollbar-track{
+*::-webkit-scrollbar-track {
     background: rgb(30, 30, 30);
     border-width: 1px;
-    border-style: solid;  
+    border-style: solid;
     border-color: rgb(37, 37, 37);
 }
 
@@ -34,13 +33,13 @@ body {
     color: white;
 }
 
-p span{
-    color:#d5c06b;
+p span {
+    color: #d5c06b;
     transition: color 0.2s linear;
 }
 
-p span:hover{
-    color:#866c03;
+p span:hover {
+    color: #866c03;
 }
 
 #menu {
@@ -52,37 +51,38 @@ p span:hover{
     z-index: 10000;
 }
 
-#larguramenu{
-    width: 100%; 
-    max-width: 1600px; 
-    margin-left: auto; 
+#larguramenu {
+    width: 100%;
+    max-width: 1600px;
+    margin-left: auto;
     margin-right: auto;
 }
 
-.iniciomenu{
+.iniciomenu {
     height: 62px;
     background-color: rgba(0, 0, 0, 0);
     border-bottom: solid 2px rgba(255, 255, 255, 0.12);
 }
 
-.mudamenu{
+.mudamenu {
     height: 50px;
     background-color: rgba(0, 0, 0, 0.60);
-    border-bottom: solid 0px rgba(255, 255, 255, 0.12);;
+    border-bottom: solid 0px rgba(255, 255, 255, 0.12);
+    ;
 }
 
-*{
+* {
     box-sizing: border-box;
     margin: 0px;
     padding: 0px;
 }
 
-#icons{
+#icons {
     position: absolute;
     margin-top: 180px;
 }
 
-.traco{
+.traco {
     left: 10px;
     width: 30px;
     height: 3px;
@@ -92,47 +92,46 @@ p span:hover{
     transition: all 0.4s ease;
 }
 
-.movertraco1{
+.movertraco1 {
     -webkit-transform: rotate(250grad);
     transform: rotate(250grad);
     top: 24px;
 }
 
-.movertraco2{
+.movertraco2 {
     width: 0px;
     left: 24px;
 }
 
-.movertraco3{
+.movertraco3 {
     -webkit-transform: rotate(-250grad);
     transform: rotate(-250grad);
     top: 24px;
 }
 
-
-.iniciotraco1{
+.iniciotraco1 {
     top: 12px;
 }
 
-.iniciotraco2{
+.iniciotraco2 {
     top: 23px;
 }
 
-.iniciotraco3{ 
+.iniciotraco3 {
     top: 34px;
 }
 
-.abrefundomenu{
+.abrefundomenu {
     left: 0px;
 }
 
-.fechafundomenu{
+.fechafundomenu {
     left: -250px;
 }
 
 #logoBlack {
     position: relative;
-    display: block; 
+    display: block;
     background-image: url("../imagens/LogoGMwhite.svg");
     background-position: 50%;
     background-repeat: no-repeat;
@@ -143,19 +142,19 @@ p span:hover{
     -webkit-transition: background-size 0.35s ease, width 0.35s ease, height 0.35s ease, left 0.3s ease;
 }
 
-.iniciologoBlack{
+.iniciologoBlack {
     width: 120px;
     height: 62px;
     background-size: 80px;
 }
 
-.mudalogoBlack{
+.mudalogoBlack {
     width: 90px;
     height: 50px;
     background-size: 65px;
 }
 
-#logoinsta{
+#logoinsta {
     position: relative;
     background-image: url("../imagens/icones/instagramLogoWhite.svg");
     background-repeat: no-repeat;
@@ -171,8 +170,8 @@ p span:hover{
     opacity: 1;
 }
 
-#logoyoutube{
-    position: relative; 
+#logoyoutube {
+    position: relative;
     background-image: url("../imagens/icones/youtubeLogoWhite.svg");
     background-repeat: no-repeat;
     background-size: 42px;
@@ -182,20 +181,20 @@ p span:hover{
     height: 50px;
 }
 
-#logoyoutube:hover{
+#logoyoutube:hover {
     opacity: 1;
 }
 
-#iconesetablack{
+#iconesetablack {
     position: relative;
     display: block;
     width: 50px;
-    opacity: 0.75;  
+    opacity: 0.75;
     transition: height 0.35s ease, padding-top 0.35s ease;
     -webkit-transition: height 0.35s ease, padding-top 0.35s ease;
 }
 
-#iconemenublack{
+#iconemenublack {
     position: relative;
     display: none;
     float: left;
@@ -203,17 +202,17 @@ p span:hover{
     opacity: 0.75;
 }
 
-.inicioiconeblack{
+.inicioiconeblack {
     padding-top: 6px;
     height: 62px;
 }
 
-.mudaiconeblack{
+.mudaiconeblack {
     padding-top: 0px;
     height: 50px;
 }
 
-.tracos{
+.tracos {
     position: relative;
     width: 50px;
     height: 50px;
@@ -221,7 +220,7 @@ p span:hover{
     transition: all 0.5s ease;
 }
 
-.tracoseta{
+.tracoseta {
     position: absolute;
     width: 22px;
     height: 3px;
@@ -230,83 +229,81 @@ p span:hover{
     transition: all 0.35s ease;
 }
 
-
-.iniciotracoseta0{
+.iniciotracoseta0 {
     -webkit-transform: rotate(50grad);
     transform: rotate(50grad);
     left: 7px;
     top: 17px;
 }
 
-.iniciotracoseta1{
+.iniciotracoseta1 {
     -webkit-transform: rotate(-50grad);
     transform: rotate(-50grad);
     left: 21px;
     top: 17px;
 }
 
-.iniciotracoseta2{
+.iniciotracoseta2 {
     -webkit-transform: rotate(50grad);
     transform: rotate(50grad);
     left: 7px;
     top: 30px;
 }
 
-.iniciotracoseta3{
+.iniciotracoseta3 {
     -webkit-transform: rotate(-50grad);
     transform: rotate(-50grad);
     left: 21px;
     top: 30px;
 }
 
-.movertracoseta0{
+.movertracoseta0 {
     -webkit-transform: rotate(-250grad);
     transform: rotate(-250grad);
     top: 16px;
     left: 7px;
 }
 
-.movertracoseta1{
+.movertracoseta1 {
     -webkit-transform: rotate(250grad);
     transform: rotate(250grad);
     top: 16px;
     left: 21px;
 }
 
-.movertracoseta2{
+.movertracoseta2 {
     -webkit-transform: rotate(-250grad);
     transform: rotate(-250grad);
     top: 29px;
     left: 7px;
 }
 
-.movertracoseta3{
+.movertracoseta3 {
     -webkit-transform: rotate(250grad);
     transform: rotate(250grad);
     top: 29px;
     left: 21px;
 }
 
-#submenu{
+#submenu {
     position: relative;
     width: 50px;
     height: 50px;
     float: right;
 }
 
-
-#socials{
+#socials {
     background-color: rgba(0, 0, 0, 0.60);
     position: relative;
     display: none;
 }
 
-.cursor{
+.cursor {
     cursor: pointer;
 }
 
-.link{
-    display:block;
+.link {
+    display: block;
     width: 100%;
     height: 100%;
 }
@@ -317,7 +314,7 @@ p span:hover{
     clear: both;
 }
 
-#opcoesmenu{
+#opcoesmenu {
     display: block;
     position: relative;
     width: 398px;
@@ -326,13 +323,12 @@ p span:hover{
     list-style: none;
     -webkit-transition: all 0.35 ease;
     transition: all 0.35s ease;
-
 }
 
-#fundomenu{
+#fundomenu {
     margin-top: 50px;
     position: absolute;
-    background-color: rgba(0, 0, 0, 0.60); 
+    background-color: rgba(0, 0, 0, 0.60);
     box-shadow: 7px 0px 5px rgba(0, 0, 0, 0.34);
     width: 240px;
     -webkit-transition: all 0.35;
@@ -340,78 +336,80 @@ p span:hover{
     z-index: 100000;
 }
 
-#opcoesmenu2{
+#opcoesmenu2 {
     overflow: auto;
     width: 240px;
     display: block;
     list-style: none;
+    line-height: 24px;
 }
 
-#opcoesmenu li{
+#opcoesmenu li {
     float: left;
     margin-right: 2px;
+    line-height: 24px;
 }
 
-#opcoesmenu a{
+#opcoesmenu a {
     padding-left: 12px;
     padding-right: 12px;
     display: block;
     font-size: 16px;
     text-decoration: none;
     text-align: left;
-    border-bottom: none;  
+    border-bottom: none;
     color: white;
     transition: all 0.5s ease;
     -webkit-transition: all 0.5s ease;
 }
 
-#opcoesmenu ul a{
+#opcoesmenu ul a {
     padding-bottom: 13px;
-    padding-top: 13px;  
+    padding-top: 13px;
     padding-left: 12px;
     padding-right: 12px;
     display: block;
     text-decoration: none;
     text-align: left;
-    border-bottom: none;  
+    border-bottom: none;
     color: white;
 }
 
-.mudaopcoes{
+.mudaopcoes {
     padding-bottom: 10px;
-    padding-top: 13px;  
+    padding-top: 13px;
 }
 
-.inicioopcoes{
+.inicioopcoes {
     padding-bottom: 17px;
-    padding-top: 18px;  
+    padding-top: 18px;
 }
 
-#opcoesmenu li a:hover, #opcoesmenu li p:hover{
-    border-bottom: solid 3px rgba(213, 192, 107, 0.83);  
+#opcoesmenu li a:hover, #opcoesmenu li p:hover {
+    border-bottom: solid 3px rgba(213, 192, 107, 0.83);
     color: #d5c06b;
     transition: all 0.35s;
     -webkit-transition: all 0.35s;
 }
 
-#opcoesmenu ul li a:hover, #opcoesmenu ul li p:hover{
-    background-color: rgba(100, 68, 8, 0.83);  
+#opcoesmenu ul li a:hover, #opcoesmenu ul li p:hover {
+    background-color: rgba(100, 68, 8, 0.83);
     color: #d5c06b;
     transition: all 0.35s;
     -webkit-transition: all 0.35s;
 }
 
-#opcoesmenu2 li a:hover, #opcoesmenu2 li p:hover{
-    background-color:  rgba(80, 80, 80, 0.486);
+#opcoesmenu2 li a:hover, #opcoesmenu2 li p:hover {
+    background-color: rgba(80, 80, 80, 0.486);
     color: #d5c06b;
 }
 
-#opcoesmenu2 ul li a:hover, #opcoesmenu2 ul li p:hover{
-    background-color: rgba(100, 68, 8, 0.83);  
+#opcoesmenu2 ul li a:hover, #opcoesmenu2 ul li p:hover {
+    background-color: rgba(100, 68, 8, 0.83);
     color: #d5c06b;
 }
 
-#opcoesmenu ul{
+#opcoesmenu ul {
     width: 220px;
     position: absolute;
     overflow: hidden;
@@ -423,7 +421,7 @@ p span:hover{
     z-index: 10000;
 }
 
-#opcoesmenu2 li p{
+#opcoesmenu2 li p {
     padding-top: 13px;
     padding-bottom: 13px;
     margin-bottom: 0;
@@ -435,7 +433,7 @@ p span:hover{
     color: white;
 }
 
-#opcoesmenu2 a{
+#opcoesmenu2 a {
     padding-top: 13px;
     padding-bottom: 13px;
     padding-left: 12px;
@@ -448,16 +446,16 @@ p span:hover{
     transition: all 0.3s;
 }
 
-#opcoesmenu2 li:hover ul{
+#opcoesmenu2 li:hover ul {
     max-height: 100px;
 }
 
-#opcoesmenu li:hover ul{
+#opcoesmenu li:hover ul {
     max-height: 100px;
     overflow: auto;
 }
 
-#opcoesmenu2 ul{
+#opcoesmenu2 ul {
     position: static;
     overflow: hidden;
     max-height: 0px;
@@ -466,27 +464,27 @@ p span:hover{
     -webkit-transition: all 0.35s;
 }
 
-#opcoesmenu2 ul li{
-   background-color: rgba(213, 192, 107, 0.83);
-   transition: all 0.35s;
+#opcoesmenu2 ul li {
+    background-color: rgba(213, 192, 107, 0.83);
+    transition: all 0.35s;
     -webkit-transition: all 0.35s;
 }
 
-#opcoesmenu2 ul a, #opcoesmenu2 ul p{
+#opcoesmenu2 ul a, #opcoesmenu2 ul p {
     color: #000;
- }
+}
 
- #opcoesmenu ul a, #opcoesmenu ul p{
+#opcoesmenu ul a, #opcoesmenu ul p {
     color: #000;
- }
+}
 
-#opcoesmenu p:hover{ 
+#opcoesmenu p:hover {
     color: #d5c06b;
     transition: all 0.35s;
     -webkit-transition: all 0.35s;
 }
 
-#opcoesmenu ul li{
+#opcoesmenu ul li {
     width: 220px;
     text-align: left;
     list-style: none;
@@ -495,51 +493,48 @@ p span:hover{
     -webkit-transition: all 0.35s;
 }
 
-#opcoesmenu ul li a{
+#opcoesmenu ul li a {
     padding-left: 4px;
     padding-right: 4px;
 }
 
-@media screen and (max-width: 650px){
-    .iniciomenu{
+@media screen and (max-width: 650px) {
+    .iniciomenu {
         height: 50px;
         background-color: rgba(0, 0, 0, 0);
         border-bottom: solid 2px rgba(255, 255, 255, 0.12);
     }
-    
-    .mudamenu{
+    .mudamenu {
         height: 50px;
         background-color: rgba(0, 0, 0, 0.60);
-        border-bottom: solid 0px rgba(255, 255, 255, 0.12);;
+        border-bottom: solid 0px rgba(255, 255, 255, 0.12);
+        ;
     }
-    .inicioiconeblack{
+    .inicioiconeblack {
         padding-top: 0px;
         height: 50px;
     }
-    
-    .mudaiconeblack{
+    .mudaiconeblack {
         padding-top: 0px;
         height: 50px;
     }
-    .iniciologoBlack{
+    .iniciologoBlack {
         width: 90px;
         height: 50px;
         background-size: 65px;
         margin-left: auto;
         margin-right: auto;
     }
-    
-    .mudalogoBlack{
+    .mudalogoBlack {
         width: 90px;
         height: 50px;
         background-size: 65px;
         margin-left: auto;
         margin-right: auto;
     }
-    #iconemenublack{
+    #iconemenublack {
         display: block;
     }
-
     #logoBlack {
         width: 90px;
         height: 50px;

@@ -1,27 +1,27 @@
-@font-face{
+@font-face {
     font-family: "Fontetitulo";
     src: url("../fonts/HelveticaNeue-Thin.otf");
 }
 
-@font-face{
+@font-face {
     font-family: "Fontetitulo1";
     src: url("../fonts/font1.woff");
 }
 
-html, body{
+html, body {
     overflow: hidden;
     font-weight: 400;
     line-height: 1.5;
 }
 
-#fundo1{
+#fundo1 {
     width: 100%;
     background-image: url("../imagens/fundo/fundo1.jpg");
     background-repeat: no-repeat;
     background-size: 100%;
 }
 
-#fundo1blur{
+#fundo1blur {
     width: 100%;
     height: 100%;
     overflow: auto;
@@ -33,7 +33,7 @@ html, body{
     transition: opacity 1.5s linear;
 }
 
-#fundo2blur{
+#fundo2blur {
     width: 100%;
     overflow: auto;
     background-image: url("../imagens/fundo/fundoschool.jpg");
@@ -42,7 +42,7 @@ html, body{
     opacity: 1;
 }
 
-#fundo3blur{
+#fundo3blur {
     width: 100%;
     overflow: auto;
     background-image: url("../imagens/fundo/fundo3blur.jpg");
@@ -51,7 +51,7 @@ html, body{
     opacity: 1;
 }
 
-#fundo4blur{
+#fundo4blur {
     width: 100%;
     overflow: auto;
     background-image: url("../imagens/fundo/fundo4blur.jpg");
@@ -60,37 +60,37 @@ html, body{
     opacity: 1;
 }
 
-h1{
+h1 {
     font-size: 50px;
     text-align: center;
     font-family: "Fontetitulo1";
-    -webkit-transition: text-shadow 1.2s linear,;
+    -webkit-transition: text-shadow 1.2s linear, ;
     transition: text-shadow 1.2s linear;
     font-weight: normal;
 }
 
-h2{
+h2 {
     text-align: center;
     font-family: "Fontetitulo1";
 }
 
-#about ul{
+#about ul {
     list-style-position: inside;
 }
 
-#about li{
+#about li {
     text-align: left;
     margin: 5px;
 }
 
-#about{
+#about {
     width: 100%;
     height: 59%;
     margin-top: 25px;
     position: relative;
 }
 
-#info{
+#info {
     float: left;
     padding: 15px;
     position: relative;
@@ -99,7 +99,7 @@ h2{
     margin-top: 25px;
     margin-right: 1.9%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.42); 
+    background-color: rgba(0, 0, 0, 0.42);
     text-align: left;
     display: none;
     opacity: 0;
@@ -108,7 +108,7 @@ h2{
     transition: opacity 0.7s linear, margin-top 0.6s ease-out;
 }
 
-#traprogress{ 
+#traprogress {
     padding: 15px;
     position: relative;
     width: 49%;
@@ -119,37 +119,37 @@ h2{
     opacity: 0;
     border-radius: 5px;
     float: left;
-    background-color: rgba(0, 0, 0, 0.42); 
+    background-color: rgba(0, 0, 0, 0.42);
     -webkit-transition: opacity 0.7s linear, margin-top 0.6s ease-out;
     transition: opacity 0.7s linear, margin-top 0.6s ease-out;
 }
 
-#bttdownload{
+#bttdownload {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
     width: 150px;
     height: 60px;
-    display: none; 
+    display: none;
     opacity: 0;
     border-radius: 5px;
     -webkit-transition: box-shadow 0.6s linear, background-color 0.6s linear, opacity 0.65s linear;
     transition: box-shadow 0.6s linear, background-color 0.6s linear, opacity 0.65s linear;
 }
 
-#bttdownload:hover{
-    box-shadow: 0px 10px 40px  #d49331be;
+#bttdownload:hover {
+    box-shadow: 0px 10px 40px #d49331be;
     background-color: #d493312f
 }
 
-#bttdownload a{
+#bttdownload a {
     text-align: center;
     text-decoration: none;
     text-transform: uppercase;
     font-weight: bold;
     font-size: 16px;
     line-height: 52px;
-    color:  #d49331;
+    color: #d49331;
     display: block;
     width: 100%;
     height: 100%;
@@ -157,7 +157,7 @@ h2{
     border-radius: 5px;
 }
 
-#bttverdetalhes{
+#bttverdetalhes {
     bottom: 0;
     width: 60px;
     height: 60px;
@@ -169,26 +169,28 @@ h2{
     opacity: 0;
 }
 
-#contentbttdownload{
+#contentbttdownload {
     position: relative;
     width: 49%;
     margin-top: 10px;
     margin-bottom: 10px;
 }
 
-#iconeseta1{
+#iconeseta1 {
     top: 31px;
     left: 17px;
     transform: rotate(50grad);
 }
 
-#iconeseta2{
+#iconeseta2 {
     top: 31px;
     left: 26px;
     transform: rotate(-50grad);
 }
+
 /* ______________________Comparar "Há imagens violentas e pertubadoras neste jogo"____________________________ */
-#comparar{
+
+#comparar {
     overflow: auto;
     display: block;
     width: 85%;
@@ -199,11 +201,13 @@ h2{
     transition: box-shadow 0.4s linear;
 }
 
-#comparar:hover{
+#comparar:hover {
     box-shadow: 0px 0px 30px #788888;
 }
+
 /* ________________________Comparar folhas de caderno_________________________________ */
-#compararFolhasCaderno{
+
+#compararFolhasCaderno {
     overflow: auto;
     display: block;
     width: 85%;
@@ -214,20 +218,20 @@ h2{
     transition: box-shadow 0.4s linear;
 }
 
-#compararFolhasCaderno:hover{
+#compararFolhasCaderno:hover {
     box-shadow: 0px 0px 30px #75717f;
 }
 
-.rodape{
-    position: fixed; 
-    bottom: 0; 
-    width: 100%; 
-    height: 72px; 
+.rodape {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 72px;
     border-top: solid 2px rgba(255, 255, 255, 0.12);
     z-index: 9;
 }
 
-.iconsrodape{
+.iconsrodape {
     position: static;
     width: 100%;
     height: 100%;
@@ -236,7 +240,7 @@ h2{
     margin-left: auto;
 }
 
-.iconLeft{
+.iconLeft {
     position: relative;
     height: 55px;
     width: 55px;
@@ -248,18 +252,18 @@ h2{
     z-index: 10;
 }
 
-.contentimgicons{
+.contentimgicons {
     width: 1000px;
     position: absolute;
 }
 
-.imgicons{
+.imgicons {
     height: 70px;
     float: left;
     opacity: 0.75;
 }
 
-.iconRight{
+.iconRight {
     position: relative;
     height: 55px;
     width: 55px;
@@ -271,11 +275,11 @@ h2{
     z-index: 11;
 }
 
-.imgicons:hover{
+.imgicons:hover {
     opacity: 1;
 }
 
-#gifcgintrovert{
+#gifcgintrovert {
     display: none;
     background-image: url("../imagens/miniaturas/gifcgintrovert.gif");
     width: 95%;
@@ -285,7 +289,7 @@ h2{
     background-repeat: no-repeat;
 }
 
-#gifcgintrohori{
+#gifcgintrohori {
     display: none;
     background-image: url("../imagens/miniaturas/gifcgintrohori.gif");
     width: 95%;
@@ -295,7 +299,7 @@ h2{
     background-repeat: no-repeat;
 }
 
-#omedodesangue{
+#omedodesangue {
     display: block;
     width: 90%;
     max-width: 550px;
@@ -305,18 +309,18 @@ h2{
     transition: box-shadow 0.4s linear;
 }
 
-#omedodesangue:hover{
+#omedodesangue:hover {
     box-shadow: 0px 0px 30px rgb(133, 66, 14);
 }
 
-#imgjap{
+#imgjap {
     display: block;
     background-image: url("../imagens/imagens_originais/thereareviolentjap.jpg");
     background-size: 100%;
     background-repeat: no-repeat;
 }
 
-#imglimp{
+#imglimp {
     position: relative;
     display: block;
     opacity: 0;
@@ -327,7 +331,7 @@ h2{
     background-repeat: no-repeat;
 }
 
-#imgtoschool{
+#imgtoschool {
     position: relative;
     display: block;
     float: left;
@@ -338,7 +342,7 @@ h2{
     background-repeat: no-repeat;
 }
 
-#imgparaescola{
+#imgparaescola {
     position: relative;
     display: block;
     opacity: 0;
@@ -350,7 +354,7 @@ h2{
     transition: opacity 0.4s linear;
 }
 
-#imgdoghouse{
+#imgdoghouse {
     position: relative;
     display: block;
     float: left;
@@ -361,7 +365,7 @@ h2{
     background-repeat: no-repeat;
 }
 
-#imgcasadecachorro{
+#imgcasadecachorro {
     position: relative;
     display: block;
     opacity: 0;
@@ -374,7 +378,8 @@ h2{
 }
 
 /*________________________FUNCIONAMENTO DE COMO SERÃO COMPARADAS AS IMAGENS___________________________*/
-.fundocomparar{
+
+.fundocomparar {
     position: fixed;
     top: 0;
     width: 100%;
@@ -386,18 +391,18 @@ h2{
     z-index: 10003;
 }
 
-.telaslide{
+.telaslide {
     position: relative;
     width: 100%;
 }
 
-.telaimgcomp{
+.telaimgcomp {
     position: relative;
     width: 100%;
     height: 100%;
 }
 
-.slides{
+.slides {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -407,7 +412,7 @@ h2{
     margin-right: auto;
 }
 
-.fecharfundo{
+.fecharfundo {
     position: fixed;
     top: 0px;
     right: 0px;
@@ -418,18 +423,18 @@ h2{
     z-index: 10;
 }
 
-.tracofechar1{
+.tracofechar1 {
     position: absolute;
     left: 10px;
     height: 3px;
     width: 30px;
     background-color: #fff;
-    top: 24px;  
+    top: 24px;
     -webkit-transform: rotate(50grad);
     transform: rotate(50grad);
 }
 
-.tracofechar2{
+.tracofechar2 {
     position: absolute;
     left: 10px;
     height: 3px;
@@ -440,7 +445,7 @@ h2{
     transform: rotate(-50grad);
 }
 
-#imgviolentasorig{
+#imgviolentasorig {
     display: block;
     background-image: url("../imagens/imagens_originais/thereareviolent.jpg");
     height: 92%;
@@ -450,7 +455,7 @@ h2{
     background-repeat: no-repeat;
 }
 
-#imgviolentastrad{
+#imgviolentastrad {
     position: relative;
     display: block;
     opacity: 0;
@@ -461,9 +466,10 @@ h2{
     background-repeat: no-repeat;
     transition: opacity 0.4s linear;
 }
+
 /*____________________________________________________________________________________________________*/
 
-.tracosetaleft1{
+.tracosetaleft1 {
     position: absolute;
     width: 22px;
     height: 3px;
@@ -473,7 +479,7 @@ h2{
     left: 13px;
 }
 
-.tracosetaleft2{
+.tracosetaleft2 {
     position: absolute;
     width: 22px;
     height: 3px;
@@ -483,7 +489,7 @@ h2{
     left: 13px;
 }
 
-.tracosetaright1{
+.tracosetaright1 {
     position: absolute;
     width: 22px;
     height: 3px;
@@ -493,7 +499,7 @@ h2{
     left: 18px;
 }
 
-.tracosetaright2{
+.tracosetaright2 {
     position: absolute;
     width: 22px;
     height: 3px;
@@ -503,7 +509,7 @@ h2{
     left: 18px;
 }
 
-.texto{
+.texto {
     position: relative;
     width: 90%;
     height: 39%;
@@ -511,36 +517,35 @@ h2{
     margin-right: auto;
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.42);
-    border-radius: 5px; 
+    border-radius: 5px;
     margin-top: 25px;
     margin-bottom: 20px;
     padding: 15px;
     padding-bottom: 0px;
 }
 
-.thereareviolent{
+.thereareviolent {
     float: left;
     width: 49.9999%;
 }
 
-.tracosetaver{
+.tracosetaver {
     position: absolute;
     width: 15px;
     height: 3px;
     background-color: #fff;
 }
 
-
-.mycontainer{
+.mycontainer {
     position: relative;
-    width: 100%; 
+    width: 100%;
     max-width: 1300px;
     margin-left: auto;
     margin-right: auto;
     height: 100%;
 }
 
-.content{
+.content {
     position: absolute;
     width: 100%;
     height: 83%;
@@ -549,83 +554,76 @@ h2{
     top: 12%;
 }
 
-.brilho{
+.brilho {
     text-shadow: 0px 0px 18px #fff;
 }
 
-.centraliza{
+.centraliza {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
 
-.noSelection{
+.noSelection {
     -webkit-touch-callout: none;
-   -webkit-user-select: none;
-   -khtml-user-select: none;
-   -moz-user-select: none;
-   -ms-user-select: none;
-   -o-user-select: none;
-   user-select: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
-@media screen and (min-width: 1420px){
-    #comparar{
-        max-width: 700px;
-        
-    }
-    #compararFolhasCaderno{
+@media screen and (min-width: 1420px) {
+    #comparar {
         max-width: 700px;
     }
-    #omedodesangue{
+    #compararFolhasCaderno {
+        max-width: 700px;
+    }
+    #omedodesangue {
         max-width: 700px;
     }
 }
-@media screen and (max-width: 800px){
-    #bttdownload{
+
+@media screen and (max-width: 800px) {
+    #bttdownload {
         width: 137px;
-        height: 55px; 
+        height: 55px;
     }
-    #bttdownload a{
+    #bttdownload a {
         line-height: 47px;
         font-size: 14px;
     }
 }
 
-@media screen and (max-width: 650px){
-    h1{
+@media screen and (max-width: 650px) {
+    h1 {
         font-size: 45px;
     }
-
-    h2{
+    h2 {
         font-size: 32px;
     }
-
-    h3{
+    h3 {
         font-size: 24px;
     }
-
-    #bttdownload{
+    #bttdownload {
         width: 127px;
-        height: 51px; 
+        height: 51px;
     }
-
-    #bttdownload a{
+    #bttdownload a {
         line-height: 43px;
         font-size: 13px;
     }
-
-    .content{
+    .content {
         top: 13%;
     }
-
-    #contentbttdownload{
+    #contentbttdownload {
         width: 100%;
         margin-top: 15px;
     }
-
-    #info{
+    #info {
         float: none;
         padding: 7px;
         position: relative;
@@ -633,15 +631,13 @@ h2{
         height: 48.2%;
         margin-right: 0px;
     }
-
-    #about{
+    #about {
         width: 100%;
         height: 65%;
         margin-top: 15px;
         position: relative;
     }
-
-    #traprogress{ 
+    #traprogress {
         float: none;
         padding: 7px;
         position: relative;
@@ -649,142 +645,137 @@ h2{
         height: 48.2%;
         margin-top: 15px;
     }
-
-    .texto{
+    .texto {
         width: 100%;
         height: 43%;
     }
-    
 }
-@media screen and (max-width: 560px){
-    h1{
+
+@media screen and (max-width: 560px) {
+    h1 {
         font-size: 40px;
     }
-    h2{
+    h2 {
         font-size: 30px;
     }
-    h3{
+    h3 {
         font-size: 22px;
     }
-    #bttdownload{
+    #bttdownload {
         width: 120px;
-        height: 48px; 
+        height: 48px;
     }
-    #bttdownload a{
+    #bttdownload a {
         line-height: 42px;
         font-size: 12px;
         border: solid 3px #d49331;
-        
     }
-    .content{
+    .content {
         top: 13%;
     }
 }
-@media screen and (max-width: 470px){
-    h1{
+
+@media screen and (max-width: 470px) {
+    h1 {
         font-size: 35px;
-    } 
-    h2{
+    }
+    h2 {
         font-size: 25px;
     }
-    h3{
+    h3 {
         font-size: 20px;
     }
-    body{
+    body {
         font-size: 14px;
     }
-    #bttdownload{
+    #bttdownload {
         width: 112px;
-        height: 45px; 
+        height: 45px;
     }
-    #bttdownload a{
+    #bttdownload a {
         line-height: 39px;
         font-size: 11px;
         border: solid 3px #d49331;
     }
-    #contentbttdownload{
+    #contentbttdownload {
         width: 100%;
         height: 60px;
     }
-    .content{
+    .content {
         top: 13%;
     }
 }
 
-@media screen and (max-width: 430px){
-    body{
+@media screen and (max-width: 430px) {
+    body {
         font-size: 13px;
     }
 }
 
-@media screen and (max-width: 390px){
-    h1{
+@media screen and (max-width: 390px) {
+    h1 {
         font-size: 31px;
     }
-    h3{
+    h3 {
         font-size: 18px;
     }
-    #bttdownload{
+    #bttdownload {
         width: 102px;
-        height: 41px; 
+        height: 41px;
     }
-    #bttdownload a{
+    #bttdownload a {
         line-height: 35px;
         font-size: 10px;
     }
-    .content{
+    .content {
         top: 13%;
     }
-
 }
 
-@media screen and (max-width: 367px){
-    h1{
+@media screen and (max-width: 367px) {
+    h1 {
         font-size: 28px;
     }
 }
 
-@media screen and (max-height: 400px){
-    .content{
+@media screen and (max-height: 400px) {
+    .content {
         top: 55px;
     }
 }
 
-@media screen and (min-height: 570px){
-    #about{       
+@media screen and (min-height: 570px) {
+    #about {
         height: 66%;
     }
 }
 
-@media screen and (min-height: 640px){
-    #about{       
+@media screen and (min-height: 640px) {
+    #about {
         height: 70%;
     }
 }
 
-@media screen and (min-height: 900px){
-    #about{       
+@media screen and (min-height: 900px) {
+    #about {
         height: 73%;
     }
 }
 
-@media screen and (min-height: 1080px){
-    #about{       
+@media screen and (min-height: 1080px) {
+    #about {
         height: 79%;
     }
 }
 
-
-@keyframes bttdetalhes{
-    0%{
+@keyframes bttdetalhes {
+    0% {
         transform: translateY(-5px);
     }
-
-    50%{
+    50% {
         transform: translateY(5px);
     }
-
-    100%{
+    100% {
         transform: translateY(-5px);
     }
 }

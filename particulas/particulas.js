@@ -6,13 +6,13 @@ function particulas() {
    let alturaJanela = window.innerHeight;
    let relacaonumparticulas = larguraJanela * alturaJanela;
    let scrollposicao = document.body.scrollTop || document.documentElement.scrollTop;
-   let numParticulas = Math.round(relacaonumparticulas / 25500); //Determina o número de particulas deixando com a mesma densidade independente do tamanho da janela. 
+   let numParticulas = Math.round(relacaonumparticulas / 25500); //Determina o número de particulas deixando com a mesma densidade independente do tamanho da janela.
    let raioCirculo = 0;//Tamanho de cada particula.
    let posicaoX = 0;//Posição do eixo x de cada particula.
    let posicaoY = 0;//Posição do eixo x de cada particula.
    let deslocaX = 0;//Velocidade de deslocamento do eixo x de cada particula.
    let deslocay = 0;//Velocidade de deslocamento do eixo y de cada particula.
-   let guardarParticula = [];//Armazena as propriedades de cada particula, cada indice será uma particula, o número de indices é determinado pela "numParticulas". 
+   let guardarParticula = [];//Armazena as propriedades de cada particula, cada indice será uma particula, o número de indices é determinado pela "numParticulas".
    let iniciarAnimacao = requestAnimationFrame(movimentarParticulas, particulas);//Começar a movimentar as particulas.
 
    mudarTamanhoCanvas(larguraJanela, alturaJanela);//Deixa o canvas com a mesma resolução da janela tamanho da janela.
@@ -23,7 +23,7 @@ function particulas() {
       alturaJanela = window.innerHeight;//Atualiza a altura da janela quando a mesma mudar.
       mudarTamanhoCanvas();
       relacaonumparticulas = larguraJanela * alturaJanela;
-      guardarParticula = [];//"Exclui" as particulas anteriores para atualizar a quantidade da mesma caso a janela mude de tamanho. 
+      guardarParticula = [];//"Exclui" as particulas anteriores para atualizar a quantidade da mesma caso a janela mude de tamanho.
       numParticulas = Math.round(relacaonumparticulas / 25500);//Atualiza o número de particulas caso a janela mude de tamanho.
       criarParticula();
    });
@@ -58,7 +58,7 @@ function particulas() {
       }
    }
 
-   function moverParticula(posicaoX, posicaoY, deslocaX, deslocaY, raioCirculo, indice, massa) {//Função que retorna um objeto cuja as propriedades e os métodos ficam armazenados na "guardarParticula". 
+   function moverParticula(posicaoX, posicaoY, deslocaX, deslocaY, raioCirculo, indice, massa) {//Função que retorna um objeto cuja as propriedades e os métodos ficam armazenados na "guardarParticula".
       return {
          //--------Características/propriedades do objeto/particula---------
          posX: posicaoX,
@@ -70,7 +70,7 @@ function particulas() {
          m: massa,
          //----------------Ações/métodos do objeto/particula----------------
          mudarDirecao: function () {
-            //Se a particula passar das extremidades da janela faz ela aparecer na extremidade oposta. 
+            //Se a particula passar das extremidades da janela faz ela aparecer na extremidade oposta.
             if (this.posY - this.raio >= alturaJanela) {
                this.posY = -(this.raio);
             }
@@ -169,7 +169,7 @@ function particulas() {
             }
 
             this.posX += this.desX;//Acrescenta o valor de deslocamento no eixo X no valor da posição da particula no eixo X.
-            this.posY += this.desY;//Acrescenta o valor de deslocamento no eixo Y no valor da posição da particula no eixo Y. 
+            this.posY += this.desY;//Acrescenta o valor de deslocamento no eixo Y no valor da posição da particula no eixo Y.
             this.reCriar();//Chama o método que cria a particula, para "recriá-la" na nova posição.
          },
          reCriar: function() {//Desenha as particulas de acordo com as propriedades dos objetos nos indices da "guardarParticulas".
@@ -202,10 +202,10 @@ function particulas() {
          const vFinal1 = rotate(v1.x, v1.y, -angulo);
          const vFinal2 = rotate(v2.x, v2.y, -angulo);
 
-         primparticula.desX = vFinal1.x - (vFinal1.x / 40);
-         primparticula.desY = vFinal1.y - (vFinal1.y / 40);
-         segunparticula.desX = vFinal2.x - (vFinal2.x / 40);
-         segunparticula.desY = vFinal2.y - (vFinal2.y / 40);
+         primparticula.desX = vFinal1.x - (vFinal1.x / 45);
+         primparticula.desY = vFinal1.y - (vFinal1.y / 45);
+         segunparticula.desX = vFinal2.x - (vFinal2.x / 45);
+         segunparticula.desY = vFinal2.y - (vFinal2.y / 45);
       }
 
       function rotate(desX, desY, angulo) {
