@@ -248,8 +248,8 @@ function traduSilent() {
         alturafundo = alturajanela + "px";
         arrayfundos[numslide].style.height = alturafundo;
         if (largurajanela > alturajanela) {
-            comparar.style.width = "50%";
-            compararFolhasCaderno.style.width = "50%";
+            comparar.style.width = "55%";
+            compararFolhasCaderno.style.width = "55%";
             omedodesangue.style.width = "55%";
         }
         else {
