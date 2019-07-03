@@ -28,7 +28,7 @@
 body {
     margin: 0px;
     font-family: "Arial";
-    font-size: 15px;
+    font-size: 16px;
     background-color: #000;
     color: white;
 }
@@ -317,7 +317,7 @@ p span:hover {
 #opcoesmenu {
     display: block;
     position: relative;
-    width: 398px;
+    width: 380px;
     margin-left: auto;
     margin-right: auto;
     list-style: none;
@@ -354,7 +354,7 @@ p span:hover {
     padding-left: 12px;
     padding-right: 12px;
     display: block;
-    font-size: 16px;
+    font-size: 15px;
     text-decoration: none;
     text-align: left;
     border-bottom: none;
@@ -438,7 +438,7 @@ p span:hover {
     padding-bottom: 13px;
     padding-left: 12px;
     padding-right: 12px;
-    font-size: 16px;
+    font-size: 15px;
     display: block;
     text-decoration: none;
     text-align: left;
