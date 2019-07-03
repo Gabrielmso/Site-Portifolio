@@ -735,6 +735,7 @@ h2 {
 
 @media screen and (min-height: 720px) {
     .content {
+        padding-top: 15px;
         top: 50%;
         transform: translateY(-51%)
     }
