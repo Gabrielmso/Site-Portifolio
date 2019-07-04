@@ -8,7 +8,8 @@ function traduSilent() {
     document.getElementById("fundo1blur"),
     document.getElementById("fundo2blur"),
     document.getElementById("fundo3blur"),
-    document.getElementById("fundo4blur")];
+    document.getElementById("fundo4blur"),
+    document.getElementById("fundo5blur")];
     const contents = document.getElementsByClassName("content"),//Armazena todas as divs que possuem conteúdo.
         imgviolentasorig = document.getElementById("imgviolentasorig"),
         imgviolentastrad = document.getElementById("imgviolentastrad"),

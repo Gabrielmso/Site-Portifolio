@@ -22,42 +22,27 @@ html, body {
 }
 
 #fundo1blur {
-    width: 100%;
     height: 100%;
-    overflow: auto;
     background-image: url("../imagens/fundo/fundo1blur.jpg");
-    background-repeat: no-repeat;
-    background-size: 100%;
     opacity: 0;
     -webkit-transition: opacity 1.5s linear;
     transition: opacity 1.5s linear;
 }
 
 #fundo2blur {
-    width: 100%;
-    overflow: auto;
     background-image: url("../imagens/fundo/fundoschool.jpg");
-    background-repeat: no-repeat;
-    background-size: 100%;
-    opacity: 1;
 }
 
 #fundo3blur {
-    width: 100%;
-    overflow: auto;
     background-image: url("../imagens/fundo/fundo3blur.jpg");
-    background-repeat: no-repeat;
-    background-size: 100%;
-    opacity: 1;
 }
 
 #fundo4blur {
-    width: 100%;
-    overflow: auto;
     background-image: url("../imagens/fundo/fundo4blur.jpg");
-    background-repeat: no-repeat;
-    background-size: 100%;
-    opacity: 1;
+}
+
+#fundo5blur {
+    background-image: url("../imagens/fundo/fundo5blur.jpg");
 }
 
 h1 {
@@ -220,6 +205,31 @@ h2 {
 
 #compararFolhasCaderno:hover {
     box-shadow: 0px 0px 30px #75717f;
+}
+
+/* _________________________________Slides carrosel____________________________________ */
+.telaslide {
+    position: relative;
+    width: 100%;
+}
+
+.telaimgcomp {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.slides {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .rodape {
@@ -390,30 +400,6 @@ h2 {
     z-index: 10003;
 }
 
-.telaslide {
-    position: relative;
-    width: 100%;
-}
-
-.telaimgcomp {
-    position: relative;
-    width: 100%;
-    height: 100%;
-}
-
-.slides {
-    position: absolute;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    overflow: hidden;
-    margin-left: auto;
-    margin-right: auto;
-}
-
 .fecharfundo {
     position: fixed;
     top: 0px;
@@ -470,6 +456,15 @@ h2 {
 }
 
 /*____________________________________________________________________________________________________*/
+
+
+.fundo{
+    width: 100%;
+    overflow: auto;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    opacity: 1;
+}
 
 .tracosetaleft1 {
     position: absolute;
