@@ -13,7 +13,7 @@ function traduSilent() {
     const contents = document.getElementsByClassName("content"),//Armazena todas as divs que possuem conteúdo.
         imgviolentasorig = document.getElementById("imgviolentasorig"),
         imgviolentastrad = document.getElementById("imgviolentastrad"),
-        comparar = document.getElementById("comparar"),
+        compararthereareviolent = document.getElementById("compararthereareviolent"),
         compararFolhasCaderno = document.getElementById("compararFolhasCaderno"),
         gifcgintrovert = document.getElementById("gifcgintrovert"),
         gifcgintrohori = document.getElementById("gifcgintrohori"),
@@ -60,7 +60,7 @@ function traduSilent() {
         mudarmenu();
     });
 
-    comparar.addEventListener("click", function () {//Visualizar a div para comparar as imagens "There are violent and disturbing imagens in this game" e fazer o conteúdo do site "sumir".
+    compararthereareviolent.addEventListener("click", function () {//Visualizar a div para comparar as imagens "There are violent and disturbing imagens in this game" e fazer o conteúdo do site "sumir".
         fadeoutcontents();
         $(fundocomparacao).fadeIn(700);
         ajustarimgscomparacao();
@@ -249,13 +249,13 @@ function traduSilent() {
         alturafundo = alturajanela + "px";
         arrayfundos[numslide].style.height = alturafundo;
         if (largurajanela > alturajanela) {
-            comparar.style.width = "55%";
+            compararthereareviolent.style.width = "55%";
             compararFolhasCaderno.style.width = "55%";
             omedodesangue.style.width = "55%";
         }
         else {
-            comparar.style.width = "85%";
-            compararFolhasCaderno.style.width = "85%";
+            compararthereareviolent.style.width = "90%";
+            compararFolhasCaderno.style.width = "90%";
             omedodesangue.style.width = "90%";
         }
 

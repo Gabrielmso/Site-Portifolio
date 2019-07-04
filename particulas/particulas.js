@@ -1,19 +1,20 @@
 function particulas() {
-   const espacoparticulas = document.getElementById("espacoparticulas");
-   const particulas = document.getElementById("particulas");
-   let contexto = particulas.getContext("2d");
-   let larguraJanela = window.innerWidth;
-   let alturaJanela = window.innerHeight;
-   let relacaonumparticulas = larguraJanela * alturaJanela;
-   let scrollposicao = document.body.scrollTop || document.documentElement.scrollTop;
-   let numParticulas = Math.round(relacaonumparticulas / 25500); //Determina o número de particulas deixando com a mesma densidade independente do tamanho da janela.
-   let raioCirculo = 0;//Tamanho de cada particula.
-   let posicaoX = 0;//Posição do eixo x de cada particula.
-   let posicaoY = 0;//Posição do eixo y de cada particula.
-   let deslocaX = 0;//Velocidade de deslocamento do eixo x de cada particula.
-   let deslocay = 0;//Velocidade de deslocamento do eixo y de cada particula.
-   let guardarParticula = [];//Armazena as propriedades de cada particula, cada indice será uma particula, o número de indices é determinado pela "numParticulas".
-   let iniciarAnimacao = requestAnimationFrame(movimentarParticulas, particulas);//Começar a movimentar as particulas.
+   const espacoparticulas = document.getElementById("espacoparticulas"),
+      particulas = document.getElementById("particulas");
+
+   let contexto = particulas.getContext("2d"),
+      larguraJanela = window.innerWidth,
+      alturaJanela = window.innerHeight,
+      relacaonumparticulas = larguraJanela * alturaJanela,
+      scrollposicao = document.body.scrollTop || document.documentElement.scrollTop,
+      numParticulas = Math.round(relacaonumparticulas / 25500), //Determina o número de particulas deixando com a mesma densidade independente do tamanho da janela.
+      raioCirculo = 0,//Tamanho de cada particula.
+      posicaoX = 0,//Posição do eixo x de cada particula.
+      posicaoY = 0,//Posição do eixo y de cada particula.
+      deslocaX = 0,//Velocidade de deslocamento do eixo x de cada particula.
+      deslocay = 0,//Velocidade de deslocamento do eixo y de cada particula.
+      guardarParticula = [],//Armazena as propriedades de cada particula, cada indice será uma particula, o número de indices é determinado pela "numParticulas".
+      iniciarAnimacao = requestAnimationFrame(movimentarParticulas, particulas);//Começar a movimentar as particulas.
 
    mudarTamanhoCanvas(larguraJanela, alturaJanela);//Deixa o canvas com a mesma resolução da janela tamanho da janela.
    criarParticula();
@@ -52,8 +53,8 @@ function particulas() {
          raioCirculo = valorAleatorio(3, 8);//Calcula um tamanho aleatório de raio para cada particula ter um tamanho diferente.
          posicaoX = valorAleatorio(raioCirculo, larguraJanela - raioCirculo);//Calcula uma posição aleatória no eixo x entre 0 mais o raio da particula e a largura total da janela menos o raio da particula para a mesma não passar as bordas da janela.
          posicaoY = valorAleatorio(raioCirculo, alturaJanela - raioCirculo);//Calcula uma posição aleatória no eixo y entre 0 mais o raio da particula e a altura total da janela menos o raio da particula para a mesma não passar as bordas da janela.
-         deslocaX = valorAleatorio(-1.2, 1.2);//Calcula uma velocidade aleatória de deslocamento da particula no eixo x entre -1 pixel (mover 1 pixel para a esquerda) e 1 pixel (mover 1 pixel para a direita).
-         deslocay = valorAleatorio(-1.2, 1.2);//Calcula uma velocidade aleatória de deslocamento da particula no eixo y entre -1 pixel (mover 1 pixel para cima) e 1 pixel (mover 1 pixel para baixo).
+         deslocaX = valorAleatorio(-1, 1);//Calcula uma velocidade aleatória de deslocamento da particula no eixo x entre -1 pixel (mover 1 pixel para a esquerda) e 1 pixel (mover 1 pixel para a direita).
+         deslocay = valorAleatorio(-1, 1);//Calcula uma velocidade aleatória de deslocamento da particula no eixo y entre -1 pixel (mover 1 pixel para cima) e 1 pixel (mover 1 pixel para baixo).
          guardarParticula[i] = (new moverParticula(posicaoX, posicaoY, deslocaX, deslocay, raioCirculo, i, raioCirculo / 2));//Executa a função para criar a particula e armazena toda a função em vetor para mudar as propriedades que constituem as particulas para realizar a animação de cada particula.
       }
    }
@@ -115,55 +116,29 @@ function particulas() {
                   if (disparticula.prim <= disparticula.seg) {//Se a soma dos quadrados da diferença entre a posição X e a posição Y das particulas for menor ou igual que o quadrado da soma dos raios das mesmas, uma particula está "encostando na outra".
                      colisao(this, guardarParticula[i], dx, dy);//Calcula a velocidade e o angulo q as particulas terão após encostarem uma na outra.
                   }
-                  else if (disparticula.prim <= disLinha) {//Se elas não estiverem encostando, desenha uma linha entre as particulas se elas estiverem com uma distância menor que 175 pixels.
-                     // let opacity = Math.round(((((177 + sr * 4) - disparticula.prim)) / 2)).toString(16);
-                     let opacity = (((disLinha - disparticula.prim) / disLinha) / 1.2);
-                     contexto.beginPath();
-                     contexto.moveTo(this.posX, this.posY);
-                     contexto.lineTo(guardarParticula[i].posX, guardarParticula[i].posY);
-                     contexto.strokeStyle = "rgba(255,255,255," + opacity + ')';
-                     contexto.stroke();
-                     contexto.closePath();
+                  else if (disparticula.prim <= disLinha) {//Se elas não estiverem encostando, desenha uma linha entre as particulas se elas estiverem com uma distância menor que 200 pixels.
+                     let linhaOpacidade = (((disLinha - disparticula.prim) / disLinha) / 1.2);
+                     desenhaLinha(this.posX, this.posY, guardarParticula[i].posX, guardarParticula[i].posY, linhaOpacidade, false);
                   }
                   else if (novadisparticulaYbaixo.prim <= disLinha && this.posY >= alturaJanela - disLinha) {//Se a particula estiver próxima de uma extremidade e houver uma particula próxima a extremidade oposta uma linha é desenhada atravessando as extremidades até a outra particula.
-                     let opacity = (((disLinha - novadisparticulaYbaixo.prim) / disLinha) / 1.2);
-                     contexto.beginPath();
-                     contexto.moveTo(this.posX, this.posY);
-                     contexto.lineTo(guardarParticula[i].posX, novaPos.yBaixo + (guardarParticula[i].raio * 2));
-                     contexto.lineTo(this.posX, this.posY);
-                     contexto.strokeStyle = "rgba(255,255,255," + opacity + ')';
-                     contexto.stroke();
-                     contexto.closePath();
+                     let linhaOpacidade = (((disLinha - novadisparticulaYbaixo.prim) / disLinha) / 1.2);
+                     let novaPosYBaixo = (novaPos.yBaixo + (guardarParticula[i].raio * 2));
+                     desenhaLinha(this.posX, this.posY, guardarParticula[i].posX, novaPosYBaixo, linhaOpacidade, true);
                   }
                   else if (novadisparticulaYcima.prim <= disLinha && this.posY <= disLinha) {
-                     let opacity = (((disLinha - novadisparticulaYcima.prim) / disLinha) / 1.2);
-                     contexto.beginPath();
-                     contexto.moveTo(this.posX, this.posY);
-                     contexto.lineTo(guardarParticula[i].posX, novaPos.yCima - (guardarParticula[i].raio * 2));
-                     contexto.lineTo(this.posX, this.posY);
-                     contexto.strokeStyle = "rgba(255,255,255," + opacity + ')';
-                     contexto.stroke();
-                     contexto.closePath();
+                     let linhaOpacidade = (((disLinha - novadisparticulaYcima.prim) / disLinha) / 1.2);
+                     let novaPosYCima = (novaPos.yCima - (guardarParticula[i].raio * 2));
+                     desenhaLinha(this.posX, this.posY, guardarParticula[i].posX, novaPosYCima, linhaOpacidade, true);
                   }
                   else if (novadisparticulaXesquerda.prim <= disLinha && this.posX <= disLinha) {
-                     let opacity = (((disLinha - novadisparticulaXesquerda.prim) / disLinha) / 1.2);
-                     contexto.beginPath();
-                     contexto.moveTo(this.posX, this.posY);
-                     contexto.lineTo(novaPos.xEsq - (guardarParticula[i].raio * 2), guardarParticula[i].posY);
-                     contexto.lineTo(this.posX, this.posY);
-                     contexto.strokeStyle = "rgba(255,255,255," + opacity + ')';
-                     contexto.stroke();
-                     contexto.closePath();
+                     let linhaOpacidade = (((disLinha - novadisparticulaXesquerda.prim) / disLinha) / 1.2);
+                     let novaPosXEsq = (novaPos.xEsq - (guardarParticula[i].raio * 2));
+                     desenhaLinha(this.posX, this.posY, novaPosXEsq, guardarParticula[i].posY, linhaOpacidade, true);
                   }
                   else if (novadisparticulaXdireita.prim <= disLinha && this.posX >= larguraJanela - disLinha) {
-                     let opacity = (((disLinha - novadisparticulaXdireita.prim) / disLinha) / 1.2);
-                     contexto.beginPath();
-                     contexto.moveTo(this.posX, this.posY);
-                     contexto.lineTo(novaPos.xDir + (guardarParticula[i].raio * 2), guardarParticula[i].posY);
-                     contexto.lineTo(this.posX, this.posY);
-                     contexto.strokeStyle = "rgba(255,255,255," + opacity + ')';
-                     contexto.stroke();
-                     contexto.closePath();
+                     let linhaOpacidade = (((disLinha - novadisparticulaXdireita.prim) / disLinha) / 1.2);
+                     let novaPosXDir = (novaPos.xDir + (guardarParticula[i].raio * 2));
+                     desenhaLinha(this.posX, this.posY, novaPosXDir, guardarParticula[i].posY, linhaOpacidade, true);
                   }
                }
             }
@@ -172,6 +147,7 @@ function particulas() {
             this.posY += this.desY;//Acrescenta o valor de deslocamento no eixo Y no valor da posição da particula no eixo Y.
             this.reCriar();//Chama o método que cria a particula, para "recriá-la" na nova posição.
          },
+
          reCriar: function () {//Desenha as particulas de acordo com as propriedades dos objetos nos indices da "guardarParticulas".
             contexto.beginPath();
             contexto.arc(this.posX, this.posY, this.raio, 0, 2 * Math.PI, true);
@@ -180,6 +156,18 @@ function particulas() {
             contexto.closePath();
          }
       }
+   }
+
+   function desenhaLinha(posX, posY, posX2, posY2, opacidade, voltaLinha = true) {
+      contexto.beginPath();
+      contexto.moveTo(posX, posY);
+      contexto.lineTo(posX2, posY2);
+      if (voltaLinha == true) {
+         contexto.lineTo(posX, posY);
+      }
+      contexto.strokeStyle = "rgba(255,255,255," + opacidade + ')';
+      contexto.stroke();
+      contexto.closePath();
    }
 
    function colisao(primparticula, segunparticula, dx, dy) {//Calcula a velocidade e o angulo que as particulas terão após encostarem uma na outra.
@@ -202,10 +190,10 @@ function particulas() {
          const vFinal1 = rotate(v1.x, v1.y, -angulo);
          const vFinal2 = rotate(v2.x, v2.y, -angulo);
 
-         primparticula.desX = vFinal1.x - (vFinal1.x / 45);
-         primparticula.desY = vFinal1.y - (vFinal1.y / 45);
-         segunparticula.desX = vFinal2.x - (vFinal2.x / 45);
-         segunparticula.desY = vFinal2.y - (vFinal2.y / 45);
+         primparticula.desX = vFinal1.x - (vFinal1.x / 40);
+         primparticula.desY = vFinal1.y - (vFinal1.y / 40);
+         segunparticula.desX = vFinal2.x - (vFinal2.x / 40);
+         segunparticula.desY = vFinal2.y - (vFinal2.y / 40);
       }
 
       function rotate(desX, desY, angulo) {
@@ -216,18 +204,17 @@ function particulas() {
       }
    }
 
-
    function valorAleatorio(numMinimo, numMaximo) {//Retorna um número float aleatório entre "numMinimo" e "numMaximo".
       return Math.random() * (numMaximo - numMinimo) + numMinimo;
    }
 
    function movimentarParticulas() {
-      contexto.clearRect(0, 0, larguraJanela, alturaJanela);//Limpa o "frame" anterior;
       for (let i = 0; i < guardarParticula.length; i++) {
          guardarParticula[i].mudarDirecao();//"Redesenha" o novo "frame" com as particulas nas novas posições.
       }
       setTimeout(function () {
          iniciarAnimacao = requestAnimationFrame(movimentarParticulas, particulas);//Executa novamente esta função (recursividade).
+         contexto.clearRect(0, 0, larguraJanela, alturaJanela);//Limpa o "frame" anterior;
       }, 32);
    }
 
