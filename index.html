@@ -212,7 +212,7 @@
         <div class="mycontainer">
             <div class="content">
                 <h2>"Há imagens violentas e perturbadoras neste jogo"</h2>
-                <div id="compararthereareviolent" class="cursor">
+                <div id="compararthereareviolent" class="comparar cursor noSelection">
                     <img class="thereareviolent noSelection" src="imagens/miniaturas/thereareviolent.jpg"
                         alt="There are violent and disturbing images in this game.">
                     <img class="thereareviolent noSelection" src="imagens/miniaturas/haimagensviolentas.jpg"
@@ -248,9 +248,9 @@
         <div class="mycontainer">
             <div class="content">
                 <h2>"O medo de sangue tende a criar medo pela carne"</h2>
-                <img id="omedodesangue" class="cursor noSelection" title="Clique para comparar."
+                <img id="omedodesangue" class="comparar cursor noSelection" title="Clique para comparar."
                     src="imagens/miniaturas/Omedodesangue.jpg" alt="O medo de sangue tende a criar medo pela carne.">
-                <div id="txtomedodesangue" class="texto">
+                <div class="texto">
                     <p>
                         A primeira CG mostrada no jogo. Para traduzir a frase “The fear of blood tends to create fear
                         for the fresh” utilizei um software chamado VirtualDub, que possibilita de forma simples
@@ -280,6 +280,13 @@
         <div class="mycontainer">
             <div class="content">
                 <h2>Mapa da "Antiga Silent Hill"</h2>
+                <div id="compararMapaAntigaSilent" class="comparar cursor noSelection">
+                    <img class="thereareviolent" src="./imagens/miniaturas/oldSilentHill1.jpg" alt="Mapa Old Silent Hill">
+                    <img class="thereareviolent" src="./imagens/miniaturas/oldSilentHill2.jpg" alt="Mapa Antiga Silent Hill">
+                </div>
+                <div class="texto">
+
+                </div>
             </div>
         </div>
     </section>
@@ -287,12 +294,12 @@
         <div class="mycontainer">
             <div class="content">
                 <h2>Folhas de caderno de desenho</h2>
-                <div id="compararFolhasCaderno" class="cursor">
+                <div id="compararFolhasCaderno" class="comparar cursor noSelection">
                     <img class="thereareviolent" src="./imagens/miniaturas/folhasdecaderno.jpg" alt="Para a escola">
                     <img class="thereareviolent" src="./imagens/miniaturas/folhasdecaderno2.jpg"
                         alt="Casa de cachorro, Rua Levin">
                 </div>
-                <div id="txtFolhasCaderno" class="texto">
+                <div class="texto">
                     <p>
                         Folhas de caderno de desenho da Cheryl encontradas na Old Silent Hill. Para traduzi-las,
                         primeiro foi preciso apagar as frases originais, o que nesse caso foi muito difícil pois, já que
@@ -304,7 +311,7 @@
                     <p>
                         A parte mais complicada e que rendeu infinitos Ctrl + Z foi pintar as frases traduzidas pois,
                         por incrível que pareça, não é tão simples escrever se imaginando ser uma criança de sete anos.
-                        Selecionando as cores originais e com o simples pincel pintei as frases traduzidas nomalmente,
+                        Selecionando as cores originais e com o simples pincel pintei as frases traduzidas normalmente,
                         para acrescentar as "imperfeições no traço" utilizei a "Ferramenta Borrar" porém, como as
                         imagens possuem cores indexadas de 8 bits, ou seja, cada imagem pode conter apenas 256 cores
                         distintas, quando se utiliza ferramentas como "Ferramenta Borrar" e "Ferramenta Desfoque" existe
@@ -314,7 +321,7 @@
                         de cores para RGB, desse modo é possível usar todas as cores que um computador pode reproduzir
                         (16.777.216). Após isso obtive sucesso em deixar as frases com o aspecto "manchado", voltei o
                         modo de cores para indexado, verificando e respeitando o limite de 256 cores, para poder colocar
-                        as imagens iditadas dentro do jogo.
+                        as imagens editadas dentro do jogo.
                     </p>
                     <p>
                         Clicando na imagem acima você visualizará as imagens e clicando sobre elas poderá comparar com o
@@ -348,6 +355,13 @@
     <div id="fundocomparacg" class="fundocomparar">
         <div id="gifcgintrovert" class="cursor centraliza"></div>
         <div id="gifcgintrohori" class="cursor centraliza"></div>
+    </div>
+    <!-- Div para comparar a edição do mapa da Antiga Silent Hill -->
+    <div id="fundoantigasilenthill" class="fundocomparar">
+        <div id="fecharantigasilenthill" class="fecharfundo cursor">
+            <div class="tracofechar1"></div>
+            <div class="tracofechar2"></div>
+        </div>
     </div>
     <!-- Div para comparar as folhas de caderno de desenho feita na primeira CG do jogo  -->
     <div id="fundocomparafolhas" class="fundocomparar">
@@ -386,7 +400,7 @@
             </div>
         </div>
     </div>
-    <!-- Div para comparar as imagens do mapa do primeiro andar da escola. -->
+    <!-- Div para comparar as imagens dos mapas da escola. -->
     <div id="comparamapaescola" class="fundocomparar">
         <div id="fecharfundo2" class="fecharfundo cursor">
             <div class="tracofechar1"></div>

@@ -16,7 +16,7 @@ function particulas() {
       guardarParticula = [],//Armazena as propriedades de cada particula, cada indice será uma particula, o número de indices é determinado pela "numParticulas".
       iniciarAnimacao = requestAnimationFrame(movimentarParticulas, particulas);//Começar a movimentar as particulas.
 
-   mudarTamanhoCanvas(larguraJanela, alturaJanela);//Deixa o canvas com a mesma resolução da janela tamanho da janela.
+   mudarTamanhoCanvas(larguraJanela, alturaJanela);//Deixa o canvas com a mesma resolução da janela.
    criarParticula();
 
    window.addEventListener("resize", function () {
@@ -158,7 +158,7 @@ function particulas() {
       }
    }
 
-   function desenhaLinha(posX, posY, posX2, posY2, opacidade, voltaLinha = true) {
+   function desenhaLinha(posX, posY, posX2, posY2, opacidade, voltaLinha) {
       contexto.beginPath();
       contexto.moveTo(posX, posY);
       contexto.lineTo(posX2, posY2);
@@ -209,12 +209,12 @@ function particulas() {
    }
 
    function movimentarParticulas() {
+      contexto.clearRect(0, 0, larguraJanela, alturaJanela);//Limpa o "frame" anterior;
       for (let i = 0; i < guardarParticula.length; i++) {
          guardarParticula[i].mudarDirecao();//"Redesenha" o novo "frame" com as particulas nas novas posições.
       }
       setTimeout(function () {
          iniciarAnimacao = requestAnimationFrame(movimentarParticulas, particulas);//Executa novamente esta função (recursividade).
-         contexto.clearRect(0, 0, larguraJanela, alturaJanela);//Limpa o "frame" anterior;
       }, 32);
    }
 

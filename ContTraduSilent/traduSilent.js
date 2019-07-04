@@ -13,11 +13,12 @@ function traduSilent() {
     const contents = document.getElementsByClassName("content"),//Armazena todas as divs que possuem conteúdo.
         imgviolentasorig = document.getElementById("imgviolentasorig"),
         imgviolentastrad = document.getElementById("imgviolentastrad"),
-        compararthereareviolent = document.getElementById("compararthereareviolent"),
-        compararFolhasCaderno = document.getElementById("compararFolhasCaderno"),
+        comparar = [document.getElementById("compararthereareviolent"),
+        document.getElementById("omedodesangue"),
+        document.getElementById("compararMapaAntigaSilent"),
+        document.getElementById("compararFolhasCaderno")],
         gifcgintrovert = document.getElementById("gifcgintrovert"),
         gifcgintrohori = document.getElementById("gifcgintrohori"),
-        omedodesangue = document.getElementById("omedodesangue"),
         imgverjap = document.getElementById("imgverjap"),
         imgverlimp = document.getElementById("imgverlimp"),
         imgjap = document.getElementById("imgjap"),
@@ -26,7 +27,9 @@ function traduSilent() {
         bttverdetalhes = document.getElementById("bttverdetalhes"),
         fundocomparacao = document.getElementById("fundocomparacao"),
         fundocomparacg = document.getElementById("fundocomparacg"),
+        fundoantigasilenthill = document.getElementById("fundoantigasilenthill"),
         fecharfundo1 = document.getElementById("fecharfundo1"),
+        fecharantigasilenthill = document.getElementById("fecharantigasilenthill"),
         titulo = document.getElementById("titulo"),
         bttdownload = document.getElementById("bttdownload"),
         traprogress = document.getElementById("traprogress"),
@@ -60,10 +63,21 @@ function traduSilent() {
         mudarmenu();
     });
 
-    compararthereareviolent.addEventListener("click", function () {//Visualizar a div para comparar as imagens "There are violent and disturbing imagens in this game" e fazer o conteúdo do site "sumir".
+    comparar[0].addEventListener("click", function () {//Visualizar a div para comparar as imagens "There are violent and disturbing imagens in this game" e fazer o conteúdo do site "sumir".
         fadeoutcontents();
         $(fundocomparacao).fadeIn(700);
         ajustarimgscomparacao();
+    });
+
+    imgviolentasorig.addEventListener("click", function () {//Deixa a opacidade da imagem em 0 para ver a imagem que está atrás. Comparar as imagens. 
+        if (imgvisivel == false) {
+            imgviolentastrad.style.opacity = "1";
+            imgvisivel = true;
+        }
+        else {
+            imgviolentastrad.style.opacity = "0";
+            imgvisivel = false;
+        }
     });
 
     fecharfundo1.addEventListener("click", function () {//"Fechar" a div que mostra as imagens "There are violent and disturbing imagens in this game" e fazer o conteúdo do site "aparecer".
@@ -71,22 +85,6 @@ function traduSilent() {
         fadeincontents();
         imgviolentastrad.style.opacity = "0";
         imgvisivel = false;
-    });
-
-    omedodesangue.addEventListener("click", function () {//Vizualizar a div que mostra o gif comparando a edição feita na cg de inicio e fazer o conteúdo do site "sumir".
-        fadeoutcontents();
-        $(fundocomparacg).fadeIn(700);
-        ajustarimgscomparacao();
-    });
-
-    gifcgintrohori.addEventListener("click", function () {//"Fechar" a div que mostra o gif comparando a edição feita na cg de inicio e fazer o conteúdo do site "aparecer".
-        $(fundocomparacg).fadeOut(300);
-        fadeincontents();
-    });
-
-    gifcgintrovert.addEventListener("click", function () {//"Fechar" a div que mostra o gif comparando a edição feita na cg de inicio e fazer o conteúdo do site "aparecer".
-        $(fundocomparacg).fadeOut(300);
-        fadeincontents();
     });
 
     imgverjap.addEventListener("click", function () {//Visualizar a div para ver a versão japonesa da imagem "There are violent and disturbing imagens in this game".
@@ -108,15 +106,31 @@ function traduSilent() {
         document.addEventListener("keydown", mudarslide);//Adiciona novamente a função "mudarslide" ao evento "keydown" do document.
     });
 
-    imgviolentasorig.addEventListener("click", function () {//Deixa a opacidade da imagem em 0 para ver a imagem que está atrás. Comparar as imagens. 
-        if (imgvisivel == false) {
-            imgviolentastrad.style.opacity = "1";
-            imgvisivel = true;
-        }
-        else {
-            imgviolentastrad.style.opacity = "0";
-            imgvisivel = false;
-        }
+    comparar[1].addEventListener("click", function () {//Vizualizar a div que mostra o gif comparando a edição feita na cg de inicio e fazer o conteúdo do site "sumir".
+        fadeoutcontents();
+        $(fundocomparacg).fadeIn(700);
+        ajustarimgscomparacao();
+    });
+
+    gifcgintrohori.addEventListener("click", function () {//"Fechar" a div que mostra o gif comparando a edição feita na cg de inicio e fazer o conteúdo do site "aparecer".
+        $(fundocomparacg).fadeOut(300);
+        fadeincontents();
+    });
+
+    gifcgintrovert.addEventListener("click", function () {//"Fechar" a div que mostra o gif comparando a edição feita na cg de inicio e fazer o conteúdo do site "aparecer".
+        $(fundocomparacg).fadeOut(300);
+        fadeincontents();
+    });
+
+    comparar[2].addEventListener("click", function () {//Vizualizar a div que compara o mapa da Antiga Silent Hill e fazer o conteúdo do site "sumir".
+        fadeoutcontents();
+        $(fundoantigasilenthill).fadeIn(700);
+        ajustarimgscomparacao();
+    });
+
+    fecharantigasilenthill.addEventListener("click", function () {
+        $(fundoantigasilenthill).fadeOut(300);
+        fadeincontents();
     });
 
     function carregamento() {//Faz os elementos do primeiro "slide" aparecerem e após isso permite trocar de slide.
@@ -249,14 +263,14 @@ function traduSilent() {
         alturafundo = alturajanela + "px";
         arrayfundos[numslide].style.height = alturafundo;
         if (largurajanela > alturajanela) {
-            compararthereareviolent.style.width = "55%";
-            compararFolhasCaderno.style.width = "55%";
-            omedodesangue.style.width = "55%";
+            for (let i = 0; i < comparar.length; i++) {
+                comparar[i].style.width = "55%";
+            }
         }
         else {
-            compararthereareviolent.style.width = "90%";
-            compararFolhasCaderno.style.width = "90%";
-            omedodesangue.style.width = "90%";
+            for (let i = 0; i < comparar.length; i++) {
+                comparar[i].style.width = "90%";
+            }
         }
 
     };
