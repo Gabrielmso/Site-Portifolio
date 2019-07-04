@@ -9,7 +9,7 @@ function particulas() {
    let numParticulas = Math.round(relacaonumparticulas / 25500); //Determina o número de particulas deixando com a mesma densidade independente do tamanho da janela.
    let raioCirculo = 0;//Tamanho de cada particula.
    let posicaoX = 0;//Posição do eixo x de cada particula.
-   let posicaoY = 0;//Posição do eixo x de cada particula.
+   let posicaoY = 0;//Posição do eixo y de cada particula.
    let deslocaX = 0;//Velocidade de deslocamento do eixo x de cada particula.
    let deslocay = 0;//Velocidade de deslocamento do eixo y de cada particula.
    let guardarParticula = [];//Armazena as propriedades de cada particula, cada indice será uma particula, o número de indices é determinado pela "numParticulas".
@@ -172,7 +172,7 @@ function particulas() {
             this.posY += this.desY;//Acrescenta o valor de deslocamento no eixo Y no valor da posição da particula no eixo Y.
             this.reCriar();//Chama o método que cria a particula, para "recriá-la" na nova posição.
          },
-         reCriar: function() {//Desenha as particulas de acordo com as propriedades dos objetos nos indices da "guardarParticulas".
+         reCriar: function () {//Desenha as particulas de acordo com as propriedades dos objetos nos indices da "guardarParticulas".
             contexto.beginPath();
             contexto.arc(this.posX, this.posY, this.raio, 0, 2 * Math.PI, true);
             contexto.fillStyle = "#fff";
