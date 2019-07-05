@@ -11,18 +11,20 @@ function traduSilent() {
     document.getElementById("fundo4blur"),
     document.getElementById("fundo5blur")];
     const contents = document.getElementsByClassName("content"),//Armazena todas as divs que possuem conteúdo.
-        imgviolentasorig = document.getElementById("imgviolentasorig"),
-        imgviolentastrad = document.getElementById("imgviolentastrad"),
         comparar = [document.getElementById("compararthereareviolent"),
         document.getElementById("omedodesangue"),
         document.getElementById("compararMapaAntigaSilent"),
         document.getElementById("compararFolhasCaderno")],
-        gifcgintrovert = document.getElementById("gifcgintrovert"),
-        gifcgintrohori = document.getElementById("gifcgintrohori"),
+        imgviolentasorig = document.getElementById("imgviolentasorig"),
+        imgviolentastrad = document.getElementById("imgviolentastrad"),
         imgverjap = document.getElementById("imgverjap"),
         imgverlimp = document.getElementById("imgverlimp"),
         imgjap = document.getElementById("imgjap"),
         imglimp = document.getElementById("imglimp"),
+        gifcgintrovert = document.getElementById("gifcgintrovert"),
+        gifcgintrohori = document.getElementById("gifcgintrohori"),
+        imgoldsilenthill = document.getElementById("imgoldsilenthill"),
+        imgantigasilenthill = document.getElementById("imgantigasilenthill"),
         fundoverjapelimp = document.getElementById("fundoverjapelimp"),
         bttverdetalhes = document.getElementById("bttverdetalhes"),
         fundocomparacao = document.getElementById("fundocomparacao"),
@@ -69,13 +71,13 @@ function traduSilent() {
         ajustarimgscomparacao();
     });
 
-    imgviolentasorig.addEventListener("click", function () {//Deixa a opacidade da imagem em 0 para ver a imagem que está atrás. Comparar as imagens. 
+    imgviolentastrad.addEventListener("click", function () {//Deixa a opacidade da imagem em 0 para ver a imagem que está atrás. Comparar as imagens. 
         if (imgvisivel == false) {
-            imgviolentastrad.style.opacity = "1";
+            this.style.opacity = "1";
             imgvisivel = true;
         }
         else {
-            imgviolentastrad.style.opacity = "0";
+            this.style.opacity = "0";
             imgvisivel = false;
         }
     });
@@ -128,9 +130,22 @@ function traduSilent() {
         ajustarimgscomparacao();
     });
 
-    fecharantigasilenthill.addEventListener("click", function () {
+    imgantigasilenthill.addEventListener("click", function () {
+        if(imgvisivel == false){
+            this.style.opacity = 1;
+            imgvisivel = true;
+        }
+        else{
+            this.style.opacity = 0;
+            imgvisivel = false;
+        }
+    });
+
+    fecharantigasilenthill.addEventListener("click", function () {//"Fechar" a div que compara o mapa da Antiga Silent Hill e fazer o conteúdo do site "aparecer".
         $(fundoantigasilenthill).fadeOut(300);
         fadeincontents();
+        imgantigasilenthill.style.opacity = 0;
+        imgvisivel = false;
     });
 
     function carregamento() {//Faz os elementos do primeiro "slide" aparecerem e após isso permite trocar de slide.
@@ -194,6 +209,8 @@ function traduSilent() {
         if ((largurajanela / alturajanela) > proporcao4por3) {
             imgviolentasorig.style.height = "97%";
             imgviolentasorig.style.width = imgviolentasorig.offsetHeight * proporcao4por3 + "px";
+            imgoldsilenthill.style.height = "97%";
+            imgoldsilenthill.style.width = imgoldsilenthill.offsetHeight * proporcao4por3 + "px";
             imgjap.style.height = "80%";
             imgjap.style.width = imgjap.offsetHeight * proporcao4por3 + "px";
 
@@ -211,6 +228,8 @@ function traduSilent() {
         else {
             imgviolentasorig.style.width = "100%";
             imgviolentasorig.style.height = imgviolentasorig.offsetWidth / proporcao4por3 + "px";
+            imgoldsilenthill.style.width = "100%";
+            imgoldsilenthill.style.height = imgoldsilenthill.offsetWidth / proporcao4por3 + "px";
             imgjap.style.width = "85%";
             imgjap.style.height = imgjap.offsetWidth / proporcao4por3 + "px";
 
