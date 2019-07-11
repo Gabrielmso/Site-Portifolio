@@ -9,12 +9,16 @@ function traduSilent() {
     document.getElementById("fundo2blur"),
     document.getElementById("fundo3blur"),
     document.getElementById("fundo4blur"),
-    document.getElementById("fundo5blur")];
+    document.getElementById("fundo5blur"),
+    document.getElementById("fundo6blur"),
+    document.getElementById("fundo7blur")];
     const contents = document.getElementsByClassName("content"),//Armazena todas as divs que possuem conteúdo.
         comparar = [document.getElementById("compararthereareviolent"),
         document.getElementById("omedodesangue"),
         document.getElementById("compararMapaAntigaSilent"),
-        document.getElementById("compararFolhasCaderno")],
+        document.getElementById("compararFolhasCaderno"),
+        document.getElementById("compararChavesEclipse"),
+        document.getElementById("compararEscola")],
         imgviolentasorig = document.getElementById("imgviolentasorig"),
         imgviolentastrad = document.getElementById("imgviolentastrad"),
         imgverjap = document.getElementById("imgverjap"),
@@ -131,11 +135,11 @@ function traduSilent() {
     });
 
     imgantigasilenthill.addEventListener("click", function () {
-        if(imgvisivel == false){
+        if (imgvisivel == false) {
             this.style.opacity = 1;
             imgvisivel = true;
         }
-        else{
+        else {
             this.style.opacity = 0;
             imgvisivel = false;
         }
