@@ -29,13 +29,17 @@ function traduSilent() {
         gifcgintrohori = document.getElementById("gifcgintrohori"),
         imgoldsilenthill = document.getElementById("imgoldsilenthill"),
         imgantigasilenthill = document.getElementById("imgantigasilenthill"),
+        imgkeysforeclipse = document.getElementById("imgkeysforeclipse"),
+        imgchavesparaoeclipse = document.getElementById("imgchavesparaoeclipse"),
         fundoverjapelimp = document.getElementById("fundoverjapelimp"),
         bttverdetalhes = document.getElementById("bttverdetalhes"),
         fundocomparacao = document.getElementById("fundocomparacao"),
         fundocomparacg = document.getElementById("fundocomparacg"),
         fundoantigasilenthill = document.getElementById("fundoantigasilenthill"),
+        fundochavesparaoeclipse = document.getElementById("fundochavesparaoeclipse"),
         fecharfundo1 = document.getElementById("fecharfundo1"),
         fecharantigasilenthill = document.getElementById("fecharantigasilenthill"),
+        fecharchavesparaoeclipse = document.getElementById("fecharchavesparaoeclipse"),
         titulo = document.getElementById("titulo"),
         bttdownload = document.getElementById("bttdownload"),
         traprogress = document.getElementById("traprogress"),
@@ -152,6 +156,29 @@ function traduSilent() {
         imgvisivel = false;
     });
 
+    comparar[4].addEventListener("click", function () {//Vizualizar a div que compara "Chaves para o Eclipse" e fazer o conteúdo do site "sumir".
+        fadeoutcontents();
+        $(fundochavesparaoeclipse).fadeIn(700);
+        ajustarimgscomparacao();
+    });
+
+    imgchavesparaoeclipse.addEventListener("click", function () {
+        if (imgvisivel == false) {
+            this.style.opacity = 1;
+            imgvisivel = true;
+        }
+        else {
+            this.style.opacity = 0;
+            imgvisivel = false;
+        }
+    });
+
+    fecharchavesparaoeclipse.addEventListener("click", function () {
+        $(fundochavesparaoeclipse).fadeOut(300);
+        fadeincontents();
+        imgchavesparaoeclipse.style.opacity = 0;
+        imgvisivel = false;
+    });
     function carregamento() {//Faz os elementos do primeiro "slide" aparecerem e após isso permite trocar de slide.
         arrayfundos[1].style.opacity = "1";
         info.style.display = "block";
@@ -215,6 +242,8 @@ function traduSilent() {
             imgviolentasorig.style.width = imgviolentasorig.offsetHeight * proporcao4por3 + "px";
             imgoldsilenthill.style.height = "97%";
             imgoldsilenthill.style.width = imgoldsilenthill.offsetHeight * proporcao4por3 + "px";
+            imgkeysforeclipse.style.height = "97%";
+            imgkeysforeclipse.style.width = imgkeysforeclipse.offsetHeight * proporcao4por3 + "px";
             imgjap.style.height = "80%";
             imgjap.style.width = imgjap.offsetHeight * proporcao4por3 + "px";
 
@@ -234,6 +263,8 @@ function traduSilent() {
             imgviolentasorig.style.height = imgviolentasorig.offsetWidth / proporcao4por3 + "px";
             imgoldsilenthill.style.width = "100%";
             imgoldsilenthill.style.height = imgoldsilenthill.offsetWidth / proporcao4por3 + "px";
+            imgkeysforeclipse.style.width = "100%";
+            imgkeysforeclipse.style.height = imgkeysforeclipse.offsetWidth / proporcao4por3 + "px";
             imgjap.style.width = "85%";
             imgjap.style.height = imgjap.offsetWidth / proporcao4por3 + "px";
 
