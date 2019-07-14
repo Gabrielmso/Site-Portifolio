@@ -201,7 +201,12 @@ h2 {
     box-shadow: 0px 0px 30px #87b4c9;
 }
 
+#compararEscola:hover {
+    box-shadow: 0px 0px 30px #bc5720;
+}
+
 /* _________________________________Slides carrosel____________________________________ */
+
 .telaslide {
     position: relative;
     width: 100%;
@@ -294,11 +299,11 @@ h2 {
     width: 100%;
 }
 
-#imgjap { 
+#imgjap {
     background-image: url("../imagens/imagens_originais/thereareviolentjap.jpg");
 }
 
-#imglimp { 
+#imglimp {
     opacity: 0;
     background-image: url("../imagens/imagens_traduzidas/haimagensviolentaslimp.jpg");
     width: 100%;
@@ -324,12 +329,12 @@ h2 {
     background-repeat: no-repeat;
 }
 
-#imgoldsilenthill{
+#imgoldsilenthill {
     width: 100%;
     background-image: url("../imagens/imagens_originais/mapOldSilentHill.jpg");
 }
 
-#imgantigasilenthill{
+#imgantigasilenthill {
     opacity: 0;
     background-image: url("../imagens/imagens_traduzidas/mapaAntigaSilentHill.jpg");
     width: 100%;
@@ -359,62 +364,63 @@ h2 {
     width: 100%;
 }
 
-#imgkeysforeclipse{
+#imgkeysforeclipse {
     width: 100%;
     background-image: url("../imagens/imagens_originais/keysforeclipse.jpg");
 }
 
-#imgchavesparaoeclipse{
+#imgchavesparaoeclipse {
     opacity: 0;
     background-image: url("../imagens/imagens_traduzidas/chavesparaoeclipse.jpg");
     width: 100%;
 }
 
-#imgschoolp{
+#imgschoolp {
     background-image: url("../imagens/imagens_originais/schoolb.jpg");
     width: 100%;
 }
 
-#imgescolap{
+#imgescolap {
     opacity: 0;
     background-image: url("../imagens/imagens_traduzidas/escolap.jpg");
     width: 100%;
 }
 
-#imgschool1a{
+#imgschool1a {
     background-image: url("../imagens/imagens_originais/school1f.jpg");
     width: 0%;
 }
 
-#imgescola1a{
+#imgescola1a {
     opacity: 0;
     background-image: url("../imagens/imagens_traduzidas/escola1a.jpg");
     width: 100%;
 }
 
-#imgschool2a{
+#imgschool2a {
     background-image: url("../imagens/imagens_originais/school2f.jpg");
     width: 0%;
 }
 
-#imgescola2a{
+#imgescola2a {
     opacity: 0;
     background-image: url("../imagens/imagens_traduzidas/escola2a.jpg");
     width: 100%;
 }
 
-#imgschoolt{
+#imgschoolt {
     background-image: url("../imagens/imagens_originais/schoolr.jpg");
     width: 0%;
 }
 
-#imgescolat{
+#imgescolat {
     opacity: 0;
     background-image: url("../imagens/imagens_traduzidas/escolat.jpg");
     width: 100%;
 }
 
 /*________________________FUNCIONAMENTO DE COMO SERÃO COMPARADAS AS IMAGENS___________________________*/
+
 .fundocomparar {
     position: fixed;
     top: 0;
@@ -462,8 +468,7 @@ h2 {
 
 /*____________________________________________________________________________________________________*/
 
-
-.fundo{
+.fundo {
     width: 100%;
     overflow: auto;
     background-repeat: no-repeat;
@@ -557,7 +562,7 @@ h2 {
     top: 12%;
 }
 
-.comparar{
+.comparar {
     overflow: auto;
     display: block;
     width: 90%;
@@ -589,7 +594,7 @@ h2 {
     user-select: none;
 }
 
-.imgslides{
+.imgslides {
     position: relative;
     display: block;
     height: 100%;
@@ -599,7 +604,7 @@ h2 {
 }
 
 @media screen and (min-width: 1420px) {
-    .comparar{
+    .comparar {
         max-width: 700px;
     }
 }

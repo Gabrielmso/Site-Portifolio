@@ -149,7 +149,11 @@ function slideCarosel() {
         fecharfundoescola = document.getElementById("fecharfundoescola"),
         escolacontentimgicons = document.getElementById("escolacontentimgicons"),
         mapaescolabtnLeft = document.getElementById("mapaescolabtnLeft"),
-        mapaescolabtnRight = document.getElementById("mapaescolabtnRight");
+        mapaescolabtnRight = document.getElementById("mapaescolabtnRight"),
+        imgescolap = document.getElementById("imgescolap"),
+        imgescola1a = document.getElementById("imgescola1a"),
+        imgescola2a = document.getElementById("imgescola2a"),
+        imgescolat = document.getElementById("imgescolat");
 
     const iconMapaEscola = [document.getElementById("iconmapaescolap"),
     document.getElementById("iconmapaescola1a"),
@@ -206,6 +210,50 @@ function slideCarosel() {
         mudaSlideMapaEscola();
     });
 
+    imgescolap.addEventListener("click", function () {
+        if (folhavisivel == false) {
+            this.style.opacity = "1";
+            folhavisivel = true;
+        }
+        else {
+            this.style.opacity = "0";
+            folhavisivel = false;
+        }
+    });
+
+    imgescola1a.addEventListener("click", function () {
+        if (folhavisivel == false) {
+            this.style.opacity = "1";
+            folhavisivel = true;
+        }
+        else {
+            this.style.opacity = "0";
+            folhavisivel = false;
+        }
+    });
+
+    imgescola2a.addEventListener("click", function () {
+        if (folhavisivel == false) {
+            this.style.opacity = "1";
+            folhavisivel = true;
+        }
+        else {
+            this.style.opacity = "0";
+            folhavisivel = false;
+        }
+    });
+
+    imgescolat.addEventListener("click", function () {
+        if (folhavisivel == false) {
+            this.style.opacity = "1";
+            folhavisivel = true;
+        }
+        else {
+            this.style.opacity = "0";
+            folhavisivel = false;
+        }
+    });
+
     function voltaMapaEscola() {
         if (contSlides > 1) {
             leftimgicons = leftimgicons + left * 2;
@@ -258,10 +306,15 @@ function slideCarosel() {
                 }
                 mapaescolabtnLeft.addEventListener("click", voltaMapaEscola);
                 mapaescolabtnRight.addEventListener("click", avancaMapaEscola);
+                imgescolap.style.opacity = "0";
+                imgescola1a.style.opacity = "0";
+                imgescola2a.style.opacity = "0";
+                imgescolat.style.opacity = "0";
                 folhavisivel = false;
             }, 350)
         }, 5)
     };
+    //____________________________________________________________________________________________________________________
 
     function tamanhoTelaSlide() {
         for (let i = 0; i < telaslide.length; i++) {
@@ -280,7 +333,6 @@ function slideCarosel() {
         }
     };
 
-    //____________________________________________________________________________________________________________________
 
     function fadeincontentsSlide() {//Faz todas as divs que possuem conteúdo "sumirem".
         $(bttverdetalhes).fadeIn(700);
