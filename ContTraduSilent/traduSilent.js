@@ -179,6 +179,7 @@ function traduSilent() {
         imgchavesparaoeclipse.style.opacity = 0;
         imgvisivel = false;
     });
+    
     function carregamento() {//Faz os elementos do primeiro "slide" aparecerem e após isso permite trocar de slide.
         arrayfundos[1].style.opacity = "1";
         info.style.display = "block";
