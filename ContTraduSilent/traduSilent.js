@@ -80,14 +80,7 @@ function traduSilent() {
     });
 
     imgviolentastrad.addEventListener("click", function () {//Deixa a opacidade da imagem em 0 para ver a imagem que está atrás. Comparar as imagens. 
-        if (imgvisivel == false) {
-            this.style.opacity = "1";
-            imgvisivel = true;
-        }
-        else {
-            this.style.opacity = "0";
-            imgvisivel = false;
-        }
+        clickComparaImagens(this);
     });
 
     fecharfundo1.addEventListener("click", function () {//"Fechar" a div que mostra as imagens "There are violent and disturbing imagens in this game" e fazer o conteúdo do site "aparecer".
@@ -139,14 +132,8 @@ function traduSilent() {
     });
 
     imgantigasilenthill.addEventListener("click", function () {
-        if (imgvisivel == false) {
-            this.style.opacity = 1;
-            imgvisivel = true;
-        }
-        else {
-            this.style.opacity = 0;
-            imgvisivel = false;
-        }
+        clickComparaImagens(this);
+
     });
 
     fecharantigasilenthill.addEventListener("click", function () {//"Fechar" a div que compara o mapa da Antiga Silent Hill e fazer o conteúdo do site "aparecer".
@@ -163,14 +150,7 @@ function traduSilent() {
     });
 
     imgchavesparaoeclipse.addEventListener("click", function () {
-        if (imgvisivel == false) {
-            this.style.opacity = 1;
-            imgvisivel = true;
-        }
-        else {
-            this.style.opacity = 0;
-            imgvisivel = false;
-        }
+        clickComparaImagens(this);
     });
 
     fecharchavesparaoeclipse.addEventListener("click", function () {
@@ -179,7 +159,7 @@ function traduSilent() {
         imgchavesparaoeclipse.style.opacity = 0;
         imgvisivel = false;
     });
-    
+
     function carregamento() {//Faz os elementos do primeiro "slide" aparecerem e após isso permite trocar de slide.
         arrayfundos[1].style.opacity = "1";
         info.style.display = "block";
@@ -482,21 +462,7 @@ function traduSilent() {
     }
 
     function mudarmenu() {
-        if (numslide > 0) {
-            menu.classList.remove("iniciomenu");
-            menu.classList.add("mudamenu");
-            logoBlack.classList.remove("iniciologoBlack");
-            logoBlack.classList.add("mudalogoBlack");
-            iconesetablack.classList.remove("inicioiconeblack");
-            iconesetablack.classList.add("mudaiconeblack");
-            iconemenublack.classList.remove("inicioiconeblack");
-            iconemenublack.classList.add("mudaiconeblack");
-            for (let i = 0; i < arrayop.length; i++) {
-                arrayop[i].classList.remove("inicioopcoes");
-                arrayop[i].classList.add("mudaopcoes");
-            }
-        }
-        else {
+        if (numslide == 0) {
             menu.classList.remove("mudamenu");
             menu.classList.add("iniciomenu");
             logoBlack.classList.remove("mudalogoBlack");
@@ -508,6 +474,20 @@ function traduSilent() {
             for (let i = 0; i < arrayop.length; i++) {
                 arrayop[i].classList.remove("mudaopcoes");
                 arrayop[i].classList.add("inicioopcoes");
+            }
+        }
+        else {
+            menu.classList.remove("iniciomenu");
+            menu.classList.add("mudamenu");
+            logoBlack.classList.remove("iniciologoBlack");
+            logoBlack.classList.add("mudalogoBlack");
+            iconesetablack.classList.remove("inicioiconeblack");
+            iconesetablack.classList.add("mudaiconeblack");
+            iconemenublack.classList.remove("inicioiconeblack");
+            iconemenublack.classList.add("mudaiconeblack");
+            for (let i = 0; i < arrayop.length; i++) {
+                arrayop[i].classList.remove("inicioopcoes");
+                arrayop[i].classList.add("mudaopcoes");
             }
         }
     }
@@ -523,6 +503,17 @@ function traduSilent() {
         $(bttverdetalhes).fadeIn(700);
         for (let i = 0; i < contents.length; i++) {
             $(contents[i]).fadeIn(700);
+        }
+    }
+
+    function clickComparaImagens(element) {
+        if (imgvisivel == false) {
+            element.style.opacity = "1";
+            imgvisivel = true;
+        }
+        else {
+            element.style.opacity = "0";
+            imgvisivel = false;
         }
     }
 };

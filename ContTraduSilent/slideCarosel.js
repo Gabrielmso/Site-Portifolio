@@ -22,7 +22,6 @@ function slideCarosel() {
     let leftimgicons = (larguraJanela / 2) - left;
 
     folhascontentimgicons.style.left = leftimgicons + "px";
-
     //_________________________________________Comparar folhas de caderno_______________________________________________
 
     const iconfolhas = [document.getElementById("icontoschool"),
@@ -48,25 +47,11 @@ function slideCarosel() {
     });
 
     imgparaescola.addEventListener("click", function () {
-        if (folhavisivel == false) {
-            this.style.opacity = "1";
-            folhavisivel = true;
-        }
-        else {
-            this.style.opacity = "0";
-            folhavisivel = false;
-        }
+        clickComparaImagens(this);
     });
 
     imgcasadecachorro.addEventListener("click", function () {
-        if (folhavisivel == false) {
-            this.style.opacity = "1";
-            folhavisivel = true;
-        }
-        else {
-            this.style.opacity = "0";
-            folhavisivel = false;
-        }
+        clickComparaImagens(this);
     });
 
     folhasbtnLeft.addEventListener("click", voltaFolha);
@@ -211,47 +196,19 @@ function slideCarosel() {
     });
 
     imgescolap.addEventListener("click", function () {
-        if (folhavisivel == false) {
-            this.style.opacity = "1";
-            folhavisivel = true;
-        }
-        else {
-            this.style.opacity = "0";
-            folhavisivel = false;
-        }
+        clickComparaImagens(this);
     });
 
     imgescola1a.addEventListener("click", function () {
-        if (folhavisivel == false) {
-            this.style.opacity = "1";
-            folhavisivel = true;
-        }
-        else {
-            this.style.opacity = "0";
-            folhavisivel = false;
-        }
+        clickComparaImagens(this);
     });
 
     imgescola2a.addEventListener("click", function () {
-        if (folhavisivel == false) {
-            this.style.opacity = "1";
-            folhavisivel = true;
-        }
-        else {
-            this.style.opacity = "0";
-            folhavisivel = false;
-        }
+        clickComparaImagens(this);
     });
 
     imgescolat.addEventListener("click", function () {
-        if (folhavisivel == false) {
-            this.style.opacity = "1";
-            folhavisivel = true;
-        }
-        else {
-            this.style.opacity = "0";
-            folhavisivel = false;
-        }
+        clickComparaImagens(this);
     });
 
     function voltaMapaEscola() {
@@ -316,6 +273,17 @@ function slideCarosel() {
     };
     //____________________________________________________________________________________________________________________
 
+    function clickComparaImagens (element) {
+        if (folhavisivel == false) {
+            element.style.opacity = "1";
+            folhavisivel = true;
+        }
+        else {
+            element.style.opacity = "0";
+            folhavisivel = false;
+        }
+    }
+
     function tamanhoTelaSlide() {
         for (let i = 0; i < telaslide.length; i++) {
             telaslide[i].style.height = (alturaJanela - 72) + "px";
@@ -332,7 +300,6 @@ function slideCarosel() {
             }
         }
     };
-
 
     function fadeincontentsSlide() {//Faz todas as divs que possuem conteúdo "sumirem".
         $(bttverdetalhes).fadeIn(700);
