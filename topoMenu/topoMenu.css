@@ -326,6 +326,7 @@ p span:hover {
 }
 
 #fundomenu {
+    display: none;
     margin-top: 50px;
     position: absolute;
     background-color: rgba(0, 0, 0, 0.60);
@@ -499,6 +500,12 @@ p span:hover {
 }
 
 @media screen and (max-width: 650px) {
+    #opcoesmenu{
+        display: none;
+    }
+    #fundomenu{
+        display: block;
+    }
     .iniciomenu {
         height: 50px;
         background-color: rgba(0, 0, 0, 0);
@@ -508,7 +515,6 @@ p span:hover {
         height: 50px;
         background-color: rgba(0, 0, 0, 0.60);
         border-bottom: solid 0px rgba(255, 255, 255, 0.12);
-        ;
     }
     .inicioiconeblack {
         padding-top: 0px;

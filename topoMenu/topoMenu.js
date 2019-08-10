@@ -6,7 +6,6 @@ function topoMenu() {
         fundomenu = document.getElementById("fundomenu"),
         menu = document.getElementById("menu"),
         logoBlack = document.getElementById("logoBlack"),//Cada pagina terá de conter um arquivo de script com o evento click individual.
-        opcoesmenu = document.getElementById("opcoesmenu"),
         submenu = document.getElementById("submenu"),
         socials = document.getElementById("socials"),
         traco1 = document.getElementById("traco1"),
@@ -17,7 +16,7 @@ function topoMenu() {
     document.getElementById("tracoseta2"),
     document.getElementById("tracoseta3"),
     document.getElementById("tracoseta4")];
-
+    
     arrayop = [document.getElementById("op1"),
     document.getElementById("op2"),
     document.getElementById("op3"),
@@ -145,14 +144,8 @@ function topoMenu() {
             logoBlack.classList.add("iniciologoBlack");
         }
 
-        if (window.innerWidth <= 650) {
-            opcoesmenu.style.display = "none";
-            fundomenu.style.display = "block";
-        }
-        else {
-            opcoesmenu.style.display = "block";
+        if (window.innerWidth > 650) {
             logoBlack.style.left = "0px";
-            fundomenu.style.display = "none";
             fundomenu.classList.remove("abrefundomenu");
             fundomenu.classList.add("fechafundomenu");
             traco1.classList.remove("movertraco1");
@@ -160,7 +153,7 @@ function topoMenu() {
             traco2.classList.remove("movertraco2");
             traco3.classList.remove("movertraco3");
             traco3.classList.add("iniciotraco3");
-        };
+        }
     };
     function redimencionarjanela() {
         opcoesmenu2.style.height = (window.innerHeight - 50) + "px";
