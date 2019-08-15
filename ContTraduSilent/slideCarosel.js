@@ -35,6 +35,7 @@ function slideCarosel() {
         fadeoutcontentsSlide();
         $(fundocomparafolhas).fadeIn(700);
         tamanhoTelaSlide();
+        document.addEventListener("keydown", funcoesSlideImgTeclado);
     });
 
     fecharfolhas.addEventListener("click", function () {
@@ -44,6 +45,7 @@ function slideCarosel() {
         imgparaescola.style.opacity = "0";
         imgcasadecachorro.style.opacity = "0";
         folhavisivel = false;
+        document.removeEventListener("keydown", funcoesSlideImgTeclado);
     });
 
     imgparaescola.addEventListener("click", function () {
@@ -158,6 +160,7 @@ function slideCarosel() {
         fadeoutcontentsSlide();
         $(fundomapaescola).fadeIn(700);
         tamanhoTelaSlide();
+        document.addEventListener("keydown", funcoesSlideImgTeclado);
     });
 
     fecharfundoescola.addEventListener("click", function () {//Fechar a div para comparar o mapa de Escola.
@@ -165,6 +168,7 @@ function slideCarosel() {
         fadeincontentsSlide();
         folhavisivel = false;
         voltaPrimeiroSlideMapaEscola();
+        document.removeEventListener("keydown", funcoesSlideImgTeclado);
     });
 
     mapaescolabtnLeft.addEventListener("click", voltaMapaEscola);
@@ -273,7 +277,7 @@ function slideCarosel() {
     };
     //____________________________________________________________________________________________________________________
 
-    function clickComparaImagens (element) {
+    function clickComparaImagens(element) {
         if (folhavisivel == false) {
             element.style.opacity = "1";
             folhavisivel = true;
@@ -314,6 +318,62 @@ function slideCarosel() {
             $(contents[i]).fadeOut(300);
         }
     };
+
+    function funcoesSlideImgTeclado(e) {
+        switch (e.code) {
+            case code = "Space":
+                if (fundocomparafolhas.style.display == "block") {
+                    if (contSlides == 1) {
+                        imgparaescola.click();
+                    }
+                    else if (contSlides == 2) {
+                        imgcasadecachorro.click();
+                    }
+                }
+                else if (fundomapaescola.style.display == "block") {
+                    if (contSlides == 1) {
+                        imgescolap.click();
+                    }
+                    else if (contSlides == 2) {
+                        imgescola1a.click();
+                    }
+                    else if (contSlides == 3) {
+                        imgescola2a.click();
+                    }
+                    else if (contSlides == 4) {
+                        imgescolat.click();
+                    }
+                }
+                break;
+                
+            case code = "ArrowRight":
+                if (fundocomparafolhas.style.display == "block") {
+                    folhasbtnRight.click();
+                }
+                else if (fundomapaescola.style.display == "block") {
+                    mapaescolabtnRight.click();
+                }
+                break;
+
+            case code = "ArrowLeft":
+                if (fundocomparafolhas.style.display == "block") {
+                    folhasbtnLeft.click();
+                }
+                else if (fundomapaescola.style.display == "block") {
+                    mapaescolabtnLeft.click();
+                }
+                break;
+
+            case code = "Escape":
+                if (fundocomparafolhas.style.display == "block") {
+                    fecharfolhas.click();
+                }
+                else if (fundomapaescola.style.display == "block") {
+                    fecharfundoescola.click();
+                }
+                break;
+        }
+    }
 
     window.addEventListener("resize", function () {
         larguraJanela = window.innerWidth;

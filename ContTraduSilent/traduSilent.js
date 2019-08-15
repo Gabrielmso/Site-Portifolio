@@ -78,6 +78,7 @@ function traduSilent() {
         fadeoutcontents();
         $(fundocomparacao).fadeIn(700);
         ajustarimgscomparacao();
+        document.addEventListener("keydown", funcoesImgComparacaoTeclado);
     });
 
     imgviolentastrad.addEventListener("click", function () {//Deixa a opacidade da imagem em 0 para ver a imagem que está atrás. Comparar as imagens. 
@@ -89,6 +90,7 @@ function traduSilent() {
         fadeincontents();
         imgviolentastrad.style.opacity = "0";
         imgvisivel = false;
+        document.removeEventListener("keydown", funcoesImgComparacaoTeclado);
     });
 
     imgverjap.addEventListener("click", function () {//Visualizar a div para ver a versão japonesa da imagem "There are violent and disturbing imagens in this game".
@@ -114,27 +116,31 @@ function traduSilent() {
         fadeoutcontents();
         $(fundocomparacg).fadeIn(700);
         ajustarimgscomparacao();
+        document.addEventListener("keydown", funcoesImgComparacaoTeclado);
     });
 
     gifcgintrohori.addEventListener("click", function () {//"Fechar" a div que mostra o gif comparando a edição feita na cg de inicio e fazer o conteúdo do site "aparecer".
         $(fundocomparacg).fadeOut(300);
         fadeincontents();
+        document.removeEventListener("keydown", funcoesImgComparacaoTeclado);
+
     });
 
     gifcgintrovert.addEventListener("click", function () {//"Fechar" a div que mostra o gif comparando a edição feita na cg de inicio e fazer o conteúdo do site "aparecer".
         $(fundocomparacg).fadeOut(300);
         fadeincontents();
+        document.removeEventListener("keydown", funcoesImgComparacaoTeclado);
     });
 
     comparar[2].addEventListener("click", function () {//Vizualizar a div que compara o mapa da Antiga Silent Hill e fazer o conteúdo do site "sumir".
         fadeoutcontents();
         $(fundoantigasilenthill).fadeIn(700);
         ajustarimgscomparacao();
+        document.addEventListener("keydown", funcoesImgComparacaoTeclado);
     });
 
     imgantigasilenthill.addEventListener("click", function () {
         clickComparaImagens(this);
-
     });
 
     fecharantigasilenthill.addEventListener("click", function () {//"Fechar" a div que compara o mapa da Antiga Silent Hill e fazer o conteúdo do site "aparecer".
@@ -142,12 +148,14 @@ function traduSilent() {
         fadeincontents();
         imgantigasilenthill.style.opacity = 0;
         imgvisivel = false;
+        document.removeEventListener("keydown", funcoesImgComparacaoTeclado);
     });
 
     comparar[4].addEventListener("click", function () {//Vizualizar a div que compara "Chaves para o Eclipse" e fazer o conteúdo do site "sumir".
         fadeoutcontents();
         $(fundochavesparaoeclipse).fadeIn(700);
         ajustarimgscomparacao();
+        document.addEventListener("keydown", funcoesImgComparacaoTeclado);
     });
 
     imgchavesparaoeclipse.addEventListener("click", function () {
@@ -159,6 +167,7 @@ function traduSilent() {
         fadeincontents();
         imgchavesparaoeclipse.style.opacity = 0;
         imgvisivel = false;
+        document.removeEventListener("keydown", funcoesImgComparacaoTeclado);
     });
 
     function carregamento() {//Faz os elementos do primeiro "slide" aparecerem e após isso permite trocar de slide.
@@ -198,6 +207,7 @@ function traduSilent() {
 
                     bttverdetalhes.addEventListener("click", mudarslidebttverdetalhes);//Passar para o próximo "slide".
                     document.addEventListener("keydown", mudarslide);//usar os direcionais cima e baixo e as teclas "W" e "S" para mudar de "slide".
+                    document.addEventListener("keydown", abrirFundosComparacao);
                     setTimeout(function () {
                         bttverdetalhes.style.webkitTransition = "";
                         bttverdetalhes.style.transition = "";
@@ -308,7 +318,6 @@ function traduSilent() {
                 comparar[i].style.width = "90%";
             }
         }
-
     };
 
     logoBlack.addEventListener("click", function () { //Ao clicar na "logoBlack" voltar ao primeiro "slide".    
@@ -430,6 +439,15 @@ function traduSilent() {
         }, tempotransicao + 20);
     }
 
+    function abrirFundosComparacao(e) {
+        if(e.code == "Space"){
+            if(numslide == 2){
+                comparar[0].click();
+                document.removeEventListener("keydown", abrirFundosComparacao);
+            }
+        }
+    }
+
     function mudarslide(e) {//Função que verifica se as teclas para passar os "slides" foram pressionadas.
         switch (e.code) {
             case code = "ArrowDown"://Direcional baixo.
@@ -478,6 +496,38 @@ function traduSilent() {
 
                 if (numslide > 0) {
                     voltaPrimeiroSlide();
+                }
+                break;
+        }
+    }
+
+    function funcoesImgComparacaoTeclado(e) {//Uso do teclado para comparar as imagems e "fechar" as div's.
+        switch (e.code) {
+            case code = "Space":
+                if (fundocomparacao.style.display == "block") {
+                    imgviolentastrad.click();
+                }
+                else if (fundoantigasilenthill.style.display == "block") {
+                    imgantigasilenthill.click();
+                }
+                else if (fundochavesparaoeclipse.style.display == "block") {
+                    imgchavesparaoeclipse.click();
+                }
+                break;
+
+            case code = "Escape":
+                if (fundocomparacao.style.display == "block") {
+                    fecharfundo1.click();
+                }
+                else if (fundocomparacg.style.display == "block") {
+                    gifcgintrohori.click();
+                    gifcgintrovert.click();
+                }
+                else if (fundoantigasilenthill.style.display == "block") {
+                    fecharantigasilenthill.click();
+                }
+                else if (fundochavesparaoeclipse.style.display == "block") {
+                    fecharchavesparaoeclipse.click();
                 }
                 break;
         }
