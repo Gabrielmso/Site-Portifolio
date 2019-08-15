@@ -33,6 +33,7 @@ function traduSilent() {
         imgchavesparaoeclipse = document.getElementById("imgchavesparaoeclipse"),
         fundoverjapelimp = document.getElementById("fundoverjapelimp"),
         bttverdetalhes = document.getElementById("bttverdetalhes"),
+        logoBlack = document.getElementById("logoBlack"),
         fundocomparacao = document.getElementById("fundocomparacao"),
         fundocomparacg = document.getElementById("fundocomparacg"),
         fundoantigasilenthill = document.getElementById("fundoantigasilenthill"),
@@ -312,29 +313,7 @@ function traduSilent() {
 
     logoBlack.addEventListener("click", function () { //Ao clicar na "logoBlack" voltar ao primeiro "slide".    
         if (numslide > 0) {
-            tmp = setInterval(brilhotitulo, 1200);
-            numslide = 0;//Muda para o número do primeiro "slide".
-
-            let alturafundo = alturajanela + "px";
-            for (let i = 0; i < arrayfundos.length; i++) {
-                if (i != 1) {
-                    arrayfundos[i].style.webkitTransition = styletransicao;
-                    arrayfundos[i].style.transition = styletransicao;
-                    arrayfundos[i].style.height = alturafundo;
-                }
-                arrayfundos[i].style.overflow = "hidden";
-            }
-
-            setTimeout(function () {
-                for (let i = 0; i < arrayfundos.length; i++) {
-                    if (i != 1) {
-                        arrayfundos[i].style.webkitTransition = "none";
-                        arrayfundos[i].style.transition = "none";
-                    }
-                    arrayfundos[i].style.overflow = "auto";
-                }
-                mudarmenu();
-            }, tempotransicao + 20);
+            voltaPrimeiroSlide();
         }
         else {
             window.location.href = "index.html";
@@ -423,33 +402,82 @@ function traduSilent() {
         }
     }
 
-    function mudarslide() {//Função que verifica se as teclas para passar os "slides" foram pressionadas.
-        switch (event.keyCode) {
-            case keyCode = 40://Direcional baixo.
+    function voltaPrimeiroSlide() {
+        document.removeEventListener("keydown", mudarslide);
+        tmp = setInterval(brilhotitulo, 1200);
+        numslide = 0;//Muda para o número do primeiro "slide".
+
+        let alturafundo = alturajanela + "px";
+        for (let i = 0; i < arrayfundos.length; i++) {
+            if (i != 1) {
+                arrayfundos[i].style.webkitTransition = styletransicao;
+                arrayfundos[i].style.transition = styletransicao;
+                arrayfundos[i].style.height = alturafundo;
+            }
+            arrayfundos[i].style.overflow = "hidden";
+        }
+
+        setTimeout(function () {
+            for (let i = 0; i < arrayfundos.length; i++) {
+                if (i != 1) {
+                    arrayfundos[i].style.webkitTransition = "none";
+                    arrayfundos[i].style.transition = "none";
+                }
+                arrayfundos[i].style.overflow = "auto";
+            }
+            mudarmenu();
+            document.addEventListener("keydown", mudarslide);
+        }, tempotransicao + 20);
+    }
+
+    function mudarslide(e) {//Função que verifica se as teclas para passar os "slides" foram pressionadas.
+        switch (e.code) {
+            case code = "ArrowDown"://Direcional baixo.
 
                 if (numslide < arrayfundos.length - 1) {
                     slideUp(numslide);
                 }
                 break;
 
-            case keyCode = 83://Tecla "S".
+            case code = "KeyS"://Tecla "S".
 
                 if (numslide < arrayfundos.length - 1) {
                     slideUp(numslide);
                 }
                 break;
 
-            case keyCode = 38://Direcional cima.
+            case code = "PageDown"://Tecla "Page Down".
+
+                if (numslide < arrayfundos.length - 1) {
+                    slideUp(numslide);
+                }
+                break;
+
+            case code = "ArrowUp"://Direcional cima.
 
                 if (numslide > 0) {
                     slideDown(numslide);
                 }
                 break;
 
-            case keyCode = 87://Tecla "W".
+            case code = "KeyW"://Tecla "W".
 
                 if (numslide > 0) {
                     slideDown(numslide);
+                }
+                break;
+
+            case code = "PageUp"://Tecla "Page Up".
+
+                if (numslide > 0) {
+                    slideDown(numslide);
+                }
+                break;
+
+            case code = "Home":
+
+                if (numslide > 0) {
+                    voltaPrimeiroSlide();
                 }
                 break;
         }
