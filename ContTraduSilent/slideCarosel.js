@@ -46,6 +46,7 @@ function slideCarosel() {
         imgcasadecachorro.style.opacity = "0";
         folhavisivel = false;
         document.removeEventListener("keydown", funcoesSlideImgTeclado);
+        document.addEventListener("keydown", abrirFundosComparacao);
     });
 
     imgparaescola.addEventListener("click", function () {
@@ -169,6 +170,7 @@ function slideCarosel() {
         folhavisivel = false;
         voltaPrimeiroSlideMapaEscola();
         document.removeEventListener("keydown", funcoesSlideImgTeclado);
+        document.addEventListener("keydown", abrirFundosComparacao);
     });
 
     mapaescolabtnLeft.addEventListener("click", voltaMapaEscola);
@@ -345,7 +347,7 @@ function slideCarosel() {
                     }
                 }
                 break;
-                
+
             case code = "ArrowRight":
                 if (fundocomparafolhas.style.display == "block") {
                     folhasbtnRight.click();
@@ -355,7 +357,25 @@ function slideCarosel() {
                 }
                 break;
 
+            case code = "KeyA":
+                if (fundocomparafolhas.style.display == "block") {
+                    folhasbtnRight.click();
+                }
+                else if (fundomapaescola.style.display == "block") {
+                    mapaescolabtnRight.click();
+                }
+                break;
+
             case code = "ArrowLeft":
+                if (fundocomparafolhas.style.display == "block") {
+                    folhasbtnLeft.click();
+                }
+                else if (fundomapaescola.style.display == "block") {
+                    mapaescolabtnLeft.click();
+                }
+                break;
+
+            case code = "KeyD":
                 if (fundocomparafolhas.style.display == "block") {
                     folhasbtnLeft.click();
                 }

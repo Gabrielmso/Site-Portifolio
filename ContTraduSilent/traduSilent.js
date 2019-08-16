@@ -1,3 +1,4 @@
+let abrirFundosComparacao;
 function traduSilent() {
     let largurajanela = window.innerWidth;
     let alturajanela = window.innerHeight;
@@ -91,6 +92,7 @@ function traduSilent() {
         imgviolentastrad.style.opacity = "0";
         imgvisivel = false;
         document.removeEventListener("keydown", funcoesImgComparacaoTeclado);
+        document.addEventListener("keydown", abrirFundosComparacao);
     });
 
     imgverjap.addEventListener("click", function () {//Visualizar a div para ver a versão japonesa da imagem "There are violent and disturbing imagens in this game".
@@ -123,13 +125,14 @@ function traduSilent() {
         $(fundocomparacg).fadeOut(300);
         fadeincontents();
         document.removeEventListener("keydown", funcoesImgComparacaoTeclado);
-
+        document.addEventListener("keydown", abrirFundosComparacao);
     });
 
     gifcgintrovert.addEventListener("click", function () {//"Fechar" a div que mostra o gif comparando a edição feita na cg de inicio e fazer o conteúdo do site "aparecer".
         $(fundocomparacg).fadeOut(300);
         fadeincontents();
         document.removeEventListener("keydown", funcoesImgComparacaoTeclado);
+        document.addEventListener("keydown", abrirFundosComparacao);
     });
 
     comparar[2].addEventListener("click", function () {//Vizualizar a div que compara o mapa da Antiga Silent Hill e fazer o conteúdo do site "sumir".
@@ -149,6 +152,7 @@ function traduSilent() {
         imgantigasilenthill.style.opacity = 0;
         imgvisivel = false;
         document.removeEventListener("keydown", funcoesImgComparacaoTeclado);
+        document.addEventListener("keydown", abrirFundosComparacao);
     });
 
     comparar[4].addEventListener("click", function () {//Vizualizar a div que compara "Chaves para o Eclipse" e fazer o conteúdo do site "sumir".
@@ -168,6 +172,7 @@ function traduSilent() {
         imgchavesparaoeclipse.style.opacity = 0;
         imgvisivel = false;
         document.removeEventListener("keydown", funcoesImgComparacaoTeclado);
+        document.addEventListener("keydown", abrirFundosComparacao);
     });
 
     function carregamento() {//Faz os elementos do primeiro "slide" aparecerem e após isso permite trocar de slide.
@@ -439,11 +444,11 @@ function traduSilent() {
         }, tempotransicao + 20);
     }
 
-    function abrirFundosComparacao(e) {
-        if(e.code == "Space"){
-            if(numslide == 2){
-                comparar[0].click();
-                document.removeEventListener("keydown", abrirFundosComparacao);
+    abrirFundosComparacao = function (e) {
+        if(e.code == "Enter"){ 
+            if(numslide >= 2){
+                comparar[numslide - 2].click();      
+                document.removeEventListener("keydown", abrirFundosComparacao);         
             }
         }
     }
