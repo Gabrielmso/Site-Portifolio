@@ -357,7 +357,7 @@ function slideCarosel() {
                 }
                 break;
 
-            case code = "KeyA":
+            case code = "KeyD":
                 if (fundocomparafolhas.style.display == "block") {
                     folhasbtnRight.click();
                 }
@@ -375,7 +375,7 @@ function slideCarosel() {
                 }
                 break;
 
-            case code = "KeyD":
+            case code = "KeyA":
                 if (fundocomparafolhas.style.display == "block") {
                     folhasbtnLeft.click();
                 }
