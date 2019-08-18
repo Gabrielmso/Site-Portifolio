@@ -308,7 +308,9 @@ function slideCarosel() {
     };
 
     function fadeincontentsSlide() {//Faz todas as divs que possuem conteúdo "sumirem".
-        $(bttverdetalhes).fadeIn(700);
+        if(numslide != arrayfundos.length - 1){
+            $(bttverdetalhes).fadeIn(700);
+        }
         for (let i = 0; i < contents.length; i++) {
             $(contents[i]).fadeIn(700);
         }

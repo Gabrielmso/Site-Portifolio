@@ -1,11 +1,13 @@
 let abrirFundosComparacao;
+let arrayfundos = [];
+let numslide = 0; //Armazena o numero do slide mostrado. 
 function traduSilent() {
     let largurajanela = window.innerWidth;
     let alturajanela = window.innerHeight;
     let proporcao = largurajanela / alturajanela;
     const proporcao16por9 = 16 / 9;
     const proporcao4por3 = 4 / 3;
-    const arrayfundos = [document.getElementById("fundo1"), //Armazenar todos os "slides" em ordem.
+    arrayfundos = [document.getElementById("fundo1"), //Armazenar todos os "slides" em ordem.
     document.getElementById("fundo1blur"),
     document.getElementById("fundo2blur"),
     document.getElementById("fundo3blur"),
@@ -47,7 +49,6 @@ function traduSilent() {
         traprogress = document.getElementById("traprogress"),
         info = document.getElementById("info");
     let carregamentopagina = setTimeout(carregamento, 900);
-    let numslide = 0; //Armazena o numero do slide mostrado. 
     const tempotransicao = 730; //Armazena o tempo de transição dos "slides" em milisegundos.
     let styletransicao = "height " + tempotransicao + "ms ease-in-out";//Armazena a configuração da transição dos slides. 
     let imgvisivel = false; //Usar para alternar a opacidade das imagens que serão comparadas entre 0 e 1;
@@ -335,6 +336,10 @@ function traduSilent() {
     })
 
     function slideDown(slide) {//Função que volta para o "slide" anterior.
+        if (numslide == arrayfundos.length - 1) {
+            $(bttverdetalhes).fadeIn("slow");
+        }
+        bttverdetalhes.removeEventListener("click", mudarslidebttverdetalhes);//Remove a função "mudarslidebttverdetalhes" do evento "click" do "bttverdetalhes" para evitar que a função seja executada novamente antes que a transição dos "slides" seja concluída.
         document.removeEventListener("keydown", mudarslide);//Remove a função "mudarslide" do evento "keydown" do document para evitar que as teclas para voltar os "slides" sejam pressionadas antes que a transição dos "slides" tenha sido concluída.  
         let slideanterior = slide - 1;//Armazena o número do slide anterior que irá aparecer.
         if (slide == 2) {//Se estiver no "slide" 2 ignorar o "slide" 1 passando para o "slide" 0.
@@ -368,6 +373,7 @@ function traduSilent() {
             arrayfundos[slideanterior].style.webkitTransition = "none";
             arrayfundos[slideanterior].style.transition = "none";
             //------------------------------------------------------------------------------
+            bttverdetalhes.addEventListener("click", mudarslidebttverdetalhes);//Adiciona novamente a função "mudarslidebttverdetalhes" ao avento "click" do "bttverdetalhes" depois que a transição do "slide" tenha sido concluída para que seja possível mudar de slide novamente clicando no mesmo.
             document.addEventListener("keydown", mudarslide);//Adiciona novamente a função "mudarslide" ao evento "keydown" do document depois que a transição do "slide" tenha sido concluída para que seja possível mudar de slide novamente apertando as teclas..
         }, tempotransicao + 20);
     }
@@ -409,6 +415,9 @@ function traduSilent() {
             //------------------------------------------------------------------------------
             document.addEventListener("keydown", mudarslide);//Adiciona novamente a função "mudarslide" ao evento "keydown" do document depois que a transição do "slide" tenha sido concluída para que seja possível mudar de slide novamente apertando as teclas.
             bttverdetalhes.addEventListener("click", mudarslidebttverdetalhes);//Adiciona novamente a função "mudarslidebttverdetalhes" ao avento "click" do "bttverdetalhes" depois que a transição do "slide" tenha sido concluída para que seja possível mudar de slide novamente clicando no mesmo.
+            if (numslide == arrayfundos.length - 1) {
+                $(bttverdetalhes).fadeOut("slow");
+            }
         }, tempotransicao + 20);
 
         if (slide == 0) {
@@ -419,8 +428,10 @@ function traduSilent() {
     function voltaPrimeiroSlide() {
         document.removeEventListener("keydown", mudarslide);
         tmp = setInterval(brilhotitulo, 1200);
+        if (numslide == arrayfundos.length - 1) {
+            $(bttverdetalhes).fadeIn("slow");
+        }
         numslide = 0;//Muda para o número do primeiro "slide".
-
         let alturafundo = alturajanela + "px";
         for (let i = 0; i < arrayfundos.length; i++) {
             if (i != 1) {
@@ -445,10 +456,10 @@ function traduSilent() {
     }
 
     abrirFundosComparacao = function (e) {
-        if(e.code == "Enter"){ 
-            if(numslide >= 2){
-                comparar[numslide - 2].click();      
-                document.removeEventListener("keydown", abrirFundosComparacao);         
+        if (e.code == "Enter") {
+            if (numslide >= 2) {
+                comparar[numslide - 2].click();
+                document.removeEventListener("keydown", abrirFundosComparacao);
             }
         }
     }
@@ -582,8 +593,10 @@ function traduSilent() {
         }
     }
 
-    function fadeincontents() {//Faz todas as divs que possuem conteúdo "aparecerem".       
-        $(bttverdetalhes).fadeIn(700);
+    function fadeincontents() {//Faz todas as divs que possuem conteúdo "aparecerem".
+        if (numslide != arrayfundos.length - 1) {
+            $(bttverdetalhes).fadeIn(700);
+        }
         for (let i = 0; i < contents.length; i++) {
             $(contents[i]).fadeIn(700);
         }
