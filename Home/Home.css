@@ -1,0 +1,80 @@
+#topoApresentacao {
+    width: 100%;
+    height: 100%;
+}
+
+#imgFundo {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    opacity: 0.6;
+    z-index: -1;
+    background-image: url("../imagens/imgs_Home/fundo.jpg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+    transition: opacity 700ms linear;
+}
+
+#imgFundoBlur {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    position: fixed;
+    z-index: -1;
+    background-image: url("../imagens/imgs_Home/fundoblur.jpg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+    transition: opacity 400ms linear;
+}
+
+#contentFoto {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: flex-end; */
+    justify-content: center;
+    align-items: flex-end;
+    height: 100%;
+    width: 49.99%;
+    float: left;
+    /* border: 2px solid white; */
+}
+
+#contentFoto img {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    border: 3px solid #d5c06b;
+    margin-right: 30px;
+}
+
+.content {
+    width: 100%;
+    height: 100%;
+    max-width: 1440px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-top: 0px;
+}
+
+@media screen and (max-width: 650px) {
+    #contentFoto {
+        position: relative;
+        display: flex;
+        flex-direction: column-reverse;
+        /* justify-content: flex-end; */
+        justify-content: start;
+        align-items: center;
+        height: 49.99%;
+        width: 100%;
+        float: none;
+        /* border: 2px solid white; */
+    }
+    #contentFoto img {
+        width: 200px;
+        height: 200px;
+        margin-right: 0;
+    }
+}

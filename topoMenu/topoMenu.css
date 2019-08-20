@@ -25,14 +25,6 @@
     border-color: rgb(37, 37, 37);
 }
 
-body {
-    margin: 0px;
-    font-family: "Arial";
-    font-size: 16px;
-    background-color: #000;
-    color: white;
-}
-
 p span {
     color: #d5c06b;
     transition: color 0.2s linear;
@@ -132,7 +124,7 @@ p span:hover {
 #logoBlack {
     position: relative;
     display: block;
-    background-image: url("../imagens/LogoGMwhite.svg");
+    background-image: url("../imagens/topoMenu/LogoGMwhite.svg");
     background-position: 50%;
     background-repeat: no-repeat;
     opacity: 0.75;
@@ -155,19 +147,19 @@ p span:hover {
 }
 
 #logoinsta {
-    background-image: url("../imagens/icones/instagramLogoWhite.svg");
+    background-image: url("../imagens/topoMenu/icones/instagramLogoWhite.svg");
     background-size: 35px;
     background-position: 50% 45%;
 }
 
 #logoyoutube {
-    background-image: url("../imagens/icones/youtubeLogoWhite.svg");
+    background-image: url("../imagens/topoMenu/icones/youtubeLogoWhite.svg");
     background-size: 41px;
     background-position: 50%;
 }
 
 #logoGitHub{
-    background-image: url("../imagens/icones/githubLogoWhite.svg");
+    background-image: url("../imagens/topoMenu/icones/githubLogoWhite.svg");
     background-size: 36px;
     background-position: 50%;
 }
@@ -316,7 +308,7 @@ p span:hover {
 #opcoesmenu {
     display: block;
     position: relative;
-    width: 380px;
+    width: 396px;
     margin-left: auto;
     margin-right: auto;
     list-style: none;
@@ -494,7 +486,7 @@ p span:hover {
 }
 
 #opcoesmenu ul li a {
-    padding-left: 4px;
+    padding-left: 10px;
     padding-right: 4px;
 }
 

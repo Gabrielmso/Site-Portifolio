@@ -9,12 +9,18 @@ function particulas() {
       scrollposicao = document.body.scrollTop || document.documentElement.scrollTop,
       numParticulas = Math.round(relacaonumparticulas / 25500), //Determina o número de particulas deixando com a mesma densidade independente do tamanho da janela.
       raioCirculo = 0,//Tamanho de cada particula.
-      posicaoX = 0,//Posição do eixo x de cada particula.
-      posicaoY = 0,//Posição do eixo y de cada particula.
+      posicaoX = 0,//Posição no eixo x de cada particula.
+      posicaoY = 0,//Posição no eixo y de cada particula.
       deslocaX = 0,//Velocidade de deslocamento do eixo x de cada particula.
       deslocay = 0,//Velocidade de deslocamento do eixo y de cada particula.
-      guardarParticula = [],//Armazena as propriedades de cada particula, cada indice será uma particula, o número de indices é determinado pela "numParticulas".
-      iniciarAnimacao = requestAnimationFrame(movimentarParticulas, particulas);//Começar a movimentar as particulas.
+      guardarParticula = [];//Armazena as propriedades de cada particula, cada indice será uma particula, o número de indices é determinado pela "numParticulas".
+
+   let frameRate = 24,//Frames por segundo que a animação terá.
+      agora, //Tempo atual em milisegundos desde que a página foi carregada.
+      antes = performance.now(),//Tempo em milisegundos em que o frame anterior foi desenhado.
+      intervaloEntreFrames = 1000 / frameRate,//Intervalo em milisegundos que cada frame terá.
+      diferencaTempo, //Comparação entre o tempo atual e o tempo em que o frame anterior foi desenhando.
+      iniciarAnimacao = requestAnimationFrame(animar, particulas);
 
    mudarTamanhoCanvas(larguraJanela, alturaJanela);//Deixa o canvas com a mesma resolução da janela.
    guardaParticulas();
@@ -44,7 +50,7 @@ function particulas() {
          espacoparticulas.style.webkitTransition = "opacity 3s linear";
          espacoparticulas.style.transition = "opacity 3s linear";
          espacoparticulas.style.opacity = "1";
-         iniciarAnimacao = requestAnimationFrame(movimentarParticulas);
+         iniciarAnimacao = requestAnimationFrame(animar, particulas);
       }
    }), 115, true);
 
@@ -53,8 +59,8 @@ function particulas() {
          raioCirculo = valorAleatorio(3, 8);//Calcula um tamanho aleatório de raio para cada particula ter um tamanho diferente.
          posicaoX = valorAleatorio(raioCirculo, larguraJanela - raioCirculo);//Calcula uma posição aleatória no eixo x entre 0 mais o raio da particula e a largura total da janela menos o raio da particula para a mesma não passar as bordas da janela.
          posicaoY = valorAleatorio(raioCirculo, alturaJanela - raioCirculo);//Calcula uma posição aleatória no eixo y entre 0 mais o raio da particula e a altura total da janela menos o raio da particula para a mesma não passar as bordas da janela.
-         deslocaX = valorAleatorio(-1, 1);//Calcula uma velocidade aleatória de deslocamento da particula no eixo x entre -1 pixel (mover 1 pixel para a esquerda) e 1 pixel (mover 1 pixel para a direita).
-         deslocay = valorAleatorio(-1, 1);//Calcula uma velocidade aleatória de deslocamento da particula no eixo y entre -1 pixel (mover 1 pixel para cima) e 1 pixel (mover 1 pixel para baixo).
+         deslocaX = valorAleatorio(-0.9, 0.9);//Calcula uma velocidade aleatória de deslocamento da particula no eixo x entre -1 pixel (mover 1 pixel para a esquerda) e 1 pixel (mover 1 pixel para a direita).
+         deslocay = valorAleatorio(-0.9, 0.9);//Calcula uma velocidade aleatória de deslocamento da particula no eixo y entre -1 pixel (mover 1 pixel para cima) e 1 pixel (mover 1 pixel para baixo).
          guardarParticula[i] = (new criarParticula(posicaoX, posicaoY, deslocaX, deslocay, raioCirculo, i, raioCirculo / 2));//Executa a função para criar a particula e armazena toda a função em vetor para mudar as propriedades que constituem as particulas para realizar a animação de cada particula.
       }
    }
@@ -62,12 +68,12 @@ function particulas() {
    function criarParticula(posicaoX, posicaoY, deslocaX, deslocaY, raioCirculo, indice, massa) {//Função que retorna um objeto cuja as propriedades e os métodos ficam armazenados na "guardarParticula".
       return {
          //--------Características/propriedades do objeto/particula---------
+         ind: indice,
          posX: posicaoX,
          posY: posicaoY,
          desX: deslocaX,
          desY: deslocaY,
          raio: raioCirculo,
-         ind: indice,
          m: massa,
          //----------------Ações/métodos do objeto/particula----------------
          mudarDirecao: function () {
@@ -204,13 +210,20 @@ function particulas() {
    }
 
    function movimentarParticulas() {
-      contexto.clearRect(0, 0, larguraJanela, alturaJanela);//Limpa o "frame" anterior;
       for (let i = 0; i < guardarParticula.length; i++) {
          guardarParticula[i].mudarDirecao();//"Redesenha" o novo "frame" com as particulas nas novas posições.
       }
-      setTimeout(function () {
-         iniciarAnimacao = requestAnimationFrame(movimentarParticulas, particulas);//Executa novamente esta função (recursividade).
-      }, 33.333333333);
+   }
+
+   function animar() {
+      iniciarAnimacao = requestAnimationFrame(animar, particulas);//Recursividade.
+      agora = performance.now();
+      diferencaTempo = agora - antes;
+      if (diferencaTempo >= intervaloEntreFrames) {//Apaga o frame e desenha um novo quando a diferença do tempo atual e do tempo em que o frame foi desenhado for maior ou igual ao intervalo desejado.
+         antes = agora - (diferencaTempo % intervaloEntreFrames);
+         contexto.clearRect(0, 0, larguraJanela, alturaJanela);//Limpa o "frame" anterior.
+         movimentarParticulas();//Desenha o próximo "frame".    
+      }
    }
 
    function mudarTamanhoCanvas() {//Muda o tamanho do canvas para o mesmo tamanho da janela.

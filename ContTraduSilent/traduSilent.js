@@ -1,6 +1,7 @@
 let abrirFundosComparacao;
 let arrayfundos = [];
 let numslide = 0; //Armazena o numero do slide mostrado. 
+let fundoCompararVisible = false;
 function traduSilent() {
     let largurajanela = window.innerWidth;
     let alturajanela = window.innerHeight;
@@ -80,6 +81,7 @@ function traduSilent() {
         fadeoutcontents();
         $(fundocomparacao).fadeIn(700);
         ajustarimgscomparacao();
+        fundoCompararVisible = true;
         document.addEventListener("keydown", funcoesImgComparacaoTeclado);
     });
 
@@ -92,6 +94,7 @@ function traduSilent() {
         fadeincontents();
         imgviolentastrad.style.opacity = "0";
         imgvisivel = false;
+        fundoCompararVisible = false;
         document.removeEventListener("keydown", funcoesImgComparacaoTeclado);
         document.addEventListener("keydown", abrirFundosComparacao);
     });
@@ -119,12 +122,14 @@ function traduSilent() {
         fadeoutcontents();
         $(fundocomparacg).fadeIn(700);
         ajustarimgscomparacao();
+        fundoCompararVisible = true;
         document.addEventListener("keydown", funcoesImgComparacaoTeclado);
     });
 
     gifcgintrohori.addEventListener("click", function () {//"Fechar" a div que mostra o gif comparando a edição feita na cg de inicio e fazer o conteúdo do site "aparecer".
         $(fundocomparacg).fadeOut(300);
         fadeincontents();
+        fundoCompararVisible = false;
         document.removeEventListener("keydown", funcoesImgComparacaoTeclado);
         document.addEventListener("keydown", abrirFundosComparacao);
     });
@@ -132,6 +137,7 @@ function traduSilent() {
     gifcgintrovert.addEventListener("click", function () {//"Fechar" a div que mostra o gif comparando a edição feita na cg de inicio e fazer o conteúdo do site "aparecer".
         $(fundocomparacg).fadeOut(300);
         fadeincontents();
+        fundoCompararVisible = false;
         document.removeEventListener("keydown", funcoesImgComparacaoTeclado);
         document.addEventListener("keydown", abrirFundosComparacao);
     });
@@ -140,6 +146,7 @@ function traduSilent() {
         fadeoutcontents();
         $(fundoantigasilenthill).fadeIn(700);
         ajustarimgscomparacao();
+        fundoCompararVisible = true;
         document.addEventListener("keydown", funcoesImgComparacaoTeclado);
     });
 
@@ -152,6 +159,7 @@ function traduSilent() {
         fadeincontents();
         imgantigasilenthill.style.opacity = 0;
         imgvisivel = false;
+        fundoCompararVisible = false;
         document.removeEventListener("keydown", funcoesImgComparacaoTeclado);
         document.addEventListener("keydown", abrirFundosComparacao);
     });
@@ -160,6 +168,7 @@ function traduSilent() {
         fadeoutcontents();
         $(fundochavesparaoeclipse).fadeIn(700);
         ajustarimgscomparacao();
+        fundoCompararVisible = true;
         document.addEventListener("keydown", funcoesImgComparacaoTeclado);
     });
 
@@ -172,6 +181,7 @@ function traduSilent() {
         fadeincontents();
         imgchavesparaoeclipse.style.opacity = 0;
         imgvisivel = false;
+        fundoCompararVisible = false;
         document.removeEventListener("keydown", funcoesImgComparacaoTeclado);
         document.addEventListener("keydown", abrirFundosComparacao);
     });
@@ -214,6 +224,7 @@ function traduSilent() {
                     bttverdetalhes.addEventListener("click", mudarslidebttverdetalhes);//Passar para o próximo "slide".
                     document.addEventListener("keydown", mudarslide);//usar os direcionais cima e baixo e as teclas "W" e "S" para mudar de "slide".
                     document.addEventListener("keydown", abrirFundosComparacao);
+                    document.addEventListener("keydown", mostrarimgFundo);
                     setTimeout(function () {
                         bttverdetalhes.style.webkitTransition = "";
                         bttverdetalhes.style.transition = "";
@@ -282,12 +293,11 @@ function traduSilent() {
     function ajustarelementos() {//fazer o background-image ficar sempre ajustado a janela do nevegador e as div's "fundo terem a mesma altura e largura que a janela do nevegador.
         bttverdetalhes.style.left = (largurajanela / 2) - 30 + "px";
         proporcao = largurajanela / alturajanela;
-        let novalargura = alturajanela * proporcao16por9;
-        let novaAltura = largurajanela / proporcao16por9;
         let backgroundsize, backgroundpositionx, backgroundpositiony;
         if (proporcao <= proporcao16por9) {
+            let novalargura = alturajanela * proporcao16por9;
             backgroundsize = novalargura + "px " + alturajanela + "px";
-            backgroundpositionx = -1 * ((novalargura - (novalargura / 2)) - (largurajanela / 2)) + "px";
+            backgroundpositionx = -1 * ((novalargura / 2) - (largurajanela / 2)) + "px";
             backgroundpositiony = "0px";
             for (let i = 0; i < arrayfundos.length; i++) {
                 arrayfundos[i].style.backgroundSize = backgroundsize;
@@ -296,9 +306,10 @@ function traduSilent() {
             }
         }
         else {
+            let novaAltura = largurajanela / proporcao16por9;
             backgroundsize = largurajanela + "px " + novaAltura + "px";
             backgroundpositionx = "0px";
-            backgroundpositiony = -1 * ((novaAltura - (novaAltura / 2)) - (alturajanela / 2)) + "px";
+            backgroundpositiony = -1 * ((novaAltura / 2) - (alturajanela / 2)) + "px";
             for (let i = 0; i < arrayfundos.length; i++) {
                 arrayfundos[i].style.backgroundSize = backgroundsize;
                 arrayfundos[i].style.backgroundPositionX = backgroundpositionx;
@@ -586,19 +597,27 @@ function traduSilent() {
         }
     }
 
+    let contentsVisible = true;
+
     function fadeoutcontents() {//Faz todas as divs que possuem conteúdo "sumirem".
-        $(bttverdetalhes).fadeOut(300);
-        for (let i = 0; i < contents.length; i++) {
-            $(contents[i]).fadeOut(300);
+        if (contentsVisible == true) {
+            $(bttverdetalhes).fadeOut(300);
+            for (let i = 0; i < contents.length; i++) {
+                $(contents[i]).fadeOut(300);
+            }
+            contentsVisible = false;
         }
     }
 
     function fadeincontents() {//Faz todas as divs que possuem conteúdo "aparecerem".
-        if (numslide != arrayfundos.length - 1) {
-            $(bttverdetalhes).fadeIn(700);
-        }
-        for (let i = 0; i < contents.length; i++) {
-            $(contents[i]).fadeIn(700);
+        if (contentsVisible == false) {
+            if (numslide != arrayfundos.length - 1) {
+                $(bttverdetalhes).fadeIn(700);
+            }
+            for (let i = 0; i < contents.length; i++) {
+                $(contents[i]).fadeIn(700);
+            }
+            contentsVisible = true;
         }
     }
 
@@ -612,4 +631,19 @@ function traduSilent() {
             imgvisivel = false;
         }
     }
+
+    function mostrarimgFundo(e) {
+        if (e.code == "Space" && fundoCompararVisible == false) {
+            fadeoutcontents();
+            document.removeEventListener("keydown", mostrarimgFundo);
+            setTimeout(function () {
+                document.addEventListener("keydown", mostrarimgFundo);
+            }, 1050);
+        }
+    }
+    document.addEventListener("keyup", function (e) {
+        if (e.code == "Space" && fundoCompararVisible == false) {
+            fadeincontents();
+        }
+    });
 };

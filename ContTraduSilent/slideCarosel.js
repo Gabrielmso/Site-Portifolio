@@ -35,6 +35,7 @@ function slideCarosel() {
         fadeoutcontentsSlide();
         $(fundocomparafolhas).fadeIn(700);
         tamanhoTelaSlide();
+        fundoCompararVisible = true;
         document.addEventListener("keydown", funcoesSlideImgTeclado);
     });
 
@@ -45,6 +46,7 @@ function slideCarosel() {
         imgparaescola.style.opacity = "0";
         imgcasadecachorro.style.opacity = "0";
         folhavisivel = false;
+        fundoCompararVisible = false;
         document.removeEventListener("keydown", funcoesSlideImgTeclado);
         document.addEventListener("keydown", abrirFundosComparacao);
     });
@@ -161,6 +163,7 @@ function slideCarosel() {
         fadeoutcontentsSlide();
         $(fundomapaescola).fadeIn(700);
         tamanhoTelaSlide();
+        fundoCompararVisible = true;
         document.addEventListener("keydown", funcoesSlideImgTeclado);
     });
 
@@ -168,6 +171,7 @@ function slideCarosel() {
         $(fundomapaescola).fadeOut(300);
         fadeincontentsSlide();
         folhavisivel = false;
+        fundoCompararVisible = false;
         voltaPrimeiroSlideMapaEscola();
         document.removeEventListener("keydown", funcoesSlideImgTeclado);
         document.addEventListener("keydown", abrirFundosComparacao);
@@ -308,7 +312,7 @@ function slideCarosel() {
     };
 
     function fadeincontentsSlide() {//Faz todas as divs que possuem conteúdo "sumirem".
-        if(numslide != arrayfundos.length - 1){
+        if (numslide != arrayfundos.length - 1) {
             $(bttverdetalhes).fadeIn(700);
         }
         for (let i = 0; i < contents.length; i++) {

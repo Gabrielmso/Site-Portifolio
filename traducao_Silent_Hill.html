@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <title>GM- Tradução pt-br Silent Hill (PSX)</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.75">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="keywords"
+        content="tradução, psx, ps1, Silent Hill, tradução silent hill ps1, silent hill ps1 traduzido pt-br, Playstation 1 tradução">
+    <meta name="description" content="Nova tradução pt-br para o Silent Hill (PSX)">
+    <meta name="Author" content="Gabriel Martins">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="css/styleGeral.css">
+    <link rel="stylesheet" href="particulas/particulas.css">
+    <link rel="stylesheet" href="topoMenu/topoMenu.css">
+    <link rel="stylesheet" href="ContTraduSilent/traduSilent.css">
+    <script src="js/jquery.js"></script>
+    <script src="particulas/particulas.js"></script>
+    <script src="topoMenu/topoMenu.js"></script>
+    <script src="ContTraduSilent/slideCarosel.js"></script>
+    <script src="ContTraduSilent/traduSilent.js"></script>
+    <script>
+        window.onload = function () {
+            particulas();
+            topoMenu();
+            slideCarosel();
+            traduSilent();
+        };
+    </script>
+</head>
+
+<body>
+    <nav id="menu" class="iniciomenu">
+        <div id="larguramenu">
+            <div id="iconemenublack" class="cursor inicioiconeblack">
+                <div class="tracos">
+                    <div id="traco1" class="traco iniciotraco1"></div>
+                    <div id="traco2" class="traco iniciotraco2"></div>
+                    <div id="traco3" class="traco iniciotraco3"></div>
+                </div>
+            </div>
+            <div id="fundomenu" class="fechafundomenu">
+                <ul id="opcoesmenu2">
+                    <li class="cursor noSelection">
+                        <a>JavaScript &#9662;</a>
+                        <ul>
+                            <li class="cursor noSelection" title="Em andamento"><a href="particulas.html">Partículas</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="cursor noSelection"><a href="#">HTML/CSS</a></li>
+                    <li class="cursor noSelection"><a href="#">C Sharp</a></li>
+                    <li class="cursor noSelection">
+                        <a>Projetos &#9662;</a>
+                        <ul>
+                            <li class="cursor noSelection"><a href="traducao_Silent_Hill.html">Tradução Silent Hill
+                                    (PSX)</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div id="submenu">
+                <div id="iconesetablack" class="cursor inicioiconeblack">
+                    <div class="tracos">
+                        <div id="tracoseta1" class="tracoseta iniciotracoseta0"></div>
+                        <div id="tracoseta2" class="tracoseta iniciotracoseta1"></div>
+                        <div id="tracoseta3" class="tracoseta iniciotracoseta2"></div>
+                        <div id="tracoseta4" class="tracoseta iniciotracoseta3"></div>
+                    </div>
+                </div>
+                <div id="socials">
+                    <div id="logoGitHub" class="iconeSociais cursor" title="Perfil do GitHub">
+                        <a class="link cursor" target="_blank" href="https://github.com/Gabrielmso"></a>
+                    </div>
+                    <div id="logoyoutube" class="iconeSociais cursor" title="Canal do Youtube">
+                        <a class="link cursor" target="_blank"
+                            href="https://www.youtube.com/channel/UCnAK3Ri_dHs3sk0aF9VuR-w?view_as=subscriber"></a>
+                    </div>
+                    <div id="logoinsta" class="iconeSociais cursor" title="Perfil do Instagram">
+                        <a class="link cursor" target="_blank" href="https://www.instagram.com/gabriel.mso"></a>
+                    </div>
+                </div>
+            </div>
+            <div id="logoBlack" class="cursor iniciologoBlack"></div>
+            <ul id="opcoesmenu">
+                <li class="cursor noSelection">
+                    <a id="op1" class="inicioopcoes">JavaScript &#9662;</a>
+                    <ul>
+                        <li class="cursor noSelection" title="Em andamento"><a href="particulas.html">Partículas</a></li>
+                    </ul>
+                </li>
+                <li class="cursor noSelection"><a id="op2" class="inicioopcoes" href="#">HTML/CSS</a></li>
+                <li class="cursor noSelection"><a id="op3" class="inicioopcoes" href="#">C Sharp</a></li>
+                <li id="mousehover" class="cursor noSelection">
+                    <a id="op4" class="inicioopcoes">Projetos &#9662;</a>
+                    <ul>
+                        <li class="cursor noSelection"><a href="traducao_Silent_Hill.html">Tradução Silent Hill
+                                (PSX)</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <header id="fundo1">
+        <div id="fundo1blur" class="fundo">
+            <div id="espacoparticulas">
+                <canvas id="particulas"></canvas>
+            </div>
+            <div class="mycontainer">
+                <div class="content">
+                    <h1 id="titulo">Tradução Silent Hill (PSX)</h1>
+                    <div id="about">
+                        <div id="info">
+                            <h6>
+                                Tradução para o clássico Silent Hill (NTSC-U SLUS-007.07). O projeto teve início em
+                                fevereiro de 2017.
+                            </h6>
+                            <ul>
+                                <li> O menu principal e de seleção de dificuldade, alguns nomes de saves, e nomes de
+                                    poucos
+                                    itens no inventário não foram traduzidos, tanto por motivos estéticos (no caso do
+                                    menu
+                                    principal e de seleção de dificuldade), quanto por não ser possível, pois as
+                                    palavras quando traduzidas possuem mais caracteres (ficam muito grandes).
+                                    Com exceção disso, todo o jogo está em português, e traduzido da melhor forma que
+                                    foi
+                                    possível.
+                                </li>
+                                <li>
+                                    Caso encontre algum erro e queira contribuir com o projeto, clicando no botão
+                                    Download
+                                    você será redirecionado ao vídeo no Youtube onde, além e baixar a tradução no link
+                                    da
+                                    descrição, você pode comentar, dar sugestões, etc.
+
+                                </li>
+                            </ul>
+                        </div>
+                        <div id="traprogress">
+                            <h3 style="text-align: center">Progresso:</h3>
+                            <ul>
+                                <li>
+                                    (Versão 2.3) 18/05/2019- Apenas pequenos ajustes.
+                                </li>
+                                <li>
+                                    (Versão 2.2) 10/05/2019- A frase "The fear of blood tends to creat fear for the
+                                    flesh"
+                                    da cg
+                                    inicial está traduzida, entre outros ajustes nas falas.
+                                </li>
+                                <li>
+                                    ATUALIZAÇÃO IMPORTANTE! (Versão 2.1) 04/05/2019- Foi descoberto que a rom utilizada
+                                    para
+                                    traduzir o game possuía duas CG's (Vídeos) pós-créditos "corrompidas", por isso em
+                                    alguma(s)
+                                    parte(s) dessas CG's apareciam artefatos cinza e/ou verdes.
+                                    Após muitas tentativas, foi descoberta uma maneira de localizar as CG's dentro da
+                                    rom do
+                                    game, para poder compará-las com as de uma outra rom "não corrompida",
+                                    e assim corrigir manualmente todos os bytes "corrompidos" das CG's num editor
+                                    hexadecimal.
+                                </li>
+                                <li>
+                                    (Versão 2.0) 30/04/2019- O instalador não para de responder agora.
+                                </li>
+                                <li>
+                                    (Versão 1.9) 17/02/2019- Dois erros de acentuação corrigidos. Foi criado um
+                                    instalador
+                                    da tradução.
+                                </li>
+                                <li>
+                                    (Versão 1.8) 23/12/2018- Corrigido erros de digitação.
+                                </li>
+                                <li>
+                                    (Versão 1.7) 18/12/2018- A revisão foi completada. Foi traduzido os avisos de
+                                    ausência
+                                    de memory card e de memory card cheio que aparecem assim que o jogo é iniciado (caso
+                                    tais
+                                    condições sejam verdadeiras é claro).
+                                </li>
+                                <li>
+                                    (Versão 1.6) 12/12/2018- 20% da tradução foi revisada, com respectivas correções, e
+                                    a
+                                    etiqueta da K. Gordon key, que pode ser visualizada no inventário foi traduzida.
+                                </li>
+                                <li>
+                                    (Versão 1.5) 01/12/2018- O puzzle The Grim Reaper's list foi totalmente traduzido.
+                                </li>
+                                <li>
+                                    (Versão 1.4) 26/11/2018- A nota e a foto encontrada na parede do Indian Runner foram
+                                    traduzidas.
+                                </li>
+                                <li>
+                                    (Versão 1.3) 25/11/2018- As notas feitas em folhas de caderno de desenho deixadas
+                                    pela
+                                    cidade foram traduzidas.
+                                </li>
+                                <li>
+                                    (Versão 1.2) 22/11/2018- Todos os mapas foram traduzidos, e os nomes dos saves foram
+                                    melhorados.
+                                </li>
+                                <li>
+                                    (Versão 1.1) 18/11/2018- Foi feita pequenas correções em algumas falas, no texto dos
+                                    puzzles na escola, ajustes no tempo das falas, etc...
+                                </li>
+                                <li>
+                                    (Versão 1.0) 16/11/2018- Aqui o jogo todo está traduzido, as versões mais recentes
+                                    tem
+                                    correções e melhorias.
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div id="contentbttdownload">
+                        <div id="bttdownload" title="Download v2.3">
+                            <a href="https://youtu.be/oohdomwV9us" target="_blank">Download</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section id="fundo2blur" class="fundo">
+        <div class="mycontainer">
+            <div class="content">
+                <h2>"Há imagens violentas e perturbadoras neste jogo"</h2>
+                <div id="compararthereareviolent" class="comparar cursor noSelection">
+                    <img class="thereareviolent noSelection" src="imagens/imgs_ContTraduSilent/miniaturas/thereareviolent.jpg"
+                        alt="There are violent and disturbing images in this game.">
+                    <img class="thereareviolent noSelection" src="imagens/imgs_ContTraduSilent/miniaturas/haimagensviolentas.jpg"
+                        alt="Há imagens violentas e perturbadoras neste jogo.">
+                </div>
+                <div id=txtthereareviolent class="texto">
+                    <p>
+                        A primeira imagem mostrada no jogo. Para conseguir traduzi-la foi necessário primeiro apagar a
+                        frase original, para isso utilizei a <span id="imgverjap" class="cursor"
+                            title="Visualizar imagem">imagem da versão
+                            japonesa</span> encontrada dentro dos arquivos do
+                        jogo (por alguma razão, mesmo o jogo sendo a versão americana, existem arquivos dentro do jogo
+                        que são da versão japonesa, que não são mostrados em gameplay), mesclando as partes das imagens
+                        que não
+                        possuem texto na imagem da versão americana com a da versão japonesa, até conseguir uma <span
+                            id="imgverlimp" class="cursor" title="Visualizar imagem">imagem sem texto</span>.
+                    </p>
+                    <p>
+                        Usando a fonte mais semelhante possível presente no Photoshop CS3, digitei a tradução da frase,
+                        depois posicionei da mesma forma que no original, e como não encontrei exatamente a
+                        mesma fonte, letra por letra, pixel por pixel,
+                        "pintei" a diferença entre a fonte que usei e a fonte original para ficar exatamente com a
+                        mesma fonte. Tudo isso para ter um resultado preciso e fiel.
+                    </p>
+                    <p>
+                        Como pode ser visualizado clicando em uma das imagens acima.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="fundo3blur" class="fundo">
+        <div class="mycontainer">
+            <div class="content">
+                <h2>"O medo de sangue tende a criar medo pela carne"</h2>
+                <img id="omedodesangue" class="comparar cursor noSelection" title="Clique para comparar."
+                    src="imagens/imgs_ContTraduSilent/miniaturas/Omedodesangue.jpg" alt="O medo de sangue tende a criar medo pela carne.">
+                <div class="texto">
+                    <p>
+                        A primeira CG mostrada no jogo. Para traduzir a frase “The fear of blood tends to create fear
+                        for the fresh” utilizei um software chamado VirtualDub, que possibilita de forma simples
+                        extrair os frames de um vídeo em formato de imagem, extraindo todos os frames que aparecem a
+                        frase (aproximadamente 85 frames) numa pasta no formato BMP (com este formato de imagem não há
+                        compressão do arquivo e assim não corremos o risco de perda de qualidade da imagem, porém o
+                        arquivo fica maior se comparado com o formato JPG por exemplo), pude editar todos os frames no
+                        Photoshop (sim, editei frame por frame), apagando a frase de todos os frames, tentando preservar
+                        o máximo possível a imagem que aparece "por de trás" da frase, e substituindo pela frase
+                        traduzida, usando a fonte mais semelhante presente no Photoshop, editando a diferença entre as
+                        fontes e o espaçamento entre as letras e as palavras assim como na frase original.
+                    </p>
+                    <p>
+                        Após a edição de todos os frames com a frase, fiz um vídeo no estilo Time-lapse usando os frames
+                        editados em sequência no Vegas, com a taxa de quadros de 15 frames por segundo, que é a taxa de
+                        quadros da CG original. Com o vídeo pronto, bastou substituir o início da CG original, pelo
+                        vídeo que eu editei e colocar o resultado de volta no jogo.
+                    </p>
+                    <p>
+                        Clicando na imagem acima você pode visualizar o resultado.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="fundo4blur">
+        <div class="mycontainer">
+            <div class="content">
+                <h2>Mapa da "Antiga Silent Hill"</h2>
+                <div id="compararMapaAntigaSilent" class="comparar cursor noSelection">
+                    <img class="thereareviolent" src="./imagens/imgs_ContTraduSilent/miniaturas/oldSilentHill1.jpg"
+                        alt="Mapa Old Silent Hill">
+                    <img class="thereareviolent" src="./imagens/imgs_ContTraduSilent/miniaturas/oldSilentHill2.jpg"
+                        alt="Mapa Antiga Silent Hill">
+                </div>
+                <div class="texto">
+                    <p>
+                        O mapa da Antiga Silent Hill onde localiza-se a área residencial, o primeiro que pegamos no
+                        jogo. Para traduzi-lo inicialmente preferi começar pelas palavras menores pois ocupam menos
+                        pixels, o que torna mais rápido remover as palavras originais. Infelizmente fui obrigado a
+                        "pintar" caracter por caracter copiando pixel a pixel da fonte original de cada palavra e
+                        "inventando" os caracteres que não existem no mapa original (a letra "P" maiúscula de "Escola
+                        Primária de Midwich", por exemplo) o que rendeu muito tempo de trabalho para tornar a edição a
+                        mais natural possível, sempre visando a precisão. As palavras estão posicionadas exatamente como
+                        no original porém isso só não se repete na "Loja de Conveniência 8" já que o tamanho da fonte é
+                        pequeno demais e por isso tive dificuldades de deixá-la exatamente igual. Com o nome das ruas
+                        eu poderia simplesmente ter apagado os St's e colocado os R's antes dos nomes, mas só para
+                        dificultar
+                        decidi colocar os R's onde exatamente inicia cada nome, para isso tive que copiar cada um e
+                        colar
+                        um pouco mais a frente dando espaço aos mesmos.
+                    </p>
+                    <p>
+                        Clicando na imagem acima você pode visualizar o resultado.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="fundo5blur" class="fundo">
+        <div class="mycontainer">
+            <div class="content">
+                <h2>Folhas de caderno de desenho</h2>
+                <div id="compararFolhasCaderno" class="comparar cursor noSelection">
+                    <img class="thereareviolent" src="./imagens/imgs_ContTraduSilent/miniaturas/folhasdecaderno.jpg" alt="Para a escola">
+                    <img class="thereareviolent" src="./imagens/imgs_ContTraduSilent/miniaturas/folhasdecaderno2.jpg"
+                        alt="Casa de cachorro, Rua Levin">
+                </div>
+                <div class="texto">
+                    <p>
+                        Folhas de caderno de desenho da Cheryl encontradas na Old Silent Hill. Para traduzi-las,
+                        primeiro foi preciso apagar as frases originais, o que nesse caso foi muito difícil pois, já que
+                        meu objetivo foi ser o mais preciso possível, tentei preservar ao máximo a "imagem por de trás
+                        das frases" evitando "inventar" coisas como manchas no papel, sempre selecionando as cores do
+                        papel ao redor das letras e pintando por cima delas observando as imagens originais imaginando
+                        como elas seriam sem as frases.
+                    </p>
+                    <p>
+                        A parte mais complicada e que rendeu infinitos Ctrl + Z foi pintar as frases traduzidas pois,
+                        por incrível que pareça, não é tão simples escrever se imaginando ser uma criança de sete anos.
+                        Selecionando as cores originais e com o simples pincel pintei as frases traduzidas normalmente,
+                        para acrescentar as "imperfeições no traço" utilizei a "Ferramenta Borrar" porém, como as
+                        imagens possuem cores indexadas de 8 bits, ou seja, cada imagem pode conter apenas 256 cores
+                        distintas, quando se utiliza ferramentas como "Ferramenta Borrar" e "Ferramenta Desfoque" existe
+                        a mesclagem das cores dos pixels ao redor de onde se usa a ferramenta, o que acarreta no
+                        acréscimo de cores, então para utilizar essas ferramentas nesse tipo de imagem é necessário
+                        mudar o modo
+                        de cores para RGB, desse modo é possível usar todas as cores que um computador pode reproduzir
+                        (16.777.216). Após isso obtive sucesso em deixar as frases com o aspecto "manchado", voltei o
+                        modo de cores para indexado, verificando e respeitando o limite de 256 cores, para poder colocar
+                        as imagens editadas dentro do jogo.
+                    </p>
+                    <p>
+                        Clicando na imagem acima você visualizará as imagens e clicando sobre elas poderá comparar com o
+                        resultado da edição.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="fundo6blur" class="fundo">
+        <div class="mycontainer">
+            <div class="content">
+                <h2>"Chaves para o Eclipse"</h2>
+                <div id="compararChavesEclipse" class="comparar cursor noSelection">
+                    <img class="thereareviolent" src="./imagens/imgs_ContTraduSilent/miniaturas/keysforeclipse1.jpg" alt="Keys for Eclipse">
+                    <img class="thereareviolent" src="./imagens/imgs_ContTraduSilent/miniaturas/keysforeclipse2.jpg"
+                        alt="Chaves para o Eclipse">
+                </div>
+                <div class="texto">
+                    <p>
+                        Mapa com anotações, encontrado pendurado na parede próxima a porta dos fundos da casa que
+                        entramos após pegar a chave dentro da casa de cachorro. Para traduzi-la tive que imaginar como
+                        seriam as letras na caligrafia usada no original, letras espaçadas com aparência de ter sido
+                        escrito com pressa, ou seja a tinta é mais escura onde as letras começam a ser escritas e mais
+                        fraca onde terminam, com isso em mente, peguei cada letra de uma fonte diferente, cuja a
+                        aparência fosse semelhante a caligrafia original, então cada letra foi posicionada e editada
+                        individualmente (exceto as letras "e", "s", "o" e "r", que já estão presentes no original,
+                        bastou copiá-las e posicioná-las corretamente), cada letra também foi levemente rotacionada e/ou
+                        inclinada, fazendo as letras, quando uma ao lado da outra, formarem uma espécie de arco, tudo
+                        isso para causar a impressão de imperfeição de algo que é feito a mão e de qualquer jeito.
+                    </p>
+                    <p>
+                        Após posicionar todas as letras bastou pintá-las com as cores corretas e seguindo o padrão já
+                        citado, tinta mais escura onde as letras começam a ser escritas e mais fraca onde terminam,
+                        simulando o "efeito" de escrita mais rápida e solta, para isso foi necessário mudar o modo de
+                        cores da imagem para RGB, fazendo assim ser possível usar a "Ferramenta Borrar" do Photoshop,
+                        e com essa ferramenta poder "clarear" onde possivelmente termina cada traço.
+                    </p>
+                    <p>
+                        Com relação ao nome das ruas, o processo foi o mesmo que no mapa da "Antiga Silent Hill", com
+                        exceção na "Matheson St." pois parte da letra "p" de "Eclipse" passa por cima da letra "S",
+                        então para poder dar espaço para o "R", tive que refazer o "S" e colocar o traço do "p" em cima
+                        do "H".
+                    </p>
+                    <p>
+                        Clicando na imagem acima você pode comparar a imagem original com o resultado da edição.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="fundo7blur" class="fundo">
+        <div class="mycontainer">
+            <div class="content">
+                <h2>Mapa da "Escola Primária de Midwich"</h2>
+                <div id="compararEscola" class="comparar cursor noSelection">
+                    <img class="thereareviolent" src="./imagens/imgs_ContTraduSilent/miniaturas/mapaescola1.jpg"
+                        alt="Midwich Elementary School">
+                    <img class="thereareviolent" src="./imagens/imgs_ContTraduSilent/miniaturas/mapaescola2.jpg"
+                        alt="Escola Primária de Midwich">
+                </div>
+                <div class="texto">
+                    <p>
+                        Mapa da Midwich Elementary School encontrado no saguão de entrada da escola, foi aqui que
+                        iniciei as edições das imagens do jogo e decidi os critérios que usaria para fazer isso,
+                        comecei por aqui pois pretendia somente traduzir os mapas do jogo.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div id="bttverdetalhes" class="cursor" title="Ver detalhes (EM ANDAMENTO)">
+        <div id="iconeseta1" class="tracosetaver"></div>
+        <div id="iconeseta2" class="tracosetaver"></div>
+    </div>
+    <!-- Div para comparar as imagens "There are violent and disturbing imagens in this game". -->
+    <div id="fundocomparacao" class="fundocomparar">
+        <div id="fecharfundo1" class="fecharfundo cursor">
+            <div class="tracofechar1"></div>
+            <div class="tracofechar2"></div>
+        </div>
+        <div id="imgviolentasorig" class="cursor centraliza imgslides" title="Clique para comparar.">
+            <div id="imgviolentastrad" class="imgslides"></div>
+        </div>
+    </div>
+    <!-- Div para visualizar as imagens "There are violent and disturbing imagens in this game" da versão japonesa ou a limpa. -->
+    <div id="fundoverjapelimp" class="fundocomparar">
+        <div id="imgjap" class="cursor centraliza imgslides">
+            <div id="imglimp" class="imgslides"></div>
+        </div>
+    </div>
+    <!-- Div para comparar a edição feita na primeira CG do jogo  -->
+    <div id="fundocomparacg" class="fundocomparar">
+        <div id="gifcgintrovert" class="cursor centraliza"></div>
+        <div id="gifcgintrohori" class="cursor centraliza"></div>
+    </div>
+    <!-- Div para comparar a edição do mapa da Antiga Silent Hill -->
+    <div id="fundoantigasilenthill" class="fundocomparar">
+        <div id="fecharantigasilenthill" class="fecharfundo cursor">
+            <div class="tracofechar1"></div>
+            <div class="tracofechar2"></div>
+        </div>
+        <div id="imgoldsilenthill" class="cursor centraliza imgslides" title="Clique para comparar.">
+            <div id="imgantigasilenthill" class="imgslides"></div>
+        </div>
+    </div>
+    <!-- Div para comparar as folhas de caderno de desenho feita na primeira CG do jogo  -->
+    <div id="fundocomparafolhas" class="fundocomparar">
+        <div id="fecharfolhas" class="fecharfundo cursor">
+            <div class="tracofechar1"></div>
+            <div class="tracofechar2"></div>
+        </div>
+        <div class="telaslide">
+            <div class="slides cursor" title="Clique para comparar.">
+                <div id="imgtoschool" class="cursor imgslides" title="Clique para comparar.">
+                    <div id="imgparaescola" class="imgslides"></div>
+                </div>
+                <div id="imgdoghouse" class="cursor imgslides" title="Clique para comparar.">
+                    <div id="imgcasadecachorro" class="imgslides"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="rodape">
+            <div id="folhasiconsrodape" class="iconsrodape">
+                <div id="folhasbtnLeft" class="iconLeft cursor">
+                    <div class="tracosetaleft1"></div>
+                    <div class="tracosetaleft2"></div>
+                </div>
+                <div id="folhascontentimgicons" class="contentimgicons">
+                    <img id="icontoschool" class="imgicons cursor noSelection"
+                        src="./imagens/imgs_ContTraduSilent/miniaturas/folhasdecaderno.jpg" alt="Para a escola." title="Para a escola.">
+                    <img id="icondoghouse" class="imgicons cursor noSelection"
+                        src="./imagens/imgs_ContTraduSilent/miniaturas/folhasdecaderno2.jpg" alt="Casa de cachorro, Rua Levin."
+                        title="Casa de cachorro, Rua Levin.">
+                </div>
+                <div id="folhasbtnRight" class="iconRight cursor">
+                    <div class="tracosetaright1"></div>
+                    <div class="tracosetaright2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Div para comparar a edição "Chaves para o Eclipse" -->
+    <div id="fundochavesparaoeclipse" class="fundocomparar">
+        <div id="fecharchavesparaoeclipse" class="fecharfundo cursor">
+            <div class="tracofechar1"></div>
+            <div class="tracofechar2"></div>
+        </div>
+        <div id="imgkeysforeclipse" class="cursor centraliza imgslides" title="Clique para comparar.">
+            <div id="imgchavesparaoeclipse" class="imgslides"></div>
+        </div>
+    </div>
+    <!-- Div para comparar as imagens dos mapas da escola. -->
+    <div id="fundomapaescola" class="fundocomparar">
+        <div id="fecharfundoescola" class="fecharfundo cursor">
+            <div class="tracofechar1"></div>
+            <div class="tracofechar2"></div>
+        </div>
+        <div class="telaslide">
+            <div class="slides cursor" title="Clique para comparar.">
+                <div id="imgschoolp" class="cursor imgslides" title="Clique para comparar.">
+                    <div id="imgescolap" class="imgslides"></div>
+                </div>
+                <div id="imgschool1a" class="cursor imgslides" title="Clique para comparar.">
+                    <div id="imgescola1a" class="imgslides"></div>
+                </div>
+                <div id="imgschool2a" class="cursor imgslides" title="Clique para comparar.">
+                    <div id="imgescola2a" class="imgslides"></div>
+                </div>
+                <div id="imgschoolt" class="cursor imgslides" title="Clique para comparar.">
+                    <div id="imgescolat" class="imgslides"></div>
+                </div>
+            </div>
+        </div>
+        <div class="rodape">
+            <div id="mapaescolaiconsrodape" class="iconsrodape">
+                <div id="mapaescolabtnLeft" class="iconLeft cursor">
+                    <div class="tracosetaleft1"></div>
+                    <div class="tracosetaleft2"></div>
+                </div>
+                <div id="escolacontentimgicons" class="contentimgicons">
+                    <img id="iconmapaescolap" class="imgicons cursor noSelection"
+                        src="./imagens/imgs_ContTraduSilent/miniaturas/mapaescola4.jpg" alt="Porão." title="Porão.">
+                    <img id="iconmapaescola1a" class="imgicons cursor noSelection"
+                        src="./imagens/imgs_ContTraduSilent/miniaturas/mapaescola2.jpg" alt="1º Andar." title="1º Andar.">
+                    <img id="iconmapaescola2a" class="imgicons cursor noSelection"
+                        src="./imagens/imgs_ContTraduSilent/miniaturas/mapaescola3.jpg" alt="2º Andar." title="2º Andar.">
+                    <img id="iconmapaescolat" class="imgicons cursor noSelection"
+                        src="./imagens/imgs_ContTraduSilent/miniaturas/mapaescola5.jpg" alt="Telhado." title="Telhado.">
+                </div>
+                <div id="mapaescolabtnRight" class="iconRight cursor">
+                    <div class="tracosetaright1"></div>
+                    <div class="tracosetaright2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Div para comparar Chave K.Gordon. -->
+    <div id="fundochavekgordon" class="fundocomparar">
+        <div id="fecharchavekgordon" class="fecharfundo cursor">
+            <div class="tracofechar1"></div>
+            <div class="tracofechar2"></div>
+        </div>
+        <div id="imgkeykgordon" class="cursor centraliza imgslides" title="Clique para comparar.">
+            <div id="imgchavekgordon" class="imgslides"></div>
+        </div>
+    </div>
+</body>
+
+</html>

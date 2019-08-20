@@ -1,13 +1,3 @@
-@font-face {
-    font-family: "Fontetitulo";
-    src: url("../fonts/HelveticaNeue-Thin.otf");
-}
-
-@font-face {
-    font-family: "Fontetitulo1";
-    src: url("../fonts/font1.woff");
-}
-
 html, body {
     overflow: hidden;
     font-weight: 400;
@@ -16,41 +6,41 @@ html, body {
 
 #fundo1 {
     width: 100%;
-    background-image: url("../imagens/fundo/fundo1.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/fundo/fundo1.jpg");
     background-repeat: no-repeat;
     background-size: 100%;
 }
 
 #fundo1blur {
     height: 100%;
-    background-image: url("../imagens/fundo/fundo1blur.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/fundo/fundo1blur.jpg");
     opacity: 0;
     -webkit-transition: opacity 1.5s linear;
     transition: opacity 1.5s linear;
 }
 
 #fundo2blur {
-    background-image: url("../imagens/fundo/fundo2blur.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/fundo/fundo2blur.jpg");
 }
 
 #fundo3blur {
-    background-image: url("../imagens/fundo/fundo3blur.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/fundo/fundo3blur.jpg");
 }
 
 #fundo4blur {
-    background-image: url("../imagens/fundo/fundo4blur.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/fundo/fundo4blur.jpg");
 }
 
 #fundo5blur {
-    background-image: url("../imagens/fundo/fundo5blur.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/fundo/fundo5blur.jpg");
 }
 
 #fundo6blur {
-    background-image: url("../imagens/fundo/fundo6blur.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/fundo/fundo6blur.jpg");
 }
 
 #fundo7blur {
-    background-image: url("../imagens/fundo/fundo7blur.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/fundo/fundo7blur.jpg");
 }
 
 h1 {
@@ -290,28 +280,28 @@ h2 {
 
 #imgviolentasorig {
     width: 100%;
-    background-image: url("../imagens/imagens_originais/thereareviolent.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/imagens_originais/thereareviolent.jpg");
 }
 
 #imgviolentastrad {
     opacity: 0;
-    background-image: url("../imagens/imagens_traduzidas/haimagensviolentas.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/imagens_traduzidas/haimagensviolentas.jpg");
     width: 100%;
 }
 
 #imgjap {
-    background-image: url("../imagens/imagens_originais/thereareviolentjap.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/imagens_originais/thereareviolentjap.jpg");
 }
 
 #imglimp {
     opacity: 0;
-    background-image: url("../imagens/imagens_traduzidas/haimagensviolentaslimp.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/imagens_traduzidas/haimagensviolentaslimp.jpg");
     width: 100%;
 }
 
 #gifcgintrovert {
     display: none;
-    background-image: url("../imagens/miniaturas/gifcgintrovert.gif");
+    background-image: url("../imagens/imgs_ContTraduSilent/miniaturas/gifcgintrovert.gif");
     width: 95%;
     height: 92%;
     border: solid 1px rgba(133, 66, 14, 0.55);
@@ -321,7 +311,7 @@ h2 {
 
 #gifcgintrohori {
     display: none;
-    background-image: url("../imagens/miniaturas/gifcgintrohori.gif");
+    background-image: url("../imagens/imgs_ContTraduSilent/miniaturas/gifcgintrohori.gif");
     width: 95%;
     height: 92%;
     border: solid 1px rgba(133, 66, 14, 0.55);
@@ -331,91 +321,91 @@ h2 {
 
 #imgoldsilenthill {
     width: 100%;
-    background-image: url("../imagens/imagens_originais/mapOldSilentHill.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/imagens_originais/mapOldSilentHill.jpg");
 }
 
 #imgantigasilenthill {
     opacity: 0;
-    background-image: url("../imagens/imagens_traduzidas/mapaAntigaSilentHill.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/imagens_traduzidas/mapaAntigaSilentHill.jpg");
     width: 100%;
 }
 
 #imgtoschool {
     float: left;
     width: 100%;
-    background-image: url("../imagens/imagens_originais/toschool.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/imagens_originais/toschool.jpg");
 }
 
 #imgparaescola {
     opacity: 0;
     width: 100%;
-    background-image: url("../imagens/imagens_traduzidas/paraaescola.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/imagens_traduzidas/paraaescola.jpg");
 }
 
 #imgdoghouse {
     float: left;
     width: 0%;
-    background-image: url("../imagens/imagens_originais/doghouse.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/imagens_originais/doghouse.jpg");
 }
 
 #imgcasadecachorro {
     opacity: 0;
-    background-image: url("../imagens/imagens_traduzidas/casadecachorro.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/imagens_traduzidas/casadecachorro.jpg");
     width: 100%;
 }
 
 #imgkeysforeclipse {
     width: 100%;
-    background-image: url("../imagens/imagens_originais/keysforeclipse.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/imagens_originais/keysforeclipse.jpg");
 }
 
 #imgchavesparaoeclipse {
     opacity: 0;
-    background-image: url("../imagens/imagens_traduzidas/chavesparaoeclipse.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/imagens_traduzidas/chavesparaoeclipse.jpg");
     width: 100%;
 }
 
 #imgschoolp {
-    background-image: url("../imagens/imagens_originais/schoolb.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/imagens_originais/schoolb.jpg");
     width: 100%;
 }
 
 #imgescolap {
     opacity: 0;
-    background-image: url("../imagens/imagens_traduzidas/escolap.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/imagens_traduzidas/escolap.jpg");
     width: 100%;
 }
 
 #imgschool1a {
-    background-image: url("../imagens/imagens_originais/school1f.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/imagens_originais/school1f.jpg");
     width: 0%;
 }
 
 #imgescola1a {
     opacity: 0;
-    background-image: url("../imagens/imagens_traduzidas/escola1a.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/imagens_traduzidas/escola1a.jpg");
     width: 100%;
 }
 
 #imgschool2a {
-    background-image: url("../imagens/imagens_originais/school2f.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/imagens_originais/school2f.jpg");
     width: 0%;
 }
 
 #imgescola2a {
     opacity: 0;
-    background-image: url("../imagens/imagens_traduzidas/escola2a.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/imagens_traduzidas/escola2a.jpg");
     width: 100%;
 }
 
 #imgschoolt {
-    background-image: url("../imagens/imagens_originais/schoolr.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/imagens_originais/schoolr.jpg");
     width: 0%;
 }
 
 #imgescolat {
     opacity: 0;
-    background-image: url("../imagens/imagens_traduzidas/escolat.jpg");
+    background-image: url("../imagens/imgs_ContTraduSilent/imagens_traduzidas/escolat.jpg");
     width: 100%;
 }
 

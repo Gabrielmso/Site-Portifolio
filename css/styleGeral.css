@@ -1,13 +1,22 @@
-*{
+@font-face {
+    font-family: "Fontetitulo1";
+    src: url("../fonts/font1.woff");
+}
+
+* {
     margin: 0px;
     padding: 0px;
 }
 
-html{
+html {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-body{
+body {
+    font-family: "Arial";
+    font-size: 16px;
+    background-color: #000;
+    color: white;
     font-weight: 400;
     line-height: 1.5;
 }
@@ -26,7 +35,7 @@ body{
     font-size: 20px;
 }
 
-.h4, h4{
+.h4, h4 {
     font-size: 24px;
 }
 
@@ -48,6 +57,6 @@ p {
     margin-bottom: 16px;
 }
 
-li{
+li {
     line-height: 25px;
 }

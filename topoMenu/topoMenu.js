@@ -1,28 +1,31 @@
 let arrayop = [];//Declarada aqui para usar em outros arquivos JS.
+let logoBlack;
+let scrollposicao;
 function topoMenu() {
     const iconemenublack = document.getElementById("iconemenublack"),
         iconesetablack = document.getElementById("iconesetablack"),
         opcoesmenu2 = document.getElementById("opcoesmenu2"),
         fundomenu = document.getElementById("fundomenu"),
         menu = document.getElementById("menu"),
-        logoBlack = document.getElementById("logoBlack"),//Cada pagina terá de conter um arquivo de script com o evento click individual.
         submenu = document.getElementById("submenu"),
         socials = document.getElementById("socials"),
         traco1 = document.getElementById("traco1"),
         traco2 = document.getElementById("traco2"),
         traco3 = document.getElementById("traco3");
 
+    logoBlack = document.getElementById("logoBlack");//Cada pagina terá de conter um arquivo de script com o evento click individual.
+
     const arraytracoseta = [document.getElementById("tracoseta1"),
     document.getElementById("tracoseta2"),
     document.getElementById("tracoseta3"),
     document.getElementById("tracoseta4")];
-    
+
     arrayop = [document.getElementById("op1"),
     document.getElementById("op2"),
     document.getElementById("op3"),
     document.getElementById("op4")];
 
-    let scrollposicao = document.body.scrollTop || document.documentElement.scrollTop;
+    scrollposicao = document.body.scrollTop || document.documentElement.scrollTop;
 
     redimencionarjanela();
 
@@ -73,7 +76,7 @@ function topoMenu() {
                 arrayop[i].classList.add("inicioopcoes");
             }
         }
-    }, 115, true));
+    }, 110, true));
 
     iconesetablack.addEventListener("click", function () {
         $(socials).slideToggle(150);
