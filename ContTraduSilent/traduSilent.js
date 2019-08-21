@@ -54,6 +54,7 @@ function traduSilent() {
     let styletransicao = "height " + tempotransicao + "ms ease-in-out";//Armazena a configuração da transição dos slides. 
     let imgvisivel = false; //Usar para alternar a opacidade das imagens que serão comparadas entre 0 e 1;
     let tmp;
+    let contentsVisible = true;//Indica se as divs com o conteúdo está visível.
     let alturafundo = alturajanela + "px";
     for (let i = 0; i < arrayfundos.length; i++) {
         if (i != 1) {
@@ -78,11 +79,8 @@ function traduSilent() {
     });
 
     comparar[0].addEventListener("click", function () {//Visualizar a div para comparar as imagens "There are violent and disturbing imagens in this game" e fazer o conteúdo do site "sumir".
-        fadeoutcontents();
         $(fundocomparacao).fadeIn(700);
-        ajustarimgscomparacao();
-        fundoCompararVisible = true;
-        document.addEventListener("keydown", funcoesImgComparacaoTeclado);
+        clickImgComparar();
     });
 
     imgviolentastrad.addEventListener("click", function () {//Deixa a opacidade da imagem em 0 para ver a imagem que está atrás. Comparar as imagens. 
@@ -91,63 +89,48 @@ function traduSilent() {
 
     fecharfundo1.addEventListener("click", function () {//"Fechar" a div que mostra as imagens "There are violent and disturbing imagens in this game" e fazer o conteúdo do site "aparecer".
         $(fundocomparacao).fadeOut(300);
-        fadeincontents();
         imgviolentastrad.style.opacity = "0";
-        imgvisivel = false;
-        fundoCompararVisible = false;
-        document.removeEventListener("keydown", funcoesImgComparacaoTeclado);
-        document.addEventListener("keydown", abrirFundosComparacao);
+        clickFecharComparacao();
     });
 
     imgverjap.addEventListener("click", function () {//Visualizar a div para ver a versão japonesa da imagem "There are violent and disturbing imagens in this game".
         imglimp.style.opacity = "0";
         $(fundoverjapelimp).fadeIn(400);
-        ajustarimgscomparacao();
+        clickImgComparar();
         document.removeEventListener("keydown", mudarslide);//Remove a função "mudarslide" do evento "keydown" do document.
     });
 
     imgverlimp.addEventListener("click", function () {//Visualizar a div para ver a imagem "There are violent and disturbing imagens in this game" sem texto.
         imglimp.style.opacity = "1";
         $(fundoverjapelimp).fadeIn(400);
-        ajustarimgscomparacao();
+        clickImgComparar();
         document.removeEventListener("keydown", mudarslide);//Remove a função "mudarslide" do evento "keydown" do document.
     });
 
     imgjap.addEventListener("click", function () {
         $(fundoverjapelimp).fadeOut(400);
+        clickFecharComparacao();
         document.addEventListener("keydown", mudarslide);//Adiciona novamente a função "mudarslide" ao evento "keydown" do document.
     });
 
     comparar[1].addEventListener("click", function () {//Vizualizar a div que mostra o gif comparando a edição feita na cg de inicio e fazer o conteúdo do site "sumir".
-        fadeoutcontents();
         $(fundocomparacg).fadeIn(700);
-        ajustarimgscomparacao();
-        fundoCompararVisible = true;
-        document.addEventListener("keydown", funcoesImgComparacaoTeclado);
+        clickImgComparar();
     });
 
     gifcgintrohori.addEventListener("click", function () {//"Fechar" a div que mostra o gif comparando a edição feita na cg de inicio e fazer o conteúdo do site "aparecer".
         $(fundocomparacg).fadeOut(300);
-        fadeincontents();
-        fundoCompararVisible = false;
-        document.removeEventListener("keydown", funcoesImgComparacaoTeclado);
-        document.addEventListener("keydown", abrirFundosComparacao);
+        clickFecharComparacao();
     });
 
     gifcgintrovert.addEventListener("click", function () {//"Fechar" a div que mostra o gif comparando a edição feita na cg de inicio e fazer o conteúdo do site "aparecer".
         $(fundocomparacg).fadeOut(300);
-        fadeincontents();
-        fundoCompararVisible = false;
-        document.removeEventListener("keydown", funcoesImgComparacaoTeclado);
-        document.addEventListener("keydown", abrirFundosComparacao);
+        clickFecharComparacao();
     });
 
     comparar[2].addEventListener("click", function () {//Vizualizar a div que compara o mapa da Antiga Silent Hill e fazer o conteúdo do site "sumir".
-        fadeoutcontents();
         $(fundoantigasilenthill).fadeIn(700);
-        ajustarimgscomparacao();
-        fundoCompararVisible = true;
-        document.addEventListener("keydown", funcoesImgComparacaoTeclado);
+        clickImgComparar();
     });
 
     imgantigasilenthill.addEventListener("click", function () {
@@ -156,20 +139,13 @@ function traduSilent() {
 
     fecharantigasilenthill.addEventListener("click", function () {//"Fechar" a div que compara o mapa da Antiga Silent Hill e fazer o conteúdo do site "aparecer".
         $(fundoantigasilenthill).fadeOut(300);
-        fadeincontents();
         imgantigasilenthill.style.opacity = 0;
-        imgvisivel = false;
-        fundoCompararVisible = false;
-        document.removeEventListener("keydown", funcoesImgComparacaoTeclado);
-        document.addEventListener("keydown", abrirFundosComparacao);
+        clickFecharComparacao();
     });
 
-    comparar[4].addEventListener("click", function () {//Vizualizar a div que compara "Chaves para o Eclipse" e fazer o conteúdo do site "sumir".
-        fadeoutcontents();
+    comparar[4].addEventListener("click", function () {//Vizualizar a div que compara "Chaves para o Eclipse" e fazer o conteúdo do site "sumir".   
         $(fundochavesparaoeclipse).fadeIn(700);
-        ajustarimgscomparacao();
-        fundoCompararVisible = true;
-        document.addEventListener("keydown", funcoesImgComparacaoTeclado);
+        clickImgComparar();
     });
 
     imgchavesparaoeclipse.addEventListener("click", function () {
@@ -178,12 +154,8 @@ function traduSilent() {
 
     fecharchavesparaoeclipse.addEventListener("click", function () {
         $(fundochavesparaoeclipse).fadeOut(300);
-        fadeincontents();
         imgchavesparaoeclipse.style.opacity = 0;
-        imgvisivel = false;
-        fundoCompararVisible = false;
-        document.removeEventListener("keydown", funcoesImgComparacaoTeclado);
-        document.addEventListener("keydown", abrirFundosComparacao);
+        clickFecharComparacao();
     });
 
     function carregamento() {//Faz os elementos do primeiro "slide" aparecerem e após isso permite trocar de slide.
@@ -347,13 +319,13 @@ function traduSilent() {
     })
 
     function slideDown(slide) {//Função que volta para o "slide" anterior.
-        if (numslide == arrayfundos.length - 1) {
+        if (numslide === arrayfundos.length - 1) {
             $(bttverdetalhes).fadeIn("slow");
         }
         bttverdetalhes.removeEventListener("click", mudarslidebttverdetalhes);//Remove a função "mudarslidebttverdetalhes" do evento "click" do "bttverdetalhes" para evitar que a função seja executada novamente antes que a transição dos "slides" seja concluída.
         document.removeEventListener("keydown", mudarslide);//Remove a função "mudarslide" do evento "keydown" do document para evitar que as teclas para voltar os "slides" sejam pressionadas antes que a transição dos "slides" tenha sido concluída.  
         let slideanterior = slide - 1;//Armazena o número do slide anterior que irá aparecer.
-        if (slide == 2) {//Se estiver no "slide" 2 ignorar o "slide" 1 passando para o "slide" 0.
+        if (slide === 2) {//Se estiver no "slide" 2 ignorar o "slide" 1 passando para o "slide" 0.
             arrayfundos[1].style.overflow = "hidden";//Evita que barra de rolagem apareça e que o conteúdo do "slide 1" apareça para fora do "slide" na transição dos "slides".  
             slideanterior = 0;//O "slide" anterior do "slide" 2 é o "slide" 0.
             numslide = 1;//Deixa o número do "slide" igual a 1 para quando subtrair ficar igual a 0.
@@ -371,7 +343,7 @@ function traduSilent() {
         arrayfundos[slideanterior].style.height = alturajanela + "px";//Muda a altura do slide anterior para ficar igual a altura da jenela.
 
         setTimeout(function () {//Espera a transição de altura do slide ocorrer.
-            if (slide == 2) {//Permite que a barra de rolagem apareça depois da transição do "slide" se necessário. retira a transição de altura.
+            if (slide === 2) {//Permite que a barra de rolagem apareça depois da transição do "slide" se necessário. retira a transição de altura.
                 arrayfundos[1].style.overflow = "auto";
                 arrayfundos[slide].style.overflow = "auto";
                 mudarmenu();//Muda o menu para o estilo de topo da página, já que o "slide" 2 volta para o "slide" 0 que seria o topo da página.
@@ -388,7 +360,6 @@ function traduSilent() {
             document.addEventListener("keydown", mudarslide);//Adiciona novamente a função "mudarslide" ao evento "keydown" do document depois que a transição do "slide" tenha sido concluída para que seja possível mudar de slide novamente apertando as teclas..
         }, tempotransicao + 20);
     }
-
 
     function slideUp(slide) {//Função que passa para o próximo "slide".
         document.removeEventListener("keydown", mudarslide);//Remove a função "mudarslide" do evento "keydown" do document para evitar que as teclas para passar os "slides" sejam pressionadas antes que o slide apareça por completo.
@@ -411,7 +382,7 @@ function traduSilent() {
         arrayfundos[proximoslide].style.overflow = "hidden";//Evita que barra de rolagem apareça e que o conteúdo do próximo "slide" apareça para fora do "slide" na transição dos "slides".
         arrayfundos[slide].style.height = "0px";//Muda a altura do "slide" atual para 0 pixels fazendo ele sumir dando lugar ao próximo "slide" 
         setTimeout(function () {//Espera a transição de altura do slide ocorrer.
-            if (slide == 0) {//Permite que a barra de rolagem apareça depois da transição do "slide" se necessário. retira a transição de altura.
+            if (slide === 0) {//Permite que a barra de rolagem apareça depois da transição do "slide" se necessário. retira a transição de altura.
                 arrayfundos[2].style.overflow = "auto";
                 arrayfundos[1].style.overflow = "auto";
                 arrayfundos[0].style.overflow = "auto";
@@ -431,7 +402,7 @@ function traduSilent() {
             }
         }, tempotransicao + 20);
 
-        if (slide == 0) {
+        if (slide === 0) {
             mudarmenu();//Muda o menu para o estilo de saída do topo da página, já que o "slide" 0 seria o topo da página.
         }
     }
@@ -467,10 +438,9 @@ function traduSilent() {
     }
 
     abrirFundosComparacao = function (e) {
-        if (e.code == "Enter") {
+        if (e.code === "Enter") {
             if (numslide >= 2) {
                 comparar[numslide - 2].click();
-                document.removeEventListener("keydown", abrirFundosComparacao);
             }
         }
     }
@@ -567,7 +537,7 @@ function traduSilent() {
     }
 
     function mudarmenu() {
-        if (numslide == 0) {
+        if (numslide === 0) {
             menu.classList.remove("mudamenu");
             menu.classList.add("iniciomenu");
             logoBlack.classList.remove("mudalogoBlack");
@@ -597,10 +567,28 @@ function traduSilent() {
         }
     }
 
-    let contentsVisible = true;
+    function clickImgComparar() {//O que acontece quando o usuário clica em alguma imagem para comparar as edições.
+        fadeoutcontents();
+        ajustarimgscomparacao();
+        fundoCompararVisible = true;
+        document.removeEventListener("keydown", abrirFundosComparacao);
+        setTimeout(function () {
+            document.addEventListener("keydown", funcoesImgComparacaoTeclado);
+        }, 600);
+    }
+
+    function clickFecharComparacao() {//O que acontece quando o usuário "fecha" alguma div de comparação.
+        fadeincontents();
+        imgvisivel = false;
+        fundoCompararVisible = false;
+        document.removeEventListener("keydown", funcoesImgComparacaoTeclado);
+        setTimeout(function () {
+            document.addEventListener("keydown", abrirFundosComparacao);
+        }, 310);
+    }
 
     function fadeoutcontents() {//Faz todas as divs que possuem conteúdo "sumirem".
-        if (contentsVisible == true) {
+        if (contentsVisible === true) {
             $(bttverdetalhes).fadeOut(300);
             for (let i = 0; i < contents.length; i++) {
                 $(contents[i]).fadeOut(300);
@@ -610,7 +598,7 @@ function traduSilent() {
     }
 
     function fadeincontents() {//Faz todas as divs que possuem conteúdo "aparecerem".
-        if (contentsVisible == false) {
+        if (contentsVisible === false) {
             if (numslide != arrayfundos.length - 1) {
                 $(bttverdetalhes).fadeIn(700);
             }
@@ -622,7 +610,7 @@ function traduSilent() {
     }
 
     function clickComparaImagens(element) {
-        if (imgvisivel == false) {
+        if (imgvisivel === false) {
             element.style.opacity = "1";
             imgvisivel = true;
         }
@@ -633,7 +621,7 @@ function traduSilent() {
     }
 
     function mostrarimgFundo(e) {
-        if (e.code == "Space" && fundoCompararVisible == false) {
+        if (e.code === "Space" && fundoCompararVisible === false) {
             fadeoutcontents();
             document.removeEventListener("keydown", mostrarimgFundo);
             setTimeout(function () {
@@ -642,7 +630,7 @@ function traduSilent() {
         }
     }
     document.addEventListener("keyup", function (e) {
-        if (e.code == "Space" && fundoCompararVisible == false) {
+        if (e.code === "Space" && fundoCompararVisible === false) {
             fadeincontents();
         }
     });

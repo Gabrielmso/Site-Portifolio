@@ -32,23 +32,16 @@ function slideCarosel() {
     mudaSlideFolha();
 
     compararFolhasCaderno.addEventListener("click", function () {//Visualizar a div para ver as "folhas de caderno de desenho". 
-        fadeoutcontentsSlide();
         $(fundocomparafolhas).fadeIn(700);
-        tamanhoTelaSlide();
-        fundoCompararVisible = true;
-        document.addEventListener("keydown", funcoesSlideImgTeclado);
+        clickSlideComparar();
     });
 
     fecharfolhas.addEventListener("click", function () {
         $(fundocomparafolhas).fadeOut(300);
-        fadeincontentsSlide();
+        clickFecharComparacaoSlide();
         voltaPrimeiroSlideFolha();
         imgparaescola.style.opacity = "0";
         imgcasadecachorro.style.opacity = "0";
-        folhavisivel = false;
-        fundoCompararVisible = false;
-        document.removeEventListener("keydown", funcoesSlideImgTeclado);
-        document.addEventListener("keydown", abrirFundosComparacao);
     });
 
     imgparaescola.addEventListener("click", function () {
@@ -160,22 +153,35 @@ function slideCarosel() {
     mudaSlideMapaEscola();
 
     compararescola.addEventListener("click", function () {//Visualizar a div para comparar o mapa de Escola.
-        fadeoutcontentsSlide();
         $(fundomapaescola).fadeIn(700);
-        tamanhoTelaSlide();
-        fundoCompararVisible = true;
-        document.addEventListener("keydown", funcoesSlideImgTeclado);
+        clickSlideComparar();
     });
 
     fecharfundoescola.addEventListener("click", function () {//Fechar a div para comparar o mapa de Escola.
-        $(fundomapaescola).fadeOut(300);
+        $(fundomapaescola).fadeOut(300);        
+        voltaPrimeiroSlideMapaEscola();       
+        clickFecharComparacaoSlide();
+    });
+
+    function clickSlideComparar() {//O que acontece quando o usuário clica em alguma imagem para comparar as edições.
+        fadeoutcontentsSlide();
+        tamanhoTelaSlide();
+        fundoCompararVisible = true;
+        document.removeEventListener("keydown", abrirFundosComparacao);
+        setTimeout(function () {
+            document.addEventListener("keydown", funcoesSlideImgTeclado);
+        }, 600);
+    }
+
+    function clickFecharComparacaoSlide() {//O que acontece quando o usuário "fecha" alguma div de comparação.
         fadeincontentsSlide();
         folhavisivel = false;
         fundoCompararVisible = false;
-        voltaPrimeiroSlideMapaEscola();
         document.removeEventListener("keydown", funcoesSlideImgTeclado);
-        document.addEventListener("keydown", abrirFundosComparacao);
-    });
+        setTimeout(function () {
+            document.addEventListener("keydown", abrirFundosComparacao);
+        }, 310);
+    }
 
     mapaescolabtnLeft.addEventListener("click", voltaMapaEscola);
     mapaescolabtnRight.addEventListener("click", avancaMapaEscola);
@@ -418,4 +424,3 @@ function slideCarosel() {
         }
     });
 }
-
