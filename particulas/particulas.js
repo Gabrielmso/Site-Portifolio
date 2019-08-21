@@ -167,7 +167,7 @@ function particulas() {
       contexto.beginPath();
       contexto.moveTo(posX, posY);
       contexto.lineTo(posX2, posY2);
-      if (voltaLinha == true) {
+      if (voltaLinha === true) {
          contexto.lineTo(posX, posY);
       }
       contexto.strokeStyle = "rgba(255,255,255," + opacidade + ')';

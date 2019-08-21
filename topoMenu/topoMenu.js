@@ -1,18 +1,18 @@
 let arrayop = [];//Declarada aqui para usar em outros arquivos JS.
 let logoBlack;
 let scrollposicao;
+let iconemenublack, iconesetablack, opcoesmenu2, fundomenu, menu, submenu, socials, traco1, traco2, traco3ocument;
 function topoMenu() {
-    const iconemenublack = document.getElementById("iconemenublack"),
-        iconesetablack = document.getElementById("iconesetablack"),
-        opcoesmenu2 = document.getElementById("opcoesmenu2"),
-        fundomenu = document.getElementById("fundomenu"),
-        menu = document.getElementById("menu"),
-        submenu = document.getElementById("submenu"),
-        socials = document.getElementById("socials"),
-        traco1 = document.getElementById("traco1"),
-        traco2 = document.getElementById("traco2"),
-        traco3 = document.getElementById("traco3");
-
+    iconemenublack = document.getElementById("iconemenublack");
+    iconesetablack = document.getElementById("iconesetablack");
+    opcoesmenu2 = document.getElementById("opcoesmenu2");
+    fundomenu = document.getElementById("fundomenu");
+    menu = document.getElementById("menu");
+    submenu = document.getElementById("submenu");
+    socials = document.getElementById("socials");
+    traco1 = document.getElementById("traco1");
+    traco2 = document.getElementById("traco2");
+    traco3 = document.getElementById("traco3");
     logoBlack = document.getElementById("logoBlack");//Cada pagina terá de conter um arquivo de script com o evento click individual.
 
     const arraytracoseta = [document.getElementById("tracoseta1"),
@@ -33,21 +33,15 @@ function topoMenu() {
 
     window.addEventListener("resize", function () {
         $(socials).slideUp("fast");
-
         iconesetablacknormal();
-
         redimencionarjanela();
-
         telamenor651px();
     });
 
     window.addEventListener("scroll", throttle(function () {
-        scrollposicao = document.body.scrollTop || document.documentElement.scrollTop;;
-
+        scrollposicao = document.body.scrollTop || document.documentElement.scrollTop;
         iconesetablacknormal();
-
         $(socials).slideUp("fast");
-
         if (scrollposicao > 5) {
             menu.classList.remove("iniciomenu");
             menu.classList.add("mudamenu");
@@ -80,7 +74,7 @@ function topoMenu() {
 
     iconesetablack.addEventListener("click", function () {
         $(socials).slideToggle(150);
-        if (arraytracoseta[0].classList.contains("movertracoseta0") == true) {
+        if (arraytracoseta[0].classList.contains("movertracoseta0") === true) {
             iconesetablacknormal();
         }
         else {
@@ -98,9 +92,7 @@ function topoMenu() {
         iconesetablacknormal();
     });
 
-    iconemenublack.addEventListener("click", function () {
-        acaobotaomenu();
-    });
+    iconemenublack.addEventListener("click", acaobotaomenu);
 
     function iconesetablacknormal() {
         for (let i = 0; i < arraytracoseta.length; i++) {
@@ -111,9 +103,8 @@ function topoMenu() {
         }
     }
 
-    function acaobotaomenu() {
-        if (fundomenu.classList.contains("fechafundomenu") == true) {
-            //Abrir o menu e fazer a "animação" do "iconemenublack".
+    function acaobotaomenu() {//Abrir o menu e fazer a "animação" do "iconemenublack".
+        if (fundomenu.classList.contains("fechafundomenu") === true) {
             fundomenu.classList.remove("fechafundomenu");
             fundomenu.classList.add("abrefundomenu");
             traco1.classList.remove("iniciotraco1");

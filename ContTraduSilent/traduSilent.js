@@ -37,7 +37,6 @@ function traduSilent() {
         imgchavesparaoeclipse = document.getElementById("imgchavesparaoeclipse"),
         fundoverjapelimp = document.getElementById("fundoverjapelimp"),
         bttverdetalhes = document.getElementById("bttverdetalhes"),
-        logoBlack = document.getElementById("logoBlack"),
         fundocomparacao = document.getElementById("fundocomparacao"),
         fundocomparacg = document.getElementById("fundocomparacg"),
         fundoantigasilenthill = document.getElementById("fundoantigasilenthill"),
@@ -207,8 +206,8 @@ function traduSilent() {
     };
 
     function brilhotitulo() {//Fazer o título brilhar somente quando estiver no "slide" 0.
-        if (numslide == 0) {
-            if (titulo.classList.contains("brilho") == true) {
+        if (numslide === 0) {
+            if (titulo.classList.contains("brilho") === true) {
                 titulo.classList.remove("brilho");
             }
             else {
@@ -365,7 +364,7 @@ function traduSilent() {
         document.removeEventListener("keydown", mudarslide);//Remove a função "mudarslide" do evento "keydown" do document para evitar que as teclas para passar os "slides" sejam pressionadas antes que o slide apareça por completo.
         bttverdetalhes.removeEventListener("click", mudarslidebttverdetalhes);//Remove a função "mudarslidebttverdetalhes" do evento "click" do "bttverdetalhes" para evitar que a função seja executada novamente antes que a transição dos "slides" seja concluída.
         let proximoslide = slide + 1;
-        if (slide == 0) {//Se estiver no "slide" 0 ignorar o "slide" 1 passando para o "slide" 2.
+        if (slide === 0) {//Se estiver no "slide" 0 ignorar o "slide" 1 passando para o "slide" 2.
             arrayfundos[1].style.overflow = "hidden";//Evita que barra de rolagem apareça e que o conteúdo do "slide 1" apareça para fora do "slide" na transição dos "slides". 
             proximoslide = 2;//O próximo "slide" do "slide" 0 é o "slide" 2.
             numslide = 1;//Deixa o número do "slide" igual a 1 para quando somar ficar igual a 2.
@@ -397,7 +396,7 @@ function traduSilent() {
             //------------------------------------------------------------------------------
             document.addEventListener("keydown", mudarslide);//Adiciona novamente a função "mudarslide" ao evento "keydown" do document depois que a transição do "slide" tenha sido concluída para que seja possível mudar de slide novamente apertando as teclas.
             bttverdetalhes.addEventListener("click", mudarslidebttverdetalhes);//Adiciona novamente a função "mudarslidebttverdetalhes" ao avento "click" do "bttverdetalhes" depois que a transição do "slide" tenha sido concluída para que seja possível mudar de slide novamente clicando no mesmo.
-            if (numslide == arrayfundos.length - 1) {
+            if (numslide === arrayfundos.length - 1) {
                 $(bttverdetalhes).fadeOut("slow");
             }
         }, tempotransicao + 20);
@@ -410,7 +409,7 @@ function traduSilent() {
     function voltaPrimeiroSlide() {
         document.removeEventListener("keydown", mudarslide);
         tmp = setInterval(brilhotitulo, 1200);
-        if (numslide == arrayfundos.length - 1) {
+        if (numslide === arrayfundos.length - 1) {
             $(bttverdetalhes).fadeIn("slow");
         }
         numslide = 0;//Muda para o número do primeiro "slide".
@@ -501,29 +500,29 @@ function traduSilent() {
     function funcoesImgComparacaoTeclado(e) {//Uso do teclado para comparar as imagems e "fechar" as div's.
         switch (e.code) {
             case code = "Space":
-                if (fundocomparacao.style.display == "block") {
+                if (fundocomparacao.style.display === "block") {
                     imgviolentastrad.click();
                 }
-                else if (fundoantigasilenthill.style.display == "block") {
+                else if (fundoantigasilenthill.style.display === "block") {
                     imgantigasilenthill.click();
                 }
-                else if (fundochavesparaoeclipse.style.display == "block") {
+                else if (fundochavesparaoeclipse.style.display === "block") {
                     imgchavesparaoeclipse.click();
                 }
                 break;
 
             case code = "Escape":
-                if (fundocomparacao.style.display == "block") {
+                if (fundocomparacao.style.display === "block") {
                     fecharfundo1.click();
                 }
-                else if (fundocomparacg.style.display == "block") {
+                else if (fundocomparacg.style.display === "block") {
                     gifcgintrohori.click();
                     gifcgintrovert.click();
                 }
-                else if (fundoantigasilenthill.style.display == "block") {
+                else if (fundoantigasilenthill.style.display === "block") {
                     fecharantigasilenthill.click();
                 }
-                else if (fundochavesparaoeclipse.style.display == "block") {
+                else if (fundochavesparaoeclipse.style.display === "block") {
                     fecharchavesparaoeclipse.click();
                 }
                 break;

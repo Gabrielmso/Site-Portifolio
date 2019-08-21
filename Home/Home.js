@@ -5,7 +5,7 @@ function home() {
     const topoApresentacao = document.getElementById("topoApresentacao"),
         imgFundos = [document.getElementById("imgFundo"),
         document.getElementById("imgFundoBlur")],
-        proporcaoImgFundo = 16 / 9;
+        proporcaoImgFundo = 16/9;
 
     centralizaFundo();
 

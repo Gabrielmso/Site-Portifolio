@@ -73,7 +73,7 @@ function slideCarosel() {
             contSlides--;
             mudaSlideFolha();
         }
-        else if (contSlides == 1) {
+        else if (contSlides === 1) {
             leftimgicons = ((larguraJanela / 2) - left) - ((left * 2) * (iconfolhas.length - 1));
             contSlides = iconfolhas.length;
             mudaSlideFolha();
@@ -86,7 +86,7 @@ function slideCarosel() {
             contSlides++;
             mudaSlideFolha();
         }
-        else if (contSlides == iconfolhas.length) {
+        else if (contSlides === iconfolhas.length) {
             leftimgicons = (larguraJanela / 2) - left;
             contSlides = 1;
             mudaSlideFolha();
@@ -233,7 +233,7 @@ function slideCarosel() {
             contSlides--;
             mudaSlideMapaEscola();
         }
-        else if (contSlides == 1) {
+        else if (contSlides === 1) {
             leftimgicons = ((larguraJanela / 2) - left) - ((left * 2) * (iconMapaEscola.length - 1));
             contSlides = iconMapaEscola.length;
             mudaSlideMapaEscola();
@@ -246,7 +246,7 @@ function slideCarosel() {
             contSlides++;
             mudaSlideMapaEscola();
         }
-        else if (contSlides == iconMapaEscola.length) {
+        else if (contSlides === iconMapaEscola.length) {
             leftimgicons = (larguraJanela / 2) - left;
             contSlides = 1;
             mudaSlideMapaEscola();
@@ -290,7 +290,7 @@ function slideCarosel() {
     //____________________________________________________________________________________________________________________
 
     function clickComparaImagens(element) {
-        if (folhavisivel == false) {
+        if (folhavisivel === false) {
             element.style.opacity = "1";
             folhavisivel = true;
         }
@@ -336,71 +336,71 @@ function slideCarosel() {
     function funcoesSlideImgTeclado(e) {
         switch (e.code) {
             case code = "Space":
-                if (fundocomparafolhas.style.display == "block") {
-                    if (contSlides == 1) {
+                if (fundocomparafolhas.style.display === "block") {
+                    if (contSlides === 1) {
                         imgparaescola.click();
                     }
-                    else if (contSlides == 2) {
+                    else if (contSlides === 2) {
                         imgcasadecachorro.click();
                     }
                 }
-                else if (fundomapaescola.style.display == "block") {
-                    if (contSlides == 1) {
+                else if (fundomapaescola.style.display === "block") {
+                    if (contSlides === 1) {
                         imgescolap.click();
                     }
-                    else if (contSlides == 2) {
+                    else if (contSlides === 2) {
                         imgescola1a.click();
                     }
-                    else if (contSlides == 3) {
+                    else if (contSlides === 3) {
                         imgescola2a.click();
                     }
-                    else if (contSlides == 4) {
+                    else if (contSlides === 4) {
                         imgescolat.click();
                     }
                 }
                 break;
 
             case code = "ArrowRight":
-                if (fundocomparafolhas.style.display == "block") {
+                if (fundocomparafolhas.style.display === "block") {
                     folhasbtnRight.click();
                 }
-                else if (fundomapaescola.style.display == "block") {
+                else if (fundomapaescola.style.display === "block") {
                     mapaescolabtnRight.click();
                 }
                 break;
 
             case code = "KeyD":
-                if (fundocomparafolhas.style.display == "block") {
+                if (fundocomparafolhas.style.display === "block") {
                     folhasbtnRight.click();
                 }
-                else if (fundomapaescola.style.display == "block") {
+                else if (fundomapaescola.style.display === "block") {
                     mapaescolabtnRight.click();
                 }
                 break;
 
             case code = "ArrowLeft":
-                if (fundocomparafolhas.style.display == "block") {
+                if (fundocomparafolhas.style.display === "block") {
                     folhasbtnLeft.click();
                 }
-                else if (fundomapaescola.style.display == "block") {
+                else if (fundomapaescola.style.display === "block") {
                     mapaescolabtnLeft.click();
                 }
                 break;
 
             case code = "KeyA":
-                if (fundocomparafolhas.style.display == "block") {
+                if (fundocomparafolhas.style.display === "block") {
                     folhasbtnLeft.click();
                 }
-                else if (fundomapaescola.style.display == "block") {
+                else if (fundomapaescola.style.display === "block") {
                     mapaescolabtnLeft.click();
                 }
                 break;
 
             case code = "Escape":
-                if (fundocomparafolhas.style.display == "block") {
+                if (fundocomparafolhas.style.display === "block") {
                     fecharfolhas.click();
                 }
-                else if (fundomapaescola.style.display == "block") {
+                else if (fundomapaescola.style.display === "block") {
                     fecharfundoescola.click();
                 }
                 break;
