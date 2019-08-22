@@ -25,10 +25,8 @@ function slideCarosel() {
     //_________________________________________Comparar folhas de caderno_______________________________________________
 
     const iconfolhas = [document.getElementById("icontoschool"),
-    document.getElementById("icondoghouse")],
-        imgparaescola = document.getElementById("imgparaescola"),
-        imgcasadecachorro = document.getElementById("imgcasadecachorro");
-    let folhavisivel = false;
+    document.getElementById("icondoghouse")];
+
     mudaSlideFolha();
 
     compararFolhasCaderno.addEventListener("click", function () {//Visualizar a div para ver as "folhas de caderno de desenho". 
@@ -40,16 +38,6 @@ function slideCarosel() {
         $(fundocomparafolhas).fadeOut(300);
         clickFecharComparacaoSlide();
         voltaPrimeiroSlideFolha();
-        imgparaescola.style.opacity = "0";
-        imgcasadecachorro.style.opacity = "0";
-    });
-
-    imgparaescola.addEventListener("click", function () {
-        clickComparaImagens(this);
-    });
-
-    imgcasadecachorro.addEventListener("click", function () {
-        clickComparaImagens(this);
     });
 
     folhasbtnLeft.addEventListener("click", voltaFolha);
@@ -117,11 +105,12 @@ function slideCarosel() {
                         iconfolhas[i].style.opacity = "";
                     }
                 }
-                imgparaescola.style.opacity = "0";
-                imgcasadecachorro.style.opacity = "0";
                 folhasbtnLeft.addEventListener("click", voltaFolha);
                 folhasbtnRight.addEventListener("click", avancaFolha);
-                folhavisivel = false;
+                for (let i = 0; i < imgsComparacao.length; i++) {
+                    imgsComparacao[i].style.opacity = "0";
+                }
+                imgvisivel = false;  
             }, 350)
         }, 5)
     };
@@ -132,11 +121,7 @@ function slideCarosel() {
         fecharfundoescola = document.getElementById("fecharfundoescola"),
         escolacontentimgicons = document.getElementById("escolacontentimgicons"),
         mapaescolabtnLeft = document.getElementById("mapaescolabtnLeft"),
-        mapaescolabtnRight = document.getElementById("mapaescolabtnRight"),
-        imgescolap = document.getElementById("imgescolap"),
-        imgescola1a = document.getElementById("imgescola1a"),
-        imgescola2a = document.getElementById("imgescola2a"),
-        imgescolat = document.getElementById("imgescolat");
+        mapaescolabtnRight = document.getElementById("mapaescolabtnRight");
 
     const iconMapaEscola = [document.getElementById("iconmapaescolap"),
     document.getElementById("iconmapaescola1a"),
@@ -211,22 +196,6 @@ function slideCarosel() {
         mudaSlideMapaEscola();
     });
 
-    imgescolap.addEventListener("click", function () {
-        clickComparaImagens(this);
-    });
-
-    imgescola1a.addEventListener("click", function () {
-        clickComparaImagens(this);
-    });
-
-    imgescola2a.addEventListener("click", function () {
-        clickComparaImagens(this);
-    });
-
-    imgescolat.addEventListener("click", function () {
-        clickComparaImagens(this);
-    });
-
     function voltaMapaEscola() {
         if (contSlides > 1) {
             leftimgicons = leftimgicons + left * 2;
@@ -279,26 +248,14 @@ function slideCarosel() {
                 }
                 mapaescolabtnLeft.addEventListener("click", voltaMapaEscola);
                 mapaescolabtnRight.addEventListener("click", avancaMapaEscola);
-                imgescolap.style.opacity = "0";
-                imgescola1a.style.opacity = "0";
-                imgescola2a.style.opacity = "0";
-                imgescolat.style.opacity = "0";
-                folhavisivel = false;
+                for (let i = 0; i < imgsComparacao.length; i++) {
+                    imgsComparacao[i].style.opacity = "0";
+                }
+                imgvisivel = false;
             }, 350)
         }, 5)
     };
     //____________________________________________________________________________________________________________________
-
-    function clickComparaImagens(element) {
-        if (folhavisivel === false) {
-            element.style.opacity = "1";
-            folhavisivel = true;
-        }
-        else {
-            element.style.opacity = "0";
-            folhavisivel = false;
-        }
-    }
 
     function tamanhoTelaSlide() {
         for (let i = 0; i < telaslide.length; i++) {
@@ -338,24 +295,24 @@ function slideCarosel() {
             case code = "Space":
                 if (fundocomparafolhas.style.display === "block") {
                     if (contSlides === 1) {
-                        imgparaescola.click();
+                        imgsComparacao[2].click();
                     }
                     else if (contSlides === 2) {
-                        imgcasadecachorro.click();
+                        imgsComparacao[3].click();
                     }
                 }
                 else if (fundomapaescola.style.display === "block") {
                     if (contSlides === 1) {
-                        imgescolap.click();
+                        imgsComparacao[5].click();
                     }
                     else if (contSlides === 2) {
-                        imgescola1a.click();
+                        imgsComparacao[6].click();
                     }
                     else if (contSlides === 3) {
-                        imgescola2a.click();
+                        imgsComparacao[7].click();
                     }
                     else if (contSlides === 4) {
-                        imgescolat.click();
+                        imgsComparacao[8].click();
                     }
                 }
                 break;

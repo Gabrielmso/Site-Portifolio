@@ -6,6 +6,7 @@ let fecharFundosComparacao = [];
 let imgsComparacao = [];
 let numslide = 0; //Armazena o numero do slide mostrado. 
 let fundoCompararVisible = false;
+let imgvisivel = false; //Usar para alternar a opacidade das imagens que serão comparadas entre 0 e 1;
 function traduSilent() {
     let largurajanela = window.innerWidth;
     let alturajanela = window.innerHeight;
@@ -40,7 +41,13 @@ function traduSilent() {
     document.getElementById("fecharfundoescola")];
     imgsComparacao = [document.getElementById("imgviolentastrad"),
     document.getElementById("imgantigasilenthill"),
-    document.getElementById("imgchavesparaoeclipse"),]
+    document.getElementById("imgparaescola"),
+    document.getElementById("imgcasadecachorro"),
+    document.getElementById("imgchavesparaoeclipse"),
+    document.getElementById("imgescolap"),
+    document.getElementById("imgescola1a"),
+    document.getElementById("imgescola2a"),
+    document.getElementById("imgescolat")];
     const contents = document.getElementsByClassName("content"),//Armazena todas as divs que possuem conteúdo.
         imgviolentasorig = document.getElementById("imgviolentasorig"),
         imgverjap = document.getElementById("imgverjap"),
@@ -60,7 +67,6 @@ function traduSilent() {
     let carregamentopagina = setTimeout(carregamento, 900);
     const tempotransicao = 730; //Armazena o tempo de transição dos "slides" em milisegundos.
     let styletransicao = "height " + tempotransicao + "ms ease-in-out";//Armazena a configuração da transição dos slides. 
-    let imgvisivel = false; //Usar para alternar a opacidade das imagens que serão comparadas entre 0 e 1;
     let tmp;
     let contentsVisible = true;//Indica se as divs com o conteúdo está visível.
     let alturafundo = alturajanela + "px";
@@ -471,14 +477,14 @@ function traduSilent() {
     function funcoesImgComparacaoTeclado(e) {//Uso do teclado para comparar as imagems e "fechar" as div's.
         switch (e.code) {
             case code = "Space":
-                if (fundocomparacao.style.display === "block") {
-                    imgviolentastrad.click();
+                if (arrayFundosComparacao[0].style.display === "block") {
+                    imgsComparacao[0].click();
                 }
-                else if (fundoantigasilenthill.style.display === "block") {
-                    imgantigasilenthill.click();
+                else if (arrayFundosComparacao[2].style.display === "block") {
+                    imgsComparacao[1].click();
                 }
-                else if (fundochavesparaoeclipse.style.display === "block") {
-                    imgchavesparaoeclipse.click();
+                else if (arrayFundosComparacao[4].style.display === "block") {
+                    imgsComparacao[4].click();
                 }
                 break;
             case code = "Escape":
