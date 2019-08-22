@@ -1,5 +1,9 @@
 let abrirFundosComparacao;
 let arrayfundos = [];
+let abrirFundoComparacao = [];
+let arrayFundosComparacao = [];
+let fecharFundosComparacao = [];
+let imgsComparacao = [];
 let numslide = 0; //Armazena o numero do slide mostrado. 
 let fundoCompararVisible = false;
 function traduSilent() {
@@ -16,15 +20,29 @@ function traduSilent() {
     document.getElementById("fundo5blur"),
     document.getElementById("fundo6blur"),
     document.getElementById("fundo7blur")];
+    abrirFundoComparacao = [document.getElementById("compararthereareviolent"),
+    document.getElementById("omedodesangue"),
+    document.getElementById("compararMapaAntigaSilent"),
+    document.getElementById("compararFolhasCaderno"),
+    document.getElementById("compararChavesEclipse"),
+    document.getElementById("compararEscola")];
+    arrayFundosComparacao = [document.getElementById("fundocomparacao"),
+    document.getElementById("fundocomparacg"),
+    document.getElementById("fundoantigasilenthill"),
+    document.getElementById("fundocomparafolhas"),
+    document.getElementById("fundochavesparaoeclipse"),
+    document.getElementById("fundomapaescola")];
+    fecharFundosComparacao = [document.getElementById("fecharfundo1"),
+    document.getElementById("fecharcomparacg"),
+    document.getElementById("fecharantigasilenthill"),
+    document.getElementById("fecharfolhas"),
+    document.getElementById("fecharchavesparaoeclipse"),
+    document.getElementById("fecharfundoescola")];
+    imgsComparacao = [document.getElementById("imgviolentastrad"),
+    document.getElementById("imgantigasilenthill"),
+    document.getElementById("imgchavesparaoeclipse"),]
     const contents = document.getElementsByClassName("content"),//Armazena todas as divs que possuem conteúdo.
-        comparar = [document.getElementById("compararthereareviolent"),
-        document.getElementById("omedodesangue"),
-        document.getElementById("compararMapaAntigaSilent"),
-        document.getElementById("compararFolhasCaderno"),
-        document.getElementById("compararChavesEclipse"),
-        document.getElementById("compararEscola")],
         imgviolentasorig = document.getElementById("imgviolentasorig"),
-        imgviolentastrad = document.getElementById("imgviolentastrad"),
         imgverjap = document.getElementById("imgverjap"),
         imgverlimp = document.getElementById("imgverlimp"),
         imgjap = document.getElementById("imgjap"),
@@ -32,18 +50,9 @@ function traduSilent() {
         gifcgintrovert = document.getElementById("gifcgintrovert"),
         gifcgintrohori = document.getElementById("gifcgintrohori"),
         imgoldsilenthill = document.getElementById("imgoldsilenthill"),
-        imgantigasilenthill = document.getElementById("imgantigasilenthill"),
         imgkeysforeclipse = document.getElementById("imgkeysforeclipse"),
-        imgchavesparaoeclipse = document.getElementById("imgchavesparaoeclipse"),
         fundoverjapelimp = document.getElementById("fundoverjapelimp"),
         bttverdetalhes = document.getElementById("bttverdetalhes"),
-        fundocomparacao = document.getElementById("fundocomparacao"),
-        fundocomparacg = document.getElementById("fundocomparacg"),
-        fundoantigasilenthill = document.getElementById("fundoantigasilenthill"),
-        fundochavesparaoeclipse = document.getElementById("fundochavesparaoeclipse"),
-        fecharfundo1 = document.getElementById("fecharfundo1"),
-        fecharantigasilenthill = document.getElementById("fecharantigasilenthill"),
-        fecharchavesparaoeclipse = document.getElementById("fecharchavesparaoeclipse"),
         titulo = document.getElementById("titulo"),
         bttdownload = document.getElementById("bttdownload"),
         traprogress = document.getElementById("traprogress"),
@@ -77,20 +86,27 @@ function traduSilent() {
         mudarmenu();
     });
 
-    comparar[0].addEventListener("click", function () {//Visualizar a div para comparar as imagens "There are violent and disturbing imagens in this game" e fazer o conteúdo do site "sumir".
-        $(fundocomparacao).fadeIn(700);
-        clickImgComparar();
-    });
+    for (let i = 0; i < arrayFundosComparacao.length; i++) {//Adiciona o evento click aos elementos que "abrem" e aos que "fecham" as div's usadas parar comparar as imagens. 
+        abrirFundoComparacao[i].addEventListener("click", function () {
+            $(arrayFundosComparacao[i]).fadeIn(700);
+            document.removeEventListener("keydown", mudarslide);
+            clickImgComparar();
+        });
+        fecharFundosComparacao[i].addEventListener("click", function () {
+            $(arrayFundosComparacao[i]).fadeOut(300);
+            document.addEventListener("keydown", mudarslide);
+            clickFecharComparacao();
+            for (let i = 0; i < imgsComparacao.length; i++) {
+                imgsComparacao[i].style.opacity = "0";
+            }
+        });
+    }
 
-    imgviolentastrad.addEventListener("click", function () {//Deixa a opacidade da imagem em 0 para ver a imagem que está atrás. Comparar as imagens. 
-        clickComparaImagens(this);
-    });
-
-    fecharfundo1.addEventListener("click", function () {//"Fechar" a div que mostra as imagens "There are violent and disturbing imagens in this game" e fazer o conteúdo do site "aparecer".
-        $(fundocomparacao).fadeOut(300);
-        imgviolentastrad.style.opacity = "0";
-        clickFecharComparacao();
-    });
+    for (let i = 0; i < imgsComparacao.length; i++) {
+        imgsComparacao[i].addEventListener("click", function () {
+            clickComparaImagens(this);
+        });
+    }
 
     imgverjap.addEventListener("click", function () {//Visualizar a div para ver a versão japonesa da imagem "There are violent and disturbing imagens in this game".
         imglimp.style.opacity = "0";
@@ -110,51 +126,6 @@ function traduSilent() {
         $(fundoverjapelimp).fadeOut(400);
         clickFecharComparacao();
         document.addEventListener("keydown", mudarslide);//Adiciona novamente a função "mudarslide" ao evento "keydown" do document.
-    });
-
-    comparar[1].addEventListener("click", function () {//Vizualizar a div que mostra o gif comparando a edição feita na cg de inicio e fazer o conteúdo do site "sumir".
-        $(fundocomparacg).fadeIn(700);
-        clickImgComparar();
-    });
-
-    gifcgintrohori.addEventListener("click", function () {//"Fechar" a div que mostra o gif comparando a edição feita na cg de inicio e fazer o conteúdo do site "aparecer".
-        $(fundocomparacg).fadeOut(300);
-        clickFecharComparacao();
-    });
-
-    gifcgintrovert.addEventListener("click", function () {//"Fechar" a div que mostra o gif comparando a edição feita na cg de inicio e fazer o conteúdo do site "aparecer".
-        $(fundocomparacg).fadeOut(300);
-        clickFecharComparacao();
-    });
-
-    comparar[2].addEventListener("click", function () {//Vizualizar a div que compara o mapa da Antiga Silent Hill e fazer o conteúdo do site "sumir".
-        $(fundoantigasilenthill).fadeIn(700);
-        clickImgComparar();
-    });
-
-    imgantigasilenthill.addEventListener("click", function () {
-        clickComparaImagens(this);
-    });
-
-    fecharantigasilenthill.addEventListener("click", function () {//"Fechar" a div que compara o mapa da Antiga Silent Hill e fazer o conteúdo do site "aparecer".
-        $(fundoantigasilenthill).fadeOut(300);
-        imgantigasilenthill.style.opacity = 0;
-        clickFecharComparacao();
-    });
-
-    comparar[4].addEventListener("click", function () {//Vizualizar a div que compara "Chaves para o Eclipse" e fazer o conteúdo do site "sumir".   
-        $(fundochavesparaoeclipse).fadeIn(700);
-        clickImgComparar();
-    });
-
-    imgchavesparaoeclipse.addEventListener("click", function () {
-        clickComparaImagens(this);
-    });
-
-    fecharchavesparaoeclipse.addEventListener("click", function () {
-        $(fundochavesparaoeclipse).fadeOut(300);
-        imgchavesparaoeclipse.style.opacity = 0;
-        clickFecharComparacao();
     });
 
     function carregamento() {//Faz os elementos do primeiro "slide" aparecerem e após isso permite trocar de slide.
@@ -230,12 +201,12 @@ function traduSilent() {
             gifcgintrohori.style.display = "none";
             gifcgintrovert.style.display = "block";
             if ((largurajanela / alturajanela) > (2 * proporcao4por3)) {
-                gifcgintrovert.style.height = "97%";
-                gifcgintrovert.style.width = gifcgintrovert.offsetHeight * (proporcao4por3 * 2) + "px";
+                fecharFundosComparacao[1].style.height = "97%";
+                fecharFundosComparacao[1].style.width = fecharFundosComparacao[1].offsetHeight * (proporcao4por3 * 2) + "px";
             }
             else {
-                gifcgintrovert.style.width = "97%";
-                gifcgintrovert.style.height = gifcgintrovert.offsetWidth / (proporcao4por3 * 2) + "px";
+                fecharFundosComparacao[1].style.width = "97%";
+                fecharFundosComparacao[1].style.height = fecharFundosComparacao[1].offsetWidth / (proporcao4por3 * 2) + "px";
             }
         }
         else {
@@ -251,12 +222,12 @@ function traduSilent() {
             gifcgintrovert.style.display = "none";
             gifcgintrohori.style.display = "block";
             if ((largurajanela / alturajanela) > (proporcao4por3 / 2)) {
-                gifcgintrohori.style.height = "97%";
-                gifcgintrohori.style.width = gifcgintrohori.offsetHeight * (proporcao4por3 / 2) + "px";
+                fecharFundosComparacao[1].style.height = "97%";
+                fecharFundosComparacao[1].style.width = fecharFundosComparacao[1].offsetHeight * (proporcao4por3 / 2) + "px";
             }
             else {
-                gifcgintrohori.style.width = "97%";
-                gifcgintrohori.style.height = gifcgintrohori.offsetWidth / (proporcao4por3 / 2) + "px";
+                fecharFundosComparacao[1].style.width = "97%";
+                fecharFundosComparacao[1].style.height = fecharFundosComparacao[1].offsetWidth / (proporcao4por3 / 2) + "px";
             }
         }
     }
@@ -297,13 +268,13 @@ function traduSilent() {
         alturafundo = alturajanela + "px";
         arrayfundos[numslide].style.height = alturafundo;
         if (largurajanela > alturajanela) {
-            for (let i = 0; i < comparar.length; i++) {
-                comparar[i].style.width = "55%";
+            for (let i = 0; i < abrirFundoComparacao.length; i++) {
+                abrirFundoComparacao[i].style.width = "55%";
             }
         }
         else {
-            for (let i = 0; i < comparar.length; i++) {
-                comparar[i].style.width = "90%";
+            for (let i = 0; i < abrirFundoComparacao.length; i++) {
+                abrirFundoComparacao[i].style.width = "90%";
             }
         }
     };
@@ -439,7 +410,7 @@ function traduSilent() {
     abrirFundosComparacao = function (e) {
         if (e.code === "Enter") {
             if (numslide >= 2) {
-                comparar[numslide - 2].click();
+                abrirFundoComparacao[numslide - 2].click();
             }
         }
     }
@@ -510,21 +481,8 @@ function traduSilent() {
                     imgchavesparaoeclipse.click();
                 }
                 break;
-
             case code = "Escape":
-                if (fundocomparacao.style.display === "block") {
-                    fecharfundo1.click();
-                }
-                else if (fundocomparacg.style.display === "block") {
-                    gifcgintrohori.click();
-                    gifcgintrovert.click();
-                }
-                else if (fundoantigasilenthill.style.display === "block") {
-                    fecharantigasilenthill.click();
-                }
-                else if (fundochavesparaoeclipse.style.display === "block") {
-                    fecharchavesparaoeclipse.click();
-                }
+                fecharFundosComparacao[numslide - 2].click();
                 break;
         }
     }
