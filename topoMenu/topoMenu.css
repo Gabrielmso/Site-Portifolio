@@ -25,15 +25,6 @@
     border-color: rgb(37, 37, 37);
 }
 
-p span {
-    color: #d5c06b;
-    transition: color 0.2s linear;
-}
-
-p span:hover {
-    color: #866c03;
-}
-
 #menu {
     position: fixed;
     top: 0%;
@@ -444,7 +435,7 @@ p span:hover {
 
 #opcoesmenu li:hover ul {
     max-height: 100px;
-    overflow: auto;
+    overflow-y: auto;
 }
 
 #opcoesmenu2 ul {

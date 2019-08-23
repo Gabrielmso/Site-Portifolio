@@ -1,23 +1,29 @@
-
-body{
+body {
     overflow: hidden;
 }
 
 #topoApresentacao {
     width: 100%;
     height: 100%;
+    overflow: auto;
+}
+
+#textoApresentacao {
+    position: relative;
+    overflow: hidden;
+    padding-top: 20px;
 }
 
 #imgFundo {
     position: fixed;
     width: 100%;
     height: 100%;
-    opacity: 0.73;
+    opacity: 0.45;
     z-index: -1;
     background-image: url("../imagens/imgs_Home/fundo.jpg");
     background-repeat: no-repeat;
     background-size: 100%;
-    transition: opacity 700ms ease-in-out;
+    transition: opacity 500ms ease-in-out;
 }
 
 #imgFundoBlur {
@@ -33,14 +39,23 @@ body{
 }
 
 #contentFoto {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: flex-end;
-    height: 100%;
     width: 40%;
+    height: 100%;
     float: left;
+}
+
+#apresentacao {
+    align-items: flex-start;
+    width: 59.99%;
+    height: 100%;
+    padding: 30px;
+}
+
+#texto {
+    font-family: "Fontetitulo1";
+    text-align: left;
+    display: inline-block;
 }
 
 #contentFoto img {
@@ -51,33 +66,102 @@ body{
     margin-right: 20px;
 }
 
+#bttSobreMim {
+    position: relative;
+    display: block;
+    height: 60px;
+    width: 150px;
+    border-radius: 30px;
+    border: solid 4px #0000ff;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #204dc9;
+    text-align: center;
+    font-size: 16px;
+}
+
+#bttSobreMim p {
+    line-height: 52px;
+}
+
+.fonte {
+    display: inline-block;
+    line-height: 30px;
+}
+
+.fonte1 {
+    font-size: 65px;
+    margin-bottom: 15px;
+}
+
+.fonte2 {
+    font-size: 50px;
+    margin-bottom: 15px;
+}
+
+.fonte3 {
+    font-size: 35px;
+    border-bottom: 2px solid white;
+    padding-bottom: 5px;
+    margin-bottom: 7px;
+}
+
+.fonte4 {
+    font-size: 28px;
+}
+
+.topo {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+}
+
 .content {
     width: 100%;
     height: 100%;
     max-width: 1440px;
     margin-left: auto;
     margin-right: auto;
-    padding-left: 50px;
-    padding-right: 50px;
-    padding-top: 0px;
 }
 
 @media screen and (max-width: 650px) {
     #contentFoto {
-        position: relative;
-        display: flex;
-        flex-direction: column-reverse;
-        /* justify-content: flex-end; */
-        justify-content: start;
+        justify-content: flex-end;
         align-items: center;
         height: 49.99%;
         width: 100%;
         float: none;
-        /* border: 2px solid white; */
+    }
+    #apresentacao {
+        justify-content: flex-start;
+        align-items: center;
+        height: 49.99%;
+        width: 100%;
     }
     #contentFoto img {
         width: 200px;
         height: 200px;
         margin-right: 0;
+    }
+    #texto {
+        text-align: center;
+    }
+    .fonte1 {
+        font-size: 55px;
+        display: inline-block;
+    }
+    .fonte2 {
+        font-size: 45px;
+        display: inline-block;
+    }
+    .fonte3 {
+        font-size: 30px;
+        display: inline-block;
+    }
+    .fonte4 {
+        font-size: 23px;
+        display: inline-block;
     }
 }

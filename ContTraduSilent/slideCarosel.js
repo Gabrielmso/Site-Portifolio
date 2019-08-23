@@ -1,21 +1,14 @@
 function slideCarosel() {
     let larguraJanela = window.innerWidth;
-    let alturaJanela = window.innerHeight;
 
-    const contents = document.getElementsByClassName("content"),
-        bttverdetalhes = document.getElementById("bttverdetalhes"),
-        compararFolhasCaderno = document.getElementById("compararFolhasCaderno"),
-        telaslide = document.getElementsByClassName("telaslide"),
-        slides = document.getElementsByClassName("slides"),
+    const compararFolhasCaderno = document.getElementById("compararFolhasCaderno"),
         fundocomparafolhas = document.getElementById("fundocomparafolhas"),
         folhascontentimgicons = document.getElementById("folhascontentimgicons"),
         folhasbtnLeft = document.getElementById("folhasbtnLeft"),
         folhasbtnRight = document.getElementById("folhasbtnRight"),
         fecharfolhas = document.getElementById("fecharfolhas"),
         slidesFolhas = [document.getElementById("imgtoschool"),
-        document.getElementById("imgdoghouse")];
-
-    const proporcao4por3 = (4 / 3),
+        document.getElementById("imgdoghouse")],
         left = ((70 * 4 / 3) / 2);
 
     let contSlides = 1;
@@ -49,6 +42,7 @@ function slideCarosel() {
         contSlides = 1;
         mudaSlideFolha();
     }
+
     iconfolhas[1].addEventListener("click", function () {
         leftimgicons = ((larguraJanela / 2) - left) - ((left * 2) * (1));
         contSlides = 2;
@@ -149,9 +143,6 @@ function slideCarosel() {
     });
 
     function clickSlideComparar() {//O que acontece quando o usuário clica em alguma imagem para comparar as edições.
-        fadeoutcontentsSlide();
-        tamanhoTelaSlide();
-        fundoCompararVisible = true;
         document.removeEventListener("keydown", abrirFundosComparacao);
         setTimeout(function () {
             document.addEventListener("keydown", funcoesSlideImgTeclado);
@@ -159,9 +150,7 @@ function slideCarosel() {
     }
 
     function clickFecharComparacaoSlide() {//O que acontece quando o usuário "fecha" alguma div de comparação.
-        fadeincontentsSlide();
         folhavisivel = false;
-        fundoCompararVisible = false;
         document.removeEventListener("keydown", funcoesSlideImgTeclado);
         setTimeout(function () {
             document.addEventListener("keydown", abrirFundosComparacao);
@@ -257,39 +246,6 @@ function slideCarosel() {
     };
     //____________________________________________________________________________________________________________________
 
-    function tamanhoTelaSlide() {
-        for (let i = 0; i < telaslide.length; i++) {
-            telaslide[i].style.height = (alturaJanela - 72) + "px";
-        }
-
-        for (let i = 0; i < slides.length; i++) {
-            if ((telaslide[i].offsetWidth / telaslide[i].offsetHeight) > proporcao4por3) {
-                slides[i].style.height = "97%";
-                slides[i].style.width = slides[i].offsetHeight * proporcao4por3 + "px";
-            }
-            else {
-                slides[i].style.width = "100%";
-                slides[i].style.height = slides[i].offsetWidth / proporcao4por3 + "px";
-            }
-        }
-    };
-
-    function fadeincontentsSlide() {//Faz todas as divs que possuem conteúdo "sumirem".
-        if (numslide != arrayfundos.length - 1) {
-            $(bttverdetalhes).fadeIn(700);
-        }
-        for (let i = 0; i < contents.length; i++) {
-            $(contents[i]).fadeIn(700);
-        }
-    };
-
-    function fadeoutcontentsSlide() {//Faz todas as divs que possuem conteúdo "aparecerem".       
-        $(bttverdetalhes).fadeOut(300);
-        for (let i = 0; i < contents.length; i++) {
-            $(contents[i]).fadeOut(300);
-        }
-    };
-
     function funcoesSlideImgTeclado(e) {
         switch (e.code) {
             case code = "Space":
@@ -366,11 +322,9 @@ function slideCarosel() {
 
     window.addEventListener("resize", function () {
         larguraJanela = window.innerWidth;
-        alturaJanela = window.innerHeight;
         leftimgicons = ((larguraJanela / 2) - left) - ((left * 2) * (contSlides - 1));
         folhascontentimgicons.style.left = leftimgicons + "px";
         escolacontentimgicons.style.left = leftimgicons + "px";
-        tamanhoTelaSlide();
         folhascontentimgicons.style.transition = "";
         escolacontentimgicons.style.transition = "";
         for (let i = 0; i < slidesFolhas.length; i++) {

@@ -57,6 +57,15 @@ h2 {
     font-family: "Fontetitulo1";
 }
 
+p span {
+    color: #d5c06b;
+    transition: color 0.2s linear;
+}
+
+p span:hover {
+    color: #866c03;
+}
+
 #about ul {
     list-style-position: inside;
 }

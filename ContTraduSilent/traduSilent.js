@@ -54,6 +54,8 @@ function traduSilent() {
         imgverlimp = document.getElementById("imgverlimp"),
         imgjap = document.getElementById("imgjap"),
         imglimp = document.getElementById("imglimp"),
+        slides = document.getElementsByClassName("slides"),
+        telaslide = document.getElementsByClassName("telaslide"),
         gifcgintrovert = document.getElementById("gifcgintrovert"),
         gifcgintrohori = document.getElementById("gifcgintrohori"),
         imgoldsilenthill = document.getElementById("imgoldsilenthill"),
@@ -102,9 +104,6 @@ function traduSilent() {
             $(arrayFundosComparacao[i]).fadeOut(300);
             document.addEventListener("keydown", mudarslide);
             clickFecharComparacao();
-            for (let i = 0; i < imgsComparacao.length; i++) {
-                imgsComparacao[i].style.opacity = "0";
-            }
         });
     }
 
@@ -234,6 +233,21 @@ function traduSilent() {
             else {
                 fecharFundosComparacao[1].style.width = "97%";
                 fecharFundosComparacao[1].style.height = fecharFundosComparacao[1].offsetWidth / (proporcao4por3 / 2) + "px";
+            }
+        }
+
+        for (let i = 0; i < telaslide.length; i++) {
+            telaslide[i].style.height = (alturajanela - 72) + "px";
+        }
+
+        for (let i = 0; i < slides.length; i++) {
+            if ((telaslide[i].offsetWidth / telaslide[i].offsetHeight) > proporcao4por3) {
+                slides[i].style.height = "98%";
+                slides[i].style.width = slides[i].offsetHeight * proporcao4por3 + "px";
+            }
+            else {
+                slides[i].style.width = "98%";
+                slides[i].style.height = slides[i].offsetWidth / proporcao4por3 + "px";
             }
         }
     }
@@ -489,6 +503,9 @@ function traduSilent() {
                 break;
             case code = "Escape":
                 fecharFundosComparacao[numslide - 2].click();
+                if (numslide === 2) {
+                    imgjap.click();
+                }
                 break;
         }
     }
@@ -542,6 +559,9 @@ function traduSilent() {
 
     function clickFecharComparacao() {//O que acontece quando o usuário "fecha" alguma div de comparação.
         fadeincontents();
+        for (let i = 0; i < imgsComparacao.length; i++) {
+            imgsComparacao[i].style.opacity = "0";
+        }
         imgvisivel = false;
         fundoCompararVisible = false;
         document.removeEventListener("keydown", funcoesImgComparacaoTeclado);
