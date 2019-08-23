@@ -51,6 +51,7 @@ body {
     width: 59.99%;
     height: 100%;
     padding-left: 20px;
+    padding-right: 20px;
 }
 
 #texto {
@@ -68,7 +69,8 @@ body {
 
 #bttSobreMim {
     position: relative;
-    display: block;
+    display: none;
+    opacity: 0;
     height: 60px;
     width: 150px;
     border-radius: 30px;
@@ -78,8 +80,13 @@ body {
     color: #204dc9;
     text-align: center;
     font-size: 16px;
-    left: 50%;
-    transform: translateX(-50%);
+    transition: opacity 700ms ease-in-out;
+}
+
+#bttSobreMimContainer{
+    position: relative;
+    height: 60px;
+    width: 150px;
 }
 
 #bttSobreMim p {
@@ -89,26 +96,29 @@ body {
 .fonte {
     display: inline-block;
     line-height: 30px;
+    opacity: 0;
+    transition: opacity 700ms ease-in-out, margin-left 700ms ease, border-bottom 1500ms ease-in-out;
 }
 
-.fonte1 {
+#txt1 {
     font-size: 65px;
     margin-bottom: 15px;
 }
 
-.fonte2 {
+#txt2 {
     font-size: 50px;
     margin-bottom: 15px;
+    margin-left: 78px;
 }
 
-.fonte3 {
+#txt3 {
     font-size: 35px;
-    border-bottom: 2px solid white;
+    border-bottom: 2px solid #ffffff00;
     padding-bottom: 5px;
     margin-bottom: 7px;
 }
 
-.fonte4 {
+#txt4 {
     font-size: 28px;
 }
 
@@ -143,10 +153,15 @@ body {
         height: 49.99%;
         width: 100%;
         padding-left: 0px;
+        padding-right: 0px;
     }
     #contentFoto img {
         width: 200px;
         height: 200px;
+    }
+    #bttSobreMimContainer {
+        left: 50%;
+        transform: translateX(-50%);
     }
     #texto {
         text-align: center;

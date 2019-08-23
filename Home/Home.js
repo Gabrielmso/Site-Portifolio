@@ -5,9 +5,15 @@ function home() {
     const topoApresentacao = document.getElementById("topoApresentacao"),
         imgFundos = [document.getElementById("imgFundo"),
         document.getElementById("imgFundoBlur")],
-        proporcaoImgFundo = 16/9;
+        proporcaoImgFundo = 16/9,
+        txt1 = document.getElementById("txt1"),
+        txt2 = document.getElementById("txt2"),
+        txt3 = document.getElementById("txt3"),
+        txt4 = document.getElementById("txt4"),
+        bttSobreMim = document.getElementById("bttSobreMim");;
 
     centralizaFundo();
+    setTimeout(carregamento, 1500);
 
     window.addEventListener("resize", function () {
         larguraJanela = window.innerWidth;
@@ -32,6 +38,31 @@ function home() {
             window.location.href = "index.html";
         }
     });
+
+    bttSobreMim.addEventListener("click", function() {
+        $("html, body").animate({ scrollTop: alturaJanela }, 700);
+    })
+
+    function carregamento () {
+        txt1.style.opacity = "1";
+        setTimeout(function(){
+            txt2.style.opacity = "1";
+            txt2.style.marginLeft = "8px";
+            setTimeout(function(){
+                txt3.style.opacity = "1";
+                setTimeout(function() {
+                    txt3.style.borderBottom = "2px solid #ffffff";
+                    setTimeout(function(){
+                        txt4.style.opacity = "1";
+                        bttSobreMim.style.display = "block";
+                        setTimeout(function(){
+                            bttSobreMim.style.opacity = "1";
+                        }, 1100);
+                    }, 1600);
+                }, 900);
+            },1200);
+        }, 1100);
+    }
 
     function centralizaFundo() {
         topoApresentacao.style.height = alturaJanela + "px";
