@@ -22,17 +22,20 @@ function home() {
     });
 
     document.addEventListener("scroll", throttle(function () {
-        if (scrollposicao > 50) {
+        if (scrollposicao > alturaJanela/2) {
             imgFundos[1].style.opacity = "1";
+            imgFundos[0].style.opacity = "0.75";
         }
         else {
             imgFundos[1].style.opacity = "0";
+            imgFundos[0].style.opacity = "0.55";
+
         }
     }, 120, true));
 
     logoBlack.addEventListener("click", function () {
         if (scrollposicao > 3) {
-            $("html, body").animate({ scrollTop: 0 }, 700);
+            $("html, body").animate({ scrollTop: 0 }, 900);
         }
         else {
             window.location.href = "index.html";
@@ -40,7 +43,7 @@ function home() {
     });
 
     bttSobreMim.addEventListener("click", function() {
-        $("html, body").animate({ scrollTop: alturaJanela }, 700);
+        $("html, body").animate({ scrollTop: alturaJanela }, 900);
     })
 
     function carregamento () {
@@ -57,7 +60,7 @@ function home() {
                         bttSobreMim.style.display = "block";
                         setTimeout(function(){
                             bttSobreMim.style.opacity = "1";
-                        }, 1100);
+                        }, 800);
                     }, 1600);
                 }, 900);
             },1200);

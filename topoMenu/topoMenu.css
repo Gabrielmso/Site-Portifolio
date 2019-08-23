@@ -344,6 +344,7 @@
     color: white;
     transition: all 0.5s ease;
     -webkit-transition: all 0.5s ease;
+    border-bottom: 3px solid rgba(213, 192, 107, 0);
 }
 
 #opcoesmenu ul a {
@@ -380,6 +381,7 @@
     color: #d5c06b;
     transition: all 0.35s;
     -webkit-transition: all 0.35s;
+    border-bottom: none;
 }
 
 #opcoesmenu2 li a:hover, #opcoesmenu2 li p:hover {
@@ -430,11 +432,14 @@
 }
 
 #opcoesmenu2 li:hover ul {
-    max-height: 100px;
+    max-height: 50px;
 }
 
 #opcoesmenu li:hover ul {
-    max-height: 100px;
+    max-height: 50px;
+}
+
+#opcoesmenu li ul:hover{
     overflow-y: auto;
 }
 
