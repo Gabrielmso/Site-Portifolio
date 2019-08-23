@@ -51,6 +51,13 @@ body {
     font-size: 40px;
 }
 
+.centraliza {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 .noSelection {
     -webkit-touch-callout: none;
     -webkit-user-select: none;

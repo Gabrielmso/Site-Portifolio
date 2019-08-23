@@ -43,13 +43,14 @@ body {
     width: 40%;
     height: 100%;
     float: left;
+    padding-right: 20px;
 }
 
 #apresentacao {
     align-items: flex-start;
     width: 59.99%;
     height: 100%;
-    padding: 30px;
+    padding-left: 20px;
 }
 
 #texto {
@@ -63,7 +64,6 @@ body {
     height: 250px;
     border-radius: 50%;
     border: 3px solid #d5c06b;
-    margin-right: 20px;
 }
 
 #bttSobreMim {
@@ -78,6 +78,8 @@ body {
     color: #204dc9;
     text-align: center;
     font-size: 16px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 #bttSobreMim p {
@@ -133,17 +135,18 @@ body {
         height: 49.99%;
         width: 100%;
         float: none;
+        padding-right: 0px;
     }
     #apresentacao {
         justify-content: flex-start;
         align-items: center;
         height: 49.99%;
         width: 100%;
+        padding-left: 0px;
     }
     #contentFoto img {
         width: 200px;
         height: 200px;
-        margin-right: 0;
     }
     #texto {
         text-align: center;

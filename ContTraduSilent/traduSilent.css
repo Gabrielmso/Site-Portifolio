@@ -575,13 +575,6 @@ p span:hover {
     text-shadow: 0px 0px 18px #fff;
 }
 
-.centraliza {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
 .imgslides {
     position: relative;
     display: block;
