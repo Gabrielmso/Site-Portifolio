@@ -1,11 +1,13 @@
 function home() {
     let larguraJanela = window.innerWidth;
     let alturaJanela = window.innerHeight;
+    let topo = true;
 
     const topoApresentacao = document.getElementById("topoApresentacao"),
+        sobreMim = document.getElementById("sobreMim"),
         imgFundos = [document.getElementById("imgFundo"),
         document.getElementById("imgFundoBlur")],
-        proporcaoImgFundo = 16/9,
+        proporcaoImgFundo = 16 / 9,
         txt1 = document.getElementById("txt1"),
         txt2 = document.getElementById("txt2"),
         txt3 = document.getElementById("txt3"),
@@ -19,17 +21,21 @@ function home() {
         larguraJanela = window.innerWidth;
         alturaJanela = window.innerHeight;
         centralizaFundo();
+        if(topo === false){
+            $("html, body").animate({ scrollTop: alturaJanela }, 0);
+        }
     });
 
     document.addEventListener("scroll", throttle(function () {
-        if (scrollposicao > alturaJanela/2) {
+        if (scrollposicao > alturaJanela / 2) {
             imgFundos[1].style.opacity = "1";
             imgFundos[0].style.opacity = "0.75";
+            topo = false;
         }
         else {
             imgFundos[1].style.opacity = "0";
             imgFundos[0].style.opacity = "0.55";
-
+            topo = true;
         }
     }, 120, true));
 
@@ -42,33 +48,34 @@ function home() {
         }
     });
 
-    bttSobreMim.addEventListener("click", function() {
+    bttSobreMim.addEventListener("click", function () {
         $("html, body").animate({ scrollTop: alturaJanela }, 900);
     })
 
-    function carregamento () {
+    function carregamento() {
         txt1.style.opacity = "1";
-        setTimeout(function(){
+        setTimeout(function () {
             txt2.style.opacity = "1";
             txt2.style.marginLeft = "8px";
-            setTimeout(function(){
+            setTimeout(function () {
                 txt3.style.opacity = "1";
-                setTimeout(function() {
+                setTimeout(function () {
                     txt3.style.borderBottom = "2px solid #ffffff";
-                    setTimeout(function(){
+                    setTimeout(function () {
                         txt4.style.opacity = "1";
                         bttSobreMim.style.display = "block";
-                        setTimeout(function(){
+                        setTimeout(function () {
                             bttSobreMim.style.opacity = "1";
                         }, 800);
                     }, 1600);
                 }, 900);
-            },1200);
+            }, 1200);
         }, 1100);
     }
 
     function centralizaFundo() {
         topoApresentacao.style.height = alturaJanela + "px";
+        sobreMim.style.height = topoApresentacao.style.height;
         let proporcaoJanela = larguraJanela / alturaJanela;
         if (proporcaoJanela <= proporcaoImgFundo) {
             let novaLargura = alturaJanela * proporcaoImgFundo;
