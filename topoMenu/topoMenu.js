@@ -73,7 +73,7 @@ function topoMenu() {
     }, 110, true));
 
     iconesetablack.addEventListener("click", function () {
-        $(socials).slideToggle(150);
+        $(socials).slideToggle(170);
         if (arraytracoseta[0].classList.contains("movertracoseta0") === true) {
             iconesetablacknormal();
         }

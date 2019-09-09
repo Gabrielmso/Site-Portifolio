@@ -60,7 +60,7 @@ function home() {
             setTimeout(function () {
                 txt3.style.opacity = "1";
                 setTimeout(function () {
-                    txt3.style.borderBottom = "2px solid #ffffff";
+                    txt3.style.borderBottom = "2px solid rgba(255, 255, 255, 0.302)";
                     setTimeout(function () {
                         txt4.style.opacity = "1";
                         bttSobreMim.style.display = "block";
