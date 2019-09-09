@@ -15,8 +15,10 @@ function home() {
         bttSobreMim = document.getElementById("bttSobreMim");;
 
     centralizaFundo();
-    setTimeout(carregamento, 1500);
-
+    topoApresentacao.style.display = "block";
+    sobreMim.style.display = "block";
+    setTimeout(carregamento, 1200);
+    
     window.addEventListener("resize", function () {
         larguraJanela = window.innerWidth;
         alturaJanela = window.innerHeight;
@@ -67,10 +69,10 @@ function home() {
                         setTimeout(function () {
                             bttSobreMim.style.opacity = "1";
                         }, 800);
-                    }, 1600);
-                }, 900);
-            }, 1200);
-        }, 1100);
+                    }, 1500);
+                }, 500);
+            }, 1100);
+        }, 1000);
     }
 
     function centralizaFundo() {
