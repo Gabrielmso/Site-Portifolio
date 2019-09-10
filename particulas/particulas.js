@@ -93,7 +93,7 @@ function particulas() {
 
             for (let i = 0; i < guardarParticula.length; i++) {
                if (i != this.ind) {
-                  const disLinha = 200;
+                  const disLinha = 190;
                   const dx = guardarParticula[i].posX - this.posX;//Distância no eixo X entre uma particula e outra.
                   const dy = guardarParticula[i].posY - this.posY;//Distância no eixo Y entre uma particula e outra.
                   const sr = this.raio + guardarParticula[i].raio;//Soma dos raios de uma particula e outra.
@@ -123,26 +123,26 @@ function particulas() {
                      colisao(this, guardarParticula[i], dx, dy);//Calcula a velocidade e o angulo q as particulas terão após encostarem uma na outra.
                   }
                   else if (disparticula.prim <= disLinha) {//Se elas não estiverem encostando, desenha uma linha entre as particulas se elas estiverem com uma distância menor que 200 pixels.
-                     let linhaOpacidade = (((disLinha - disparticula.prim) / disLinha) / 1.2);
+                     let linhaOpacidade = (((disLinha - disparticula.prim) / disLinha));
                      desenhaLinha(this.posX, this.posY, guardarParticula[i].posX, guardarParticula[i].posY, linhaOpacidade, false);
                   }
                   else if (novadisparticulaYbaixo.prim <= disLinha && this.posY >= alturaJanela - disLinha) {//Se a particula estiver próxima de uma extremidade e houver uma particula próxima a extremidade oposta uma linha é desenhada atravessando as extremidades até a outra particula.
-                     let linhaOpacidade = (((disLinha - novadisparticulaYbaixo.prim) / disLinha) / 1.2);
+                     let linhaOpacidade = (((disLinha - novadisparticulaYbaixo.prim) / disLinha));
                      let novaPosYBaixo = (novaPos.yBaixo + (guardarParticula[i].raio * 2));
                      desenhaLinha(this.posX, this.posY, guardarParticula[i].posX, novaPosYBaixo, linhaOpacidade, true);
                   }
                   else if (novadisparticulaYcima.prim <= disLinha && this.posY <= disLinha) {
-                     let linhaOpacidade = (((disLinha - novadisparticulaYcima.prim) / disLinha) / 1.2);
+                     let linhaOpacidade = (((disLinha - novadisparticulaYcima.prim) / disLinha));
                      let novaPosYCima = (novaPos.yCima - (guardarParticula[i].raio * 2));
                      desenhaLinha(this.posX, this.posY, guardarParticula[i].posX, novaPosYCima, linhaOpacidade, true);
                   }
                   else if (novadisparticulaXesquerda.prim <= disLinha && this.posX <= disLinha) {
-                     let linhaOpacidade = (((disLinha - novadisparticulaXesquerda.prim) / disLinha) / 1.2);
+                     let linhaOpacidade = (((disLinha - novadisparticulaXesquerda.prim) / disLinha));
                      let novaPosXEsq = (novaPos.xEsq - (guardarParticula[i].raio * 2));
                      desenhaLinha(this.posX, this.posY, novaPosXEsq, guardarParticula[i].posY, linhaOpacidade, true);
                   }
                   else if (novadisparticulaXdireita.prim <= disLinha && this.posX >= larguraJanela - disLinha) {
-                     let linhaOpacidade = (((disLinha - novadisparticulaXdireita.prim) / disLinha) / 1.2);
+                     let linhaOpacidade = (((disLinha - novadisparticulaXdireita.prim) / disLinha));
                      let novaPosXDir = (novaPos.xDir + (guardarParticula[i].raio * 2));
                      desenhaLinha(this.posX, this.posY, novaPosXDir, guardarParticula[i].posY, linhaOpacidade, true);
                   }
@@ -165,12 +165,13 @@ function particulas() {
 
    function desenhaLinha(posX, posY, posX2, posY2, opacidade, voltaLinha) {
       contexto.beginPath();
+      contexto.lineWidth = 0.65;
       contexto.moveTo(posX, posY);
       contexto.lineTo(posX2, posY2);
       if (voltaLinha === true) {
          contexto.lineTo(posX, posY);
       }
-      contexto.strokeStyle = "rgba(255,255,255," + opacidade + ')';
+      contexto.strokeStyle = "rgba(255, 255, 255, " + opacidade + ')';
       contexto.stroke();
       contexto.closePath();
    }
