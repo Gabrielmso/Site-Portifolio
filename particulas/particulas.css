@@ -13,3 +13,20 @@
     width: 100%;
     height: 100%;
 }
+
+#contentParticulas{
+    position: absolute;
+    font-family: "Fontetitulo1";
+    align-items: center;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;    
+}
+
+#contentParticulas a{
+    text-decoration: none;
+    color: #d5c06b;
+}
