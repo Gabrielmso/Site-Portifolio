@@ -432,11 +432,11 @@
 }
 
 #opcoesmenu2 li:hover ul {
-    max-height: 50px;
+    max-height: 100px;
 }
 
 #opcoesmenu li:hover ul {
-    max-height: 50px;
+    max-height: 100px;
 }
 
 #opcoesmenu li ul:hover{
