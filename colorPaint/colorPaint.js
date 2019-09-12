@@ -1,7 +1,8 @@
 function colorPaint() {
-    const corSelecionada = document.getElementById('corSelecionada');
+    const janelaSelecionarCor = document.getElementById("janelaSelecionarCor");
+    const corSelecionada = document.getElementById("corSelecionada");
+
     const barraeEspectroCor = document.getElementById("barraeEspectroCor");
-    const contentBarraeEspectroCor = document.getElementById("contentBarraeEspectroCor");
     let ctxBarra = barraeEspectroCor.getContext("2d");
     const widthBarra = barraeEspectroCor.width,
         heightBarra = barraeEspectroCor.height;
@@ -16,13 +17,15 @@ function colorPaint() {
     const codRGB = document.getElementById("codRGB");
 
     let corPuraVarrer = { R: 255, G: 0, B: 0 };
+    let hsvBarra = { H: 0, S: 100, V: 100 };
 
     let corParaAchar = {};
-    let hsvBarra = { H: 0, S: 100, V: 100 };
+    let clickBarra = false;
+    let posMouseSeletorCorX = 0;
+    let posMouseSeletorCorY = 0;
 
     preencheBarraEspectro();
     preencheGradiente();
-
 
     codRGB.addEventListener("keyup", function (e) {
         let codCorAchar = this.value;
@@ -40,44 +43,41 @@ function colorPaint() {
         }
     });
 
-    let clickBarra = false;
+    janelaSelecionarCor.addEventListener("click", moverCursoresMouse);
 
-
-    barraeEspectroCor.addEventListener("click", moverCursorBarraMouse)
-
-    contentBarraeEspectroCor.addEventListener("mousedown", function () {
+    janelaSelecionarCor.addEventListener("mousedown", function () {
         clickBarra = true;
-        // moverCursorBarraMouse();
-    })
+    });
 
-    contentBarraeEspectroCor.addEventListener("mouseup", function () {
+    janelaSelecionarCor.addEventListener("mouseup", function () {
         clickBarra = false;
-    })
+    });
 
-    barraeEspectroCor.addEventListener("mousemove", moverCursorBarraMouse);
+    janelaSelecionarCor.addEventListener("mousemove", pegarPosMouse);
+    function pegarPosMouse(e) {
+        let coordenadas = janelaSelecionarCor.getBoundingClientRect();
+        posMouseSeletorCorX = e.pageX - coordenadas.left;
+        posMouseSeletorCorY = e.pageY - coordenadas.top;
+        console.log(posMouseSeletorCorX, posMouseSeletorCorY);
+        if (clickBarra == true) {
+            moverCursoresMouse();
+        }
+    }
 
-    function moverCursorBarraMouse(e) {
-        if (clickBarra === true) {
-            let mouseX
-            if (e.offsetX) {
-                mouseX = e.offsetX;
-                mouseY = e.offsetY;
-            } else if (e.layerX) {
-                mouseX = e.layerX;
-            }
-            let data = ctxBarra.getImageData((mouseX * 6), mouseY, 1, 1).data;
-            let codCor = { R: data[0], G: data[1], B: data[2] };
-            hsvBarra = rgbToHsv(codCor);
-            encontrarCorDoCodigoNaBarra(codCor);
-        };
+    function moverCursoresMouse() {
+        if (posMouseSeletorCorX <= 540 && posMouseSeletorCorX >= 110 && posMouseSeletorCorY <= 265 && posMouseSeletorCorY >= 10) {
+            moverCursorGradiente(posMouseSeletorCorX - 120, posMouseSeletorCorY - 20)
+        }
+        else{
+            clickBarra = false;
+        }
     }
 
     function encontrarCorDoCodigoNoGradiente(s, v) {
         preencheGradiente();
         let posx = (gradienteCor.offsetWidth / 100) * s;
         let posy = gradienteCor.offsetHeight - ((gradienteCor.offsetHeight / 100) * v);
-        console.log("1, ", posx, posy);
-        moverCursorGradiente(posx - 10, posy - 10, corParaAchar);
+        moverCursorGradiente(posx - 10, posy - 10);
         encontrarCorDoCodigoNaBarra(corPuraVarrer);
     }
 
@@ -93,14 +93,6 @@ function colorPaint() {
                 i = data.length;
             }
         }
-    }
-
-    function moverCursorGradiente(x, y, cod) {
-        let corSelecionadaGradiente = "rgb(" + cod.R + ", " + cod.G + ", " + cod.B + ")"
-        cursorGradiente.style.left = x + "px";
-        cursorGradiente.style.top = y + "px";
-        cursorGradiente.style.backgroundColor = corSelecionadaGradiente;
-        corSelecionada.style.backgroundColor = corSelecionadaGradiente;
     }
 
     function moverCursorBarra(x, cor) {
@@ -124,6 +116,27 @@ function colorPaint() {
         ctxBarra.fill();
     }
 
+    function moverCursorGradiente(x, y) {
+        cursorGradiente.style.left = x + "px";
+        cursorGradiente.style.top = y + "px";
+        calcularCorPosiCursorGradiente();
+    }
+
+    function calcularCorPosiCursorGradiente() {
+        let S = (gradienteCor.offsetWidth - (gradienteCor.offsetWidth - (cursorGradiente.offsetLeft + 10))) * (100 / gradienteCor.offsetWidth);
+        let V = 100 - (gradienteCor.offsetHeight - (gradienteCor.offsetHeight - (cursorGradiente.offsetTop + 10))) * (100 / gradienteCor.offsetHeight);
+        if (S == 0) {
+            S = 0.02;
+        }
+        if (V == 0) {
+            V = 0.02;
+        }
+        let cor = hsvToRgb(hsvBarra.H, S, V);
+        cursorGradiente.style.backgroundColor = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
+        corSelecionada.style.backgroundColor = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
+        codRGB.value = cor.R + ", " + cor.G + ", " + cor.B;
+    }
+
     function preencheGradiente() {
         ctxGradiente.clearRect(0, 0, widthGradiente, heightGradiente);
         ctxGradiente.fillStyle = "rgb(" + corPuraVarrer.R + ", " + corPuraVarrer.G + ", " + corPuraVarrer.B + ")";
@@ -140,22 +153,10 @@ function colorPaint() {
         gradientePreto.addColorStop(1, "rgba(0, 0, 0, 1)");
         ctxGradiente.fillStyle = gradientePreto;
         ctxGradiente.fillRect(0, 0, widthGradiente, heightGradiente);
-        ctxGradiente.closePath();
-
-        let S = (gradienteCor.offsetWidth - (gradienteCor.offsetWidth - (cursorGradiente.offsetLeft + 10))) * (100 / gradienteCor.offsetWidth);
-        let V = 100 - (gradienteCor.offsetHeight - (gradienteCor.offsetHeight - (cursorGradiente.offsetTop + 10))) * (100 / gradienteCor.offsetHeight);
-        console.log("2, ", S, V);
-        if(S == 0){
-            S = 0.1;
-        }
-        if(V == 0){
-            V = 0.1;
-        }
-        let cor = hsvToRgb(hsvBarra.H, S, V);
-        cursorGradiente.style.backgroundColor = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
-        corSelecionada.style.backgroundColor = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
-        codRGB.value = cor.R + ", " + cor.G + ", " + cor.B;
+        ctxGradiente.closePath();        
     }
+
+    //================================================================================================================================
 
     function rgbToHsv(cor) {
         let rabs, gabs, babs, rr, gg, bb, h, v, diff, diffc, percentRoundFn;
