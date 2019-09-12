@@ -1,3 +1,4 @@
+let corEscolhida = "rbg(0, 0, 0)";
 function colorPaint() {
     const janelaSelecionarCor = document.getElementById("janelaSelecionarCor");
     const corSelecionada = document.getElementById("corSelecionada");
@@ -45,11 +46,15 @@ function colorPaint() {
 
     janelaSelecionarCor.addEventListener("click", moverCursoresMouse);
 
-    janelaSelecionarCor.addEventListener("mousedown", function () {
+    gradienteCor.addEventListener("mousedown", function () {
         clickBarra = true;
     });
 
     janelaSelecionarCor.addEventListener("mouseup", function () {
+        clickBarra = false;
+    });
+
+    document.addEventListener("mouseup", function () {
         clickBarra = false;
     });
 
@@ -59,17 +64,38 @@ function colorPaint() {
         posMouseSeletorCorX = e.pageX - coordenadas.left;
         posMouseSeletorCorY = e.pageY - coordenadas.top;
         console.log(posMouseSeletorCorX, posMouseSeletorCorY);
-        if (clickBarra == true) {
+        if (clickBarra === true) {
             moverCursoresMouse();
         }
     }
 
     function moverCursoresMouse() {
         if (posMouseSeletorCorX <= 540 && posMouseSeletorCorX >= 110 && posMouseSeletorCorY <= 265 && posMouseSeletorCorY >= 10) {
-            moverCursorGradiente(posMouseSeletorCorX - 120, posMouseSeletorCorY - 20)
+            moverCursorGradiente(posMouseSeletorCorX - 120, posMouseSeletorCorY - 20);
         }
-        else{
-            clickBarra = false;
+        else if (clickBarra === true && posMouseSeletorCorX > 540 && posMouseSeletorCorY < 10) {
+            moverCursorGradiente(540 - 120, 10 - 20);
+        }
+        else if (clickBarra === true && posMouseSeletorCorX > 540 && posMouseSeletorCorY < 265) {
+            moverCursorGradiente(540 - 120, posMouseSeletorCorY - 20);
+        }
+        else if (clickBarra === true && posMouseSeletorCorX > 540 && posMouseSeletorCorY >= 265) {
+            moverCursorGradiente(540 - 120, 265 - 20);
+        }
+        else if (clickBarra === true && posMouseSeletorCorX <= 540 && posMouseSeletorCorX >= 110 && posMouseSeletorCorY >= 265) {
+            moverCursorGradiente(posMouseSeletorCorX - 120, 265 - 20);
+        }
+        else if (clickBarra === true && posMouseSeletorCorX < 110 && posMouseSeletorCorY >= 265) {
+            moverCursorGradiente(110 - 120, 265 - 20);
+        }
+        else if (clickBarra === true && posMouseSeletorCorX < 110 && posMouseSeletorCorY < 265 && posMouseSeletorCorY > 10) {
+            moverCursorGradiente(110 - 120, posMouseSeletorCorY - 20);
+        }
+        else if (clickBarra === true && posMouseSeletorCorX < 110 && posMouseSeletorCorY <= 10) {
+            moverCursorGradiente(110 - 120, 10 - 20);
+        }
+        else if (clickBarra === true && posMouseSeletorCorX <= 540 && posMouseSeletorCorX >= 110 && posMouseSeletorCorY <= 10) {
+            moverCursorGradiente(posMouseSeletorCorX - 120, 10 - 20);
         }
     }
 
@@ -132,9 +158,11 @@ function colorPaint() {
             V = 0.02;
         }
         let cor = hsvToRgb(hsvBarra.H, S, V);
-        cursorGradiente.style.backgroundColor = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
-        corSelecionada.style.backgroundColor = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
-        codRGB.value = cor.R + ", " + cor.G + ", " + cor.B;
+        let stringCorRGB = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
+        cursorGradiente.style.backgroundColor = stringCorRGB;
+        corSelecionada.style.backgroundColor = stringCorRGB;
+        codRGB.value =  cor.R + ", " + cor.G + ", " + cor.B;
+        corEscolhida = stringCorRGB;
     }
 
     function preencheGradiente() {
@@ -153,7 +181,7 @@ function colorPaint() {
         gradientePreto.addColorStop(1, "rgba(0, 0, 0, 1)");
         ctxGradiente.fillStyle = gradientePreto;
         ctxGradiente.fillRect(0, 0, widthGradiente, heightGradiente);
-        ctxGradiente.closePath();        
+        ctxGradiente.closePath();
     }
 
     //================================================================================================================================

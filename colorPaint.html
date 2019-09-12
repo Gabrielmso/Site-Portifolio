@@ -104,17 +104,19 @@
         </div>
     </nav>
     <div id="janelaSelecionarCor">
-        <div id="corSelecionada"></div>
-        <div id="contentGradienteCor">
+        <div id="corSelecionada" class="noSelection"></div>
+        <div id="contentGradienteCor" class="noSelection">
             <canvas id="gradienteCor" width="860" height="510"></canvas>
             <div id="cursorGradiente" class="cursorSeletor">
-                    <div></div>
-                </div>
+                <div></div>
+            </div>
         </div>
-       
-        <div id="contentBarraeEspectroCor">
+
+        <div id="contentBarraeEspectroCor" class="noSelection">
             <canvas id="barraeEspectroCor" width="3180" height="20"></canvas>
-            <div id="cursorBarra" class="cursorSeletor"><div></div></div>
+            <div id="cursorBarra" class="cursorSeletor">
+                <div></div>
+            </div>
         </div>
         <label>RGB: </label><input id="codRGB" type="text">
     </div>
