@@ -2,6 +2,7 @@
 #janelaSelecionarCor{
     position: absolute;
     top: 150px;
+    left: 100px;
     background-color: rgb(37, 37, 39);
     width: 550px;
     height: 350px;

@@ -65,7 +65,7 @@ function colorPaint() {
             } else if (e.layerX) {
                 mouseX = e.layerX;
             }
-            let data = ctxBarra.getImageData((mouseX * 3), mouseY, 1, 1).data;
+            let data = ctxBarra.getImageData((mouseX * 6), mouseY, 1, 1).data;
             let codCor = { R: data[0], G: data[1], B: data[2] };
             hsvBarra = rgbToHsv(codCor);
             encontrarCorDoCodigoNaBarra(codCor);
@@ -76,6 +76,7 @@ function colorPaint() {
         preencheGradiente();
         let posx = (gradienteCor.offsetWidth / 100) * s;
         let posy = gradienteCor.offsetHeight - ((gradienteCor.offsetHeight / 100) * v);
+        console.log("1, ", posx, posy);
         moverCursorGradiente(posx - 10, posy - 10, corParaAchar);
         encontrarCorDoCodigoNaBarra(corPuraVarrer);
     }
@@ -88,7 +89,7 @@ function colorPaint() {
             if (R === cod.R && G === cod.G && B === cod.B) {//Verifica se as cores são iguais.
                 let x = i / 4 % widthBarra;//Calcula a coordenada do pixel daquela cor.
                 let codPixel = { R: R, G: G, B: B };//
-                moverCursorBarra(x / 3, codPixel);
+                moverCursorBarra(x / 6, codPixel);
                 i = data.length;
             }
         }
@@ -143,6 +144,7 @@ function colorPaint() {
 
         let S = (gradienteCor.offsetWidth - (gradienteCor.offsetWidth - (cursorGradiente.offsetLeft + 10))) * (100 / gradienteCor.offsetWidth);
         let V = 100 - (gradienteCor.offsetHeight - (gradienteCor.offsetHeight - (cursorGradiente.offsetTop + 10))) * (100 / gradienteCor.offsetHeight);
+        console.log("2, ", S, V);
         if(S == 0){
             S = 0.1;
         }
@@ -193,9 +195,9 @@ function colorPaint() {
     }
 
     function hsvToRgb(h, s, v) {
-        var r, g, b;
-        var i;
-        var f, p, q, t;
+        let r, g, b;
+        let i;
+        let f, p, q, t;
 
         h = Math.max(0, Math.min(360, h));
         s = Math.max(0, Math.min(100, s));
