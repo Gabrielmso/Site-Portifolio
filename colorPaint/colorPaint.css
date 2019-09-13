@@ -1,6 +1,6 @@
-
 /* ----------------------------Seletor de cores------------------------------- */
-#janelaSelecionarCor{
+
+#janelaSelecionarCor {
     position: absolute;
     top: 150px;
     left: 100px;
@@ -12,60 +12,86 @@
     box-shadow: 7px 7px 5px rgba(0, 0, 0, 0.349);
 }
 
-#corSelecionada{
+#janelaSelecionarCor input[type="text"] {
+    width: 100px;
+    display: inline-block;
+    background: rgba(0, 0, 0, 0);
+    color: rgb(173, 173, 173);
+    border: none;
+    text-align: center;
+    font-size: 14px;
+    outline: none;
+    padding: 2px;
+    text-transform: uppercase;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-bottom: 2px solid rgb(153, 153, 153);
+}
+
+#janelaSelecionarCor label {
+    display: inline-block;
+    background: rgba(0, 0, 0, 0);
+    color: rgb(173, 173, 173);
+    font-size: 14px;
+    outline: none;
+}
+
+#corSelecionada {
     background-color: rgb(255, 0, 0);
     width: 100px;
-    height:255px;
+    height: 255px;
     float: left;
     display: block;
 }
 
-#contentGradienteCor{
+#contentGradienteCor {
     position: relative;
     display: inline-block;
     width: 430px;
-    height:255px;
+    height: 255px;
 }
 
-#gradienteCor{
+#gradienteCor {
     width: 430px;
-    height:255px;
+    height: 255px;
 }
 
-#cursorGradiente{
+#cursorGradiente {
     top: -10px;
     left: 420px;
 }
 
-#cursorGradiente div{
+#cursorGradiente div {
     width: 100%;
     height: 100%;
     border-radius: 50%;
     border: 1px solid rgb(255, 255, 255);
 }
 
-#cursorBarra{
+#cursorBarra {
     top: 272px;
     left: 0px;
 }
 
-#cursorBarra div{
+#cursorBarra div {
     width: 100%;
     height: 100%;
     border-radius: 50%;
     border: 1px solid rgb(255, 255, 255);
 }
-#contentBarraeEspectroCor{
+
+#contentBarraeEspectroCor {
     width: 530px;
-    height:20px;
+    height: 20px;
+    margin-bottom: 7px;
 }
 
-#barraeEspectroCor{
+#barraeEspectroCor {
     width: 530px;
-    height:20px;
+    height: 20px;
 }
 
-.cursorSeletor{
+.cursorSeletor {
     position: absolute;
     display: inline-block;
     background-color: rgb(255, 0, 0);
@@ -75,3 +101,4 @@
     border: 1px solid rgb(0, 0, 0);
 }
 
+/* ----------------------------FIM Seletor de cores------------------------------- */
