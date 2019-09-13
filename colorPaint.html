@@ -103,25 +103,37 @@
             </ul>
         </div>
     </nav>
-    <div id="janelaSelecionarCor">
-        <div id="corSelecionada" class="noSelection"></div>
-        <div id="contentGradienteCor" class="noSelection">
-            <canvas id="gradienteCor" width="860" height="510"></canvas>
-            <div id="cursorGradiente" class="cursorSeletor">
-                <div></div>
+    <header id="colorPaintContent">
+        <div id="janelaSelecionarCor">
+            <div id="corSelecionada" class="noSelection"></div>
+            <div id="contentGradienteCor" class="noSelection">
+                <canvas id="gradienteCor" width="430" height="255"></canvas>
+                <div id="cursorGradiente" class="cursorSeletor">
+                    <div></div>
+                </div>
+            </div>
+
+            <div id="contentBarraeEspectroCor" class="noSelection">
+                <canvas id="barraeEspectroCor" width="530" height="20"></canvas>
+                <div id="cursorBarra" class="cursorSeletor">
+                    <div></div>
+                </div>
+            </div>
+            <label>RGB:</label><input id="codRGB" type="text">
+            <label>HEX:</label><input id="codHEX" type="text">
+            <div id="bttsSelecionarCor">
+                <div id="bttOk" class="botoesNoSelecionarCor cursor">
+                    <p>Ok</p>
+                </div>
+                <div id="bttSalvarCor" class="botoesNoSelecionarCor cursor">
+                    <p>Salvar cor</p>
+                </div>
+                <div id="bttCancelar" class="botoesNoSelecionarCor cursor">
+                    <p>Cancelar</p>
+                </div>
             </div>
         </div>
-
-        <div id="contentBarraeEspectroCor" class="noSelection">
-            <canvas id="barraeEspectroCor" width="3180" height="20"></canvas>
-            <div id="cursorBarra" class="cursorSeletor">
-                <div></div>
-            </div>
-        </div>
-        <label>RGB:</label><input id="codRGB" type="text">
-        <label>HEX:</label><input id="codHEX" type="text">
-    </div>
-
+    </header>
 </body>
 
 </html>

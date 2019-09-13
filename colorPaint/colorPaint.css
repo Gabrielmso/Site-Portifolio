@@ -1,4 +1,17 @@
 /* ----------------------------Seletor de cores------------------------------- */
+body, html{
+    width: 100%;
+    height: 100%;
+}
+
+#colorPaintContent{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 1920px;
+    margin-left: auto;
+    margin-right: auto;
+}
 
 #janelaSelecionarCor {
     position: absolute;
@@ -6,7 +19,7 @@
     left: 100px;
     background-color: rgb(37, 37, 39);
     width: 550px;
-    height: 350px;
+    height: 380px;
     border-radius: 7px;
     padding: 10px;
     box-shadow: 7px 7px 5px rgba(0, 0, 0, 0.349);
@@ -28,12 +41,11 @@
     border-bottom: 2px solid rgb(153, 153, 153);
 }
 
-#janelaSelecionarCor label {
+#janelaSelecionarCor label{
     display: inline-block;
     background: rgba(0, 0, 0, 0);
     color: rgb(173, 173, 173);
     font-size: 14px;
-    outline: none;
 }
 
 #corSelecionada {
@@ -91,6 +103,15 @@
     height: 20px;
 }
 
+#bttsSelecionarCor{
+    width: 530px;
+    height: 57px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    /* align-items: center; */
+}
+
 .cursorSeletor {
     position: absolute;
     display: inline-block;
@@ -99,6 +120,30 @@
     height: 20px;
     border-radius: 50%;
     border: 1px solid rgb(0, 0, 0);
+}
+
+.botoesNoSelecionarCor{
+    display: inline-block;
+    width: 110px;
+    height: 30px;
+    margin-left: 10px; 
+    margin-top: 17px;
+    text-transform: uppercase;
+    text-align: center;   
+    border-radius: 7px;
+    color: rgb(173, 173, 173);
+    font-size: 14px;
+    transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
+    background-color: rgb(71, 71, 71);
+}
+
+.botoesNoSelecionarCor p{
+    line-height: 30px;
+}
+
+.botoesNoSelecionarCor:hover{
+    background-color: rgb(30, 30, 30);
+    color: rgb(110, 110, 110);
 }
 
 /* ----------------------------FIM Seletor de cores------------------------------- */

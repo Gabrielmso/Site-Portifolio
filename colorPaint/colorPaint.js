@@ -33,8 +33,10 @@ function colorPaint() {
     janelaSelecionarCor.addEventListener("mousemove", pegarPosMouse);//Calcula a posição do mouse na "janelaSelecionarCor"
     function pegarPosMouse(e) {
         let coordenadas = janelaSelecionarCor.getBoundingClientRect();
-        posMouseSeletorCorX = e.pageX - coordenadas.left;
-        posMouseSeletorCorY = e.pageY - coordenadas.top;
+        let scrollposicaoY = document.body.scrollTop || document.documentElement.scrollTop;
+        let scrollposicaoX = document.body.scrollLeft || document.documentElement.scrollLeft;
+        posMouseSeletorCorX = e.pageX - coordenadas.left - scrollposicaoX;
+        posMouseSeletorCorY = e.pageY - coordenadas.top - scrollposicaoY;
         if (clickGradiente === true) {
             moverCursor2();
         }
@@ -272,10 +274,6 @@ function colorPaint() {
         if (resul) {
             return resul.slice(1, 4).map(function (x) { return parseInt(x, 16); });
         }
-        // resul = hex.match(/^#([0-9a-f])([0-9a-f])([0-9a-f])$/i);
-        // if (resul) {
-        //     return resul.slice(1, 4).map(function (x) { return 0x11 * parseInt(x, 16); });
-        // }
         return null;
     }
 
@@ -330,11 +328,10 @@ function colorPaint() {
         s = Math.max(0, Math.min(100, s));
         v = Math.max(0, Math.min(100, v));
 
-        s /= 100;
-        v /= 100;
+        s = s / 100;
+        v = v / 100;
 
-        if (s == 0) {
-            // Achromatic (grey)
+        if (s == 0) {//Cinza
             r = g = b = v;
             return [
                 Math.round(r * 255),
