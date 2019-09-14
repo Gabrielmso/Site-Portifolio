@@ -12,13 +12,63 @@ body, html {
     margin-right: auto;
 }
 
+#janelaPrincipal {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+#barraLateral {
+    position: relative;
+    float: left;
+    width: 120px;
+    height: 100%;
+    padding-top: 63px;
+    max-height: 1440px;
+    background-color: rgb(51, 51, 52);
+}
+
+#ferramentas {
+    position: static;
+    width: 100%;
+    height: 10px;
+}
+
+#coresSelecionadas {
+    position: relative;
+    width: 100%;
+    height: 58px;
+}
+
+#corPrincipal {
+    top: 5px;
+    left: 35px;
+    background-color: rgb(0, 0, 0);
+    z-index: 2;
+}
+
+#corSecundaria {
+    top: 20px;
+    left: 50px;
+    background-color: rgb(255, 255, 255);
+    z-index: 1;
+}
+
+.corEscolhida {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border: 1px solid rgb(0, 0, 0);
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.349);
+}
+
 /* ----------------------------Seletor de cores------------------------------- */
 
 #janelaSelecionarCor {
     position: absolute;
-    display: inline-block;
+    display: none;
     top: 150px;
-    left: 100px;
+    left: 140px;
     background-color: rgb(37, 37, 39);
     width: 550px;
     height: 380px;

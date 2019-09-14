@@ -1,9 +1,16 @@
-let corEscolhida = "rbg(0, 0, 0)";
+let corEscolhida = { R: 0, G: 0, B: 0 };;
 let janelaSelecionarCorVisivel = false;
 
 function colorPaint() {
+    const corPrincipal = document.getElementById("corPrincipal");
+    const corSecundaria = document.getElementById("corSecundaria");
     let corAtual = { R: 255, G: 0, B: 0 };
-    janelaSeletorDeCor(corAtual);
+
+
+    corPrincipal.addEventListener("click",function(){
+        janelaSeletorDeCor(corEscolhida);
+    });
+    
 }
 
 function janelaSeletorDeCor(corAtual) {
@@ -74,6 +81,10 @@ function janelaSeletorDeCor(corAtual) {
         }
     });
 
+    colorPaintContent.addEventListener("mouseleave", function () {
+        clickMoverJanela = false;
+    })
+
     codRGB.addEventListener("keyup", function (e) {
         let codCorAchar = this.value;
         codCorAchar = codCorAchar.split(",") || codCorAchar.split(", ");
@@ -129,15 +140,12 @@ function janelaSeletorDeCor(corAtual) {
         clickGradiente = true;
     });
 
-    janelaSelecionarCor.addEventListener("mouseup", function () {
-        clickGradiente = false;
-        clickBarra = false;
-        clickMoverJanela = false;
-    });
-
     document.addEventListener("mouseup", function () {
         clickGradiente = false;
         clickBarra = false;
+        clickGradiente = false;
+        clickBarra = false;
+        clickMoverJanela = false;
     });
 
     bttCancelar.addEventListener("click", function () {
@@ -213,7 +221,11 @@ function janelaSeletorDeCor(corAtual) {
         let limiteCima = y - (posMouseMoverJanela.Y);
         let limiteBaixo = y + (janelaSelecionarCor.offsetHeight - posMouseMoverJanela.Y);
 
-        if(limiteDireita >= colorPaintContent.offsetWidth && limiteBaixo >= colorPaintContent.offsetHeight - 7){
+        if(limiteDireita < colorPaintContent.offsetWidth && limiteEsquerda > 0 && limiteCima > 62 && limiteBaixo < colorPaintContent.offsetHeight - 7){
+            janelaSelecionarCor.style.left = novaPosicaoXJanela + "px";
+            janelaSelecionarCor.style.top = novaPosicaoYJanela + "px";
+        }
+        else if(limiteDireita >= colorPaintContent.offsetWidth && limiteBaixo >= colorPaintContent.offsetHeight - 7){
             janelaSelecionarCor.style.left = (colorPaintContent.offsetWidth - janelaSelecionarCor.offsetWidth) + "px";
             janelaSelecionarCor.style.top = (colorPaintContent.offsetHeight - janelaSelecionarCor.offsetHeight) - 7 + "px";
         }
@@ -244,12 +256,6 @@ function janelaSeletorDeCor(corAtual) {
         else if(limiteBaixo >= colorPaintContent.offsetHeight - 7){
             janelaSelecionarCor.style.left = novaPosicaoXJanela + "px";
             janelaSelecionarCor.style.top = (colorPaintContent.offsetHeight - janelaSelecionarCor.offsetHeight) - 7 + "px";
-        }
-        
-
-        else{
-            janelaSelecionarCor.style.left = novaPosicaoXJanela + "px";
-            janelaSelecionarCor.style.top = novaPosicaoYJanela + "px";
         }
     }
 
@@ -337,7 +343,7 @@ function janelaSeletorDeCor(corAtual) {
         corSelecionada.style.backgroundColor = stringCorRGB;
         codHEX.value = rgbTohex(cor);
         codRGB.value = cor.R + ", " + cor.G + ", " + cor.B;
-        corEscolhida = stringCorRGB;
+        corEscolhida = cor;
     }
 
     function preencheGradiente() {
