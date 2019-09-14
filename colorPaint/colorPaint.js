@@ -1,14 +1,15 @@
-let corEscolhida = { R: 0, G: 0, B: 0 };
 let janelaSelecionarCorVisivel = false;
 let corPrincipal, corSecundaria, corPrincipalOuSecundaria;
 let corEscolhidaPrincipal = { R: 0, G: 0, B: 0 };
 let corEscolhidaSecudaria = { R: 255, G: 255, B: 255 };
+let arrayCoresSalvas = [];
 let janelaSeleciona;
 
 function colorPaint() {
     const corAtual = document.getElementById("corAtual");
     corPrincipal = document.getElementById("corPrincipal");
     corSecundaria = document.getElementById("corSecundaria");
+    janelaSeleciona = new janelaSeletorDeCor(corEscolhidaSecudaria);
 
     corPrincipal.addEventListener("click", function () {
         if (janelaSelecionarCorVisivel === true) {
@@ -17,7 +18,9 @@ function colorPaint() {
         else {
             corPrincipalOuSecundaria = 1;
             corAtual.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
-            janelaSeleciona = new janelaSeletorDeCor(corEscolhidaPrincipal);
+            janelaSelecionarCor.style.display = "block";
+            janelaSelecionarCorVisivel = true;
+            janelaSeleciona.procurarCor(corEscolhidaPrincipal);
         }
     });
     corSecundaria.addEventListener("click", function () {
@@ -27,12 +30,16 @@ function colorPaint() {
         else {
             corPrincipalOuSecundaria = 2;
             corAtual.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.R + ", " + corEscolhidaSecudaria.G + ", " + corEscolhidaSecudaria.B + ")";
-            janelaSeleciona = new janelaSeletorDeCor(corEscolhidaSecudaria);
+            janelaSelecionarCor.style.display = "block";
+            janelaSelecionarCorVisivel = true;
+            janelaSeleciona.procurarCor(corEscolhidaSecudaria);
         }
     });
 }
 
 function janelaSeletorDeCor(corAtual) {
+    let corEscolhida = { R: 0, G: 0, B: 0 };
+    const coresSalvas = document.getElementById("coresSalvas");
     const colorPaintContent = document.getElementById("colorPaintContent");
     const janelaSelecionarCor = document.getElementById("janelaSelecionarCor");
     const bttOk = document.getElementById("bttOk");
@@ -73,9 +80,6 @@ function janelaSeletorDeCor(corAtual) {
         encontrarCorDoCodigoNoGradiente(hsvBarra.S, hsvBarra.V);
     }
 
-    janelaSelecionarCor.style.display = "block";
-    janelaSelecionarCorVisivel = true;
-
     preencheBarraEspectro();
     this.procurarCor(corAtual);
 
@@ -92,7 +96,6 @@ function janelaSeletorDeCor(corAtual) {
         else if (clickBarra === true) {
             moverCursor1();
         }
-
     }
 
     colorPaintContent.addEventListener("mousemove", function (e) {
@@ -184,12 +187,51 @@ function janelaSeletorDeCor(corAtual) {
         }
         janelaSelecionarCor.style.display = "none";
         janelaSelecionarCorVisivel = false;
+
+        for (let i = 0; i < arrayCoresSalvas.length; i++) {
+            arrayCoresSalvas[i].selecionado = false;
+            arrayCoresSalvas[i].elemento.style.border = "none";
+        }
+    });
+
+    bttSalvarCor.addEventListener("click", function () {
+        let cor = "background-color: rgb(" + corEscolhida.R + ", " + corEscolhida.G + ", " + corEscolhida.B + ");";
+        let id = "corSalva" + (arrayCoresSalvas.length);
+        let corSalva = document.createElement("div");
+        let div = document.createElement("div");
+        corSalva.setAttribute("id", id);
+        corSalva.setAttribute("class", "corSalva cursor");
+        corSalva.setAttribute("style", cor);
+        let infoCorSalva = { id: arrayCoresSalvas.length, elemento: corSalva, cor: { R: corEscolhida.R, G: corEscolhida.G, B: corEscolhida.B }, selecionado: false }
+        arrayCoresSalvas.push(infoCorSalva);
+        coresSalvas.appendChild(corSalva);
+        corSalva.appendChild(div);
+        for (let i = 0; i < arrayCoresSalvas.length; i++) {
+            arrayCoresSalvas[i].elemento.addEventListener("click", function () {
+                bttCorSalva(arrayCoresSalvas[i]);
+            });
+        }
     });
 
     bttCancelar.addEventListener("click", function () {
         janelaSelecionarCor.style.display = "none";
         janelaSelecionarCorVisivel = false;
     });
+
+    function bttCorSalva(el) {
+        if (janelaSelecionarCorVisivel === false) {
+            el.selecionado = true;
+            el.elemento.style.border = "1px solid rgb(255, 255, 255)";
+            corEscolhidaPrincipal = el.cor;
+            corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+            for (let i = 0; i < arrayCoresSalvas.length; i++) {
+                if (i != el.id) {
+                    arrayCoresSalvas[i].selecionado = false;
+                    arrayCoresSalvas[i].elemento.style.border = "none";
+                }
+            }
+        }
+    }
 
     function moverCursor1() {
         if (posMouseSeletorCorX <= 540 && posMouseSeletorCorX >= 10 && posMouseSeletorCorY <= 292 && posMouseSeletorCorY >= 272) {
