@@ -1,10 +1,9 @@
-/* ----------------------------Seletor de cores------------------------------- */
-body, html{
+body, html {
     width: 100%;
     height: 100%;
 }
 
-#colorPaintContent{
+#colorPaintContent {
     position: relative;
     width: 100%;
     height: 100%;
@@ -13,8 +12,11 @@ body, html{
     margin-right: auto;
 }
 
+/* ----------------------------Seletor de cores------------------------------- */
+
 #janelaSelecionarCor {
     position: absolute;
+    display: inline-block;
     top: 150px;
     left: 100px;
     background-color: rgb(37, 37, 39);
@@ -23,6 +25,7 @@ body, html{
     border-radius: 7px;
     padding: 10px;
     box-shadow: 7px 7px 5px rgba(0, 0, 0, 0.349);
+    z-index: 10000;
 }
 
 #janelaSelecionarCor input[type="text"] {
@@ -41,7 +44,7 @@ body, html{
     border-bottom: 2px solid rgb(153, 153, 153);
 }
 
-#janelaSelecionarCor label{
+#janelaSelecionarCor label {
     display: inline-block;
     background: rgba(0, 0, 0, 0);
     color: rgb(173, 173, 173);
@@ -49,7 +52,7 @@ body, html{
 }
 
 #corSelecionada {
-    background-color: rgb(255, 0, 0);
+    /* background-color: rgb(255, 0, 0); */
     width: 100px;
     height: 255px;
     float: left;
@@ -103,7 +106,7 @@ body, html{
     height: 20px;
 }
 
-#bttsSelecionarCor{
+#bttsSelecionarCor {
     width: 530px;
     height: 57px;
     display: flex;
@@ -115,21 +118,21 @@ body, html{
 .cursorSeletor {
     position: absolute;
     display: inline-block;
-    background-color: rgb(255, 0, 0);
+    /* background-color: rgb(255, 0, 0); */
     width: 20px;
     height: 20px;
     border-radius: 50%;
     border: 1px solid rgb(0, 0, 0);
 }
 
-.botoesNoSelecionarCor{
+.botoesNoSelecionarCor {
     display: inline-block;
     width: 110px;
     height: 30px;
-    margin-left: 10px; 
+    margin-left: 10px;
     margin-top: 17px;
     text-transform: uppercase;
-    text-align: center;   
+    text-align: center;
     border-radius: 7px;
     color: rgb(173, 173, 173);
     font-size: 14px;
@@ -137,11 +140,11 @@ body, html{
     background-color: rgb(71, 71, 71);
 }
 
-.botoesNoSelecionarCor p{
+.botoesNoSelecionarCor p {
     line-height: 30px;
 }
 
-.botoesNoSelecionarCor:hover{
+.botoesNoSelecionarCor:hover {
     background-color: rgb(30, 30, 30);
     color: rgb(110, 110, 110);
 }
