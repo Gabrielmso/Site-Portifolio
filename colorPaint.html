@@ -110,15 +110,23 @@
 
                 </div>
                 <div id="coresSelecionadas">
-                    <div id="corPrincipal" class="corEscolhida cursor"></div>
-                    <div id="corSecundaria" class="corEscolhida cursor"></div>
+                    <div id="corPrincipal" class="corEscolhida cursor">
+                        <div></div>
+                    </div>
+                    <div id="corSecundaria" class="corEscolhida cursor">
+                        <div></div>
+                    </div>
                 </div>
                 <div id="coresSalvas"></div>
 
             </div>
         </div>
+        <!-- ================================JANELA PARA SELECIONAR COR========================== -->
         <div id="janelaSelecionarCor">
-            <div id="corSelecionada" class="noSelection"></div>
+            <div id="comparaCorAtualEEscolhida">
+                <div id="corSelecionada" class="noSelection"></div>
+                <div id="corAtual" class="noSelection"></div>
+            </div>
             <div id="contentGradienteCor" class="noSelection">
                 <canvas id="gradienteCor" width="430" height="255"></canvas>
                 <div id="cursorGradiente" class="cursorSeletor">
@@ -146,6 +154,7 @@
                 </div>
             </div>
         </div>
+        <!-- ================================FIM JANELA PARA SELECIONAR COR========================== -->
     </header>
 </body>
 

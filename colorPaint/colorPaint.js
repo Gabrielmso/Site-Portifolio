@@ -3,17 +3,32 @@ let janelaSelecionarCorVisivel = false;
 let corPrincipal, corSecundaria, corPrincipalOuSecundaria;
 let corEscolhidaPrincipal = { R: 0, G: 0, B: 0 };
 let corEscolhidaSecudaria = { R: 255, G: 255, B: 255 };
+let janelaSeleciona;
+
 function colorPaint() {
+    const corAtual = document.getElementById("corAtual");
     corPrincipal = document.getElementById("corPrincipal");
     corSecundaria = document.getElementById("corSecundaria");
 
-    corPrincipal.addEventListener("click",function(){
-        corPrincipalOuSecundaria = 1;
-        janelaSeletorDeCor(corEscolhidaPrincipal);
+    corPrincipal.addEventListener("click", function () {
+        if (janelaSelecionarCorVisivel === true) {
+            janelaSeleciona.procurarCor(corEscolhidaPrincipal);
+        }
+        else {
+            corPrincipalOuSecundaria = 1;
+            corAtual.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+            janelaSeleciona = new janelaSeletorDeCor(corEscolhidaPrincipal);
+        }
     });
-    corSecundaria.addEventListener("click",function(){
-        corPrincipalOuSecundaria = 2;
-        janelaSeletorDeCor(corEscolhidaSecudaria);
+    corSecundaria.addEventListener("click", function () {
+        if (janelaSelecionarCorVisivel === true) {
+            janelaSeleciona.procurarCor(corEscolhidaSecudaria);
+        }
+        else {
+            corPrincipalOuSecundaria = 2;
+            corAtual.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.R + ", " + corEscolhidaSecudaria.G + ", " + corEscolhidaSecudaria.B + ")";
+            janelaSeleciona = new janelaSeletorDeCor(corEscolhidaSecudaria);
+        }
     });
 }
 
@@ -52,11 +67,17 @@ function janelaSeletorDeCor(corAtual) {
     let posMouseSeletorCorX = 0;//Armazena a posição atual no eixo X na "janelaSelecionarCor";
     let posMouseSeletorCorY = 0;//Armazena a posição atual no eixo Y na "janelaSelecionarCor";    
 
+    this.procurarCor = function (color) {
+        hsvBarra = rgbToHsv(color); //Converte a cor digitada de RGB para HSV.
+        rgbBarra = hsvToRgb(hsvBarra.H, 100, 100); //Converte a cor pura em RGB.
+        encontrarCorDoCodigoNoGradiente(hsvBarra.S, hsvBarra.V);
+    }
+
     janelaSelecionarCor.style.display = "block";
     janelaSelecionarCorVisivel = true;
 
     preencheBarraEspectro();
-    procurarCor(corAtual);
+    this.procurarCor(corAtual);
 
     janelaSelecionarCor.addEventListener("mousemove", pegarPosMouse);//Calcula a posição do mouse na "janelaSelecionarCor"
     function pegarPosMouse(e) {
@@ -81,7 +102,7 @@ function janelaSeletorDeCor(corAtual) {
             let scrollposicaoX = document.body.scrollLeft || document.documentElement.scrollLeft;
             let posMouseXcolorPaintContent = e.pageX - coordenadas.left - scrollposicaoX;
             let posMouseYcolorPaintContent = e.pageY - coordenadas.top - scrollposicaoY;
-            moverjanelaSelecionarCorNaPagina(posMouseXcolorPaintContent, posMouseYcolorPaintContent)
+            moverjanelaSelecionarCorNaPagina(posMouseXcolorPaintContent, posMouseYcolorPaintContent);
         }
     });
 
@@ -98,7 +119,7 @@ function janelaSeletorDeCor(corAtual) {
         if (codCorAchar.length === 3) {
             if (codCorAchar[0] <= 255 && codCorAchar[1] <= 255 && codCorAchar[2] <= 255) {
                 corParaAchar = { R: codCorAchar[0], G: codCorAchar[1], B: codCorAchar[2] }
-                procurarCor(corParaAchar);
+                janelaSeleciona.procurarCor(corParaAchar);
             }
         }
     });
@@ -111,8 +132,8 @@ function janelaSeletorDeCor(corAtual) {
         let codCorAchar = hexToRgb(codCorHEX);
         if (codCorAchar != null) {
             if (codCorAchar[0] <= 255 && codCorAchar[1] <= 255 && codCorAchar[2] <= 255) {
-                corParaAchar = { R: codCorAchar[0], G: codCorAchar[1], B: codCorAchar[2] }
-                procurarCor(corParaAchar);
+                corParaAchar = { R: codCorAchar[0], G: codCorAchar[1], B: codCorAchar[2] };
+                janelaSeleciona.procurarCor(corParaAchar);
             }
         }
     });
@@ -153,11 +174,11 @@ function janelaSeletorDeCor(corAtual) {
     });
 
     bttOk.addEventListener("click", function (e) {
-        if(corPrincipalOuSecundaria === 1){
+        if (corPrincipalOuSecundaria === 1) {
             corEscolhidaPrincipal = corEscolhida;
             corPrincipal.style.backgroundColor = "rgb(" + corEscolhida.R + ", " + corEscolhida.G + ", " + corEscolhida.B + ")";
         }
-        else if(corPrincipalOuSecundaria === 2){
+        else if (corPrincipalOuSecundaria === 2) {
             corEscolhidaSecudaria = corEscolhida;
             corSecundaria.style.backgroundColor = "rgb(" + corEscolhida.R + ", " + corEscolhida.G + ", " + corEscolhida.B + ")";
         }
@@ -174,29 +195,31 @@ function janelaSeletorDeCor(corAtual) {
         if (posMouseSeletorCorX <= 540 && posMouseSeletorCorX >= 10 && posMouseSeletorCorY <= 292 && posMouseSeletorCorY >= 272) {
             moverCursorBarra(posMouseSeletorCorX - 10, true);
         }
-        else if (clickBarra === true && posMouseSeletorCorX > 540 && posMouseSeletorCorY < 272) {
-            moverCursorBarra(540 - 10, true);
-        }
-        else if (clickBarra === true && posMouseSeletorCorX > 540 && posMouseSeletorCorY < 292) {
-            moverCursorBarra(540 - 10, true);
-        }
-        else if (clickBarra === true && posMouseSeletorCorX > 540 && posMouseSeletorCorY >= 292) {
-            moverCursorBarra(540 - 10, true);
-        }
-        else if (clickBarra === true && posMouseSeletorCorX <= 540 && posMouseSeletorCorX >= 10 && posMouseSeletorCorY >= 292) {
-            moverCursorBarra(posMouseSeletorCorX - 10, true);
-        }
-        else if (clickBarra === true && posMouseSeletorCorX < 10 && posMouseSeletorCorY >= 292) {
-            moverCursorBarra(10 - 10, true);
-        }
-        else if (clickBarra === true && posMouseSeletorCorX < 10 && posMouseSeletorCorY < 292 && posMouseSeletorCorY > 272) {
-            moverCursorBarra(10 - 10, true);
-        }
-        else if (clickBarra === true && posMouseSeletorCorX < 10 && posMouseSeletorCorY <= 272) {
-            moverCursorBarra(10 - 10, true);
-        }
-        else if (clickBarra === true && posMouseSeletorCorX <= 540 && posMouseSeletorCorX >= 10 && posMouseSeletorCorY <= 272) {
-            moverCursorBarra(posMouseSeletorCorX - 10, true);
+        else if (clickBarra === true) {
+            if (posMouseSeletorCorX > 540 && posMouseSeletorCorY < 272) {
+                moverCursorBarra(540 - 10, true);
+            }
+            else if (posMouseSeletorCorX > 540 && posMouseSeletorCorY < 292) {
+                moverCursorBarra(540 - 10, true);
+            }
+            else if (posMouseSeletorCorX > 540 && posMouseSeletorCorY >= 292) {
+                moverCursorBarra(540 - 10, true);
+            }
+            else if (posMouseSeletorCorX <= 540 && posMouseSeletorCorX >= 10 && posMouseSeletorCorY >= 292) {
+                moverCursorBarra(posMouseSeletorCorX - 10, true);
+            }
+            else if (posMouseSeletorCorX < 10 && posMouseSeletorCorY >= 292) {
+                moverCursorBarra(10 - 10, true);
+            }
+            else if (posMouseSeletorCorX < 10 && posMouseSeletorCorY < 292 && posMouseSeletorCorY > 272) {
+                moverCursorBarra(10 - 10, true);
+            }
+            else if (posMouseSeletorCorX < 10 && posMouseSeletorCorY <= 272) {
+                moverCursorBarra(10 - 10, true);
+            }
+            else if (clickBarra === true && posMouseSeletorCorX <= 540 && posMouseSeletorCorX >= 10 && posMouseSeletorCorY <= 272) {
+                moverCursorBarra(posMouseSeletorCorX - 10, true);
+            }
         }
     }
 
@@ -204,29 +227,31 @@ function janelaSeletorDeCor(corAtual) {
         if (posMouseSeletorCorX <= 540 && posMouseSeletorCorX >= 110 && posMouseSeletorCorY <= 265 && posMouseSeletorCorY >= 10) {
             moverCursorGradiente(posMouseSeletorCorX - 120, posMouseSeletorCorY - 20);
         }
-        else if (clickGradiente === true && posMouseSeletorCorX > 540 && posMouseSeletorCorY < 10) {
-            moverCursorGradiente(540 - 120, 10 - 20);
-        }
-        else if (clickGradiente === true && posMouseSeletorCorX > 540 && posMouseSeletorCorY < 265) {
-            moverCursorGradiente(540 - 120, posMouseSeletorCorY - 20);
-        }
-        else if (clickGradiente === true && posMouseSeletorCorX > 540 && posMouseSeletorCorY >= 265) {
-            moverCursorGradiente(540 - 120, 265 - 20);
-        }
-        else if (clickGradiente === true && posMouseSeletorCorX <= 540 && posMouseSeletorCorX >= 110 && posMouseSeletorCorY >= 265) {
-            moverCursorGradiente(posMouseSeletorCorX - 120, 265 - 20);
-        }
-        else if (clickGradiente === true && posMouseSeletorCorX < 110 && posMouseSeletorCorY >= 265) {
-            moverCursorGradiente(110 - 120, 265 - 20);
-        }
-        else if (clickGradiente === true && posMouseSeletorCorX < 110 && posMouseSeletorCorY < 265 && posMouseSeletorCorY > 10) {
-            moverCursorGradiente(110 - 120, posMouseSeletorCorY - 20);
-        }
-        else if (clickGradiente === true && posMouseSeletorCorX < 110 && posMouseSeletorCorY <= 10) {
-            moverCursorGradiente(110 - 120, 10 - 20);
-        }
-        else if (clickGradiente === true && posMouseSeletorCorX <= 540 && posMouseSeletorCorX >= 110 && posMouseSeletorCorY <= 10) {
-            moverCursorGradiente(posMouseSeletorCorX - 120, 10 - 20);
+        else if (clickGradiente === true) {
+            if (posMouseSeletorCorX > 540 && posMouseSeletorCorY < 10) {
+                moverCursorGradiente(540 - 120, 10 - 20);
+            }
+            else if (posMouseSeletorCorX > 540 && posMouseSeletorCorY < 265) {
+                moverCursorGradiente(540 - 120, posMouseSeletorCorY - 20);
+            }
+            else if (posMouseSeletorCorX > 540 && posMouseSeletorCorY >= 265) {
+                moverCursorGradiente(540 - 120, 265 - 20);
+            }
+            else if (posMouseSeletorCorX <= 540 && posMouseSeletorCorX >= 110 && posMouseSeletorCorY >= 265) {
+                moverCursorGradiente(posMouseSeletorCorX - 120, 265 - 20);
+            }
+            else if (posMouseSeletorCorX < 110 && posMouseSeletorCorY >= 265) {
+                moverCursorGradiente(110 - 120, 265 - 20);
+            }
+            else if (posMouseSeletorCorX < 110 && posMouseSeletorCorY < 265 && posMouseSeletorCorY > 10) {
+                moverCursorGradiente(110 - 120, posMouseSeletorCorY - 20);
+            }
+            else if (posMouseSeletorCorX < 110 && posMouseSeletorCorY <= 10) {
+                moverCursorGradiente(110 - 120, 10 - 20);
+            }
+            else if (clickGradiente === true && posMouseSeletorCorX <= 540 && posMouseSeletorCorX >= 110 && posMouseSeletorCorY <= 10) {
+                moverCursorGradiente(posMouseSeletorCorX - 120, 10 - 20);
+            }
         }
     }
 
@@ -238,23 +263,23 @@ function janelaSeletorDeCor(corAtual) {
         let limiteCima = y - (posMouseMoverJanela.Y);
         let limiteBaixo = y + (janelaSelecionarCor.offsetHeight - posMouseMoverJanela.Y);
 
-        if(limiteDireita < colorPaintContent.offsetWidth && limiteEsquerda > 0 && limiteCima > 62 && limiteBaixo < colorPaintContent.offsetHeight - 7){
+        if (limiteDireita < colorPaintContent.offsetWidth && limiteEsquerda > 0 && limiteCima > 62 && limiteBaixo < colorPaintContent.offsetHeight - 7) {
             janelaSelecionarCor.style.left = novaPosicaoXJanela + "px";
             janelaSelecionarCor.style.top = novaPosicaoYJanela + "px";
         }
-        else if(limiteDireita >= colorPaintContent.offsetWidth && limiteBaixo >= colorPaintContent.offsetHeight - 7){
+        else if (limiteDireita >= colorPaintContent.offsetWidth && limiteBaixo >= colorPaintContent.offsetHeight - 7) {
             janelaSelecionarCor.style.left = (colorPaintContent.offsetWidth - janelaSelecionarCor.offsetWidth) + "px";
             janelaSelecionarCor.style.top = (colorPaintContent.offsetHeight - janelaSelecionarCor.offsetHeight) - 7 + "px";
         }
-        else if(limiteEsquerda <= 0 && limiteBaixo >= colorPaintContent.offsetHeight - 7){
+        else if (limiteEsquerda <= 0 && limiteBaixo >= colorPaintContent.offsetHeight - 7) {
             janelaSelecionarCor.style.left = "0px";
             janelaSelecionarCor.style.top = (colorPaintContent.offsetHeight - janelaSelecionarCor.offsetHeight) - 7 + "px";
         }
-        else if(limiteEsquerda <= 0 && limiteCima <= 62){
+        else if (limiteEsquerda <= 0 && limiteCima <= 62) {
             janelaSelecionarCor.style.left = "0px";
             janelaSelecionarCor.style.top = "62px";
-        } 
-        else if(limiteDireita >= colorPaintContent.offsetWidth && limiteCima <= 62){
+        }
+        else if (limiteDireita >= colorPaintContent.offsetWidth && limiteCima <= 62) {
             janelaSelecionarCor.style.left = (colorPaintContent.offsetWidth - janelaSelecionarCor.offsetWidth) + "px";
             janelaSelecionarCor.style.top = "62px";
         }
@@ -262,24 +287,18 @@ function janelaSeletorDeCor(corAtual) {
             janelaSelecionarCor.style.left = (colorPaintContent.offsetWidth - janelaSelecionarCor.offsetWidth) + "px";
             janelaSelecionarCor.style.top = novaPosicaoYJanela + "px";
         }
-        else if (limiteEsquerda <= 0){
+        else if (limiteEsquerda <= 0) {
             janelaSelecionarCor.style.left = "0px";
             janelaSelecionarCor.style.top = novaPosicaoYJanela + "px";
         }
-        else if(limiteCima <= 62){
+        else if (limiteCima <= 62) {
             janelaSelecionarCor.style.left = novaPosicaoXJanela + "px";
             janelaSelecionarCor.style.top = "62px";
         }
-        else if(limiteBaixo >= colorPaintContent.offsetHeight - 7){
+        else if (limiteBaixo >= colorPaintContent.offsetHeight - 7) {
             janelaSelecionarCor.style.left = novaPosicaoXJanela + "px";
             janelaSelecionarCor.style.top = (colorPaintContent.offsetHeight - janelaSelecionarCor.offsetHeight) - 7 + "px";
         }
-    }
-
-    function procurarCor(color) {
-        hsvBarra = rgbToHsv(color); //Converte a cor digitada de RGB para HSV.
-        rgbBarra = hsvToRgb(hsvBarra.H, 100, 100); //Converte a cor pura em RGB.
-        encontrarCorDoCodigoNoGradiente(hsvBarra.S, hsvBarra.V);
     }
 
     function encontrarCorDoCodigoNoGradiente(s, v) {
