@@ -1,4 +1,7 @@
 body, html {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
     width: 100%;
     height: 100%;
 }
@@ -9,8 +12,6 @@ body, html {
     height: 100%;
     max-width: 1920px;
     max-height: 1080px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 #janelaPrincipal {
@@ -30,12 +31,13 @@ body, html {
 #contentTools {
     position: relative;
     width: 100%;
-    height: 100%;
+    height: 545px;
 }
 
 #barraLateralEsquerda {
     position: relative;
     float: left;
+    overflow: hidden;
     width: 120px;
     height: 100%;
     padding-top: 10px;
@@ -109,7 +111,7 @@ body, html {
     padding: 10px;
     max-height: 160px;
     overflow-x: auto;
-    background-color: rgb(37, 37, 39);
+    background-color: rgb(37, 37, 39);;
     border-radius: 7px;
     left: 10px;
     top: 10px;
@@ -124,12 +126,64 @@ body, html {
     left: 22px;
     border-radius: 7px;
     background-color: rgb(80, 80, 80);
+    transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
 }
 
 #bttRemoverCorSalva p {
     color: rgb(136, 136, 136);
     text-align: center;
     line-height: 18px;
+}
+
+#bttRemoverCorSalva:hover {
+    background-color: rgb(37, 37, 39);
+    color: rgb(110, 110, 110);
+}
+
+#barraLateralDireita{
+    position: relative;
+    font-size: 12px;
+    overflow: hidden;
+    color: rgb(122, 122, 122);
+    float: right;
+    width: 300px;
+    height: 100%;
+    padding: 10px;
+    max-height: 1440px;
+    border-left: 4px solid rgb(37, 37, 39);
+    background-color: rgb(51, 51, 52);
+}
+
+#janelaPreview{  
+    height: 170px;
+}
+
+#janelaInfo{
+    height: 100px;
+}
+
+#janelaCamadas{
+    height: 200px;
+}
+
+.janelasBarraLateralDireita{
+    position: relative;
+    width: 100%;
+    background-color: rgb(37, 37, 39);;
+    border-radius: 7px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+.janelasBarraLateralDireita label{
+    position: absolute;
+    z-index: 5;
+    width: 70px;
+    text-align: center;
+    background-color: rgb(37, 37, 39);;
+    top: -9px;
+    border-radius: 4px;
+    left: 10px;
 }
 
 .corSalva {

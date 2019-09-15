@@ -62,7 +62,7 @@ function colorPaint() {
             corEscolhidaSecudaria = cor;
         }
     });
-    
+
     window.addEventListener("resize", function () {
        contentTools.style.height =  janelaPrincipal.offsetHeight - 90 + "px";
     });
@@ -82,6 +82,8 @@ function colorPaint() {
         }
     }
 }
+
+// ==========================================================================================================================================================================================================================================
 
 function janelaSeletorDeCor(corAtual) {
     let corEscolhida = { R: 0, G: 0, B: 0 }; //Armazena a cor selecionada com o cursor "cursorGradiente";
@@ -155,10 +157,6 @@ function janelaSeletorDeCor(corAtual) {
             moverjanelaSelecionarCorNaPagina(posMouseXcolorPaintContent, posMouseYcolorPaintContent);
         }
     });
-
-    colorPaintContent.addEventListener("mouseleave", function () {
-        clickMoverJanela = false;
-    })
 
     codRGB.addEventListener("keyup", function (e) {
         let codCorAchar = this.value;
@@ -390,7 +388,7 @@ function janelaSeletorDeCor(corAtual) {
         let limiteCima = y - (posMouseMoverJanela.Y);
         let limiteBaixo = y + (janelaSelecionarCor.offsetHeight - posMouseMoverJanela.Y);
 
-        if (limiteDireita < colorPaintContent.offsetWidth && limiteEsquerda > 0 && limiteCima > 62 && limiteBaixo < colorPaintContent.offsetHeight - 7) {
+        if (limiteDireita < colorPaintContent.offsetWidth && limiteEsquerda > 0 && limiteCima > 50 && limiteBaixo < colorPaintContent.offsetHeight - 7) {
             janelaSelecionarCor.style.left = novaPosicaoXJanela + "px";
             janelaSelecionarCor.style.top = novaPosicaoYJanela + "px";
         }
@@ -402,13 +400,13 @@ function janelaSeletorDeCor(corAtual) {
             janelaSelecionarCor.style.left = "0px";
             janelaSelecionarCor.style.top = (colorPaintContent.offsetHeight - janelaSelecionarCor.offsetHeight) - 7 + "px";
         }
-        else if (limiteEsquerda <= 0 && limiteCima <= 62) {
+        else if (limiteEsquerda <= 0 && limiteCima <= 50) {
             janelaSelecionarCor.style.left = "0px";
-            janelaSelecionarCor.style.top = "62px";
+            janelaSelecionarCor.style.top = "50px";
         }
-        else if (limiteDireita >= colorPaintContent.offsetWidth && limiteCima <= 62) {
+        else if (limiteDireita >= colorPaintContent.offsetWidth && limiteCima <= 50) {
             janelaSelecionarCor.style.left = (colorPaintContent.offsetWidth - janelaSelecionarCor.offsetWidth) + "px";
-            janelaSelecionarCor.style.top = "62px";
+            janelaSelecionarCor.style.top = "50px";
         }
         else if (limiteDireita >= colorPaintContent.offsetWidth) {
             janelaSelecionarCor.style.left = (colorPaintContent.offsetWidth - janelaSelecionarCor.offsetWidth) + "px";
@@ -418,9 +416,9 @@ function janelaSeletorDeCor(corAtual) {
             janelaSelecionarCor.style.left = "0px";
             janelaSelecionarCor.style.top = novaPosicaoYJanela + "px";
         }
-        else if (limiteCima <= 62) {
+        else if (limiteCima <= 50) {
             janelaSelecionarCor.style.left = novaPosicaoXJanela + "px";
-            janelaSelecionarCor.style.top = "62px";
+            janelaSelecionarCor.style.top = "50px";
         }
         else if (limiteBaixo >= colorPaintContent.offsetHeight - 7) {
             janelaSelecionarCor.style.left = novaPosicaoXJanela + "px";
