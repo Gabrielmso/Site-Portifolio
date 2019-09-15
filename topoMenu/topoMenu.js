@@ -1,6 +1,7 @@
 let arrayop = [];//Declarada aqui para usar em outros arquivos JS.
 let logoBlack;
 let scrollposicao;
+let mudarMenu = true;
 let iconemenublack, iconesetablack, opcoesmenu2, fundomenu, menu, submenu, socials, traco1, traco2, traco3ocument;
 function topoMenu() {
     iconemenublack = document.getElementById("iconemenublack");
@@ -42,7 +43,7 @@ function topoMenu() {
         scrollposicao = document.body.scrollTop || document.documentElement.scrollTop;
         iconesetablacknormal();
         $(socials).slideUp("fast");
-        if (scrollposicao > 5) {
+        if (scrollposicao > 5 && mudarMenu == true) {
             menu.classList.remove("iniciomenu");
             menu.classList.add("mudamenu");
             logoBlack.classList.remove("iniciologoBlack");
@@ -125,28 +126,30 @@ function topoMenu() {
     };
 
     function telamenor651px() {
-        if (scrollposicao > 5) {
-            menu.classList.remove("iniciomenu");
-            menu.classList.add("mudamenu");
-            logoBlack.classList.remove("iniciologoBlack");
-            logoBlack.classList.add("mudalogoBlack");
-        }
-        else {
-            menu.classList.remove("mudamenu");
-            menu.classList.add("iniciomenu");
-            logoBlack.classList.remove("mudalogoBlack");
-            logoBlack.classList.add("iniciologoBlack");
-        }
+        if (mudarMenu === true) {
+            if (scrollposicao > 5) {
+                menu.classList.remove("iniciomenu");
+                menu.classList.add("mudamenu");
+                logoBlack.classList.remove("iniciologoBlack");
+                logoBlack.classList.add("mudalogoBlack");
+            }
+            else {
+                menu.classList.remove("mudamenu");
+                menu.classList.add("iniciomenu");
+                logoBlack.classList.remove("mudalogoBlack");
+                logoBlack.classList.add("iniciologoBlack");
+            }
 
-        if (window.innerWidth > 650) {
-            logoBlack.style.left = "0px";
-            fundomenu.classList.remove("abrefundomenu");
-            fundomenu.classList.add("fechafundomenu");
-            traco1.classList.remove("movertraco1");
-            traco1.classList.add("iniciotraco1");
-            traco2.classList.remove("movertraco2");
-            traco3.classList.remove("movertraco3");
-            traco3.classList.add("iniciotraco3");
+            if (window.innerWidth > 650) {
+                logoBlack.style.left = "0px";
+                fundomenu.classList.remove("abrefundomenu");
+                fundomenu.classList.add("fechafundomenu");
+                traco1.classList.remove("movertraco1");
+                traco1.classList.add("iniciotraco1");
+                traco2.classList.remove("movertraco2");
+                traco3.classList.remove("movertraco3");
+                traco3.classList.add("iniciotraco3");
+            }
         }
     };
     function redimencionarjanela() {

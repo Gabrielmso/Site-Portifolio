@@ -4,12 +4,19 @@ let corEscolhidaPrincipal = { R: 0, G: 0, B: 0 };
 let corEscolhidaSecudaria = { R: 255, G: 255, B: 255 };
 let arrayCoresSalvas = [];
 let janelaSeleciona;
-
+mudarMenu = false;
 function colorPaint() {
+    mudarMenu();
+    const contentTools = document.getElementById("contentTools");
+    const janelaPrincipal = document.getElementById("janelaPrincipal");
     const corAtual = document.getElementById("corAtual");
+    const bttCoresPrincipais = document.getElementById("bttCoresPrincipais");
+    const bttAlternaCor = document.getElementById("bttAlternaCor");
     corPrincipal = document.getElementById("corPrincipal");
     corSecundaria = document.getElementById("corSecundaria");
     janelaSeleciona = new janelaSeletorDeCor(corEscolhidaPrincipal);
+
+    contentTools.style.height =  janelaPrincipal.offsetHeight - 90 + "px";
 
     corPrincipal.addEventListener("click", function () {
         if (janelaSelecionarCorVisivel === true) {
@@ -23,6 +30,7 @@ function colorPaint() {
             janelaSeleciona.procurarCor(corEscolhidaPrincipal);
         }
     });
+
     corSecundaria.addEventListener("click", function () {
         if (janelaSelecionarCorVisivel === true) {
             janelaSeleciona.procurarCor(corEscolhidaSecudaria);
@@ -35,6 +43,44 @@ function colorPaint() {
             janelaSeleciona.procurarCor(corEscolhidaSecudaria);
         }
     });
+
+    bttCoresPrincipais.addEventListener("click", function () {
+        if (janelaSelecionarCorVisivel === false) {
+            corEscolhidaPrincipal = { R: 0, G: 0, B: 0 };
+            corEscolhidaSecudaria = { R: 255, G: 255, B: 255 };
+            corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+            corSecundaria.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.R + ", " + corEscolhidaSecudaria.G + ", " + corEscolhidaSecudaria.B + ")";
+        }
+    });
+
+    bttAlternaCor.addEventListener("click", function () {
+        if (janelaSelecionarCorVisivel === false) {
+            corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.R + ", " + corEscolhidaSecudaria.G + ", " + corEscolhidaSecudaria.B + ")";
+            corSecundaria.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+            let cor = corEscolhidaPrincipal;
+            corEscolhidaPrincipal = corEscolhidaSecudaria;
+            corEscolhidaSecudaria = cor;
+        }
+    });
+    
+    window.addEventListener("resize", function () {
+       contentTools.style.height =  janelaPrincipal.offsetHeight - 90 + "px";
+    });
+
+    function mudarMenu() {
+        menu.classList.remove("iniciomenu");
+        menu.classList.add("mudamenu");
+        logoBlack.classList.remove("iniciologoBlack");
+        logoBlack.classList.add("mudalogoBlack");
+        iconesetablack.classList.remove("inicioiconeblack");
+        iconesetablack.classList.add("mudaiconeblack");
+        iconemenublack.classList.remove("inicioiconeblack");
+        iconemenublack.classList.add("mudaiconeblack");
+        for (let i = 0; i < arrayop.length; i++) {
+            arrayop[i].classList.remove("inicioopcoes");
+            arrayop[i].classList.add("mudaopcoes");
+        }
+    }
 }
 
 function janelaSeletorDeCor(corAtual) {
