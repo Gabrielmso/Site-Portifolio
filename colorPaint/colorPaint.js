@@ -9,7 +9,7 @@ function colorPaint() {
     const corAtual = document.getElementById("corAtual");
     corPrincipal = document.getElementById("corPrincipal");
     corSecundaria = document.getElementById("corSecundaria");
-    janelaSeleciona = new janelaSeletorDeCor(corEscolhidaSecudaria);
+    janelaSeleciona = new janelaSeletorDeCor(corEscolhidaPrincipal);
 
     corPrincipal.addEventListener("click", function () {
         if (janelaSelecionarCorVisivel === true) {
@@ -44,6 +44,7 @@ function janelaSeletorDeCor(corAtual) {
     const janelaSelecionarCor = document.getElementById("janelaSelecionarCor");
     const bttOk = document.getElementById("bttOk");
     const bttSalvarCor = document.getElementById("bttSalvarCor");
+    const bttRemoverCorSalva = document.getElementById("bttRemoverCorSalva");;
     const bttCancelar = document.getElementById("bttCancelar");
 
     const corSelecionada = document.getElementById("corSelecionada");//div que receberá a cor selecionada.
@@ -145,6 +146,7 @@ function janelaSeletorDeCor(corAtual) {
         moverCursor1();
         moverCursor2();
     });
+
     janelaSelecionarCor.addEventListener("mousedown", function () {
         if (posMouseSeletorCorY < 10 && clickBarra === false && clickGradiente === false) {
             clickMoverJanela = true;
@@ -195,21 +197,54 @@ function janelaSeletorDeCor(corAtual) {
     });
 
     bttSalvarCor.addEventListener("click", function () {
-        let cor = "background-color: rgb(" + corEscolhida.R + ", " + corEscolhida.G + ", " + corEscolhida.B + ");";
-        let id = "corSalva" + (arrayCoresSalvas.length);
-        let corSalva = document.createElement("div");
-        let div = document.createElement("div");
-        corSalva.setAttribute("id", id);
-        corSalva.setAttribute("class", "corSalva cursor");
-        corSalva.setAttribute("style", cor);
-        let infoCorSalva = { id: arrayCoresSalvas.length, elemento: corSalva, cor: { R: corEscolhida.R, G: corEscolhida.G, B: corEscolhida.B }, selecionado: false }
-        arrayCoresSalvas.push(infoCorSalva);
-        coresSalvas.appendChild(corSalva);
-        corSalva.appendChild(div);
+        let corJaSalva = false;
+        bttRemoverCorSalva.style.display = "block";
         for (let i = 0; i < arrayCoresSalvas.length; i++) {
-            arrayCoresSalvas[i].elemento.addEventListener("click", function () {
-                bttCorSalva(arrayCoresSalvas[i]);
-            });
+            let cor = arrayCoresSalvas[i].cor;
+            if (cor.R === corEscolhida.R && cor.G === corEscolhida.G && cor.B === corEscolhida.B) {
+                corJaSalva = true;
+                alert("Essa cor já está salva!");
+            }
+        }
+        if (corJaSalva === false) {
+            let cor = "background-color: rgb(" + corEscolhida.R + ", " + corEscolhida.G + ", " + corEscolhida.B + ");";
+            let id = "cor" + (arrayCoresSalvas.length);
+            let corSalva = document.createElement("div");
+            let div = document.createElement("div");
+            corSalva.setAttribute("id", id);
+            corSalva.setAttribute("class", "corSalva cursor");
+            corSalva.setAttribute("style", cor);
+            let infoCorSalva = { id: arrayCoresSalvas.length, elemento: corSalva, cor: { R: corEscolhida.R, G: corEscolhida.G, B: corEscolhida.B }, selecionado: false }
+            arrayCoresSalvas.push(infoCorSalva);
+            coresSalvas.appendChild(corSalva);
+            corSalva.appendChild(div);
+            arrayCoresSalvas[arrayCoresSalvas.length - 1].elemento.addEventListener("click", bttCorSalva);
+        }
+    });
+
+    bttRemoverCorSalva.addEventListener("click", function () {
+        if (janelaSelecionarCorVisivel === false) {
+            let novoArray = [];
+            for (let i = 0; i < arrayCoresSalvas.length; i++) {
+                arrayCoresSalvas[i].elemento.removeEventListener("click", bttCorSalva);
+                if (arrayCoresSalvas[i].selecionado === true) {
+                    coresSalvas.removeChild(arrayCoresSalvas[i].elemento);
+                }
+                else {
+                    novoArray.push(arrayCoresSalvas[i]);
+                }
+            }
+            arrayCoresSalvas = novoArray;
+            for (let i = 0; i < arrayCoresSalvas.length; i++) {
+                let id = "cor" + (i);
+                arrayCoresSalvas[i].id = i;
+                arrayCoresSalvas.selecionado = false;
+                arrayCoresSalvas[i].elemento.setAttribute("id", id);
+                arrayCoresSalvas[i].elemento.addEventListener("click", bttCorSalva);
+            };
+            if (arrayCoresSalvas.length === 0) {
+                bttRemoverCorSalva.style.display = "none";
+            }
         }
     });
 
@@ -218,14 +253,18 @@ function janelaSeletorDeCor(corAtual) {
         janelaSelecionarCorVisivel = false;
     });
 
-    function bttCorSalva(el) {
+    function bttCorSalva() {
         if (janelaSelecionarCorVisivel === false) {
-            el.selecionado = true;
-            el.elemento.style.border = "1px solid rgb(255, 255, 255)";
-            corEscolhidaPrincipal = el.cor;
+            let txtId = this.getAttribute("id");
+            id = txtId.substring(3, 4);
+            id = parseInt(id);
+            arrayCoresSalvas[id].selecionado = true;
+            arrayCoresSalvas[id].elemento.style.border = "1px solid rgb(255, 255, 255)";
+            corEscolhidaPrincipal = arrayCoresSalvas[id].cor;
             corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+
             for (let i = 0; i < arrayCoresSalvas.length; i++) {
-                if (i != el.id) {
+                if (i != id) {
                     arrayCoresSalvas[i].selecionado = false;
                     arrayCoresSalvas[i].elemento.style.border = "none";
                 }

@@ -72,19 +72,36 @@ body, html {
     width: 100px;
     height: auto;
     padding: 10px;
-    max-height: 210px;
+    max-height: 200px;
     overflow-x: auto;
     background-color: rgb(37, 37, 39);
     border-radius: 7px;
     left: 10px;
     top: 10px;
+    margin-bottom: 15px;
+}
+
+#bttRemoverCorSalva{
+    position: relative;
+    display: none;
+    width: 75px;
+    height: 20px;
+    left: 22px;
+    border-radius: 7px;
+    background-color: rgb(80, 80, 80);
+}
+
+#bttRemoverCorSalva p{
+   color: rgb(136, 136, 136);
+   text-align: center;
+   line-height: 18px;
 }
 
 .corSalva{
     position: relative;
     display: inline-block;
     width: 21px;
-    height: 21px;
+    height: 20px;
     border-radius: 50%;
     margin-left: 12px;
 }
