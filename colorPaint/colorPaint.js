@@ -38,7 +38,7 @@ function colorPaint() {
 }
 
 function janelaSeletorDeCor(corAtual) {
-    let corEscolhida = { R: 0, G: 0, B: 0 };
+    let corEscolhida = { R: 0, G: 0, B: 0 }; //Armazena a cor selecionada com o cursor "cursorGradiente";
     const coresSalvas = document.getElementById("coresSalvas");
     const colorPaintContent = document.getElementById("colorPaintContent");
     const janelaSelecionarCor = document.getElementById("janelaSelecionarCor");
@@ -62,8 +62,8 @@ function janelaSeletorDeCor(corAtual) {
     const codRGB = document.getElementById("codRGB");
     const codHEX = document.getElementById("codHEX");
 
-    let rgbBarra = { R: 255, G: 0, B: 0 };//Armazena a cor selecionada na "barraeEspectroCor" no formato RGB.
-    let hsvBarra = { H: 0, S: 100, V: 100 };//Armazena a cor selecionada na "barraeEspectroCor" no formato HSV.
+    let rgbBarra = { R: 255, G: 0, B: 0 };
+    let hsvBarra = { H: 0, S: 100, V: 100 };
     codRGB.value = "255, 0, 0";
     codHEX.value = "#ff0000";
 
@@ -256,7 +256,7 @@ function janelaSeletorDeCor(corAtual) {
     function bttCorSalva() {
         if (janelaSelecionarCorVisivel === false) {
             let txtId = this.getAttribute("id");
-            id = txtId.substring(3, 4);
+            id = txtId.substring(3, 7);
             id = parseInt(id);
             arrayCoresSalvas[id].selecionado = true;
             arrayCoresSalvas[id].elemento.style.border = "1px solid rgb(255, 255, 255)";
