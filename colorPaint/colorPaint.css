@@ -254,12 +254,13 @@ body, html {
     display: none;
     top: 150px;
     left: 140px;
+    border-top: 1px solid rgb(65, 65, 65);
     background-color: rgb(37, 37, 37);
     width: 550px;
     height: 380px;
     border-radius: 7px;
     padding: 10px;
-    box-shadow: 7px 7px 5px rgba(0, 0, 0, 0.349);
+    box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.3);
     z-index: 10000;
 }
 
