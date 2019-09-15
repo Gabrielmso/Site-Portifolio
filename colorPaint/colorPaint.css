@@ -6,6 +6,11 @@ body, html {
     height: 100%;
 }
 
+p {
+    margin: 0px;
+    padding: 0px;
+}
+
 #colorPaintContent {
     position: relative;
     width: 100%;
@@ -20,7 +25,6 @@ body, html {
     height: 100%;
 }
 
-
 #barraSuperior {
     position: relative;
     width: 100%;
@@ -31,7 +35,6 @@ body, html {
 }
 
 #bttCriarNovoProjeto {
-    width: 140px;
     float: right;
 }
 
@@ -42,17 +45,20 @@ body, html {
     border-radius: 7px;
     background-color: rgb(58, 58, 58);
     color: rgb(158, 158, 158);
+    text-transform: uppercase;
+    padding-left: 10px;
+    padding-right: 10px;
     transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
     height: 25px;
     text-align: center;
 }
 
-.bttBarraSuperior p{
+.bttBarraSuperior p {
     line-height: 25px;
     font-size: 11px;
 }
 
-.bttBarraSuperior:hover{
+.bttBarraSuperior:hover {
     background-color: rgb(15, 15, 15);
     color: rgb(100, 100, 100);
 }
@@ -247,6 +253,42 @@ body, html {
     border: 1px solid rgb(0, 0, 0);
 }
 
+/* =========================================== JANELA CRIAR PROJETO ==========================================  */
+
+#contentJanelaCriarProjeto {
+    position: absolute;
+    display: none;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    z-index: 1000001;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+#janelaCriarProjeto {
+    position: relative;
+    background-color: rgb(37, 37, 37);
+    width: 500px;
+    height: 400px;
+    border-radius: 7px;
+    padding: 10px;
+}
+
+#botoesCriarProjeto {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 480px;
+    height: 35px;
+}
+
+/* ========================================= FIM JANELA CRIAR PROJETO ========================================  */
+
 /* ============================================= Seletor de cores ============================================= */
 
 #janelaSelecionarCor {
@@ -261,7 +303,7 @@ body, html {
     border-radius: 7px;
     padding: 10px;
     box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.3);
-    z-index: 10000;
+    z-index: 9998;
 }
 
 #janelaSelecionarCor input[type="text"] {
@@ -391,7 +433,7 @@ body, html {
 }
 
 .botoesNoSelecionarCor:hover {
-    background-color: rgb(30, 30, 30);
+    background-color: rgb(15, 15, 15);
     color: rgb(110, 110, 110);
 }
 

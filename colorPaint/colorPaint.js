@@ -3,10 +3,14 @@ let corPrincipal, corSecundaria, corPrincipalOuSecundaria;
 let corEscolhidaPrincipal = { R: 0, G: 0, B: 0 };
 let corEscolhidaSecudaria = { R: 255, G: 255, B: 255 };
 let arrayCoresSalvas = [];
+let arrayCamadas = [];
 let janelaSeleciona;
 mudarMenu = false;
 function colorPaint() {
+    const contentJanelaCriarProjeto = document.getElementById("contentJanelaCriarProjeto");
+    const bttCancelaCriarprojetor = document.getElementById("bttCancelaCriarprojetor");
     const janelaPrincipal = document.getElementById("janelaPrincipal");
+    const bttCriarNovoProjeto = document.getElementById("bttCriarNovoProjeto");
     const contentTelas = document.getElementById("contentTelas");
     const contentTools = document.getElementById("contentTools");
     const barraLateralEsquerda = document.getElementById("barraLateralEsquerda");
@@ -21,6 +25,12 @@ function colorPaint() {
     menuPadrao();
     ajustarContents();
 
+    bttCriarNovoProjeto.addEventListener("click", function () {
+        if (janelaSelecionarCorVisivel === false) {
+            contentJanelaCriarProjeto.style.display = "flex";
+        }
+    })
+
     corPrincipal.addEventListener("click", function () {
         if (janelaSelecionarCorVisivel === true) {
             janelaSeleciona.procurarCor(corEscolhidaPrincipal);
@@ -28,9 +38,8 @@ function colorPaint() {
         else {
             corPrincipalOuSecundaria = 1;
             corAtual.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
-            janelaSelecionarCor.style.display = "block";
-            janelaSelecionarCorVisivel = true;
             janelaSeleciona.procurarCor(corEscolhidaPrincipal);
+            abrirJanelaSelecionarCor();
         }
     });
 
@@ -41,9 +50,8 @@ function colorPaint() {
         else {
             corPrincipalOuSecundaria = 2;
             corAtual.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.R + ", " + corEscolhidaSecudaria.G + ", " + corEscolhidaSecudaria.B + ")";
-            janelaSelecionarCor.style.display = "block";
-            janelaSelecionarCorVisivel = true;
             janelaSeleciona.procurarCor(corEscolhidaSecudaria);
+            abrirJanelaSelecionarCor();
         }
     });
 
@@ -65,6 +73,10 @@ function colorPaint() {
             corEscolhidaSecudaria = cor;
         }
     });
+
+    bttCancelaCriarprojetor.addEventListener("click", function () {
+        contentJanelaCriarProjeto.style.display = "none";
+    })
 
     window.addEventListener("resize", function () {
         ajustarContents();
@@ -217,6 +229,10 @@ function janelaSeletorDeCor(corAtual) {
             clickMoverJanela = true;
             posMouseMoverJanela = { X: posMouseSeletorCorX, Y: posMouseSeletorCorY };
         }
+        else if (posMouseSeletorCorX < 10 || posMouseSeletorCorX > 540 && clickBarra === false && clickGradiente === false) {
+            clickMoverJanela = true;
+            posMouseMoverJanela = { X: posMouseSeletorCorX, Y: posMouseSeletorCorY };
+        }
     });
 
     cursorBarra.addEventListener("mousedown", function () {
@@ -314,8 +330,7 @@ function janelaSeletorDeCor(corAtual) {
     });
 
     bttCancelar.addEventListener("click", function () {
-        janelaSelecionarCor.style.display = "none";
-        janelaSelecionarCorVisivel = false;
+        fecharJanelaSelecionarCor();
     });
 
     function bttCorSalva() {//O que ocorre quando clicamos numa cor salva.
@@ -547,6 +562,17 @@ function janelaSeletorDeCor(corAtual) {
         ctxGradiente.closePath();
     }
 }
+
+function abrirJanelaSelecionarCor() {
+    janelaSelecionarCor.style.display = "block";
+    janelaSelecionarCorVisivel = true;
+}
+
+function fecharJanelaSelecionarCor() {
+    janelaSelecionarCor.style.display = "none";
+    janelaSelecionarCorVisivel = false;
+}
+
 //================================================================================================================================
 function hexToRgb(hex) {
     let resul;
@@ -664,3 +690,11 @@ function hsvToRgb(h, s, v) {
         B: Math.round(b * 255)
     };
 }
+
+document.addEventListener("keydown", function (e) {
+    if (e.code === "F5" && arrayCamadas.length > 0) {
+        e.preventDefault();
+        return false;
+    }
+});
+

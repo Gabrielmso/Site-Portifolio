@@ -21,6 +21,11 @@
             topoMenu();
             colorPaint();
         };
+        // window.addEventListener("beforeunload", confirmExit )
+        // function confirmExit(e) {
+        //     return false;
+        // }
+
     </script>
 </head>
 
@@ -107,13 +112,12 @@
         <div id="janelaPrincipal">
             <div id="barraSuperior">
                 <div id="bttCriarNovoProjeto" class="bttBarraSuperior noSelection cursor">
-                    <p>CRIAR NOVO PROJETO</p>
+                    <p>Criar novo projeto</p>
                 </div>
             </div>
             <div id="contentTools">
                 <div id="barraLateralEsquerda">
                     <div id="ferramentas">
-
                     </div>
                     <div id="coresSelecionadas">
                         <div id="corPrincipal" class="corEscolhida cursor">
@@ -138,16 +142,39 @@
                         <label>Preview:</label>
                     </div>
                     <div id="janelaInfo" class="janelasBarraLateralDireita">
-                            <label>Info:</label>
+                        <label>Info:</label>
                     </div>
                     <div id="janelaCamadas" class="janelasBarraLateralDireita">
-                            <label>Camadas:</label>
+                        <label>Camadas:</label>
                     </div>
-
                 </div>
             </div>
         </div>
-        <!-- ================================JANELA PARA SELECIONAR COR========================== -->
+        <!-- =================================== JANELA CRIAR PROJETO ============================ -->
+        <div id="contentJanelaCriarProjeto">
+            <div id="janelaCriarProjeto">
+                <label>Largura:</label><input type="text" id="txtAlturaProjeto">
+                <label>Altura:</label><input type="text" id="txtAlturaProjeto">
+                <label>Cor do fundo:</label><select>
+                    <option value="1">Branco</option>
+                    <option value="2">Preto</option>
+                    <option value="3">Transparente</option>
+                    <option value="4">Selecionar...</option>
+                </select>
+                To fazendo aqui ainda calma ai.
+                <div id="botoesCriarProjeto" class="noSelection">
+                    <div id="bttCriarprojeto" class="bttBarraSuperior cursor">
+                        <p>Criar projeto</p>
+                    </div>
+                    <div id="bttCancelaCriarprojetor" class="bttBarraSuperior cursor">
+                        <p>Cancelar</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ================================= FIM JANELA CRIAR PROJETO =========================== -->
+
+        <!-- ================================ JANELA PARA SELECIONAR COR ========================== -->
         <div id="janelaSelecionarCor">
             <div id="comparaCorAtualEEscolhida">
                 <div id="corSelecionada" class="noSelection"></div>
