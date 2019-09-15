@@ -6,9 +6,11 @@ let arrayCoresSalvas = [];
 let janelaSeleciona;
 mudarMenu = false;
 function colorPaint() {
-    mudarMenu();
-    const contentTools = document.getElementById("contentTools");
     const janelaPrincipal = document.getElementById("janelaPrincipal");
+    const contentTelas = document.getElementById("contentTelas");
+    const contentTools = document.getElementById("contentTools");
+    const barraLateralEsquerda = document.getElementById("barraLateralEsquerda");
+    const barraLateralDireita = document.getElementById("barraLateralDireita");
     const corAtual = document.getElementById("corAtual");
     const bttCoresPrincipais = document.getElementById("bttCoresPrincipais");
     const bttAlternaCor = document.getElementById("bttAlternaCor");
@@ -16,7 +18,8 @@ function colorPaint() {
     corSecundaria = document.getElementById("corSecundaria");
     janelaSeleciona = new janelaSeletorDeCor(corEscolhidaPrincipal);
 
-    contentTools.style.height =  janelaPrincipal.offsetHeight - 90 + "px";
+    menuPadrao();
+    ajustarContents();
 
     corPrincipal.addEventListener("click", function () {
         if (janelaSelecionarCorVisivel === true) {
@@ -64,10 +67,22 @@ function colorPaint() {
     });
 
     window.addEventListener("resize", function () {
-       contentTools.style.height =  janelaPrincipal.offsetHeight - 90 + "px";
+        ajustarContents();
+        menuPadrao();
+        setTimeout(function () {
+            ajustarContents();
+            menuPadrao();
+        }, 120);
     });
 
-    function mudarMenu() {
+    window.addEventListener("scroll", function () {
+        menuPadrao();
+        setTimeout(function () {
+            menuPadrao();
+        }, 120);
+    });
+
+    function menuPadrao() {
         menu.classList.remove("iniciomenu");
         menu.classList.add("mudamenu");
         logoBlack.classList.remove("iniciologoBlack");
@@ -80,6 +95,12 @@ function colorPaint() {
             arrayop[i].classList.remove("inicioopcoes");
             arrayop[i].classList.add("mudaopcoes");
         }
+    }
+
+    function ajustarContents() {
+        contentTools.style.height = janelaPrincipal.offsetHeight - 90 + "px";
+        contentTelas.style.width = contentTools.offsetWidth - barraLateralEsquerda.offsetWidth - barraLateralDireita.offsetWidth - 1 + "px";
+        contentTelas.style.height = contentTools.style.height;
     }
 }
 
@@ -297,7 +318,7 @@ function janelaSeletorDeCor(corAtual) {
         janelaSelecionarCorVisivel = false;
     });
 
-    function bttCorSalva() {
+    function bttCorSalva() {//O que ocorre quando clicamos numa cor salva.
         if (janelaSelecionarCorVisivel === false) {
             let txtId = this.getAttribute("id");
             id = txtId.substring(3, 7);
@@ -525,122 +546,121 @@ function janelaSeletorDeCor(corAtual) {
         ctxGradiente.fillRect(0, 0, widthGradiente, heightGradiente);
         ctxGradiente.closePath();
     }
+}
+//================================================================================================================================
+function hexToRgb(hex) {
+    let resul;
+    resul = hex.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
+    if (resul) {
+        return resul.slice(1, 4).map(function (x) { return parseInt(x, 16); });
+    }
+    return null;
+}
 
-    //================================================================================================================================
-    function hexToRgb(hex) {
-        let resul;
-        resul = hex.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
-        if (resul) {
-            return resul.slice(1, 4).map(function (x) { return parseInt(x, 16); });
+function rgbTohex(cor) {
+    let rgb = cor.B | (cor.G << 8) | (cor.R << 16);
+    return '#' + (0x1000000 + rgb).toString(16).slice(1)
+}
+
+function rgbToHsv(cor) {
+    let rabs, gabs, babs, rr, gg, bb, h, v, diff, diffc, percentRoundFn;
+    rabs = cor.R / 255;
+    gabs = cor.G / 255;
+    babs = cor.B / 255;
+    v = Math.max(rabs, gabs, babs),
+        diff = v - Math.min(rabs, gabs, babs);
+    diffc = c => (v - c) / 6 / diff + 1 / 2;
+    percentRoundFn = num => (num * 100) / 100;
+    if (diff == 0) {
+        h = s = 0;
+    } else {
+        s = diff / v;
+        rr = diffc(rabs);
+        gg = diffc(gabs);
+        bb = diffc(babs);
+
+        if (rabs === v) {
+            h = bb - gg;
+        } else if (gabs === v) {
+            h = (1 / 3) + rr - bb;
+        } else if (babs === v) {
+            h = (2 / 3) + gg - rr;
         }
-        return null;
+        if (h < 0) {
+            h += 1;
+        } else if (h > 1) {
+            h -= 1;
+        }
+    }
+    return {
+        H: (h * 360),
+        S: percentRoundFn(s * 100),
+        V: percentRoundFn(v * 100)
+    };
+}
+
+function hsvToRgb(h, s, v) {
+    let r, g, b;
+    let i;
+    let f, p, q, t;
+
+    h = Math.max(0, Math.min(360, h));
+    s = Math.max(0, Math.min(100, s));
+    v = Math.max(0, Math.min(100, v));
+
+    s = s / 100;
+    v = v / 100;
+
+    if (s == 0) {//Cinza
+        r = g = b = v;
+        return [
+            Math.round(r * 255),
+            Math.round(g * 255),
+            Math.round(b * 255)
+        ];
     }
 
-    function rgbTohex(cor) {
-        let rgb = cor.B | (cor.G << 8) | (cor.R << 16);
-        return '#' + (0x1000000 + rgb).toString(16).slice(1)
+    h /= 60; // sector 0 to 5
+    i = Math.floor(h);
+    f = h - i; // factorial part of h
+    p = v * (1 - s);
+    q = v * (1 - s * f);
+    t = v * (1 - s * (1 - f));
+
+    switch (i) {
+        case 0:
+            r = v;
+            g = t;
+            b = p;
+            break;
+        case 1:
+            r = q;
+            g = v;
+            b = p;
+            break;
+        case 2:
+            r = p;
+            g = v;
+            b = t;
+            break;
+        case 3:
+            r = p;
+            g = q;
+            b = v;
+            break;
+        case 4:
+            r = t;
+            g = p;
+            b = v;
+            break;
+        case 5:
+            r = v;
+            g = p;
+            b = q;
     }
-
-    function rgbToHsv(cor) {
-        let rabs, gabs, babs, rr, gg, bb, h, v, diff, diffc, percentRoundFn;
-        rabs = cor.R / 255;
-        gabs = cor.G / 255;
-        babs = cor.B / 255;
-        v = Math.max(rabs, gabs, babs),
-            diff = v - Math.min(rabs, gabs, babs);
-        diffc = c => (v - c) / 6 / diff + 1 / 2;
-        percentRoundFn = num => (num * 100) / 100;
-        if (diff == 0) {
-            h = s = 0;
-        } else {
-            s = diff / v;
-            rr = diffc(rabs);
-            gg = diffc(gabs);
-            bb = diffc(babs);
-
-            if (rabs === v) {
-                h = bb - gg;
-            } else if (gabs === v) {
-                h = (1 / 3) + rr - bb;
-            } else if (babs === v) {
-                h = (2 / 3) + gg - rr;
-            }
-            if (h < 0) {
-                h += 1;
-            } else if (h > 1) {
-                h -= 1;
-            }
-        }
-        return {
-            H: (h * 360),
-            S: percentRoundFn(s * 100),
-            V: percentRoundFn(v * 100)
-        };
-    }
-
-    function hsvToRgb(h, s, v) {
-        let r, g, b;
-        let i;
-        let f, p, q, t;
-
-        h = Math.max(0, Math.min(360, h));
-        s = Math.max(0, Math.min(100, s));
-        v = Math.max(0, Math.min(100, v));
-
-        s = s / 100;
-        v = v / 100;
-
-        if (s == 0) {//Cinza
-            r = g = b = v;
-            return [
-                Math.round(r * 255),
-                Math.round(g * 255),
-                Math.round(b * 255)
-            ];
-        }
-
-        h /= 60; // sector 0 to 5
-        i = Math.floor(h);
-        f = h - i; // factorial part of h
-        p = v * (1 - s);
-        q = v * (1 - s * f);
-        t = v * (1 - s * (1 - f));
-
-        switch (i) {
-            case 0:
-                r = v;
-                g = t;
-                b = p;
-                break;
-            case 1:
-                r = q;
-                g = v;
-                b = p;
-                break;
-            case 2:
-                r = p;
-                g = v;
-                b = t;
-                break;
-            case 3:
-                r = p;
-                g = q;
-                b = v;
-                break;
-            case 4:
-                r = t;
-                g = p;
-                b = v;
-                break;
-            case 5:
-                r = v;
-                g = p;
-                b = q;
-        }
-        return {
-            R: Math.round(r * 255),
-            G: Math.round(g * 255),
-            B: Math.round(b * 255)
-        };
-    }
+    return {
+        R: Math.round(r * 255),
+        G: Math.round(g * 255),
+        B: Math.round(b * 255)
+    };
 }

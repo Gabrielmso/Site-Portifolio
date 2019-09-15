@@ -1,4 +1,4 @@
-let arrayop = [];//Declarada aqui para usar em outros arquivos JS.
+let arrayop = [];
 let logoBlack;
 let scrollposicao;
 let mudarMenu = true;
@@ -43,7 +43,7 @@ function topoMenu() {
         scrollposicao = document.body.scrollTop || document.documentElement.scrollTop;
         iconesetablacknormal();
         $(socials).slideUp("fast");
-        if (scrollposicao > 5 && mudarMenu == true) {
+        if (scrollposicao > 5 && mudarMenu === true) {
             menu.classList.remove("iniciomenu");
             menu.classList.add("mudamenu");
             logoBlack.classList.remove("iniciologoBlack");

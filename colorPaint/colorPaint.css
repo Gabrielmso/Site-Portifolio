@@ -20,18 +20,48 @@ body, html {
     height: 100%;
 }
 
+
 #barraSuperior {
     position: relative;
     width: 100%;
     height: 90px;
     padding-top: 50px;
-    background-color: rgb(28, 28, 29);
+    border-bottom: 4px solid rgb(37, 37, 37);
+    background-color: rgb(28, 28, 28);
+}
+
+#bttCriarNovoProjeto {
+    width: 140px;
+    float: right;
+}
+
+.bttBarraSuperior {
+    position: relative;
+    top: 5px;
+    margin-right: 10px;
+    border-radius: 7px;
+    background-color: rgb(58, 58, 58);
+    color: rgb(158, 158, 158);
+    transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
+    height: 25px;
+    text-align: center;
+}
+
+.bttBarraSuperior p{
+    line-height: 25px;
+    font-size: 11px;
+}
+
+.bttBarraSuperior:hover{
+    background-color: rgb(15, 15, 15);
+    color: rgb(100, 100, 100);
 }
 
 #contentTools {
     position: relative;
     width: 100%;
     height: 545px;
+    background-color: rgb(20, 20, 20);
 }
 
 #barraLateralEsquerda {
@@ -42,8 +72,8 @@ body, html {
     height: 100%;
     padding-top: 10px;
     max-height: 1440px;
-    border-right: 4px solid rgb(37, 37, 39);
-    background-color: rgb(51, 51, 52);
+    border-right: 4px solid rgb(37, 37, 37);
+    background-color: rgb(51, 51, 51);
 }
 
 #ferramentas {
@@ -111,7 +141,7 @@ body, html {
     padding: 10px;
     max-height: 160px;
     overflow-x: auto;
-    background-color: rgb(37, 37, 39);;
+    background-color: rgb(37, 37, 37);
     border-radius: 7px;
     left: 10px;
     top: 10px;
@@ -136,11 +166,17 @@ body, html {
 }
 
 #bttRemoverCorSalva:hover {
-    background-color: rgb(37, 37, 39);
+    background-color: rgb(37, 37, 37);
     color: rgb(110, 110, 110);
 }
 
-#barraLateralDireita{
+#contentTelas {
+    position: relative;
+    float: left;
+    overflow: auto;
+}
+
+#barraLateralDireita {
     position: relative;
     font-size: 12px;
     overflow: hidden;
@@ -150,37 +186,39 @@ body, html {
     height: 100%;
     padding: 10px;
     max-height: 1440px;
-    border-left: 4px solid rgb(37, 37, 39);
-    background-color: rgb(51, 51, 52);
+    border-left: 4px solid rgb(37, 37, 37);
+    background-color: rgb(51, 51, 51);
 }
 
-#janelaPreview{  
+#janelaPreview {
     height: 170px;
 }
 
-#janelaInfo{
+#janelaInfo {
     height: 100px;
 }
 
-#janelaCamadas{
+#janelaCamadas {
     height: 200px;
 }
 
-.janelasBarraLateralDireita{
+.janelasBarraLateralDireita {
     position: relative;
     width: 100%;
-    background-color: rgb(37, 37, 39);;
+    background-color: rgb(37, 37, 37);
+    ;
     border-radius: 7px;
     margin-top: 5px;
     margin-bottom: 15px;
 }
 
-.janelasBarraLateralDireita label{
+.janelasBarraLateralDireita label {
     position: absolute;
     z-index: 5;
     width: 70px;
     text-align: center;
-    background-color: rgb(37, 37, 39);;
+    background-color: rgb(37, 37, 37);
+    ;
     top: -9px;
     border-radius: 4px;
     left: 10px;
@@ -209,14 +247,14 @@ body, html {
     border: 1px solid rgb(0, 0, 0);
 }
 
-/* ----------------------------Seletor de cores------------------------------- */
+/* ============================================= Seletor de cores ============================================= */
 
 #janelaSelecionarCor {
     position: absolute;
     display: none;
     top: 150px;
     left: 140px;
-    background-color: rgb(37, 37, 39);
+    background-color: rgb(37, 37, 37);
     width: 550px;
     height: 380px;
     border-radius: 7px;
@@ -245,7 +283,7 @@ body, html {
     display: inline-block;
     background: rgba(0, 0, 0, 0);
     color: rgb(173, 173, 173);
-    font-size: 14px;
+    font-size: 12px;
 }
 
 #comparaCorAtualEEscolhida {
@@ -320,7 +358,6 @@ body, html {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    /* align-items: center; */
 }
 
 .cursorSeletor {
@@ -335,21 +372,21 @@ body, html {
 
 .botoesNoSelecionarCor {
     display: inline-block;
-    width: 110px;
-    height: 30px;
+    width: 90px;
+    height: 25px;
     margin-left: 10px;
-    margin-top: 17px;
+    margin-top: 21px;
     text-transform: uppercase;
     text-align: center;
     border-radius: 7px;
     color: rgb(173, 173, 173);
-    font-size: 14px;
+    font-size: 11px;
     transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
     background-color: rgb(71, 71, 71);
 }
 
 .botoesNoSelecionarCor p {
-    line-height: 30px;
+    line-height: 25px;
 }
 
 .botoesNoSelecionarCor:hover {
@@ -357,4 +394,4 @@ body, html {
     color: rgb(110, 110, 110);
 }
 
-/* ----------------------------FIM Seletor de cores------------------------------- */
+/* ============================================= FIM Seletor de cores ============================================= */
