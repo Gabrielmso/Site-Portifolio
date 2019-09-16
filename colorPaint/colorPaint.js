@@ -122,6 +122,17 @@ function colorPaint() {
     }
 }
 
+// ==========================================================================================================================================================================================================================================
+
+
+
+
+
+
+
+
+
+
 function criarProjeto() {
     let arrayPropriedades = [document.getElementById("txtNomeProjeto"),
     document.getElementById("txtLarguraProjeto"),
@@ -151,6 +162,8 @@ function criarProjeto() {
             corDeFundo = corEscolhidaPrincipal;
         }
     }
+
+
 
     function validarPropriedades() {
         for (let i = 0; i < arrayPropriedades.length; i++) {
@@ -184,6 +197,14 @@ function criarProjeto() {
         return true;
     }
 }
+
+
+
+
+
+
+
+
 
 // ==========================================================================================================================================================================================================================================
 

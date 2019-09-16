@@ -208,6 +208,14 @@ p {
     height: 200px;
 }
 
+#contentIconeCamadas {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
 .janelasBarraLateralDireita {
     position: relative;
     width: 100%;
@@ -221,9 +229,10 @@ p {
 .janelasBarraLateralDireita label {
     position: absolute;
     z-index: 5;
-    width: 70px;
     text-align: center;
     background-color: rgb(37, 37, 37);
+    padding-left: 10px;
+    padding-right: 10px;
     top: -9px;
     border-radius: 4px;
     left: 10px;
@@ -278,7 +287,7 @@ p {
     padding: 10px;
 }
 
-#tituloJanelaCriarProjeto{
+#tituloJanelaCriarProjeto {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -289,7 +298,7 @@ p {
     color: rgb(151, 151, 151);
 }
 
-#contentPropriedadesProjeto{
+#contentPropriedadesProjeto {
     position: relative;
     width: 330px;
     height: 201px;
@@ -301,23 +310,23 @@ p {
     margin-bottom: 4px;
 }
 
-#contentPropriedadesProjeto ul{
+#contentPropriedadesProjeto ul {
     position: relative;
     display: inline-block;
     list-style: none;
 }
 
-#contentPropriedadesProjeto ul li{
+#contentPropriedadesProjeto ul li {
     display: block;
     margin-bottom: 10px;
 }
 
-#contentPropriedadesProjeto ul li label{
+#contentPropriedadesProjeto ul li label {
     font-size: 13.5px;
     color: rgb(151, 151, 151);
 }
 
-#contentPropriedadesProjeto ul li input, select{
+#contentPropriedadesProjeto ul li input, select {
     outline: none;
     border: none;
     border-bottom: 2px solid rgb(121, 121, 121);
@@ -328,14 +337,14 @@ p {
     margin-left: 7px;
 }
 
-#contentPropriedadesProjeto input[type=number]::-webkit-inner-spin-button { 
+#contentPropriedadesProjeto input[type=number]::-webkit-inner-spin-button {
     -webkit-appearance: none;
-    
 }
-#contentPropriedadesProjeto input[type=number] { 
-   -moz-appearance: textfield;
-   appearance: textfield;
-   width: 55px;
+
+#contentPropriedadesProjeto input[type=number] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+    width: 55px;
 }
 
 #botoesCriarProjeto {
@@ -498,3 +507,36 @@ p {
 }
 
 /* ============================================= FIM Seletor de cores ============================================= */
+
+.camadas {
+    position: relative;
+    width: 100%;
+    height: 90px;
+    padding: 5px;
+    border: 1px solid white;
+}
+
+.camadas label {
+    position: relative;
+    top: 30px;
+}
+
+.contentIcon {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    float: right;
+    border: 1px solid white;
+}
+
+.iconVer {
+    position: relative;
+    float: left;
+    border: 1px solid white;
+    height: 20px;
+    width: 20px;
+    top: 30px;
+    left: 10px;
+}
+
+.iconTela {}
