@@ -76,6 +76,7 @@ function colorPaint() {
     });
 
     bttCriarprojeto.addEventListener("click", function () {
+        criarProjeto();
         alert("Ainda não funciona essa parte calma :(");
     });
 
@@ -118,6 +119,69 @@ function colorPaint() {
         contentTools.style.height = janelaPrincipal.offsetHeight - 90 + "px";
         contentTelas.style.width = contentTools.offsetWidth - barraLateralEsquerda.offsetWidth - barraLateralDireita.offsetWidth - 1 + "px";
         contentTelas.style.height = contentTools.style.height;
+    }
+}
+
+function criarProjeto() {
+    let arrayPropriedades = [document.getElementById("txtNomeProjeto"),
+    document.getElementById("txtLarguraProjeto"),
+    document.getElementById("txtAlturaProjeto"),
+    document.getElementById("corDeFundoProjeto"),
+    document.getElementById("numeroCamadasProjeto")];
+
+    if (validarPropriedades()) {
+        for (let i = 0; i < arrayPropriedades.length; i++) {
+            let el = arrayPropriedades[i];
+            el.style.backgroundColor = "rgb(37, 37, 37)";
+        }
+        let corDeFundo = null;
+        let nomeDoProjeto = (arrayPropriedades[0].value).replace(" ", "-");
+        let resolucaoTela = { largura: parseInt(arrayPropriedades[1].value), altura: parseInt(arrayPropriedades[2].value) };
+        let numCamadas = parseInt(arrayPropriedades[4].value);
+        if (arrayPropriedades[3].value === "1") {
+            corDeFundo = { R: 255, G: 255, B: 255 };
+        }
+        else if (arrayPropriedades[3].value === "2") {
+            corDeFundo = { R: 0, G: 0, B: 0 };
+        }
+        else if (arrayPropriedades[3].value === "3") {
+            corDeFundo = false;
+        }
+        else if (arrayPropriedades[3].value === "4") {
+            corDeFundo = corEscolhidaPrincipal;
+        }
+    }
+
+    function validarPropriedades() {
+        for (let i = 0; i < arrayPropriedades.length; i++) {
+            let el = arrayPropriedades[i];
+            if (el.value === "") {
+                el.focus();
+                el.style.backgroundColor = "rgba(255, 0, 0, 0.25)"
+                return false;
+            }
+        }
+        if(parseInt(arrayPropriedades[1].value) > 1920 || parseInt(arrayPropriedades[1].value) < 1){
+            arrayPropriedades[1].focus();
+            arrayPropriedades[1].style.backgroundColor = "rgba(255, 0, 0, 0.25)";
+            return false;
+        }
+        else if(parseInt(arrayPropriedades[2].value) > 1080 || parseInt(arrayPropriedades[2].value) < 1){
+            arrayPropriedades[2].focus();
+            arrayPropriedades[2].style.backgroundColor = "rgba(255, 0, 0, 0.25)";
+            return false;
+        }
+        else if(parseInt(arrayPropriedades[3].value) > 4 || parseInt(arrayPropriedades[3].value) < 1){
+            arrayPropriedades[3].focus();
+            arrayPropriedades[3].style.backgroundColor = "rgba(255, 0, 0, 0.25)";
+            return false;
+        }
+        else if(parseInt(arrayPropriedades[4].value) > 5 || parseInt(arrayPropriedades[4].value) < 1){
+            arrayPropriedades[4].focus();
+            arrayPropriedades[4].style.backgroundColor = "rgba(255, 0, 0, 0.25)";
+            return false;
+        }
+        return true;
     }
 }
 
