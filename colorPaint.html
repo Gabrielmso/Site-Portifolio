@@ -153,15 +153,35 @@
         <!-- =================================== JANELA CRIAR PROJETO ============================ -->
         <div id="contentJanelaCriarProjeto">
             <div id="janelaCriarProjeto">
-                <label>Largura:</label><input type="text" id="txtAlturaProjeto">
-                <label>Altura:</label><input type="text" id="txtAlturaProjeto">
-                <label>Cor do fundo:</label><select>
-                    <option value="1">Branco</option>
-                    <option value="2">Preto</option>
-                    <option value="3">Transparente</option>
-                    <option value="4">Selecionar...</option>
-                </select>
-                To fazendo aqui ainda calma ai.
+                <div id="tituloJanelaCriarProjeto" class="noSelection">
+                    <p>Propriedades do projeto:</p>
+                </div>
+                <div id="contentPropriedadesProjeto">
+                    <ul>
+                        <li><label class="noSelection">Nome:</label><input type="text" id="txtNomeProjeto"></li>
+                        <li>
+                            <label class="noSelection">Largura:</label><input type="number"
+                                id="txtLarguraProjeto"><label class="noSelection"> px</label>
+                        </li>
+                        <li>
+                            <label class="noSelection">Altura:</label><input type="number" id="txtAlturaProjeto"><label
+                                class="noSelection">
+                                px</label>
+                        </li>
+                        <li>
+                            <label class="noSelection">Plano de fundo:</label><select id="corDeFundoProjeto">
+                                <option value="1">Branco</option>
+                                <option value="2">Preto</option>
+                                <option value="3">Transparente</option>
+                                <option value="4">Cor do primeiro plano</option>
+                            </select>
+                        </li>
+                        <li>
+                            <label class="noSelection">Número de camadas:</label><input id="numeroCamadasProjeto"
+                                type="number" min="1" max="5" value="1" maxlength="1">
+                        </li>
+                    </ul>
+                </div>
                 <div id="botoesCriarProjeto" class="noSelection">
                     <div id="bttCriarprojeto" class="bttBarraSuperior cursor">
                         <p>Criar projeto</p>

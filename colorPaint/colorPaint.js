@@ -8,6 +8,7 @@ let janelaSeleciona;
 mudarMenu = false;
 function colorPaint() {
     const contentJanelaCriarProjeto = document.getElementById("contentJanelaCriarProjeto");
+    const bttCriarprojeto = document.getElementById("bttCriarprojeto");
     const bttCancelaCriarprojetor = document.getElementById("bttCancelaCriarprojetor");
     const janelaPrincipal = document.getElementById("janelaPrincipal");
     const bttCriarNovoProjeto = document.getElementById("bttCriarNovoProjeto");
@@ -29,7 +30,7 @@ function colorPaint() {
         if (janelaSelecionarCorVisivel === false) {
             contentJanelaCriarProjeto.style.display = "flex";
         }
-    })
+    });
 
     corPrincipal.addEventListener("click", function () {
         if (janelaSelecionarCorVisivel === true) {
@@ -38,8 +39,8 @@ function colorPaint() {
         else {
             corPrincipalOuSecundaria = 1;
             corAtual.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
-            janelaSeleciona.procurarCor(corEscolhidaPrincipal);
             abrirJanelaSelecionarCor();
+            janelaSeleciona.procurarCor(corEscolhidaPrincipal);
         }
     });
 
@@ -50,12 +51,12 @@ function colorPaint() {
         else {
             corPrincipalOuSecundaria = 2;
             corAtual.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.R + ", " + corEscolhidaSecudaria.G + ", " + corEscolhidaSecudaria.B + ")";
-            janelaSeleciona.procurarCor(corEscolhidaSecudaria);
             abrirJanelaSelecionarCor();
+            janelaSeleciona.procurarCor(corEscolhidaSecudaria);
         }
     });
 
-    bttCoresPrincipais.addEventListener("click", function () {
+    bttCoresPrincipais.addEventListener("mousedown", function () {
         if (janelaSelecionarCorVisivel === false) {
             corEscolhidaPrincipal = { R: 0, G: 0, B: 0 };
             corEscolhidaSecudaria = { R: 255, G: 255, B: 255 };
@@ -64,7 +65,7 @@ function colorPaint() {
         }
     });
 
-    bttAlternaCor.addEventListener("click", function () {
+    bttAlternaCor.addEventListener("mousedown", function () {
         if (janelaSelecionarCorVisivel === false) {
             corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.R + ", " + corEscolhidaSecudaria.G + ", " + corEscolhidaSecudaria.B + ")";
             corSecundaria.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
@@ -74,9 +75,13 @@ function colorPaint() {
         }
     });
 
+    bttCriarprojeto.addEventListener("click", function () {
+        alert("Ainda não funciona essa parte calma :(");
+    });
+
     bttCancelaCriarprojetor.addEventListener("click", function () {
         contentJanelaCriarProjeto.style.display = "none";
-    })
+    });
 
     window.addEventListener("resize", function () {
         ajustarContents();
@@ -526,8 +531,8 @@ function janelaSeletorDeCor(corAtual) {
     }
 
     function calcularCorPosiCursorGradiente() {
-        let S = (gradienteCor.offsetWidth - (gradienteCor.offsetWidth - (cursorGradiente.offsetLeft + 10))) * (100 / gradienteCor.offsetWidth);
-        let V = 100 - (gradienteCor.offsetHeight - (gradienteCor.offsetHeight - (cursorGradiente.offsetTop + 10))) * (100 / gradienteCor.offsetHeight);
+        let S = ((cursorGradiente.offsetLeft + 10) * 100) / gradienteCor.offsetWidth;
+        let V = 100 - ((cursorGradiente.offsetTop + 10) * 100) / gradienteCor.offsetHeight;
         if (S == 0) {
             S = 0.02;
         }
