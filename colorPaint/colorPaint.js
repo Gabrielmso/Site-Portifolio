@@ -9,6 +9,7 @@ let proporcaoProjeto = 0;
 let janelaSeleciona;
 mudarMenu = false;
 let contentTelas;
+let telasCanvas
 function colorPaint() {
     const contentJanelaCriarProjeto = document.getElementById("contentJanelaCriarProjeto");
     const bttCriarprojeto = document.getElementById("bttCriarprojeto");
@@ -22,6 +23,7 @@ function colorPaint() {
     const bttCoresPrincipais = document.getElementById("bttCoresPrincipais");
     const bttAlternaCor = document.getElementById("bttAlternaCor");
     contentTelas = document.getElementById("contentTelas");
+    telasCanvas = document.getElementById("telasCanvas");
     corPrincipal = document.getElementById("corPrincipal");
     corSecundaria = document.getElementById("corSecundaria");
     janelaSeleciona = new janelaSeletorDeCor(corEscolhidaPrincipal);
@@ -80,7 +82,7 @@ function colorPaint() {
 
     bttCriarprojeto.addEventListener("click", function () {
         criarProjeto();
-        alert("Ainda não funciona essa parte calma :(");
+        contentJanelaCriarProjeto.style.display = "none";
     });
 
     bttCancelaCriarprojetor.addEventListener("click", function () {
@@ -89,7 +91,7 @@ function colorPaint() {
 
     window.addEventListener("resize", function () {
         ajustarContents();
-        ajustarTelasCanvas();
+        ajustarTelasCanvas(true);
         menuPadrao();
         setTimeout(function () {
             ajustarContents();
@@ -161,7 +163,7 @@ function criarProjeto() {
         for (let i = 0; i < numCamadas; i++) {
             criarCamada(corDeFundo, nomeDoProjeto, resolucaoTela);
         }
-        ajustarTelasCanvas();
+        ajustarTelasCanvas(true);
     }
 
     function validarPropriedades() {
@@ -269,12 +271,10 @@ function criarCamada(cor, nome, resolucao) {
     iconTela.setAttribute("height", resolucao.altura);
     iconTela.setAttribute("width", resolucao.largura);
     contentMiniIcon.appendChild(iconTela);
-
     // ===================== CRIA A CAMADA ==========================
 
     let idCamada = "telaCamada" + num;
     let camadaStyle = "z-index: " + num + ";";
-    const telasCanvas = document.getElementById("telasCanvas");
     let elCamada = document.createElement("canvas");
     elCamada.setAttribute("id", idCamada);
     elCamada.setAttribute("class", "telaCanvas");
@@ -286,11 +286,28 @@ function criarCamada(cor, nome, resolucao) {
 }
 // ==========================================================================================================================================================================================================================================
 
-function ajustarTelasCanvas() {
-    let larguraMax = contentTelas.offsetWidth;
-    let alturaMax = contentTelas.offsetHeight;
+function ajustarTelasCanvas(ajustar) {
+    let larguraMax = contentTelas.offsetWidth - 10;
+    let alturaMax = contentTelas.offsetHeight - 10;
+    let proporcaoContent = larguraMax / alturaMax;
 
-    
+
+    if (ajustar === true) {
+        if (proporcaoProjeto >= proporcaoContent) {
+            let novaAltura = larguraMax / proporcaoProjeto
+            telasCanvas.style.width = larguraMax + "px";
+            telasCanvas.style.height = novaAltura + "px";
+            telasCanvas.style.top = alturaMax / 2 - novaAltura / 2 + "px"
+            telasCanvas.style.left = "5px";
+        }
+        else {
+            let novaLargura = alturaMax * proporcaoProjeto
+            telasCanvas.style.width = novaLargura + "px";
+            telasCanvas.style.height = alturaMax + "px";
+            telasCanvas.style.top = "5px";
+            telasCanvas.style.left = larguraMax / 2 - novaLargura / 2 + "px"
+        }
+    }
 }
 // ==========================================================================================================================================================================================================================================
 
