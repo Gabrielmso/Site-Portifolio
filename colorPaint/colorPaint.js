@@ -9,7 +9,11 @@ let proporcaoProjeto = 0;
 let janelaSeleciona;
 mudarMenu = false;
 let contentTelas;
-let telasCanvas
+let telasCanvas;
+let projetoCriado = false;
+let nomeDoProjeto;
+let txtCorEscolhida;
+let txtResolucao;
 function colorPaint() {
     const contentJanelaCriarProjeto = document.getElementById("contentJanelaCriarProjeto");
     const bttCriarprojeto = document.getElementById("bttCriarprojeto");
@@ -26,10 +30,14 @@ function colorPaint() {
     telasCanvas = document.getElementById("telasCanvas");
     corPrincipal = document.getElementById("corPrincipal");
     corSecundaria = document.getElementById("corSecundaria");
+    txtCorEscolhida = document.getElementById("txtCorEscolhida");
+    txtResolucao = document.getElementById("txtResolucao");
     janelaSeleciona = new janelaSeletorDeCor(corEscolhidaPrincipal);
 
     menuPadrao();
     ajustarContents();
+
+    txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
 
     bttCriarNovoProjeto.addEventListener("click", function () {
         if (janelaSelecionarCorVisivel === false) {
@@ -67,6 +75,7 @@ function colorPaint() {
             corEscolhidaSecudaria = { R: 255, G: 255, B: 255 };
             corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
             corSecundaria.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.R + ", " + corEscolhidaSecudaria.G + ", " + corEscolhidaSecudaria.B + ")";
+            txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
         }
     });
 
@@ -77,21 +86,33 @@ function colorPaint() {
             let cor = corEscolhidaPrincipal;
             corEscolhidaPrincipal = corEscolhidaSecudaria;
             corEscolhidaSecudaria = cor;
+            txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
         }
     });
 
     bttCriarprojeto.addEventListener("click", function () {
         criarProjeto();
-        contentJanelaCriarProjeto.style.display = "none";
+        if (projetoCriado === true) {
+            contentJanelaCriarProjeto.style.display = "none";
+            txtResolucao.value = resolucaoProjeto.largura + ", " + resolucaoProjeto.altura;
+        }
     });
 
     bttCancelaCriarprojetor.addEventListener("click", function () {
         contentJanelaCriarProjeto.style.display = "none";
     });
 
+    document.addEventListener("keydown", function (e) {
+        if (projetoCriado === true) {
+            if (e.code === "Digit0" && e.ctrlKey) {
+                AjustarnavisualizacaoTelasCanvas();
+            }
+        }
+    })
+
     window.addEventListener("resize", function () {
         ajustarContents();
-        ajustarTelasCanvas(true);
+        ajustarTelasCanvas();
         menuPadrao();
         setTimeout(function () {
             ajustarContents();
@@ -143,7 +164,7 @@ function criarProjeto() {
             el.style.backgroundColor = "rgb(37, 37, 37)";
         }
         let corDeFundo = null;
-        let nomeDoProjeto = (arrayPropriedades[0].value).replace(" ", "-");
+        nomeDoProjeto = (arrayPropriedades[0].value).replace(" ", "-");
         let resolucaoTela = { largura: parseInt(arrayPropriedades[1].value), altura: parseInt(arrayPropriedades[2].value) };
         resolucaoProjeto = resolucaoTela;
         proporcaoProjeto = resolucaoProjeto.largura / resolucaoProjeto.altura;
@@ -161,9 +182,10 @@ function criarProjeto() {
             corDeFundo = corEscolhidaPrincipal;
         }
         for (let i = 0; i < numCamadas; i++) {
-            criarCamada(corDeFundo, nomeDoProjeto, resolucaoTela);
+            criarCamada(corDeFundo, resolucaoTela);
         }
-        ajustarTelasCanvas(true);
+        ajustarTelasCanvas();
+        projetoCriado = true;
     }
 
     function validarPropriedades() {
@@ -200,7 +222,7 @@ function criarProjeto() {
 }
 // ==========================================================================================================================================================================================================================================
 
-function criarCamada(cor, nome, resolucao) {
+function criarCamada(cor, resolucao) {
     let num = arrayCamadas.length + 1;
     // ===================== CRIA O ICONE DA CAMADA ========================
     const contentIconeCamadas = document.getElementById("contentIconeCamadas");
@@ -210,7 +232,6 @@ function criarCamada(cor, nome, resolucao) {
     iconeCamada.setAttribute("class", "camadas");
 
     if (num === 1) {
-
         contentIconeCamadas.appendChild(iconeCamada);
     }
     else {
@@ -223,7 +244,7 @@ function criarCamada(cor, nome, resolucao) {
     let bttVisivel = document.createElement("div");
     let idBttVisivel = "visivel" + num;
     bttVisivel.setAttribute("id", idBttVisivel);
-    bttVisivel.setAttribute("class", "iconVer");
+    bttVisivel.setAttribute("class", "iconVer cursor");
     iconeCamada.appendChild(bttVisivel);
 
     let info = document.createElement("label");
@@ -286,27 +307,53 @@ function criarCamada(cor, nome, resolucao) {
 }
 // ==========================================================================================================================================================================================================================================
 
-function ajustarTelasCanvas(ajustar) {
+function ajustarTelasCanvas() {
+    let larguraMax = contentTelas.offsetWidth - 10;
+    let alturaMax = contentTelas.offsetHeight - 10;
+
+    if (resolucaoProjeto.largura > larguraMax && resolucaoProjeto.altura > alturaMax) {
+        AjustarnavisualizacaoTelasCanvas();
+    }
+    else if (resolucaoProjeto.largura > larguraMax) {
+        let novaAltura = larguraMax / proporcaoProjeto;
+        telasCanvas.style.width = larguraMax + "px";
+        telasCanvas.style.height = novaAltura + "px";
+        telasCanvas.style.top = alturaMax / 2 - novaAltura / 2 + "px"
+        telasCanvas.style.left = "5px";
+    }
+    else if (resolucaoProjeto.altura > alturaMax) {
+        let novaLargura = alturaMax * proporcaoProjeto;
+        telasCanvas.style.width = novaLargura + "px";
+        telasCanvas.style.height = alturaMax + "px";
+        telasCanvas.style.top = "5px";
+        telasCanvas.style.left = larguraMax / 2 - novaLargura / 2 + "px"
+    }
+    else {
+        telasCanvas.style.width = resolucaoProjeto.largura + "px";
+        telasCanvas.style.height = resolucaoProjeto.altura + "px";
+        telasCanvas.style.top = alturaMax / 2 - resolucaoProjeto.altura / 2 + "px"
+        telasCanvas.style.left = larguraMax / 2 - resolucaoProjeto.largura / 2 + "px"
+    }
+}
+
+function AjustarnavisualizacaoTelasCanvas() {
     let larguraMax = contentTelas.offsetWidth - 10;
     let alturaMax = contentTelas.offsetHeight - 10;
     let proporcaoContent = larguraMax / alturaMax;
 
-
-    if (ajustar === true) {
-        if (proporcaoProjeto >= proporcaoContent) {
-            let novaAltura = larguraMax / proporcaoProjeto
-            telasCanvas.style.width = larguraMax + "px";
-            telasCanvas.style.height = novaAltura + "px";
-            telasCanvas.style.top = alturaMax / 2 - novaAltura / 2 + "px"
-            telasCanvas.style.left = "5px";
-        }
-        else {
-            let novaLargura = alturaMax * proporcaoProjeto
-            telasCanvas.style.width = novaLargura + "px";
-            telasCanvas.style.height = alturaMax + "px";
-            telasCanvas.style.top = "5px";
-            telasCanvas.style.left = larguraMax / 2 - novaLargura / 2 + "px"
-        }
+    if (proporcaoProjeto >= proporcaoContent) {
+        let novaAltura = larguraMax / proporcaoProjeto;
+        telasCanvas.style.width = larguraMax + "px";
+        telasCanvas.style.height = novaAltura + "px";
+        telasCanvas.style.top = alturaMax / 2 - novaAltura / 2 + "px"
+        telasCanvas.style.left = "5px";
+    }
+    else {
+        let novaLargura = alturaMax * proporcaoProjeto;
+        telasCanvas.style.width = novaLargura + "px";
+        telasCanvas.style.height = alturaMax + "px";
+        telasCanvas.style.top = "5px";
+        telasCanvas.style.left = larguraMax / 2 - novaLargura / 2 + "px"
     }
 }
 // ==========================================================================================================================================================================================================================================
@@ -461,6 +508,7 @@ function janelaSeletorDeCor(corAtual) {
             corEscolhidaSecudaria = corEscolhida;
             corSecundaria.style.backgroundColor = "rgb(" + corEscolhida.R + ", " + corEscolhida.G + ", " + corEscolhida.B + ")";
         }
+        txtCorEscolhida.value = "rgb(" + corEscolhida.R + ", " + corEscolhida.G + ", " + corEscolhida.B + ")";
         janelaSelecionarCor.style.display = "none";
         janelaSelecionarCorVisivel = false;
 
@@ -535,7 +583,7 @@ function janelaSeletorDeCor(corAtual) {
             arrayCoresSalvas[id].elemento.style.border = "1px solid rgb(255, 255, 255)";
             corEscolhidaPrincipal = arrayCoresSalvas[id].cor;
             corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
-
+            txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
             for (let i = 0; i < arrayCoresSalvas.length; i++) {
                 if (i != id) {
                     arrayCoresSalvas[i].selecionado = false;
@@ -885,7 +933,7 @@ function hsvToRgb(h, s, v) {
 }
 
 document.addEventListener("keydown", function (e) {
-    if (e.code === "F5" && arrayCamadas.length > 0) {
+    if (e.code === "F5" && projetoCriado === true) {
         e.preventDefault();
         return false;
     }

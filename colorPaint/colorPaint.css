@@ -180,13 +180,20 @@ p {
     position: relative;
     float: left;
     overflow: auto;
-    
 }
 
-#telasCanvas{
+#telasCanvas {
     position: relative;
     display: inline-block;
     background-color: rgb(255, 255, 255);
+    transition: height 170ms ease-in-out, width 170ms ease-in-out, left 170ms ease-in-out, top 170ms ease-in-out;
+}
+
+#sobrepor {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
 }
 
 #barraLateralDireita {
@@ -209,7 +216,30 @@ p {
 }
 
 #janelaInfo {
-    height: 100px;
+    height: 90px;
+}
+
+#contentInfo {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding-top: 7px;
+    padding-left: 24px;
+}
+
+#contentInfo input {
+    width: 100px;
+    display: inline-block;
+    background: rgba(0, 0, 0, 0);
+    color: rgb(173, 173, 173);
+    border: none;
+    text-align: center;
+    font-size: 11px;
+    outline: none;
+    padding: 1px;
+    text-transform: uppercase;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 #janelaCamadas {
@@ -234,7 +264,7 @@ p {
     margin-bottom: 15px;
 }
 
-.janelasBarraLateralDireita label {
+.tituloJanelas {
     position: absolute;
     z-index: 5;
     text-align: center;
@@ -522,13 +552,19 @@ p {
     height: 80px;
     padding: 0px;
     margin-bottom: 5px;
-    border: 1px solid white;
+    background-color: rgb(25, 25, 25);
+    border-radius: 4px;
+}
+
+.camadas:hover {
+    background-color: rgb(20, 20, 20);
 }
 
 .camadas label {
     position: absolute;
     top: 20px;
     left: 36px;
+    background-color: rgba(0, 0, 0, 0);
 }
 
 .contentIcon {
@@ -536,7 +572,6 @@ p {
     width: 80px;
     height: 80px;
     float: right;
-    border: 1px solid white;
 }
 
 .iconVer {
@@ -562,7 +597,7 @@ p {
     transform: translate(-50%, -50%);
 }
 
-.telaCanvas{
+.telaCanvas {
     position: absolute;
     top: 0px;
     left: 0px;

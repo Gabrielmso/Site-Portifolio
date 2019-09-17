@@ -131,22 +131,24 @@
                 </div>
                 <div id="contentTelas">
                     <div id="telasCanvas">
-
+                        <div id="sobrepor"></div>
                     </div>
                 </div>
                 <div id="barraLateralDireita" class="noSelection">
                     <div id="janelaPreview" class="janelasBarraLateralDireita">
-                        <label>Preview:</label>
+                        <label class="tituloJanelas">Preview:</label>
                     </div>
                     <div id="janelaInfo" class="janelasBarraLateralDireita">
-                        <label>Info:</label>
+                        <label class="tituloJanelas">Info:</label>
+                        <div id="contentInfo">
+                            <label>Posição do cursor: </label><input id="txtPosicaoCursor" type="text" readonly="true"><br>
+                            <label>Resolução: </label><input id="txtResolucao" type="text" readonly="true"><br>
+                            <label>Cor selecionada: </label><input id="txtCorEscolhida" type="text" readonly="true"><br>
+                        </div>
                     </div>
-
-
                     <div id="janelaCamadas" class="janelasBarraLateralDireita">
-                        <label>Camadas:</label>
+                        <label class="tituloJanelas">Camadas:</label>
                         <div id="contentIconeCamadas">
-
                             <!-- <div id="camada1" class="camadas">
                                 <div id="visivel1" class="iconVer"></div>                                
                                 <label><span id="nomeCamada1">Camada 1</span><br><span>Opacidade: </span><span id="porcen1">100</span>%</label>
@@ -155,7 +157,6 @@
                                     </canvas>
                                 </div>
                             </div> -->
-
                         </div>
                     </div>
                 </div>
