@@ -4,16 +4,20 @@ let corEscolhidaPrincipal = { R: 0, G: 0, B: 0 };
 let corEscolhidaSecudaria = { R: 255, G: 255, B: 255 };
 let arrayCoresSalvas = [];
 let arrayCamadas = [];
+let arrayTelasCamadas = [];
+let arrayIconesCamadas = [];
 let resolucaoProjeto = { largura: 0, altura: 0 };
 let proporcaoProjeto = 0;
 let janelaSeleciona;
 mudarMenu = false;
 let contentTelas;
+let camadaSelecionada = 0;
 let telasCanvas;
 let projetoCriado = false;
 let nomeDoProjeto;
 let txtCorEscolhida;
 let txtResolucao;
+let MouseNoBttVer = false;
 function colorPaint() {
     const contentJanelaCriarProjeto = document.getElementById("contentJanelaCriarProjeto");
     const bttCriarprojeto = document.getElementById("bttCriarprojeto");
@@ -185,6 +189,9 @@ function criarProjeto() {
             criarCamada(corDeFundo, resolucaoTela);
         }
         ajustarTelasCanvas();
+        camadaSelecionada = 0;
+        arrayCamadas[0].icone.classList.add("camadaSalecionada");
+        arrayCamadas[0].icone.classList.remove("camadas");
         projetoCriado = true;
     }
 
@@ -227,7 +234,7 @@ function criarProjeto() {
 
 function criarCamada(cor, resolucao) {
     let num = arrayCamadas.length + 1;
-    // ===================== CRIA O ICONE DA CAMADA ========================
+    // ============= CRIA O ICONE DA CAMADA ==================
     const contentIconeCamadas = document.getElementById("contentIconeCamadas");
     let idicone = "camadaIcone" + num;
     let iconeCamada = document.createElement("div");
@@ -299,7 +306,7 @@ function criarCamada(cor, resolucao) {
     let sobrePor = document.createElement("div");
     contentMiniIcon.appendChild(sobrePor);
 
-    // ===================== CRIA A CAMADA ==========================
+    // ============== CRIA A CAMADA ================
 
     let idCamada = "telaCamada" + num;
     let camadaStyle = "z-index: " + num + ";";
@@ -325,12 +332,68 @@ function criarCamada(cor, resolucao) {
             miniatura: iconTela,
             bttVer: bttVisivel,
             porcentagemOpa: txtPorcentagem,
-            selecionada: false,
-            visivel: false
-        }
+            visivel: true
+        };
         arrayCamadas.push(objCamada);
+        arrayCamadas[arrayCamadas.length - 1].icone.addEventListener("click", clickIconeCamada);
+        arrayCamadas[arrayCamadas.length - 1].bttVer.addEventListener("mousedown", clickCamadaVisivel);
+        arrayCamadas[arrayCamadas.length - 1].bttVer.addEventListener("mouseenter", mouseSobre);
+        arrayCamadas[arrayCamadas.length - 1].bttVer.addEventListener("mouseleave", mouseFora);
+        arrayTelasCamadas.push(arrayCamadas[arrayCamadas.length - 1].camada.getContext("2d"));
+        arrayIconesCamadas.push(arrayCamadas[arrayCamadas.length - 1].miniatura.getContext("2d"));
     }
 }
+// ==========================================================================================================================================================================================================================================
+
+function clickIconeCamada() {
+    if (MouseNoBttVer === false) {
+        let txtId = this.getAttribute("id");
+        id = txtId.substring(11, 15);
+        id = parseInt(id);
+        let indiceArrayCamadas = id - 1;
+        for (let i = 0; i < arrayCamadas.length; i++) {
+            if (i === indiceArrayCamadas) {
+                camadaSelecionada = i;
+                this.classList.add("camadaSalecionada");
+                this.classList.remove("camadas");
+            }
+            else {
+                arrayCamadas[i].icone.classList.add("camadas");
+                arrayCamadas[i].icone.classList.remove("camadaSalecionada");
+            }
+        }
+    }
+}
+// ==========================================================================================================================================================================================================================================
+
+function clickCamadaVisivel() {
+    let txtId = this.getAttribute("id");
+    id = txtId.substring(7, 11);
+    id = parseInt(id);
+    let indiceArrayCamadas = id - 1;
+    let visible = arrayCamadas[indiceArrayCamadas].visivel;
+    if (visible === true) {
+        arrayCamadas[indiceArrayCamadas].visivel = false;
+        arrayCamadas[indiceArrayCamadas].camada.style.display = "none"
+        this.classList.add("iconNaoVer");
+        this.classList.remove("iconVer");
+    }
+    else {
+        arrayCamadas[indiceArrayCamadas].visivel = true;
+        arrayCamadas[indiceArrayCamadas].camada.style.display = "block";
+        this.classList.add("iconVer");
+        this.classList.remove("iconNaoVer");
+    }
+}
+
+function mouseSobre() {
+    MouseNoBttVer = true;
+}
+
+function mouseFora() {
+    MouseNoBttVer = false;
+}
+
 // ==========================================================================================================================================================================================================================================
 
 function ajustarTelasCanvas() {
