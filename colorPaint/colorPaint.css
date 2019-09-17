@@ -186,6 +186,7 @@ p {
 #telasCanvas {
     position: relative;
     display: inline-block;
+    background-image: url("../colorPaint/imagens/fundoTela/transparente.PNG");
     background-color: rgb(255, 255, 255);
     transition: height 170ms ease-in-out, width 170ms ease-in-out, left 170ms ease-in-out, top 170ms ease-in-out;
 }
@@ -214,6 +215,20 @@ p {
 
 #janelaPreview {
     height: 170px;
+}
+
+#contentPreview{
+    position:relative;
+    display: block;
+    width: 256px;
+    height: 150px;
+}
+
+#telaPreview{
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 #janelaInfo {

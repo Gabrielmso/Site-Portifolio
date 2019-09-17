@@ -17,6 +17,7 @@ let projetoCriado = false;
 let nomeDoProjeto;
 let txtCorEscolhida;
 let txtResolucao;
+let telaPreview;
 let MouseNoBttVer = false;
 function colorPaint() {
     const contentJanelaCriarProjeto = document.getElementById("contentJanelaCriarProjeto");
@@ -36,6 +37,7 @@ function colorPaint() {
     corSecundaria = document.getElementById("corSecundaria");
     txtCorEscolhida = document.getElementById("txtCorEscolhida");
     txtResolucao = document.getElementById("txtResolucao");
+    telaPreview = document.getElementById("telaPreview");
     janelaSeleciona = new janelaSeletorDeCor(corEscolhidaPrincipal);
 
     menuPadrao();
@@ -185,13 +187,20 @@ function criarProjeto() {
         else if (arrayPropriedades[3].value === "4") {
             corDeFundo = corEscolhidaPrincipal;
         }
+        let cor = "rgb(" + corDeFundo.R + ", " + corDeFundo.G + ", " + corDeFundo.B + ")"
         while (numCamadas > arrayCamadas.length) {
-            criarCamada(corDeFundo, resolucaoTela);
+            
+            criarCamada(cor, resolucaoTela);
         }
         ajustarTelasCanvas();
         camadaSelecionada = 0;
         arrayCamadas[0].icone.classList.add("camadaSalecionada");
         arrayCamadas[0].icone.classList.remove("camadas");
+        if (corDeFundo != false) {
+            telasCanvas.style.backgroundColor = cor;
+            telasCanvas.style.backgroundImage = "none";
+        }
+        ajustarPreview();
         projetoCriado = true;
     }
 
@@ -290,11 +299,11 @@ function criarCamada(cor, resolucao) {
 
     if (proporcaoProjeto >= 1) {
         let iconAltura = 80 / proporcaoProjeto;
-        styleIconTela = "width: 80px; height: " + iconAltura + "px;";
+        styleIconTela = "width: 80px; height: " + iconAltura + "px; background-color: " + cor;
     }
     else {
         let iconLargura = 80 * proporcaoProjeto;
-        styleIconTela = "width: " + iconLargura + "px; height: 80px";
+        styleIconTela = "width: " + iconLargura + "px; height: 80px; background-color: " + cor;;
     }
 
     iconTela.setAttribute("style", styleIconTela);
@@ -445,6 +454,12 @@ function AjustarnavisualizacaoTelasCanvas() {
         telasCanvas.style.left = larguraMax / 2 - novaLargura / 2 + "px"
     }
 }
+// ==========================================================================================================================================================================================================================================
+
+function ajustarPreview () {
+    
+}
+
 // ==========================================================================================================================================================================================================================================
 
 function janelaSeletorDeCor(corAtual) {
