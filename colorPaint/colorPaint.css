@@ -202,7 +202,7 @@ p {
     position: relative;
     font-size: 12px;
     overflow: hidden;
-    overflow-x: auto;
+    overflow-y: auto;
     color: rgb(131, 131, 131);
     float: right;
     width: 300px;
