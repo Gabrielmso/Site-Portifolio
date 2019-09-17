@@ -181,7 +181,7 @@ function criarProjeto() {
         else if (arrayPropriedades[3].value === "4") {
             corDeFundo = corEscolhidaPrincipal;
         }
-        for (let i = 0; i < numCamadas; i++) {
+        while (numCamadas > arrayCamadas.length) {
             criarCamada(corDeFundo, resolucaoTela);
         }
         ajustarTelasCanvas();
@@ -195,6 +195,9 @@ function criarProjeto() {
                 el.focus();
                 el.style.backgroundColor = "rgba(255, 0, 0, 0.25)"
                 return false;
+            }
+            else {
+                el.style.backgroundColor = "rgba(0, 0, 0, 0)"
             }
         }
         if (parseInt(arrayPropriedades[1].value) > 1920 || parseInt(arrayPropriedades[1].value) < 1) {
@@ -292,6 +295,10 @@ function criarCamada(cor, resolucao) {
     iconTela.setAttribute("height", resolucao.altura);
     iconTela.setAttribute("width", resolucao.largura);
     contentMiniIcon.appendChild(iconTela);
+
+    let sobrePor = document.createElement("div");
+    contentMiniIcon.appendChild(sobrePor);
+
     // ===================== CRIA A CAMADA ==========================
 
     let idCamada = "telaCamada" + num;
@@ -303,7 +310,26 @@ function criarCamada(cor, resolucao) {
     elCamada.setAttribute("height", resolucao.altura);
     elCamada.setAttribute("width", resolucao.largura);
     telasCanvas.appendChild(elCamada);
-    arrayCamadas.push(num);
+
+    if (document.getElementById(idicone) != null &&
+        document.getElementById(idBttVisivel) != null &&
+        document.getElementById(idNome) != null &&
+        document.getElementById(idPocentagem) != null &&
+        document.getElementById(idIconTela) != null &&
+        document.getElementById(idCamada) != null) {
+        let objCamada = {
+            id: num,
+            nome: nomeCamada,
+            camada: elCamada,
+            icone: iconeCamada,
+            miniatura: iconTela,
+            bttVer: bttVisivel,
+            porcentagemOpa: txtPorcentagem,
+            selecionada: false,
+            visivel: false
+        }
+        arrayCamadas.push(objCamada);
+    }
 }
 // ==========================================================================================================================================================================================================================================
 
@@ -508,7 +534,7 @@ function janelaSeletorDeCor(corAtual) {
             corEscolhidaSecudaria = corEscolhida;
             corSecundaria.style.backgroundColor = "rgb(" + corEscolhida.R + ", " + corEscolhida.G + ", " + corEscolhida.B + ")";
         }
-        txtCorEscolhida.value = "rgb(" + corEscolhida.R + ", " + corEscolhida.G + ", " + corEscolhida.B + ")";
+        txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
         janelaSelecionarCor.style.display = "none";
         janelaSelecionarCorVisivel = false;
 
@@ -746,20 +772,6 @@ function janelaSeletorDeCor(corAtual) {
         moverCursorBarra(posx, false);
     }
 
-    function preencheBarraEspectro() {
-        ctxBarra.rect(0, 0, widthBarra, heightBarra);
-        let gradiente = ctxBarra.createLinearGradient(0, 0, widthBarra, 0);
-        gradiente.addColorStop(0, "rgb(255, 0, 0)");
-        gradiente.addColorStop(0.16666666666666666667, "rgb(255, 255, 0)");
-        gradiente.addColorStop(0.33333333333333333334, "rgb(0, 255, 0)");
-        gradiente.addColorStop(0.50000000000000000001, "rgb(0, 255, 255)");
-        gradiente.addColorStop(0.66666666666666666668, "rgb(0, 0, 255)");
-        gradiente.addColorStop(0.83333333333333333335, "rgb(255, 0, 255)");
-        gradiente.addColorStop(1, "rgb(255, 0, 0)");
-        ctxBarra.fillStyle = gradiente;
-        ctxBarra.fill();
-    }
-
     function moverCursorGradiente(x, y) {
         cursorGradiente.style.left = x + "px";
         cursorGradiente.style.top = y + "px";
@@ -784,6 +796,20 @@ function janelaSeletorDeCor(corAtual) {
         corEscolhida = cor;
     }
 
+    function preencheBarraEspectro() {
+        ctxBarra.rect(0, 0, widthBarra, heightBarra);
+        let gradiente = ctxBarra.createLinearGradient(0, 0, widthBarra, 0);
+        gradiente.addColorStop(0, "rgb(255, 0, 0)");
+        gradiente.addColorStop(0.16666666666666666667, "rgb(255, 255, 0)");
+        gradiente.addColorStop(0.33333333333333333334, "rgb(0, 255, 0)");
+        gradiente.addColorStop(0.50000000000000000001, "rgb(0, 255, 255)");
+        gradiente.addColorStop(0.66666666666666666668, "rgb(0, 0, 255)");
+        gradiente.addColorStop(0.83333333333333333335, "rgb(255, 0, 255)");
+        gradiente.addColorStop(1, "rgb(255, 0, 0)");
+        ctxBarra.fillStyle = gradiente;
+        ctxBarra.fill();
+    }
+
     function preencheGradiente() {
         ctxGradiente.clearRect(0, 0, widthGradiente, heightGradiente);
         ctxGradiente.fillStyle = "rgb(" + rgbBarra.R + ", " + rgbBarra.G + ", " + rgbBarra.B + ")";
@@ -803,6 +829,7 @@ function janelaSeletorDeCor(corAtual) {
         ctxGradiente.closePath();
     }
 }
+
 
 function abrirJanelaSelecionarCor() {
     janelaSelecionarCor.style.display = "block";

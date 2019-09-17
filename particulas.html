@@ -13,14 +13,17 @@
     <link rel="stylesheet" href="css/styleGeral.css">
     <link rel="stylesheet" href="topoMenu/topoMenu.css">
     <link rel="stylesheet" href="particulas/particulas.css">
+    <link rel="stylesheet" href="particulas/colisaoParticulas.css">
     <link rel="stylesheet" href="Home/Home.css">
     <script src="js/jquery.js"></script>
     <script src="topoMenu/topoMenu.js"></script>
     <script src="particulas/particulas.js"></script>
+    <script src="particulas/colisaoParticulas.js"></script>
     <script>
         window.onload = function () {
             topoMenu();
             particulas();
+            colisaoParticulas();
         };
     </script>
 </head>
@@ -106,7 +109,7 @@
         </div>
     </nav>
     <div id="espacoparticulas">
-        <canvas id="particulas" style="opacity: 0.3;"></canvas>
+        <div id="fundo" class="colisaoParticulas" style="opacity: 0.72;"><canvas id="particulas" style="opacity: 0.37;"></canvas></div>
         <div id="contentParticulas">
             <h1 style="font-size: 50px;">Colisão de partículas</h1>
             <p style="font-size: 22px;">Exemplo de uso: <a href="traducao_Silent_Hill.html">Tradução Silent Hill
