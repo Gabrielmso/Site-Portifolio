@@ -18,6 +18,7 @@ let nomeDoProjeto;
 let txtCorEscolhida;
 let txtResolucao;
 let telaPreview;
+let ctxTelaPreview;
 let MouseNoBttVer = false;
 function colorPaint() {
     const contentJanelaCriarProjeto = document.getElementById("contentJanelaCriarProjeto");
@@ -38,6 +39,7 @@ function colorPaint() {
     txtCorEscolhida = document.getElementById("txtCorEscolhida");
     txtResolucao = document.getElementById("txtResolucao");
     telaPreview = document.getElementById("telaPreview");
+    ctxTelaPreview = telaPreview.getContext("2d");
     janelaSeleciona = new janelaSeletorDeCor(corEscolhidaPrincipal);
 
     menuPadrao();
@@ -46,8 +48,13 @@ function colorPaint() {
     txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
 
     bttCriarNovoProjeto.addEventListener("click", function () {
-        if (janelaSelecionarCorVisivel === false) {
-            contentJanelaCriarProjeto.style.display = "flex";
+        if (projetoCriado === false) {
+            if (janelaSelecionarCorVisivel === false) {
+                contentJanelaCriarProjeto.style.display = "flex";
+            }
+        }
+        else {
+            window.location.reload();
         }
     });
 
@@ -301,26 +308,28 @@ function criarCamada(cor, resolucao) {
     let styleIconTela;
 
     if (proporcaoProjeto >= 1) {
-        let iconAltura = 80 / proporcaoProjeto;
+        let iconAltura = Math.round(80 / proporcaoProjeto);
         styleIconTela = "width: 80px; height: " + iconAltura + "px; ";
     }
     else {
-        let iconLargura = 80 * proporcaoProjeto;
+        let iconLargura = Math.round(80 * proporcaoProjeto);
         styleIconTela = "width: " + iconLargura + "px; height: 80px; ";
     }
 
-    if(cor != false){
-        styleIconTela = styleIconTela + "background-color: " + cor;        
+    if (cor != false) {
+        styleIconTela = styleIconTela + "background-color: " + cor;
     }
-    else{
+    else {
         styleIconTela = styleIconTela + "background-image: url('/colorPaint/imagens/fundoTela/transparenteMiniatura.png')";
     }
 
     iconTela.setAttribute("style", styleIconTela);
     iconTela.setAttribute("class", "iconTela");
-    iconTela.setAttribute("height", resolucao.altura);
-    iconTela.setAttribute("width", resolucao.largura);
+    // iconTela.setAttribute("height", resolucao.altura);
+    // iconTela.setAttribute("width", resolucao.largura);
     contentMiniIcon.appendChild(iconTela);
+    iconTela.width = iconTela.offsetWidth;
+    iconTela.height = iconTela.offsetHeight;
 
     let sobrePor = document.createElement("div");
     contentMiniIcon.appendChild(sobrePor);
@@ -415,6 +424,18 @@ function mouseFora() {
 
 // ==========================================================================================================================================================================================================================================
 
+// function DesenhoCompleto(arguments) {
+//     ctxTelaPreview.clearRect(0, 0, telaPreview.width, telaPreview.height);
+
+
+//     for (let i = 0; i < arrayTelasCamadas.length; i++) {
+//         arrayTelasCamadas[i];
+        
+//     }
+// }
+
+
+// ==========================================================================================================================================================================================================================================
 function ajustarTelasCanvas() {
     let larguraMax = contentTelas.offsetWidth - 10;
     let alturaMax = contentTelas.offsetHeight - 10;
@@ -469,55 +490,51 @@ function AjustarnavisualizacaoTelasCanvas() {
 function ajustarPreview(cor) {
     let proporcaoEspaco = 256 / 150;
     if (proporcaoProjeto >= proporcaoEspaco) {
-        let novaAltura = 256 / proporcaoProjeto;
+        let novaAltura = Math.round(256 / proporcaoProjeto);
         telaPreview.style.width = "256px"
         telaPreview.style.height = novaAltura + "px";
     }
     else {
-        let novaLargura = 150 * proporcaoProjeto;
+        let novaLargura = Math.round(150 * proporcaoProjeto);
         telaPreview.style.width = novaLargura + "px";
         telaPreview.style.height = "150px";
     }
     if (cor != false) {
         telaPreview.style.backgroundColor = cor;
     }
-    else{
+    else {
         telaPreview.style.backgroundImage = "url('/colorPaint/imagens/fundoTela/transparenteMiniatura.png')"
     }
+    telaPreview.width = telaPreview.offsetWidth;
+    telaPreview.height = telaPreview.offsetHeight;
 }
 
 // ==========================================================================================================================================================================================================================================
 
-function janelaSeletorDeCor(corAtual) {
+function janelaSeletorDeCor(AcharCor) {
     let corEscolhida = { R: 0, G: 0, B: 0 }; //Armazena a cor selecionada com o cursor "cursorGradiente";
-    const coresSalvas = document.getElementById("coresSalvas");
-    const colorPaintContent = document.getElementById("colorPaintContent");
-    const janelaSelecionarCor = document.getElementById("janelaSelecionarCor");
-    const bttOk = document.getElementById("bttOk");
-    const bttSalvarCor = document.getElementById("bttSalvarCor");
-    const bttRemoverCorSalva = document.getElementById("bttRemoverCorSalva");;
-    const bttCancelar = document.getElementById("bttCancelar");
+    const coresSalvas = document.getElementById("coresSalvas"),
+        colorPaintContent = document.getElementById("colorPaintContent"),
+        janelaSelecionarCor = document.getElementById("janelaSelecionarCor"),
+        bttOk = document.getElementById("bttOk"),
+        bttSalvarCor = document.getElementById("bttSalvarCor"),
+        bttRemoverCorSalva = document.getElementById("bttRemoverCorSalva"),
+        bttCancelar = document.getElementById("bttCancelar"),
+        corSelecionada = document.getElementById("corSelecionada"),//div que receberá a cor selecionada.
+        barraeEspectroCor = document.getElementById("barraeEspectroCor"),//Canvas que receberá o espectro de cores.
+        cursorBarra = document.getElementById("cursorBarra"),//Cursor que fica na "barraeEspectroCor".
+        gradienteCor = document.getElementById("gradienteCor"),//Canvas que receberá o gradiente de cores da cor seleciona pelo cursor que fica na "barraeEspectroCor".
+        codRGB = document.getElementById("codRGB"),
+        codHEX = document.getElementById("codHEX");
 
-    const corSelecionada = document.getElementById("corSelecionada");//div que receberá a cor selecionada.
-
-    const barraeEspectroCor = document.getElementById("barraeEspectroCor");//Canvas que receberá o espectro de cores.
-    let ctxBarra = barraeEspectroCor.getContext("2d");
     const widthBarra = barraeEspectroCor.width, heightBarra = barraeEspectroCor.height;//Altura e largura do canvas "barraeEspectroCor" (Resolução).
-    const cursorBarra = document.getElementById("cursorBarra");//Cursor que fica na "barraeEspectroCor".
-
-    const gradienteCor = document.getElementById("gradienteCor");//Canvas que receberá o gradiente de cores da cor seleciona pelo cursor que fica na "barraeEspectroCor"..
-    let ctxGradiente = gradienteCor.getContext("2d");
     const widthGradiente = gradienteCor.width, heightGradiente = gradienteCor.height;//Altura e largura do canvas "gradienteCor" (Resolução).
     const cursorGradiente = document.getElementById("cursorGradiente");//Cursor que fica na "gradienteCor".
 
-    const codRGB = document.getElementById("codRGB");
-    const codHEX = document.getElementById("codHEX");
-
+    let ctxBarra = barraeEspectroCor.getContext("2d");
+    let ctxGradiente = gradienteCor.getContext("2d");
     let rgbBarra = { R: 255, G: 0, B: 0 };
     let hsvBarra = { H: 0, S: 100, V: 100 };
-    codRGB.value = "255, 0, 0";
-    codHEX.value = "#ff0000";
-
     let corParaAchar = {};//Armazena a cor a ser encontrada no formato RGB que foi digitada no "codRGB".
     let clickBarra = false;//Saber se o click do mouse foi ou está pressionado em cima do "barraeEspectroCor".
     let clickGradiente = false;//Saber se o click do mouse foi ou está pressionado em cima do "gradienteCor".
@@ -525,6 +542,8 @@ function janelaSeletorDeCor(corAtual) {
     let posMouseMoverJanela = {};
     let posMouseSeletorCorX = 0;//Armazena a posição atual no eixo X na "janelaSelecionarCor";
     let posMouseSeletorCorY = 0;//Armazena a posição atual no eixo Y na "janelaSelecionarCor";    
+    codRGB.value = "255, 0, 0";
+    codHEX.value = "#ff0000";
 
     this.procurarCor = function (color) {
         hsvBarra = rgbToHsv(color); //Converte a cor digitada de RGB para HSV.
@@ -533,7 +552,7 @@ function janelaSeletorDeCor(corAtual) {
     }
 
     preencheBarraEspectro();
-    this.procurarCor(corAtual);
+    this.procurarCor(AcharCor);
 
     janelaSelecionarCor.addEventListener("mousemove", pegarPosMouse);//Calcula a posição do mouse na "janelaSelecionarCor"
     function pegarPosMouse(e) {
