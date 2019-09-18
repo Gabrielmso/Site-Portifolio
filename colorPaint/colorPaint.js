@@ -20,20 +20,15 @@ let txtCorEscolhida; //Recebe a string da cor do primeiro plano no formato RGB p
 let txtResolucao;//Recebe a string da resolução que o usuário escolheu para o projeto para informar ao usuário.
 let txtPosicaoCursor;
 let janelaSeleciona;//Recebe toda a função "janelaSeletorDeCor";
-
+let zoomTelasCanvas;//Armazena o quanto de zoom tem na "TelasCanvas".
 let MouseNoBttVer = false;
 function colorPaint() {
     const contentJanelaCriarProjeto = document.getElementById("contentJanelaCriarProjeto");
-    const bttCriarprojeto = document.getElementById("bttCriarprojeto");
-    const bttCancelaCriarprojetor = document.getElementById("bttCancelaCriarprojetor");
     const janelaPrincipal = document.getElementById("janelaPrincipal");
-    const bttCriarNovoProjeto = document.getElementById("bttCriarNovoProjeto");
     const contentTools = document.getElementById("contentTools");
     const barraLateralEsquerda = document.getElementById("barraLateralEsquerda");
     const barraLateralDireita = document.getElementById("barraLateralDireita");
     const corAtual = document.getElementById("corAtual");
-    const bttCoresPrincipais = document.getElementById("bttCoresPrincipais");
-    const bttAlternaCor = document.getElementById("bttAlternaCor");
     contentTelas = document.getElementById("contentTelas");
     telasCanvas = document.getElementById("telasCanvas");
     corPrincipal = document.getElementById("corPrincipal");
@@ -50,7 +45,7 @@ function colorPaint() {
 
     txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
 
-    bttCriarNovoProjeto.addEventListener("click", function () {
+    document.getElementById("bttCriarNovoProjeto").addEventListener("click", function () {
         if (projetoCriado === false) {
             if (janelaSelecionarCorVisivel === false) {
                 contentJanelaCriarProjeto.style.display = "flex";
@@ -85,7 +80,7 @@ function colorPaint() {
         }
     });
 
-    bttCoresPrincipais.addEventListener("mousedown", function () {
+    document.getElementById("bttCoresPrincipais").addEventListener("mousedown", function () {//Coloca preto na corPrincipalEcolhida e branco na corSecundariaEscolhida.
         if (janelaSelecionarCorVisivel === false) {
             corEscolhidaPrincipal = { R: 0, G: 0, B: 0 };
             corEscolhidaSecudaria = { R: 255, G: 255, B: 255 };
@@ -95,7 +90,7 @@ function colorPaint() {
         }
     });
 
-    bttAlternaCor.addEventListener("mousedown", function () {
+    document.getElementById("bttAlternaCor").addEventListener("mousedown", function () {//Alterna entre a corPrincipalEcolhida e a corSecundariaEscolhida.
         if (janelaSelecionarCorVisivel === false) {
             corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.R + ", " + corEscolhidaSecudaria.G + ", " + corEscolhidaSecudaria.B + ")";
             corSecundaria.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
@@ -106,7 +101,7 @@ function colorPaint() {
         }
     });
 
-    bttCriarprojeto.addEventListener("click", function () {
+    document.getElementById("bttCriarprojeto").addEventListener("click", function () {
         criarProjeto();
         if (projetoCriado === true) {
             contentJanelaCriarProjeto.style.display = "none";
@@ -114,7 +109,7 @@ function colorPaint() {
         }
     });
 
-    bttCancelaCriarprojetor.addEventListener("click", function () {
+    document.getElementById("bttCancelaCriarprojetor").addEventListener("click", function () {
         contentJanelaCriarProjeto.style.display = "none";
     });
 
@@ -127,8 +122,20 @@ function colorPaint() {
         txtPosicaoCursor.value = ((Math.floor(posX)) + 1) + ", " + ((Math.floor(posY)) + 1);
     });
 
-    telasCanvas.addEventListener("mouseleave", function(){
+    telasCanvas.addEventListener("mouseleave", function () {
         txtPosicaoCursor.value = "";
+    });
+
+    document.getElementById("bttZoomMais").addEventListener("click", function () {//Aumentar o zoom no projeto.
+        // zoomTelasCanvas = zoomTelasCanvas + ((resolucaoProjeto.largura / 10) / resolucaoProjeto.largura);
+        zoomNoProjeto(true, 1.25);
+    });
+
+    document.getElementById("bttZoomMenos").addEventListener("click", function () {//Diminuir o zoom no projeto.
+        // zoomTelasCanvas = zoomTelasCanvas - ((resolucaoProjeto.largura / 10) / resolucaoProjeto.largura);
+        if (telasCanvas.offsetWidth >= 25) {
+            zoomNoProjeto(false, 1.25);
+        }
     });
 
     document.addEventListener("keydown", function (e) {
@@ -484,19 +491,21 @@ function ajustarTelasCanvas() {
         telasCanvas.style.top = alturaMax / 2 - resolucaoProjeto.altura / 2 + "px"
         telasCanvas.style.left = larguraMax / 2 - resolucaoProjeto.largura / 2 + "px"
     }
+    zoomTelasCanvas = telasCanvas.offsetWidth / resolucaoProjeto.largura;
 }
 
 function AjustarnavisualizacaoTelasCanvas() {
     let larguraMax = contentTelas.offsetWidth - 10;
     let alturaMax = contentTelas.offsetHeight - 10;
     let proporcaoContent = larguraMax / alturaMax;
-
+    let larguraTelasCanvas;
     if (proporcaoProjeto >= proporcaoContent) {
         let novaAltura = larguraMax / proporcaoProjeto;
         telasCanvas.style.width = larguraMax + "px";
         telasCanvas.style.height = novaAltura + "px";
         telasCanvas.style.top = alturaMax / 2 - novaAltura / 2 + "px"
         telasCanvas.style.left = "5px";
+        larguraTelasCanvas = larguraMax;
     }
     else {
         let novaLargura = alturaMax * proporcaoProjeto;
@@ -504,11 +513,14 @@ function AjustarnavisualizacaoTelasCanvas() {
         telasCanvas.style.height = alturaMax + "px";
         telasCanvas.style.top = "5px";
         telasCanvas.style.left = larguraMax / 2 - novaLargura / 2 + "px"
+        larguraTelasCanvas = novaLargura;
     }
+    zoomTelasCanvas = larguraTelasCanvas / resolucaoProjeto.largura;
 }
 // ==========================================================================================================================================================================================================================================
 
 function ajustarPreview(cor) {
+    document.getElementById("bttsZoomPreview").style.display = "block";
     let proporcaoEspaco = 256 / 150;
     if (proporcaoProjeto >= proporcaoEspaco) {
         let novaAltura = Math.round(256 / proporcaoProjeto);
@@ -524,10 +536,43 @@ function ajustarPreview(cor) {
         telaPreview.style.backgroundColor = cor;
     }
     else {
-        telaPreview.style.backgroundImage = "url('/colorPaint/imagens/fundoTela/transparenteMiniatura.png')"
+        telaPreview.style.backgroundImage = "url('/colorPaint/imagens/fundoTela/transparenteMiniatura.png')";
     }
     telaPreview.width = telaPreview.offsetWidth;
     telaPreview.height = telaPreview.offsetHeight;
+}
+// ==========================================================================================================================================================================================================================================
+function zoomNoProjeto(zoom, quanto) {
+    let larguraAnterior = telasCanvas.offsetWidth;
+    let alturaAnterior = telasCanvas.offsetHeight;
+    let larguraAtual;
+    let alturaAtual;
+    if (zoom === true) {
+        larguraAtual = larguraAnterior * quanto;
+        alturaAtual = alturaAnterior * quanto;
+        telasCanvas.style.width = larguraAtual + "px";
+        telasCanvas.style.height = alturaAtual + "px";
+    }
+    else {
+        larguraAtual = larguraAnterior / quanto;
+        alturaAtual = alturaAnterior / quanto;
+        telasCanvas.style.width = larguraAtual + "px";
+        telasCanvas.style.height = alturaAtual + "px";
+    }
+
+    if (larguraAtual >= (contentTelas.offsetWidth - 10)) {
+        telasCanvas.style.left = "5px";
+    }
+    else {
+        telasCanvas.style.left = (contentTelas.offsetWidth / 2) - (larguraAtual / 2) + "px";
+    }
+
+    if (alturaAtual >= (contentTelas.offsetHeight - 10)) {
+        telasCanvas.style.top = "5px";
+    }
+    else {
+        telasCanvas.style.top = (contentTelas.offsetHeight / 2) - (alturaAtual / 2) + "px";
+    }
 }
 // ==========================================================================================================================================================================================================================================
 

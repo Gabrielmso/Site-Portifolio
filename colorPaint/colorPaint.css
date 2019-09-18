@@ -188,7 +188,8 @@ p {
     display: inline-block;
     background-image: url("../colorPaint/imagens/fundoTela/transparente.png");
     background-color: rgb(255, 255, 255);
-    transition: height 170ms ease-in-out, width 170ms ease-in-out, left 170ms ease-in-out, top 170ms ease-in-out;
+    margin-right: 10px;
+    transition: height 150ms ease-in-out, width 150ms ease-in-out, left 150ms ease-in-out, top 150ms ease-in-out;
 }
 
 #sobrepor {
@@ -229,6 +230,38 @@ p {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+#bttsZoomPreview{
+    position: absolute;
+    display: none;
+    width: 100%;
+    height: 25px;
+    top: 125px;
+    z-index: 2;
+}
+
+.bttZoom{
+    position: relative;
+    width: 25px;
+    height: 25px;
+    float: right;
+    text-align: center;
+    margin-left: 5px;
+    border: 1px solid rgb(91, 91, 91);
+    background-color: rgb(15, 15, 15);
+    border-radius: 4px;
+}
+
+.bttZoom:hover{
+    border: 1px solid rgb(15, 15, 15);
+    background-color:  rgb(51, 51, 51);
+}
+
+.bttZoom p{
+    font-size: 20px;
+    line-height: 24px;
+    background-color: rgba(0, 0, 0, 0);
 }
 
 #janelaInfo {
