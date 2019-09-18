@@ -175,21 +175,24 @@ function criarProjeto() {
         resolucaoProjeto = resolucaoTela;
         proporcaoProjeto = resolucaoProjeto.largura / resolucaoProjeto.altura;
         let numCamadas = parseInt(arrayPropriedades[4].value);
+        let cor;
         if (arrayPropriedades[3].value === "1") {
             corDeFundo = { R: 255, G: 255, B: 255 };
+            cor = "rgb(" + corDeFundo.R + ", " + corDeFundo.G + ", " + corDeFundo.B + ")";
         }
         else if (arrayPropriedades[3].value === "2") {
             corDeFundo = { R: 0, G: 0, B: 0 };
+            cor = "rgb(" + corDeFundo.R + ", " + corDeFundo.G + ", " + corDeFundo.B + ")";
         }
         else if (arrayPropriedades[3].value === "3") {
             corDeFundo = false;
+            cor = false;
         }
         else if (arrayPropriedades[3].value === "4") {
             corDeFundo = corEscolhidaPrincipal;
+            cor = "rgb(" + corDeFundo.R + ", " + corDeFundo.G + ", " + corDeFundo.B + ")";
         }
-        let cor = "rgb(" + corDeFundo.R + ", " + corDeFundo.G + ", " + corDeFundo.B + ")"
         while (numCamadas > arrayCamadas.length) {
-            
             criarCamada(cor, resolucaoTela);
         }
         ajustarTelasCanvas();
@@ -200,7 +203,7 @@ function criarProjeto() {
             telasCanvas.style.backgroundColor = cor;
             telasCanvas.style.backgroundImage = "none";
         }
-        ajustarPreview();
+        ajustarPreview(cor);
         projetoCriado = true;
     }
 
@@ -299,11 +302,18 @@ function criarCamada(cor, resolucao) {
 
     if (proporcaoProjeto >= 1) {
         let iconAltura = 80 / proporcaoProjeto;
-        styleIconTela = "width: 80px; height: " + iconAltura + "px; background-color: " + cor;
+        styleIconTela = "width: 80px; height: " + iconAltura + "px; ";
     }
     else {
         let iconLargura = 80 * proporcaoProjeto;
-        styleIconTela = "width: " + iconLargura + "px; height: 80px; background-color: " + cor;;
+        styleIconTela = "width: " + iconLargura + "px; height: 80px; ";
+    }
+
+    if(cor != false){
+        styleIconTela = styleIconTela + "background-color: " + cor;        
+    }
+    else{
+        styleIconTela = styleIconTela + "background-image: url('/colorPaint/imagens/fundoTela/transparenteMiniatura.png')";
     }
 
     iconTela.setAttribute("style", styleIconTela);
@@ -456,8 +466,24 @@ function AjustarnavisualizacaoTelasCanvas() {
 }
 // ==========================================================================================================================================================================================================================================
 
-function ajustarPreview () {
-    
+function ajustarPreview(cor) {
+    let proporcaoEspaco = 256 / 150;
+    if (proporcaoProjeto >= proporcaoEspaco) {
+        let novaAltura = 256 / proporcaoProjeto;
+        telaPreview.style.width = "256px"
+        telaPreview.style.height = novaAltura + "px";
+    }
+    else {
+        let novaLargura = 150 * proporcaoProjeto;
+        telaPreview.style.width = novaLargura + "px";
+        telaPreview.style.height = "150px";
+    }
+    if (cor != false) {
+        telaPreview.style.backgroundColor = cor;
+    }
+    else{
+        telaPreview.style.backgroundImage = "url('/colorPaint/imagens/fundoTela/transparenteMiniatura.png')"
+    }
 }
 
 // ==========================================================================================================================================================================================================================================

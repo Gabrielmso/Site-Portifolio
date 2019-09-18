@@ -186,7 +186,7 @@ p {
 #telasCanvas {
     position: relative;
     display: inline-block;
-    background-image: url("../colorPaint/imagens/fundoTela/transparente.PNG");
+    background-image: url("../colorPaint/imagens/fundoTela/transparente.png");
     background-color: rgb(255, 255, 255);
     transition: height 170ms ease-in-out, width 170ms ease-in-out, left 170ms ease-in-out, top 170ms ease-in-out;
 }
