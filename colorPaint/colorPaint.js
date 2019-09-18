@@ -18,6 +18,7 @@ let projetoCriado = false;//Saber se existe projeto já criado.
 let nomeDoProjeto; //Armazena o nome do projeto.
 let txtCorEscolhida; //Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
 let txtResolucao;//Recebe a string da resolução que o usuário escolheu para o projeto para informar ao usuário.
+let txtPosicaoCursor;
 let janelaSeleciona;//Recebe toda a função "janelaSeletorDeCor";
 
 let MouseNoBttVer = false;
@@ -39,6 +40,7 @@ function colorPaint() {
     corSecundaria = document.getElementById("corSecundaria");
     txtCorEscolhida = document.getElementById("txtCorEscolhida");
     txtResolucao = document.getElementById("txtResolucao");
+    txtPosicaoCursor = document.getElementById("txtPosicaoCursor");
     telaPreview = document.getElementById("telaPreview");
     ctxTelaPreview = telaPreview.getContext("2d");
     janelaSeleciona = new janelaSeletorDeCor(corEscolhidaPrincipal);
@@ -114,6 +116,19 @@ function colorPaint() {
 
     bttCancelaCriarprojetor.addEventListener("click", function () {
         contentJanelaCriarProjeto.style.display = "none";
+    });
+
+    telasCanvas.addEventListener("mousemove", function (e) {//Pegar a posição do mouse na "telaCanvas"
+        let pos = this.getBoundingClientRect();
+        let posMouseXTela = e.clientX - pos.left;
+        let posMouseYTela = e.clientY - pos.top;
+        let posX = (resolucaoProjeto.largura / telasCanvas.offsetWidth) * posMouseXTela;
+        let posY = (resolucaoProjeto.altura / telasCanvas.offsetHeight) * posMouseYTela;
+        txtPosicaoCursor.value = ((Math.floor(posX)) + 1) + ", " + ((Math.floor(posY)) + 1);
+    });
+
+    telasCanvas.addEventListener("mouseleave", function(){
+        txtPosicaoCursor.value = "";
     });
 
     document.addEventListener("keydown", function (e) {
