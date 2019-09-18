@@ -1,24 +1,25 @@
-let janelaSelecionarCorVisivel = false;
+mudarMenu = false; //impede que o menu mude de estilo.
+let janelaSelecionarCorVisivel = false;//Saber se a janela de seleção de cor está "aberta".
 let corPrincipal, corSecundaria, corPrincipalOuSecundaria;
-let corEscolhidaPrincipal = { R: 0, G: 0, B: 0 };
-let corEscolhidaSecudaria = { R: 255, G: 255, B: 255 };
-let arrayCoresSalvas = [];
-let arrayCamadas = [];
-let arrayTelasCamadas = [];
-let arrayIconesCamadas = [];
-let resolucaoProjeto = { largura: 0, altura: 0 };
-let proporcaoProjeto = 0;
-let janelaSeleciona;
-mudarMenu = false;
-let contentTelas;
-let camadaSelecionada = 0;
-let telasCanvas;
-let projetoCriado = false;
-let nomeDoProjeto;
-let txtCorEscolhida;
-let txtResolucao;
-let telaPreview;
-let ctxTelaPreview;
+let corEscolhidaPrincipal = { R: 0, G: 0, B: 0 };//Armazena a cor escolhida do primeiro plano.
+let corEscolhidaSecudaria = { R: 255, G: 255, B: 255 };//Armazena a cor escolhida no segundo plano.
+let arrayCoresSalvas = [];//Armazena objetos cuja as propriedades possuem as informações sobre as cores salvas.
+let arrayCamadas = [];//Armazena objetos cuja as propriedades possuem as informações sobre as camadas, como os elementos canvas, icones, etc.
+let arrayTelasCamadas = [];//Armazena objetos cuja as propriedades possuem o contexto 2d das camadas, se elas são visíveis, a opacidade das camadas.
+let arrayIconesCamadas = [];//Armazena o contexto 2d dos icones das camadas.
+let telaPreview;//Armazena o canvas que será utilizado como preview do projeto.
+let ctxTelaPreview;//Armazena o contexto 2d do preview.
+let resolucaoProjeto = { largura: 0, altura: 0 };//Armazena a resolução que o usuário escolheu para o projeto.
+let proporcaoProjeto = 0;//Armazena a relação entre largura e altura do projeto para ajustar os icones.
+let contentTelas;//Elemento onde ficará a "tela" para desenhar.
+let camadaSelecionada = 0;//Armazena a posição do arrayTelasCamadas com a camada selecionada, para saber em qual desenhar.
+let telasCanvas;//Elemento onde ficarão os canvas "camadas".
+let projetoCriado = false;//Saber se existe projeto já criado.
+let nomeDoProjeto; //Armazena o nome do projeto.
+let txtCorEscolhida; //Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
+let txtResolucao;//Recebe a string da resolução que o usuário escolheu para o projeto para informar ao usuário.
+let janelaSeleciona;//Recebe toda a função "janelaSeletorDeCor";
+
 let MouseNoBttVer = false;
 function colorPaint() {
     const contentJanelaCriarProjeto = document.getElementById("contentJanelaCriarProjeto");
@@ -161,7 +162,6 @@ function colorPaint() {
         contentTelas.style.height = contentTools.style.height;
     }
 }
-
 // ==========================================================================================================================================================================================================================================
 
 function criarProjeto() {
@@ -335,7 +335,6 @@ function criarCamada(cor, resolucao) {
     contentMiniIcon.appendChild(sobrePor);
 
     // ============== CRIA A CAMADA ================
-
     let idCamada = "telaCamada" + num;
     let camadaStyle = "z-index: " + num + ";";
     let elCamada = document.createElement("canvas");
@@ -360,14 +359,21 @@ function criarCamada(cor, resolucao) {
             miniatura: iconTela,
             bttVer: bttVisivel,
             porcentagemOpa: txtPorcentagem,
-            visivel: true
         };
+
         arrayCamadas.push(objCamada);
         arrayCamadas[arrayCamadas.length - 1].icone.addEventListener("click", clickIconeCamada);
         arrayCamadas[arrayCamadas.length - 1].bttVer.addEventListener("mousedown", clickCamadaVisivel);
         arrayCamadas[arrayCamadas.length - 1].bttVer.addEventListener("mouseenter", mouseSobre);
         arrayCamadas[arrayCamadas.length - 1].bttVer.addEventListener("mouseleave", mouseFora);
-        arrayTelasCamadas.push(arrayCamadas[arrayCamadas.length - 1].camada.getContext("2d"));
+
+        let objTela = {
+            id: num,
+            ctx: arrayCamadas[arrayCamadas.length - 1].camada.getContext("2d"),
+            opacidade: 100,
+            visivel: true
+        }
+        arrayTelasCamadas.push(objTela);
         arrayIconesCamadas.push(arrayCamadas[arrayCamadas.length - 1].miniatura.getContext("2d"));
     }
 }
@@ -399,15 +405,15 @@ function clickCamadaVisivel() {
     id = txtId.substring(7, 11);
     id = parseInt(id);
     let indiceArrayCamadas = id - 1;
-    let visible = arrayCamadas[indiceArrayCamadas].visivel;
+    let visible = arrayTelasCamadas[indiceArrayCamadas].visivel;
     if (visible === true) {
-        arrayCamadas[indiceArrayCamadas].visivel = false;
+        arrayTelasCamadas[indiceArrayCamadas].visivel = false;
         arrayCamadas[indiceArrayCamadas].camada.style.display = "none"
         this.classList.add("iconNaoVer");
         this.classList.remove("iconVer");
     }
     else {
-        arrayCamadas[indiceArrayCamadas].visivel = true;
+        arrayTelasCamadas[indiceArrayCamadas].visivel = true;
         arrayCamadas[indiceArrayCamadas].camada.style.display = "block";
         this.classList.add("iconVer");
         this.classList.remove("iconNaoVer");
@@ -421,21 +427,21 @@ function mouseSobre() {
 function mouseFora() {
     MouseNoBttVer = false;
 }
-
 // ==========================================================================================================================================================================================================================================
 
-// function DesenhoCompleto(arguments) {
-//     ctxTelaPreview.clearRect(0, 0, telaPreview.width, telaPreview.height);
-
-
-//     for (let i = 0; i < arrayTelasCamadas.length; i++) {
-//         arrayTelasCamadas[i];
-        
-//     }
-// }
-
-
+function DesenhoCompleto() {
+    ctxTelaPreview.clearRect(0, 0, ctxTelaPreview.canvas.width, ctxTelaPreview.canvas.height);
+    for (let i = 0; i < arrayTelasCamadas.length; i++) {
+        if (arrayTelasCamadas[i].visivel === true) {
+            ctxTelaPreview.beginPath();
+            ctxTelaPreview.globalAlpha = (arrayTelasCamadas[i].opacidade / 100);
+            ctxTelaPreview.drawImage(arrayTelasCamadas[i].ctx.canvas, 0, 0, ctxTelaPreview.canvas.width, ctxTelaPreview.canvas.height);
+            ctxTelaPreview.closePath();
+        };
+    }
+}
 // ==========================================================================================================================================================================================================================================
+
 function ajustarTelasCanvas() {
     let larguraMax = contentTelas.offsetWidth - 10;
     let alturaMax = contentTelas.offsetHeight - 10;
@@ -508,7 +514,6 @@ function ajustarPreview(cor) {
     telaPreview.width = telaPreview.offsetWidth;
     telaPreview.height = telaPreview.offsetHeight;
 }
-
 // ==========================================================================================================================================================================================================================================
 
 function janelaSeletorDeCor(AcharCor) {
@@ -1088,4 +1093,3 @@ document.addEventListener("keydown", function (e) {
         return false;
     }
 });
-
