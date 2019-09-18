@@ -14,6 +14,9 @@ let proporcaoProjeto = 0;//Armazena a relação entre largura e altura do projet
 let contentTelas;//Elemento onde ficará a "tela" para desenhar.
 let camadaSelecionada = 0;//Armazena a posição do arrayTelasCamadas com a camada selecionada, para saber em qual desenhar.
 let telasCanvas;//Elemento onde ficarão os canvas "camadas".
+let desenho;
+let ctxDesenho;
+let corFundo;
 let projetoCriado = false;//Saber se existe projeto já criado.
 let nomeDoProjeto; //Armazena o nome do projeto.
 let txtCorEscolhida; //Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
@@ -31,11 +34,14 @@ function colorPaint() {
     const corAtual = document.getElementById("corAtual");
     contentTelas = document.getElementById("contentTelas");
     telasCanvas = document.getElementById("telasCanvas");
+    corFundo = document.getElementById("corFundo");
     corPrincipal = document.getElementById("corPrincipal");
     corSecundaria = document.getElementById("corSecundaria");
     txtCorEscolhida = document.getElementById("txtCorEscolhida");
     txtResolucao = document.getElementById("txtResolucao");
     txtPosicaoCursor = document.getElementById("txtPosicaoCursor");
+    desenho = document.getElementById("desenho");
+    ctxDesenho = desenho.getContext("2d");
     telaPreview = document.getElementById("telaPreview");
     ctxTelaPreview = telaPreview.getContext("2d");
     janelaSeleciona = new janelaSeletorDeCor(corEscolhidaPrincipal);
@@ -229,9 +235,10 @@ function criarProjeto() {
         arrayCamadas[0].icone.classList.add("camadaSalecionada");
         arrayCamadas[0].icone.classList.remove("camadas");
         if (corDeFundo != false) {
-            telasCanvas.style.backgroundColor = cor;
-            telasCanvas.style.backgroundImage = "none";
+            corFundo.style.backgroundColor = cor;
         }
+        desenho.width = resolucaoProjeto.largura;
+        desenho.height = resolucaoProjeto.altura;
         ajustarPreview(cor);
         projetoCriado = true;
     }

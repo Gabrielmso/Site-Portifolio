@@ -192,8 +192,28 @@ p {
     transition: height 150ms ease-in-out, width 150ms ease-in-out, left 150ms ease-in-out, top 150ms ease-in-out;
 }
 
+#desenho {
+    position: absolute;
+    top:0px;
+    left:0px;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+#corFundo {
+    position: absolute;
+    top:0px;
+    left:0px;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
 #sobrepor {
     position: absolute;
+    top:0px;
+    left:0px;
     width: 100%;
     height: 100%;
     z-index: 1000;
@@ -218,21 +238,21 @@ p {
     height: 170px;
 }
 
-#contentPreview{
-    position:relative;
+#contentPreview {
+    position: relative;
     display: block;
     width: 256px;
     height: 150px;
 }
 
-#telaPreview{
+#telaPreview {
     position: relative;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
 
-#bttsZoomPreview{
+#bttsZoomPreview {
     position: absolute;
     display: none;
     width: 100%;
@@ -241,7 +261,7 @@ p {
     z-index: 2;
 }
 
-.bttZoom{
+.bttZoom {
     position: relative;
     width: 25px;
     height: 25px;
@@ -253,12 +273,12 @@ p {
     border-radius: 4px;
 }
 
-.bttZoom:hover{
+.bttZoom:hover {
     border: 1px solid rgb(15, 15, 15);
-    background-color:  rgb(51, 51, 51);
+    background-color: rgb(51, 51, 51);
 }
 
-.bttZoom p{
+.bttZoom p {
     font-size: 20px;
     line-height: 24px;
     background-color: rgba(0, 0, 0, 0);
