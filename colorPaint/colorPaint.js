@@ -19,6 +19,7 @@ let ctxDesenho;
 let corFundo;
 let pintar;
 let ctxPintar;
+let OpacidadeCorFerramenta = 100;
 let projetoCriado = false;//Saber se existe projeto já criado.
 let nomeDoProjeto; //Armazena o nome do projeto.
 let txtCorEscolhida; //Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
@@ -49,6 +50,8 @@ function colorPaint() {
     telaPreview = document.getElementById("telaPreview");
     ctxTelaPreview = telaPreview.getContext("2d");
     janelaSeleciona = new janelaSeletorDeCor(corEscolhidaPrincipal);
+    let posicaoMouseX;
+    let posicaoMouseY
     let pintando = false;
 
     menuPadrao();
@@ -124,22 +127,12 @@ function colorPaint() {
         contentJanelaCriarProjeto.style.display = "none";
     });
 
-    telasCanvas.addEventListener("mousemove", function (e) {//Pegar a posição do mouse na "telaCanvas"
-        let pos = this.getBoundingClientRect();
-        let posMouseXTela = e.clientX - pos.left;
-        let posMouseYTela = e.clientY - pos.top;
-        let posX = (resolucaoProjeto.largura / telasCanvas.offsetWidth) * posMouseXTela;
-        let posY = (resolucaoProjeto.altura / telasCanvas.offsetHeight) * posMouseYTela;
-        txtPosicaoCursor.value = ((Math.floor(posX)) + 1) + ", " + ((Math.floor(posY)) + 1);
-
-        if (pintando === true) {
-            desenharPincel(posX, posY);
-        }
-    });
-
     telasCanvas.addEventListener("mousedown", function (e) {
-        pintando = true;
-        ctxPintar.beginPath();
+        if (arrayTelasCamadas[camadaSelecionada].visivel === true) {
+            pintando = true;
+            ctxPintar.beginPath();
+            desenharPincel(posicaoMouseX, posicaoMouseY);
+        }
     });
 
     telasCanvas.addEventListener("mouseup", function (e) {
@@ -148,8 +141,31 @@ function colorPaint() {
         DesenhoCompleto();
     });
 
+    telasCanvas.addEventListener("mousemove", function () {
+        txtPosicaoCursor.value = ((Math.floor(posicaoMouseX)) + 1) + ", " + ((Math.floor(posicaoMouseY)) + 1);
+    });
+
     telasCanvas.addEventListener("mouseleave", function () {
         txtPosicaoCursor.value = "";
+    });
+
+    document.addEventListener("mouseup", function () {
+        if (pintando === true) {
+            pintando = false;
+            desenharNaCamada();
+            DesenhoCompleto();
+        }
+    });
+
+    document.addEventListener("mousemove", function (e) {//Pegar a posição do mouse em relação a "telaCanvas".
+        let pos = telasCanvas.getBoundingClientRect();
+        let posMouseXTela = e.clientX - pos.left;
+        let posMouseYTela = e.clientY - pos.top;
+        posicaoMouseX = (resolucaoProjeto.largura / telasCanvas.offsetWidth) * posMouseXTela;
+        posicaoMouseY = (resolucaoProjeto.altura / telasCanvas.offsetHeight) * posMouseYTela;
+        if (pintando === true) {
+            desenharPincel(posicaoMouseX, posicaoMouseY);
+        }
     });
 
     document.getElementById("bttZoomMais").addEventListener("click", function () {//Aumentar o zoom no projeto.
@@ -215,15 +231,20 @@ function colorPaint() {
 function desenharPincel(mouseX, mouseY) {
     ctxPintar.lineWidth = 5;
     ctxPintar.lineCap = "round";
-    ctxPintar.strokeStyle = "rgba(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ", 0.5)";
+    ctxPintar.strokeStyle = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
     ctxPintar.lineTo(mouseX, mouseY);
     ctxPintar.stroke();
-    ctxPintar.globalCompositeOperation = "xor";
+    ctxPintar.beginPath();
+    ctxPintar.fillStyle = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+    ctxPintar.arc(mouseX, mouseY, 2.5, 0, Math.PI * 2);
+    ctxPintar.fill();
     ctxPintar.beginPath();
     ctxPintar.moveTo(mouseX, mouseY);
 }
 
 function desenharNaCamada() {
+    let opacidade = (OpacidadeCorFerramenta / 100);
+    arrayTelasCamadas[camadaSelecionada].ctx.globalAlpha = opacidade;
     arrayTelasCamadas[camadaSelecionada].ctx.drawImage(ctxPintar.canvas, 0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
     ctxPintar.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
 }
@@ -506,6 +527,7 @@ function clickCamadaVisivel() {
         this.classList.add("iconVer");
         this.classList.remove("iconNaoVer");
     }
+    DesenhoCompleto();
 }
 
 function mouseSobre() {
