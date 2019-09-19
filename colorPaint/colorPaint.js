@@ -14,12 +14,12 @@ let proporcaoProjeto = 0;//Armazena a relação entre largura e altura do projet
 let contentTelas;//Elemento onde ficará a "tela" para desenhar.
 let camadaSelecionada = 0;//Armazena a posição do arrayTelasCamadas com a camada selecionada, para saber em qual desenhar.
 let telasCanvas;//Elemento onde ficarão os canvas "camadas".
-let desenho;
-let ctxDesenho;
-let corFundo;
-let pintar;
-let ctxPintar;
-let OpacidadeCorFerramenta = 100;
+let desenho;//Armazena o canvas que receberá o "desenho completo" 
+let ctxDesenho;//Armazena o contexto 2d de "desenho".
+let corFundo;//Armazena a cor de fundo escolhida para o projeto.
+let pintar;//Armazena o canvas onde ocorrerá os "eventos" de pintura;
+let ctxPintar;//Armazena o contexto 2d de "pintar".
+let OpacidadeCorFerramenta = 100;//Armazena o valor da opacidade da cor de O a 100;
 let projetoCriado = false;//Saber se existe projeto já criado.
 let nomeDoProjeto; //Armazena o nome do projeto.
 let txtCorEscolhida; //Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
@@ -131,6 +131,7 @@ function colorPaint() {
     telasCanvas.addEventListener("mousedown", function (e) {
         if (arrayTelasCamadas[camadaSelecionada].visivel === true) {
             pintando = true;
+            coordenadaClick.push({ x: posicaoMouseX, y: posicaoMouseY });
             ctxPintar.lineWidth = 7;
             ctxPintar.globalAlpha = 0.85;
             ctxPintar.strokeStyle = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
@@ -241,7 +242,7 @@ function desenharPincel(mouseX, mouseY) {
     let p2 = coordenadaClick[1];
     ctxPintar.beginPath();
     ctxPintar.moveTo(p1.x, p1.y);
-    for (let i = 0; i < coordenadaClick.length ; i++) {
+    for (let i = 0; i < coordenadaClick.length; i++) {
         let midPoint = midPointBtw(p1, p2);
         ctxPintar.quadraticCurveTo(p1.x, p1.y, midPoint.x, midPoint.y);
         p1 = coordenadaClick[i];
@@ -1245,3 +1246,4 @@ document.addEventListener("keydown", function (e) {
         return false;
     }
 });
+
