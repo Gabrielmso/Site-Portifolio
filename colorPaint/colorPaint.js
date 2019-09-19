@@ -28,6 +28,7 @@ let txtPosicaoCursor;
 let janelaSeleciona;//Recebe toda a função "janelaSeletorDeCor";
 let zoomTelasCanvas;//Armazena o quanto de zoom tem na "TelasCanvas".
 let MouseNoBttVer = false;
+let coordenadaClick = [];
 function colorPaint() {
     const contentJanelaCriarProjeto = document.getElementById("contentJanelaCriarProjeto");
     const janelaPrincipal = document.getElementById("janelaPrincipal");
@@ -130,6 +131,10 @@ function colorPaint() {
     telasCanvas.addEventListener("mousedown", function (e) {
         if (arrayTelasCamadas[camadaSelecionada].visivel === true) {
             pintando = true;
+            ctxPintar.lineWidth = 7;
+            ctxPintar.globalAlpha = 0.85;
+            ctxPintar.strokeStyle = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+            ctxPintar.lineJoin = ctxPintar.lineCap = "round";
             ctxPintar.beginPath();
             desenharPincel(posicaoMouseX, posicaoMouseY);
         }
@@ -155,6 +160,7 @@ function colorPaint() {
             desenharNaCamada();
             DesenhoCompleto();
         }
+        coordenadaClick = [];
     });
 
     document.addEventListener("mousemove", function (e) {//Pegar a posição do mouse em relação a "telaCanvas".
@@ -229,22 +235,32 @@ function colorPaint() {
 // ==========================================================================================================================================================================================================================================
 
 function desenharPincel(mouseX, mouseY) {
-    ctxPintar.lineWidth = 5;
-    ctxPintar.lineCap = "round";
-    ctxPintar.strokeStyle = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
-    ctxPintar.lineTo(mouseX, mouseY);
+    coordenadaClick.push({ x: mouseX, y: mouseY });
+    ctxPintar.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
+    let p1 = coordenadaClick[0];
+    let p2 = coordenadaClick[1];
+    ctxPintar.beginPath();
+    ctxPintar.moveTo(p1.x, p1.y);
+    for (let i = 0; i < coordenadaClick.length ; i++) {
+        let midPoint = midPointBtw(p1, p2);
+        ctxPintar.quadraticCurveTo(p1.x, p1.y, midPoint.x, midPoint.y);
+        p1 = coordenadaClick[i];
+        p2 = coordenadaClick[i + 1];
+    }
+    ctxPintar.lineTo(p1.x, p1.y);
     ctxPintar.stroke();
-    ctxPintar.beginPath();
-    ctxPintar.fillStyle = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
-    ctxPintar.arc(mouseX, mouseY, 2.5, 0, Math.PI * 2);
-    ctxPintar.fill();
-    ctxPintar.beginPath();
-    ctxPintar.moveTo(mouseX, mouseY);
+
+    function midPointBtw(p1, p2) {
+        return {
+            x: p1.x + (p2.x - p1.x) / 2,
+            y: p1.y + (p2.y - p1.y) / 2
+        };
+    }
 }
 
 function desenharNaCamada() {
-    let opacidade = (OpacidadeCorFerramenta / 100);
-    arrayTelasCamadas[camadaSelecionada].ctx.globalAlpha = opacidade;
+    // let opacidade = (OpacidadeCorFerramenta / 100);
+    // arrayTelasCamadas[camadaSelecionada].ctx.globalAlpha = opacidade;
     arrayTelasCamadas[camadaSelecionada].ctx.drawImage(ctxPintar.canvas, 0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
     ctxPintar.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
 }
