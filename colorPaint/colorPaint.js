@@ -12,20 +12,20 @@ let ctxTelaPreview;//Armazena o contexto 2d do preview.
 let resolucaoProjeto = { largura: 0, altura: 0 };//Armazena a resolução que o usuário escolheu para o projeto.
 let proporcaoProjeto = 0;//Armazena a relação entre largura e altura do projeto para ajustar os icones.
 let contentTelas;//Elemento onde ficará a "tela" para desenhar.
-let camadaSelecionada = 0;//Armazena a posição do arrayTelasCamadas com a camada selecionada, para saber em qual desenhar.
+let camadaSelecionada = 0;//Armazena a posição do arrayTelasCamadas com a camada selecionada.
 let telasCanvas;//Elemento onde ficarão os canvas "camadas".
-let desenho;//Armazena o canvas que receberá o "desenho completo" 
+let desenho;//Armazena o canvas que receberá o "desenho completo".
 let ctxDesenho;//Armazena o contexto 2d de "desenho".
-let corFundo;//Armazena a cor de fundo escolhida para o projeto.
-let pintar;//Armazena o canvas onde ocorrerá os "eventos" de pintura;
+let corFundo;//Div de fundo que receberá a cor de fundo escolhida para o projeto.
+let pintar;//Armazena o canvas onde ocorrerá os "eventos" de pintura.
 let ctxPintar;//Armazena o contexto 2d de "pintar".
-let OpacidadeCorFerramenta = 100;//Armazena o valor da opacidade da cor de O a 100;
+let OpacidadeCorFerramenta = 100;//Armazena o valor da opacidade da cor de O a 100.
 let projetoCriado = false;//Saber se existe projeto já criado.
 let nomeDoProjeto; //Armazena o nome do projeto.
 let txtCorEscolhida; //Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
 let txtResolucao;//Recebe a string da resolução que o usuário escolheu para o projeto para informar ao usuário.
 let txtPosicaoCursor;
-let janelaSeleciona;//Recebe toda a função "janelaSeletorDeCor";
+let janelaSeleciona;//Recebe toda a função "janelaSeletorDeCor".
 let zoomTelasCanvas;//Armazena o quanto de zoom tem na "TelasCanvas".
 let MouseNoBttVer = false;
 let coordenadaClick = [];
@@ -52,8 +52,9 @@ function colorPaint() {
     ctxTelaPreview = telaPreview.getContext("2d");
     janelaSeleciona = new janelaSeletorDeCor(corEscolhidaPrincipal);
     let posicaoMouseX;
-    let posicaoMouseY
+    let posicaoMouseY;
     let pintando = false;
+    let ctrlPressionado = false;
 
     menuPadrao();
     ajustarContents();
@@ -105,17 +106,6 @@ function colorPaint() {
         }
     });
 
-    document.getElementById("bttAlternaCor").addEventListener("mousedown", function () {//Alterna entre a corPrincipalEcolhida e a corSecundariaEscolhida.
-        if (janelaSelecionarCorVisivel === false) {
-            corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.R + ", " + corEscolhidaSecudaria.G + ", " + corEscolhidaSecudaria.B + ")";
-            corSecundaria.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
-            let cor = corEscolhidaPrincipal;
-            corEscolhidaPrincipal = corEscolhidaSecudaria;
-            corEscolhidaSecudaria = cor;
-            txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
-        }
-    });
-
     document.getElementById("bttCriarprojeto").addEventListener("click", function () {
         criarProjeto();
         if (projetoCriado === true) {
@@ -155,6 +145,17 @@ function colorPaint() {
         txtPosicaoCursor.value = "";
     });
 
+    document.getElementById("bttAlternaCor").addEventListener("mousedown", function () {//Alterna entre a corPrincipalEcolhida e a corSecundariaEscolhida.
+        if (janelaSelecionarCorVisivel === false) {
+            corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.R + ", " + corEscolhidaSecudaria.G + ", " + corEscolhidaSecudaria.B + ")";
+            corSecundaria.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+            let cor = corEscolhidaPrincipal;
+            corEscolhidaPrincipal = corEscolhidaSecudaria;
+            corEscolhidaSecudaria = cor;
+            txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+        }
+    });
+
     document.addEventListener("mouseup", function () {
         if (pintando === true) {
             pintando = false;
@@ -164,7 +165,7 @@ function colorPaint() {
         coordenadaClick = [];
     });
 
-    document.addEventListener("mousemove", function (e) {//Pegar a posição do mouse em relação a "telaCanvas".
+    document.addEventListener("mousemove", function (e) {//Pegar a posição do mouse em relação a "telaCanvas" e enquanto o mousse estiver pressionado executar a função referente a ferramenta escolhida.
         let pos = telasCanvas.getBoundingClientRect();
         let posMouseXTela = e.clientX - pos.left;
         let posMouseYTela = e.clientY - pos.top;
@@ -176,24 +177,36 @@ function colorPaint() {
     });
 
     document.getElementById("bttZoomMais").addEventListener("click", function () {//Aumentar o zoom no projeto.
-        // zoomTelasCanvas = zoomTelasCanvas + ((resolucaoProjeto.largura / 10) / resolucaoProjeto.largura);
         zoomNoProjeto(true, 1.25);
     });
 
     document.getElementById("bttZoomMenos").addEventListener("click", function () {//Diminuir o zoom no projeto.
-        // zoomTelasCanvas = zoomTelasCanvas - ((resolucaoProjeto.largura / 10) / resolucaoProjeto.largura);
         if (telasCanvas.offsetWidth >= 25) {
             zoomNoProjeto(false, 1.25);
         }
     });
 
-    document.addEventListener("keydown", function (e) {
+    document.addEventListener("keydown", function (e) {//Criar teclas de atalho.
         if (projetoCriado === true) {
-            if (e.code === "Digit0" && e.ctrlKey) {
+            if (e.code === "Digit0" && ctrlPressionado === true) {
+                e.preventDefault();
                 AjustarnavisualizacaoTelasCanvas();
             }
+            else if (e.code === "Digit1" && ctrlPressionado === true) {
+                e.preventDefault();
+                zoomNoProjeto("porcentagem", 100);
+            }
         }
-    })
+        if (e.code === "ControlRight" || e.code === "ControlLeft") {
+            ctrlPressionado = true;
+        }
+    });
+
+    document.addEventListener("keyup", function (e) {
+        if (e.code === "ControlRight" || e.code === "ControlLeft") {
+            ctrlPressionado = false;
+        }
+    });
 
     window.addEventListener("resize", function () {
         ajustarContents();
@@ -238,23 +251,23 @@ function colorPaint() {
 function desenharPincel(mouseX, mouseY) {
     coordenadaClick.push({ x: mouseX, y: mouseY });
     ctxPintar.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
-    let p1 = coordenadaClick[0];
-    let p2 = coordenadaClick[1];
+    let ponto1 = coordenadaClick[0];
+    let ponto2 = coordenadaClick[1];
     ctxPintar.beginPath();
-    ctxPintar.moveTo(p1.x, p1.y);
+    ctxPintar.moveTo(ponto1.x, ponto1.y);
     for (let i = 0; i < coordenadaClick.length; i++) {
-        let midPoint = midPointBtw(p1, p2);
-        ctxPintar.quadraticCurveTo(p1.x, p1.y, midPoint.x, midPoint.y);
-        p1 = coordenadaClick[i];
-        p2 = coordenadaClick[i + 1];
+        let midPoint = midPointBtw(ponto1, ponto2);
+        ctxPintar.quadraticCurveTo(ponto1.x, ponto1.y, midPoint.x, midPoint.y);
+        ponto1 = coordenadaClick[i];
+        ponto2 = coordenadaClick[i + 1];
     }
-    ctxPintar.lineTo(p1.x, p1.y);
+    ctxPintar.lineTo(ponto1.x, ponto1.y);
     ctxPintar.stroke();
 
-    function midPointBtw(p1, p2) {
+    function midPointBtw(ponto1, ponto2) {
         return {
-            x: p1.x + (p2.x - p1.x) / 2,
-            y: p1.y + (p2.y - p1.y) / 2
+            x: ponto1.x + (ponto2.x - ponto1.x) / 2,
+            y: ponto1.y + (ponto2.y - ponto1.y) / 2
         };
     }
 }
@@ -300,7 +313,7 @@ function criarProjeto() {
             let el = arrayPropriedades[i];
             el.style.backgroundColor = "rgb(37, 37, 37)";
         }
-        let corDeFundo = null;
+        let corDeFundo;
         nomeDoProjeto = (arrayPropriedades[0].value).replace(" ", "-");
         let resolucaoTela = { largura: parseInt(arrayPropriedades[1].value), altura: parseInt(arrayPropriedades[2].value) };
         resolucaoProjeto = resolucaoTela;
@@ -534,7 +547,7 @@ function clickCamadaVisivel() {
     let visible = arrayTelasCamadas[indiceArrayCamadas].visivel;
     if (visible === true) {
         arrayTelasCamadas[indiceArrayCamadas].visivel = false;
-        arrayCamadas[indiceArrayCamadas].camada.style.display = "none"
+        arrayCamadas[indiceArrayCamadas].camada.style.display = "none";
         this.classList.add("iconNaoVer");
         this.classList.remove("iconVer");
     }
@@ -576,13 +589,13 @@ function ajustarTelasCanvas() {
         telasCanvas.style.width = novaLargura + "px";
         telasCanvas.style.height = alturaMax + "px";
         telasCanvas.style.top = "5px";
-        telasCanvas.style.left = larguraMax / 2 - novaLargura / 2 + "px"
+        telasCanvas.style.left = larguraMax / 2 - novaLargura / 2 + "px";
     }
     else {
         telasCanvas.style.width = resolucaoProjeto.largura + "px";
         telasCanvas.style.height = resolucaoProjeto.altura + "px";
-        telasCanvas.style.top = alturaMax / 2 - resolucaoProjeto.altura / 2 + "px"
-        telasCanvas.style.left = larguraMax / 2 - resolucaoProjeto.largura / 2 + "px"
+        telasCanvas.style.top = alturaMax / 2 - resolucaoProjeto.altura / 2 + "px";
+        telasCanvas.style.left = larguraMax / 2 - resolucaoProjeto.largura / 2 + "px";
     }
     zoomTelasCanvas = telasCanvas.offsetWidth / resolucaoProjeto.largura;
 }
@@ -596,7 +609,7 @@ function AjustarnavisualizacaoTelasCanvas() {
         let novaAltura = larguraMax / proporcaoProjeto;
         telasCanvas.style.width = larguraMax + "px";
         telasCanvas.style.height = novaAltura + "px";
-        telasCanvas.style.top = alturaMax / 2 - novaAltura / 2 + "px"
+        telasCanvas.style.top = alturaMax / 2 - novaAltura / 2 + "px";
         telasCanvas.style.left = "5px";
         larguraTelasCanvas = larguraMax;
     }
@@ -605,7 +618,7 @@ function AjustarnavisualizacaoTelasCanvas() {
         telasCanvas.style.width = novaLargura + "px";
         telasCanvas.style.height = alturaMax + "px";
         telasCanvas.style.top = "5px";
-        telasCanvas.style.left = larguraMax / 2 - novaLargura / 2 + "px"
+        telasCanvas.style.left = larguraMax / 2 - novaLargura / 2 + "px";
         larguraTelasCanvas = novaLargura;
     }
     zoomTelasCanvas = larguraTelasCanvas / resolucaoProjeto.largura;
@@ -617,7 +630,7 @@ function ajustarPreview(cor) {
     let proporcaoEspaco = 256 / 150;
     if (proporcaoProjeto >= proporcaoEspaco) {
         let novaAltura = Math.round(256 / proporcaoProjeto);
-        telaPreview.style.width = "256px"
+        telaPreview.style.width = "256px";
         telaPreview.style.height = novaAltura + "px";
     }
     else {
@@ -635,20 +648,27 @@ function ajustarPreview(cor) {
     telaPreview.height = telaPreview.offsetHeight;
 }
 // ==========================================================================================================================================================================================================================================
+
 function zoomNoProjeto(zoom, quanto) {
     let larguraAnterior = telasCanvas.offsetWidth;
-    let alturaAnterior = telasCanvas.offsetHeight;
     let larguraAtual;
     let alturaAtual;
-    if (zoom === true) {
-        larguraAtual = larguraAnterior * quanto;
-        alturaAtual = alturaAnterior * quanto;
+
+    if (zoom === "porcentagem") {
+        larguraAtual = resolucaoProjeto.largura * (quanto / 100);
+        alturaAtual = larguraAtual / proporcaoProjeto;
         telasCanvas.style.width = larguraAtual + "px";
         telasCanvas.style.height = alturaAtual + "px";
     }
-    else {
+    else if (zoom === true) {
+        larguraAtual = larguraAnterior * quanto;
+        alturaAtual = larguraAtual / proporcaoProjeto;
+        telasCanvas.style.width = larguraAtual + "px";
+        telasCanvas.style.height = alturaAtual + "px";
+    }
+    else if (zoom === false) {
         larguraAtual = larguraAnterior / quanto;
-        alturaAtual = alturaAnterior / quanto;
+        alturaAtual = larguraAtual / proporcaoProjeto;
         telasCanvas.style.width = larguraAtual + "px";
         telasCanvas.style.height = alturaAtual + "px";
     }
@@ -666,6 +686,10 @@ function zoomNoProjeto(zoom, quanto) {
     else {
         telasCanvas.style.top = (contentTelas.offsetHeight / 2) - (alturaAtual / 2) + "px";
     }
+    zoomTelasCanvas = ((larguraAtual * 100) / resolucaoProjeto.largura).toFixed(2);
+    zoomTelasCanvas = zoomTelasCanvas.replace(".", ",");
+    zoomTelasCanvas = zoomTelasCanvas + "%";
+    console.log(zoomTelasCanvas);
 }
 // ==========================================================================================================================================================================================================================================
 
