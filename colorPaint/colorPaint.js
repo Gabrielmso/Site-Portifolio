@@ -21,8 +21,8 @@ let pintar;//Armazena o canvas onde ocorrerá os "eventos" de pintura.
 let ctxPintar;//Armazena o contexto 2d de "pintar".
 let OpacidadeCorFerramenta = 100;//Armazena o valor da opacidade da cor de O a 100.
 let projetoCriado = false;//Saber se existe projeto já criado.
-let nomeDoProjeto; //Armazena o nome do projeto.
-let txtCorEscolhida; //Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
+let nomeDoProjeto;//Armazena o nome do projeto.
+let txtCorEscolhida;//Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
 let txtResolucao;//Recebe a string da resolução que o usuário escolheu para o projeto para informar ao usuário.
 let txtPosicaoCursor;
 let janelaSeleciona;//Recebe toda a função "janelaSeletorDeCor".
@@ -55,7 +55,7 @@ function colorPaint() {
     let posicaoMouseY;
     let pintando = false;
     let ctrlPressionado = false;
-    let ferramentaSelecionada;
+    let ferramentaSelecionada = 1;
     let arrayFerramentas = [{ ferramenta: document.getElementById("pincel"), nome: "Pincel", id: 1 },
     { ferramenta: document.getElementById("borracha"), nome: "Borracha", id: 2 },]
 
@@ -607,7 +607,6 @@ function mouseSobre() {
 function mouseFora() {
     MouseNoBttVer = false;
 }
-
 // ==========================================================================================================================================================================================================================================
 
 function ajustarTelasCanvas() {
@@ -1314,4 +1313,3 @@ document.addEventListener("keydown", function (e) {
         return false;
     }
 });
-

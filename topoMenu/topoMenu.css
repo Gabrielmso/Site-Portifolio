@@ -343,14 +343,14 @@
 
 #opcoesmenu li a:hover, #opcoesmenu li p:hover {
     border-bottom: solid 3px rgba(213, 192, 107, 0.83);
-    color: #d5c06b;
+    color: rgb(213, 192, 107);
     transition: all 0.35s;
     -webkit-transition: all 0.35s;
 }
 
 #opcoesmenu ul li a:hover, #opcoesmenu ul li p:hover {
     background-color: rgba(100, 68, 8, 0.83);
-    color: #d5c06b;
+    color: rgb(213, 192, 107);
     transition: all 0.35s;
     -webkit-transition: all 0.35s;
     border-bottom: none;
@@ -358,12 +358,12 @@
 
 #opcoesmenu2 li a:hover, #opcoesmenu2 li p:hover {
     background-color: rgba(80, 80, 80, 0.486);
-    color: #d5c06b;
+    color: rgb(213, 192, 107);
 }
 
 #opcoesmenu2 ul li a:hover, #opcoesmenu2 ul li p:hover {
     background-color: rgba(100, 68, 8, 0.83);
-    color: #d5c06b;
+    color: rgb(213, 192, 107);
 }
 
 #opcoesmenu ul {
@@ -439,7 +439,7 @@
 }
 
 #opcoesmenu p:hover {
-    color: #d5c06b;
+    color: rgb(213, 192, 107);
     transition: all 0.35s;
     -webkit-transition: all 0.35s;
 }
