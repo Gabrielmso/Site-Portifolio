@@ -67,13 +67,15 @@ function colorPaint() {
 
     for (let i = 0; i < arrayFerramentas.length; i++) {
         arrayFerramentas[i].ferramenta.addEventListener("click", function () {
-            ferramentaSelecionada = arrayFerramentas[i].id;
-            this.classList.remove("bttFerramentas");
-            this.classList.add("bttFerramentasEscolhida");
-            for (let e = 0; e < arrayFerramentas.length; e++) {
-                if (e != i) {
-                    arrayFerramentas[e].ferramenta.classList.remove("bttFerramentasEscolhida");
-                    arrayFerramentas[e].ferramenta.classList.add("bttFerramentas");
+            if (janelaSelecionarCorVisivel === false) {
+                ferramentaSelecionada = arrayFerramentas[i].id;
+                this.classList.remove("bttFerramentas");
+                this.classList.add("bttFerramentasEscolhida");
+                for (let e = 0; e < arrayFerramentas.length; e++) {
+                    if (e != i) {
+                        arrayFerramentas[e].ferramenta.classList.remove("bttFerramentasEscolhida");
+                        arrayFerramentas[e].ferramenta.classList.add("bttFerramentas");
+                    }
                 }
             }
         });
@@ -379,11 +381,15 @@ function voltarAlteracao() {
         let ultimoIndice = arrayVoltarAlteracoes.length - 1;
         let camada = arrayVoltarAlteracoes[ultimoIndice].camadaAlterada;
         let imagemCamada = arrayVoltarAlteracoes[ultimoIndice].alteracao;
-        let objAlteracao = { camadaAlterada: camada, alteracao: arrayTelasCamadas[camada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
-        arrayAvancarAlteracoes.push(objAlteracao);
+        let objAlteracao = { camadaAlterada: camada, visivel: arrayTelasCamadas[camada].visivel, alteracao: arrayTelasCamadas[camada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
         if (camadaSelecionada != camada) {
-            arrayCamadas[camada].icone.click();
+            clickIconeCamada.call(arrayCamadas[camada].icone);
         }
+        if (arrayTelasCamadas[camada].visivel === false) {
+            clickCamadaVisivel.call(arrayCamadas[camada].bttVer);
+            return;
+        }
+        arrayAvancarAlteracoes.push(objAlteracao);
         arrayTelasCamadas[camada].ctx.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
         arrayTelasCamadas[camada].ctx.putImageData(imagemCamada, 0, 0);
         arrayVoltarAlteracoes.pop();
@@ -396,11 +402,11 @@ function avancarAlteracao() {
         let ultimoIndice = arrayAvancarAlteracoes.length - 1;
         let camada = arrayAvancarAlteracoes[ultimoIndice].camadaAlterada;
         let imagemCamada = arrayAvancarAlteracoes[ultimoIndice].alteracao;
-        let objAlteracao = { camadaAlterada: camada, alteracao: arrayTelasCamadas[camada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
-        arrayVoltarAlteracoes.push(objAlteracao);
+        let objAlteracao = { camadaAlterada: camada, visivel: arrayTelasCamadas[camada].visivel, alteracao: arrayTelasCamadas[camada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
         if (camadaSelecionada != camada) {
-            arrayCamadas[camada].icone.click();
+            clickIconeCamada.call(arrayCamadas[camada].icone);
         }
+        arrayVoltarAlteracoes.push(objAlteracao);
         arrayTelasCamadas[camada].ctx.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
         arrayTelasCamadas[camada].ctx.putImageData(imagemCamada, 0, 0);
         arrayAvancarAlteracoes.pop();
