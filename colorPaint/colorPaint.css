@@ -237,7 +237,7 @@ p {
     background-image: url("../colorPaint/imagens/fundoTela/transparente.png");
     background-color: rgb(255, 255, 255);
     margin-right: 10px;
-    transition: height 100ms ease-in-out, width 100ms ease-in-out, left 100ms ease-in-out, top 100ms ease-in-out;
+    /* transition: height 100ms ease-in-out, width 100ms ease-in-out, left 100ms ease-in-out, top 100ms ease-in-out; */
 }
 
 #desenho {

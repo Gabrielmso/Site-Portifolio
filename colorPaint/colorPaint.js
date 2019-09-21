@@ -29,7 +29,7 @@ let janelaSeleciona;//Recebe toda a função "janelaSeletorDeCor".
 let zoomTelasCanvas;//Armazena o quanto de zoom tem na "TelasCanvas".
 let MouseNoBttVer = false;
 let coordenadaClick = [];
-let arrayVoltarAlteracoes = [];//Armazena as 25 últimas alterações no desenho. Comando Ctrl + Z.
+let arrayVoltarAlteracoes = [];//Armazena as 20 últimas alterações no desenho. Comando Ctrl + Z.
 let arrayAvancarAlteracoes = [];//Armazena as alterações que foram "voltadas". Comando Ctrl + Y.
 function colorPaint() {
     const contentJanelaCriarProjeto = document.getElementById("contentJanelaCriarProjeto");
@@ -225,25 +225,34 @@ function colorPaint() {
     document.addEventListener("keydown", function (e) {//Criar teclas de atalho.
         if (projetoCriado === true) {
             if (ctrlPressionado === true) {
-                if (e.code === "Digit0") {
+                if (e.code === "Digit0" || e.keyCode === 48) {
                     e.preventDefault();
                     AjustarnavisualizacaoTelasCanvas();
                 }
-                else if (e.code === "Digit1") {
+                else if (e.code === "Digit1" || e.keyCode === 49) {
                     e.preventDefault();
                     zoomNoProjeto("porcentagem", 100);
                 }
-                else if (e.code === "KeyZ") {
+                else if (e.code === "Minus" || e.keyCode === 189) {
+                    e.preventDefault();
+                    zoomNoProjeto(false, 1.25);
+                }
+                else if (e.code === "Equal" || e.keyCode === 187) {
+                    e.preventDefault();
+                    zoomNoProjeto(true, 1.25);
+                }
+                else if (e.code === "KeyZ" || e.keyCode === 90) {
                     e.preventDefault();
                     voltarAlteracao();
                 }
-                else if (e.code === "KeyY") {
+                else if (e.code === "KeyY" || e.keyCode === 89) {
                     e.preventDefault();
                     avancarAlteracao();
                 }
+
             }
         }
-        if (e.code === "ControlRight" || e.code === "ControlLeft") {
+        if (e.code === "ControlRight" || e.code === "ControlLeft" || e.keyCode === 17) {
             ctrlPressionado = true;
         }
     });
@@ -368,15 +377,15 @@ function guardarAlteracoes() {
 function voltarAlteracao() {
     if (arrayVoltarAlteracoes.length > 0) {
         let ultimoIndice = arrayVoltarAlteracoes.length - 1;
-        let camadaAlterada = arrayVoltarAlteracoes[ultimoIndice].camadaAlterada;
+        let camada = arrayVoltarAlteracoes[ultimoIndice].camadaAlterada;
         let imagemCamada = arrayVoltarAlteracoes[ultimoIndice].alteracao;
-        let objAlteracao = { camadaAlterada: camadaAlterada, alteracao: arrayTelasCamadas[camadaAlterada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
+        let objAlteracao = { camadaAlterada: camada, alteracao: arrayTelasCamadas[camada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
         arrayAvancarAlteracoes.push(objAlteracao);
-        if (camadaSelecionada != camadaAlterada) {
-            arrayCamadas[camadaAlterada].icone.click();
+        if (camadaSelecionada != camada) {
+            arrayCamadas[camada].icone.click();
         }
-        arrayTelasCamadas[camadaAlterada].ctx.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
-        arrayTelasCamadas[camadaAlterada].ctx.putImageData(imagemCamada, 0, 0);
+        arrayTelasCamadas[camada].ctx.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
+        arrayTelasCamadas[camada].ctx.putImageData(imagemCamada, 0, 0);
         arrayVoltarAlteracoes.pop();
         DesenhoCompleto();
     }
@@ -385,15 +394,15 @@ function voltarAlteracao() {
 function avancarAlteracao() {
     if (arrayAvancarAlteracoes.length > 0) {
         let ultimoIndice = arrayAvancarAlteracoes.length - 1;
-        let camadaAlterada = arrayAvancarAlteracoes[ultimoIndice].camadaAlterada;
+        let camada = arrayAvancarAlteracoes[ultimoIndice].camadaAlterada;
         let imagemCamada = arrayAvancarAlteracoes[ultimoIndice].alteracao;
-        let objAteracao = { camadaAlterada: camadaAlterada, alteracao: arrayTelasCamadas[camadaAlterada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
-        arrayVoltarAlteracoes.push(objAteracao);
-        if (camadaSelecionada != camadaAlterada) {
-            arrayCamadas[camadaAlterada].icone.click();
+        let objAlteracao = { camadaAlterada: camada, alteracao: arrayTelasCamadas[camada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
+        arrayVoltarAlteracoes.push(objAlteracao);
+        if (camadaSelecionada != camada) {
+            arrayCamadas[camada].icone.click();
         }
-        arrayTelasCamadas[camadaAlterada].ctx.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
-        arrayTelasCamadas[camadaAlterada].ctx.putImageData(imagemCamada, 0, 0);
+        arrayTelasCamadas[camada].ctx.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
+        arrayTelasCamadas[camada].ctx.putImageData(imagemCamada, 0, 0);
         arrayAvancarAlteracoes.pop();
         DesenhoCompleto();
     }
@@ -785,10 +794,8 @@ function zoomNoProjeto(zoom, quanto) {
         telasCanvas.style.top = (contentTelas.offsetHeight / 2) - (alturaAtual / 2) + "px";
     }
 
-    setTimeout(function () {
-        contentTelas.scrollTop = ((alturaAtual / 2) + 10) - (contentTelas.offsetHeight / 2);
-        contentTelas.scrollLeft = ((larguraAtual / 2) + 10) - (contentTelas.offsetWidth / 2);
-    }, 110);
+    contentTelas.scrollTop = ((alturaAtual / 2) + 10) - (contentTelas.offsetHeight / 2);
+    contentTelas.scrollLeft = ((larguraAtual / 2) + 10) - (contentTelas.offsetWidth / 2);
 
     zoomTelasCanvas = ((larguraAtual * 100) / resolucaoProjeto.largura).toFixed(2);
     zoomTelasCanvas = zoomTelasCanvas.replace(".", ",");
