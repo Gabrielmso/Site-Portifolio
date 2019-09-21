@@ -109,6 +109,10 @@ p {
     background-image: url("../colorPaint/imagens/icones/ferramentaBorracha.png"); 
 }
 
+#contaGotas{
+    background-image: url("../colorPaint/imagens/icones/ferramentaContaGotas.png"); 
+}
+
 .bttFerramentas {
     width: 35px;
     height: 30px;

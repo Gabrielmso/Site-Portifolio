@@ -29,6 +29,8 @@ let janelaSeleciona;//Recebe toda a função "janelaSeletorDeCor".
 let zoomTelasCanvas;//Armazena o quanto de zoom tem na "TelasCanvas".
 let MouseNoBttVer = false;
 let coordenadaClick = [];
+let arrayVoltarAlteracoes = [];//Armazena as 25 últimas alterações no desenho. Comando Ctrl + Z.
+let arrayAvancarAlteracoes = [];//Armazena as alterações que foram "voltadas". Comando Ctrl + Y.
 function colorPaint() {
     const contentJanelaCriarProjeto = document.getElementById("contentJanelaCriarProjeto");
     const janelaPrincipal = document.getElementById("janelaPrincipal");
@@ -156,6 +158,7 @@ function colorPaint() {
     telasCanvas.addEventListener("mousedown", function (e) {
         if (arrayTelasCamadas[camadaSelecionada].visivel === true) {
             pintando = true;
+            guardarAlteracoes();
             if (ferramentaSelecionada === 1) {//Pincel.
                 coordenadaClick.push({ x: posicaoMouseX, y: posicaoMouseY });
                 ctxPintar.lineWidth = 7;
@@ -212,20 +215,32 @@ function colorPaint() {
     });
 
     telasCanvas.addEventListener("mouseup", function () {
-        pintando = false;
-        desenharNaCamada();
-        DesenhoCompleto();
+        if (pintando === true) {
+            pintando = false;
+            desenharNaCamada();
+            DesenhoCompleto();
+        }
     });
 
     document.addEventListener("keydown", function (e) {//Criar teclas de atalho.
         if (projetoCriado === true) {
-            if (e.code === "Digit0" && ctrlPressionado === true) {
-                e.preventDefault();
-                AjustarnavisualizacaoTelasCanvas();
-            }
-            else if (e.code === "Digit1" && ctrlPressionado === true) {
-                e.preventDefault();
-                zoomNoProjeto("porcentagem", 100);
+            if (ctrlPressionado === true) {
+                if (e.code === "Digit0") {
+                    e.preventDefault();
+                    AjustarnavisualizacaoTelasCanvas();
+                }
+                else if (e.code === "Digit1") {
+                    e.preventDefault();
+                    zoomNoProjeto("porcentagem", 100);
+                }
+                else if (e.code === "KeyZ") {
+                    e.preventDefault();
+                    voltarAlteracao();
+                }
+                else if (e.code === "KeyY") {
+                    e.preventDefault();
+                    avancarAlteracao();
+                }
             }
         }
         if (e.code === "ControlRight" || e.code === "ControlLeft") {
@@ -341,6 +356,51 @@ function DesenhoCompleto() {
 }
 // ==========================================================================================================================================================================================================================================
 
+function guardarAlteracoes() {
+    let objAlteracao = { camadaAlterada: camadaSelecionada, alteracao: arrayTelasCamadas[camadaSelecionada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
+    arrayVoltarAlteracoes.push(objAlteracao);
+    arrayAvancarAlteracoes = [];
+    if (arrayVoltarAlteracoes.length > 20) {
+        arrayVoltarAlteracoes.shift();
+    }
+}
+
+function voltarAlteracao() {
+    if (arrayVoltarAlteracoes.length > 0) {
+        let ultimoIndice = arrayVoltarAlteracoes.length - 1;
+        let camadaAlterada = arrayVoltarAlteracoes[ultimoIndice].camadaAlterada;
+        let imagemCamada = arrayVoltarAlteracoes[ultimoIndice].alteracao;
+        let objAlteracao = { camadaAlterada: camadaAlterada, alteracao: arrayTelasCamadas[camadaAlterada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
+        arrayAvancarAlteracoes.push(objAlteracao);
+        if (camadaSelecionada != camadaAlterada) {
+            arrayCamadas[camadaAlterada].icone.click();
+        }
+        arrayTelasCamadas[camadaAlterada].ctx.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
+        arrayTelasCamadas[camadaAlterada].ctx.putImageData(imagemCamada, 0, 0);
+        arrayVoltarAlteracoes.pop();
+        DesenhoCompleto();
+    }
+}
+
+function avancarAlteracao() {
+    if (arrayAvancarAlteracoes.length > 0) {
+        let ultimoIndice = arrayAvancarAlteracoes.length - 1;
+        let camadaAlterada = arrayAvancarAlteracoes[ultimoIndice].camadaAlterada;
+        let imagemCamada = arrayAvancarAlteracoes[ultimoIndice].alteracao;
+        let objAteracao = { camadaAlterada: camadaAlterada, alteracao: arrayTelasCamadas[camadaAlterada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
+        arrayVoltarAlteracoes.push(objAteracao);
+        if (camadaSelecionada != camadaAlterada) {
+            arrayCamadas[camadaAlterada].icone.click();
+        }
+        arrayTelasCamadas[camadaAlterada].ctx.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
+        arrayTelasCamadas[camadaAlterada].ctx.putImageData(imagemCamada, 0, 0);
+        arrayAvancarAlteracoes.pop();
+        DesenhoCompleto();
+    }
+}
+
+// ==========================================================================================================================================================================================================================================
+
 function criarProjeto() {
     let arrayPropriedades = [document.getElementById("txtNomeProjeto"),
     document.getElementById("txtLarguraProjeto"),
@@ -406,12 +466,12 @@ function criarProjeto() {
                 el.style.backgroundColor = "rgba(0, 0, 0, 0)"
             }
         }
-        if (parseInt(arrayPropriedades[1].value) > 1920 || parseInt(arrayPropriedades[1].value) < 1) {
+        if (parseInt(arrayPropriedades[1].value) > 2560 || parseInt(arrayPropriedades[1].value) < 1) {
             arrayPropriedades[1].focus();
             arrayPropriedades[1].style.backgroundColor = "rgba(255, 0, 0, 0.25)";
             return false;
         }
-        else if (parseInt(arrayPropriedades[2].value) > 1080 || parseInt(arrayPropriedades[2].value) < 1) {
+        else if (parseInt(arrayPropriedades[2].value) > 1440 || parseInt(arrayPropriedades[2].value) < 1) {
             arrayPropriedades[2].focus();
             arrayPropriedades[2].style.backgroundColor = "rgba(255, 0, 0, 0.25)";
             return false;
