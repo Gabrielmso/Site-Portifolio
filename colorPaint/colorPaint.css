@@ -37,16 +37,12 @@ p {
 
 #propriedadesFerramentas {
     position: relative;
-    left: 120px;
+    left: 90px;
     float: left;
     overflow: hidden;
     height: 40px;
     width: auto;
 }
-
-#propriedadeTamanho {}
-
-#propriedadeOpacidade {}
 
 .propriedades {
     display: flex;
@@ -54,7 +50,7 @@ p {
     align-items: center;
     float: left;
     height: 35px;
-    width: 310px;
+    width: 325px;
 }
 
 .propriedades input[type="text"] {
