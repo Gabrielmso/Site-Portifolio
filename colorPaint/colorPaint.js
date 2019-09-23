@@ -66,6 +66,7 @@ function colorPaint() {
     let posicaoMouseY;
     let pintando = false;
     let ctrlPressionado = false;
+    let altPressionado = false;
     let ferramentaSelecionada = 1;
     let arrayFerramentas = [{ ferramenta: document.getElementById("pincel"), nome: "Pincel", id: 1 },
     { ferramenta: document.getElementById("borracha"), nome: "Borracha", id: 2 },]
@@ -234,12 +235,12 @@ function colorPaint() {
     });
 
     document.getElementById("bttZoomMais").addEventListener("click", function () {//Aumentar o zoom no projeto.
-        zoomNoProjeto(true, 1.25);
+        zoomNoProjeto(true, true, 1.25);
     });
 
     document.getElementById("bttZoomMenos").addEventListener("click", function () {//Diminuir o zoom no projeto.
         if (telasCanvas.offsetWidth >= 25) {
-            zoomNoProjeto(false, 1.25);
+            zoomNoProjeto(false, true, 1.25);
         }
     });
 
@@ -267,11 +268,11 @@ function colorPaint() {
                 }
                 else if (e.code === "Minus" || e.keyCode === 189) {
                     e.preventDefault();
-                    zoomNoProjeto(false, 1.25);
+                    zoomNoProjeto(false, true, 1.25);
                 }
                 else if (e.code === "Equal" || e.keyCode === 187) {
                     e.preventDefault();
-                    zoomNoProjeto(true, 1.25);
+                    zoomNoProjeto(true, true, 1.25);
                 }
                 else if (e.code === "KeyZ" || e.keyCode === 90) {
                     e.preventDefault();
@@ -284,7 +285,12 @@ function colorPaint() {
             }
         }
         if (e.code === "ControlRight" || e.code === "ControlLeft" || e.keyCode === 17) {
+            e.preventDefault();
             ctrlPressionado = true;
+        }
+        else if (e.code === "AltLeft" || e.keyCode === "18") {
+            e.preventDefault();
+            altPressionado = true;
         }
         else if (e.code === "BracketRight" || e.keyCode === 221) {//Aumentar o tamanho da ferramenta.
             alterarTamanhoFerramenta(true);
@@ -295,8 +301,36 @@ function colorPaint() {
     });
 
     document.addEventListener("keyup", function (e) {
-        if (e.code === "ControlRight" || e.code === "ControlLeft") {
+        if (e.code === "ControlRight" || e.code === "ControlLeft" || e.keyCode === 17) {
+            e.preventDefault();
             ctrlPressionado = false;
+        }
+        if (e.code === "AltLeft" || e.keyCode === "18") {
+            e.preventDefault();
+            altPressionado = false;
+        }
+    });
+    
+    document.addEventListener("keypress", function (e) {
+        if (e.code === "AltLeft" || e.keyCode === "18") {
+            e.preventDefault();
+        }
+    });
+
+    contentTelas.addEventListener("wheel", function (e) {//Zoom com o scroll do mouse.
+        if (altPressionado === true && projetoCriado === true) {
+            e.preventDefault();
+            if (e.deltaY < 0) {
+                zoomNoProjeto(true, false, 1.065);
+            }
+            else {
+                zoomNoProjeto(false, false, 1.065);
+            }
+            let posContentTelas = pegarPosicaoMouse(contentTelas, e);
+            let proporcaoPosY = posicaoMouseY / resolucaoProjeto.altura;
+            let proporcaoPosX = posicaoMouseX / resolucaoProjeto.largura;
+            contentTelas.scrollTop = (contentTelas.scrollHeight * proporcaoPosY) - (posContentTelas.Y) - 5;
+            contentTelas.scrollLeft = (contentTelas.scrollWidth * proporcaoPosX) - (posContentTelas.X) - 5;
         }
     });
 
@@ -923,7 +957,7 @@ function ajustarPreview(cor) {
 }
 // ==========================================================================================================================================================================================================================================
 
-function zoomNoProjeto(zoom, quanto) {
+function zoomNoProjeto(zoom, centralizar, quanto) {
     let larguraAnterior = telasCanvas.offsetWidth;
     let larguraAtual;
     let alturaAtual;
@@ -960,8 +994,10 @@ function zoomNoProjeto(zoom, quanto) {
         telasCanvas.style.top = (contentTelas.offsetHeight / 2) - (alturaAtual / 2) + "px";
     }
 
-    contentTelas.scrollTop = ((alturaAtual / 2) + 10) - (contentTelas.offsetHeight / 2);
-    contentTelas.scrollLeft = ((larguraAtual / 2) + 10) - (contentTelas.offsetWidth / 2);
+    if (centralizar === true) {
+        contentTelas.scrollTop = ((alturaAtual / 2) + 10) - (contentTelas.offsetHeight / 2);
+        contentTelas.scrollLeft = ((larguraAtual / 2) + 10) - (contentTelas.offsetWidth / 2);
+    }
 
     zoomTelasCanvas = ((larguraAtual * 100) / resolucaoProjeto.largura).toFixed(2);
     zoomTelasCanvas = zoomTelasCanvas.replace(".", ",");
