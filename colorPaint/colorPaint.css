@@ -281,6 +281,7 @@ p {
     position: relative;
     float: left;
     overflow: auto;
+    cursor: url("../colorPaint/imagens/cursor/circle.png") 12.5 12.5, pointer;
 }
 
 #telasCanvas {
