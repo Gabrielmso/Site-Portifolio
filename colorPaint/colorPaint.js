@@ -7,8 +7,10 @@ let arrayCoresSalvas = [];//Armazena objetos cuja as propriedades possuem as inf
 let arrayCamadas = [];//Armazena objetos cuja as propriedades possuem as informações sobre as camadas, como os elementos canvas, icones, etc.
 let arrayTelasCamadas = [];//Armazena objetos cuja as propriedades possuem o contexto 2d das camadas, se elas são visíveis, a opacidade das camadas.
 let arrayIconesCamadas = [];//Armazena o contexto 2d dos icones das camadas.
+let contentTelaPreview;
 let telaPreview;//Armazena o canvas que será utilizado como preview do projeto.
 let ctxTelaPreview;//Armazena o contexto 2d do preview.
+let moverScroll;
 let resolucaoProjeto = { largura: 0, altura: 0 };//Armazena a resolução que o usuário escolheu para o projeto.
 let proporcaoProjeto = 0;//Armazena a relação entre largura e altura do projeto para ajustar os icones.
 let contentTelas;//Elemento onde ficará a "tela" para desenhar.
@@ -44,7 +46,6 @@ function colorPaint() {
     const cursorOpacidade = document.getElementById("cursorOpacidade");
     const barraTamanho = document.getElementById("barraTamanho");
     const cursorTamanho = document.getElementById("cursorTamanho");
-    const cursorFerramenta = document.getElementById("cursorFerramenta");
     contentTelas = document.getElementById("contentTelas");
     telasCanvas = document.getElementById("telasCanvas");
     corFundo = document.getElementById("corFundo");
@@ -57,11 +58,14 @@ function colorPaint() {
     ctxPintar = pintar.getContext("2d");
     desenho = document.getElementById("desenho");
     ctxDesenho = desenho.getContext("2d");
+    contentTelaPreview = document.getElementById("contentTelaPreview");
     telaPreview = document.getElementById("telaPreview");
     ctxTelaPreview = telaPreview.getContext("2d");
+    moverScroll = document.getElementById("moverScroll");
     janelaSeleciona = new janelaSeletorDeCor(corEscolhidaPrincipal);
     let mudarTamanhoFerramenta = false;
     let mudarOpacidadeFerramenta = false;
+    let moverScrollPreview = false;
     let posicaoMouseX;
     let posicaoMouseY;
     let pintando = false;
@@ -186,6 +190,7 @@ function colorPaint() {
     })
 
     contentTelas.addEventListener("mousedown", function (e) {
+        if (!projetoCriado) { return };
         if (arrayTelasCamadas[camadaSelecionada].visivel === true) {
             pintando = true;
             guardarAlteracoes();
@@ -232,6 +237,10 @@ function colorPaint() {
         else if (mudarOpacidadeFerramenta === true) {
             calculaOpacidadeFerramenta(e)
         }
+        else if (moverScrollPreview === true) {
+            let mousePos = pegarPosicaoMouse(contentTelaPreview, e);
+            moverScrollNaTelaPreview(mousePos.X, mousePos.Y);
+        }
     });
 
     document.getElementById("bttZoomMais").addEventListener("click", function () {//Aumentar o zoom no projeto.
@@ -252,6 +261,7 @@ function colorPaint() {
         }
         mudarOpacidadeFerramenta = false;
         mudarTamanhoFerramenta = false;
+        moverScrollPreview = false;
         coordenadaClick = [];
     });
 
@@ -264,7 +274,7 @@ function colorPaint() {
                 }
                 else if (e.code === "Digit1" || e.keyCode === 49) {
                     e.preventDefault();
-                    zoomNoProjeto("porcentagem", 100);
+                    zoomNoProjeto("porcentagem", true, 100);
                 }
                 else if (e.code === "Minus" || e.keyCode === 189) {
                     e.preventDefault();
@@ -292,10 +302,10 @@ function colorPaint() {
             e.preventDefault();
             altPressionado = true;
         }
-        else if (e.code === "BracketRight" || e.keyCode === 221) {//Aumentar o tamanho da ferramenta.
+        else if (e.code === "BracketRight") {//Aumentar o tamanho da ferramenta.
             alterarTamanhoFerramenta(true);
         }
-        else if (e.code === "Backslash" || e.keyCode === 220) {//Diminuir o tamanho da ferramenta.
+        else if (e.code === "Backslash") {//Diminuir o tamanho da ferramenta.
             alterarTamanhoFerramenta(false);
         }
     });
@@ -310,7 +320,7 @@ function colorPaint() {
             altPressionado = false;
         }
     });
-    
+
     document.addEventListener("keypress", function (e) {
         if (e.code === "AltLeft" || e.keyCode === "18") {
             e.preventDefault();
@@ -321,10 +331,10 @@ function colorPaint() {
         if (altPressionado === true && projetoCriado === true) {
             e.preventDefault();
             if (e.deltaY < 0) {
-                zoomNoProjeto(true, false, 1.065);
+                zoomNoProjeto(true, false, 1.075);
             }
             else {
-                zoomNoProjeto(false, false, 1.065);
+                zoomNoProjeto(false, false, 1.075);
             }
             let posContentTelas = pegarPosicaoMouse(contentTelas, e);
             let proporcaoPosY = posicaoMouseY / resolucaoProjeto.altura;
@@ -332,6 +342,18 @@ function colorPaint() {
             contentTelas.scrollTop = (contentTelas.scrollHeight * proporcaoPosY) - (posContentTelas.Y) - 5;
             contentTelas.scrollLeft = (contentTelas.scrollWidth * proporcaoPosX) - (posContentTelas.X) - 5;
         }
+    });
+
+    contentTelaPreview.addEventListener("mousedown", function (e) {
+        if (!projetoCriado) { return };
+        moverScrollPreview = true;
+        let mousePos = pegarPosicaoMouse(this, e);
+        moverScrollNaTelaPreview(mousePos.X, mousePos.Y);
+    });
+
+    contentTelaPreview.addEventListener("mouseup", function () {
+        if (!projetoCriado) { return };
+        moverScrollPreview = false;
     });
 
     window.addEventListener("resize", function () {
@@ -376,7 +398,7 @@ function colorPaint() {
             }
         }
         tamanhoFerramenta = mouse.X;
-        mudarAparencenciaCursor();
+        mudarAparenciaCursor();
     }
 
     function alterarTamanhoFerramenta(aumentar) {
@@ -434,7 +456,7 @@ function colorPaint() {
                 txtTamanhoFerramenta.value = "0.5px";
             }
         }
-        mudarAparencenciaCursor();
+        mudarAparenciaCursor();
     }
 
     function calculaOpacidadeFerramenta(e) {
@@ -528,7 +550,7 @@ function desenharNaCamada() {
     ctxPintar.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
 }
 
-function mudarAparencenciaCursor() {
+function mudarAparenciaCursor() {
     let tamanho = tamanhoFerramenta * ((telasCanvas.offsetWidth) / resolucaoProjeto.largura);
     if (tamanho <= 10) {
         contentTelas.style.cursor = "url('/colorPaint/imagens/cursor/crossHair.png') 12.5 12.5, pointer";
@@ -905,7 +927,7 @@ function ajustarTelasCanvas() {
         telasCanvas.style.left = larguraMax / 2 - resolucaoProjeto.largura / 2 + "px";
     }
     zoomTelasCanvas = telasCanvas.offsetWidth / resolucaoProjeto.largura;
-    mudarAparencenciaCursor();
+    mudarAparenciaCursor();
 }
 
 function AjustarnavisualizacaoTelasCanvas() {
@@ -930,6 +952,7 @@ function AjustarnavisualizacaoTelasCanvas() {
         larguraTelasCanvas = novaLargura;
     }
     zoomTelasCanvas = larguraTelasCanvas / resolucaoProjeto.largura;
+    tamanhoMoverScroll();
 }
 // ==========================================================================================================================================================================================================================================
 
@@ -938,22 +961,22 @@ function ajustarPreview(cor) {
     let proporcaoEspaco = 256 / 150;
     if (proporcaoProjeto >= proporcaoEspaco) {
         let novaAltura = Math.round(256 / proporcaoProjeto);
-        telaPreview.style.width = "256px";
-        telaPreview.style.height = novaAltura + "px";
+        contentTelaPreview.style.width = "256px";
+        contentTelaPreview.style.height = novaAltura + "px";
     }
     else {
         let novaLargura = Math.round(150 * proporcaoProjeto);
-        telaPreview.style.width = novaLargura + "px";
-        telaPreview.style.height = "150px";
+        contentTelaPreview.style.width = novaLargura + "px";
+        contentTelaPreview.style.height = "150px";
     }
     if (cor != false) {
-        telaPreview.style.backgroundColor = cor;
+        contentTelaPreview.style.backgroundColor = cor;
     }
     else {
-        telaPreview.style.backgroundImage = "url('/colorPaint/imagens/fundoTela/transparenteMiniatura.png')";
+        contentTelaPreview.style.backgroundImage = "url('/colorPaint/imagens/fundoTela/transparenteMiniatura.png')";
     }
-    telaPreview.width = telaPreview.offsetWidth;
-    telaPreview.height = telaPreview.offsetHeight;
+    telaPreview.width = contentTelaPreview.offsetWidth;
+    telaPreview.height = contentTelaPreview.offsetHeight;
 }
 // ==========================================================================================================================================================================================================================================
 
@@ -1002,7 +1025,64 @@ function zoomNoProjeto(zoom, centralizar, quanto) {
     zoomTelasCanvas = ((larguraAtual * 100) / resolucaoProjeto.largura).toFixed(2);
     zoomTelasCanvas = zoomTelasCanvas.replace(".", ",");
     zoomTelasCanvas = zoomTelasCanvas + "%";
-    mudarAparencenciaCursor();
+    mudarAparenciaCursor();
+    tamanhoMoverScroll();
+}
+// ==========================================================================================================================================================================================================================================
+
+function tamanhoMoverScroll() {
+    let tamanhoTelasCanvas = { X: telasCanvas.offsetWidth, Y: telasCanvas.offsetHeight };
+    let tamanhoContentTelas = { X: contentTelas.offsetWidth, Y: contentTelas.offsetHeight };
+    let tamanhoContentTelaPreview ={ X: contentTelaPreview.offsetWidth, Y: contentTelaPreview.offsetHeight }
+
+    if (tamanhoTelasCanvas.X <= (tamanhoContentTelas.X - 10) && tamanhoTelasCanvas.Y <= (tamanhoContentTelas.Y - 10)) {
+        moverScroll.style.display = "none";
+    }
+    else if(tamanhoTelasCanvas.X > (tamanhoContentTelas.X - 10) && tamanhoTelasCanvas.Y > (tamanhoContentTelas.Y - 10)){
+        let proporcaoTamanhoX = (tamanhoContentTelas.X - 10) / tamanhoTelasCanvas.X;
+        let proporcaoTamanhoY = (tamanhoContentTelas.Y - 10) / tamanhoTelasCanvas.Y;
+        moverScroll.style.display = "block";
+        moverScroll.style.width = (tamanhoContentTelaPreview.X * proporcaoTamanhoX) + "px"; 
+        moverScroll.style.height = (tamanhoContentTelaPreview.Y * proporcaoTamanhoY) + "px";
+    }
+    else if(tamanhoTelasCanvas.X > (tamanhoContentTelas.X - 10)){
+        let proporcaoTamanhoX = (tamanhoContentTelas.X - 10) / tamanhoTelasCanvas.X;
+        moverScroll.style.display = "block";
+        moverScroll.style.width = (tamanhoContentTelaPreview.X * proporcaoTamanhoX) + "px"; 
+        moverScroll.style.height = tamanhoContentTelaPreview.Y + "px";
+    }
+    else if(tamanhoTelasCanvas.Y > (tamanhoContentTelas.Y - 10)){
+        let proporcaoTamanhoY = (tamanhoContentTelas.Y - 10) / tamanhoTelasCanvas.Y;
+        moverScroll.style.display = "block";
+        moverScroll.style.width = tamanhoContentTelaPreview.X + "px";
+        moverScroll.style.height = (tamanhoContentTelaPreview.Y * proporcaoTamanhoY) + "px";;
+    }
+}
+
+
+function moverScrollNaTelaPreview(mouseX, mouseY) {
+    let metadeLargura = moverScroll.offsetWidth / 2;
+    let metadeAltura = moverScroll.offsetHeight / 2;
+
+    if (mouseX <= metadeLargura) {
+        moverScroll.style.left = "0px";
+    }
+    else if (mouseX >= contentTelaPreview.offsetWidth - metadeLargura) {
+        moverScroll.style.left = contentTelaPreview.offsetWidth - (metadeLargura * 2) + "px";
+    }
+    else {
+        moverScroll.style.left = mouseX - metadeLargura + "px";
+    }
+
+    if (mouseY <= metadeAltura) {
+        moverScroll.style.top = "0px";
+    }
+    else if (mouseY >= contentTelaPreview.offsetHeight - metadeAltura) {
+        moverScroll.style.top = contentTelaPreview.offsetHeight - (metadeAltura * 2) + "px";
+    }
+    else {
+        moverScroll.style.top = mouseY - metadeAltura + "px";
+    }
 }
 // ==========================================================================================================================================================================================================================================
 

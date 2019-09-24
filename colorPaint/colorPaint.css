@@ -281,7 +281,7 @@ p {
     position: relative;
     float: left;
     overflow: auto;
-    cursor: url("../colorPaint/imagens/cursor/circle.png") 12.5 12.5, pointer;
+    cursor: url("../colorPaint/imagens/cursor/circle.png") 10 10, pointer;
 }
 
 #telasCanvas {
@@ -355,29 +355,53 @@ p {
     height: 150px;
 }
 
-#telaPreview {
+#contentTelaPreview{
     position: relative;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
 
-#bttsZoomPreview {
+#telaPreview {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    
+}
+
+#moverScroll{
     position: absolute;
     display: none;
+    z-index: 2;
+    top:0;
+    left: 0;
+    border:1px solid rgb(0,0,0);
+    width: 30px;
+    height: 30px;
+}
+
+#moverScroll div{
+    position:relative;
+    width: 100%;
+    height: 100%;
+    border:1px solid rgb(255, 255, 255);
+}
+
+#bttsZoomPreview {
+    position: relative;
+    display: none;
+    padding-left: 4px;
     width: 100%;
     height: 25px;
-    top: 125px;
-    z-index: 2;
 }
 
 .bttZoom {
     position: relative;
+    display: inline-block;
     width: 25px;
     height: 25px;
-    float: right;
     text-align: center;
-    margin-left: 5px;
+    margin-left: 4px;
     border: 1px solid rgb(91, 91, 91);
     background-color: rgb(15, 15, 15);
     border-radius: 4px;

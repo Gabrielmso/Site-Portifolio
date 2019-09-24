@@ -133,6 +133,14 @@
                         <div class="bttFerramentas cursor"></div>
                         <div class="bttFerramentas cursor"></div>
                         <div class="bttFerramentas cursor"></div>
+                        <div id="bttsZoomPreview">
+                            <div id="bttZoomMenos" class="bttZoom noSelection cursor">
+                                <p>-</p>
+                            </div>
+                            <div id="bttZoomMais" class="bttZoom noSelection cursor">
+                                <p>+</p>
+                            </div>
+                        </div>
                     </div>
                     <div id="coresSelecionadas">
                         <div id="corPrincipal" class="corEscolhida cursor">
@@ -161,14 +169,11 @@
                     <div id="janelaPreview" class="janelasBarraLateralDireita">
                         <label class="tituloJanelas">Preview:</label>
                         <div id="contentPreview">
-                            <canvas id="telaPreview">
-                            </canvas>
-                            <div id="bttsZoomPreview">
-                                <div id="bttZoomMenos" class="bttZoom noSelection cursor">
-                                    <p>-</p>
-                                </div>
-                                <div id="bttZoomMais" class="bttZoom noSelection cursor">
-                                    <p>+</p>
+                            <div id="contentTelaPreview">
+                                <canvas id="telaPreview">
+                                </canvas>
+                                <div id="moverScroll">
+                                    <div></div>
                                 </div>
                             </div>
                         </div>
