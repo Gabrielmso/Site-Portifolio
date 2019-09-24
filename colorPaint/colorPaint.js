@@ -7,31 +7,31 @@ let arrayCoresSalvas = [];//Armazena objetos cuja as propriedades possuem as inf
 let arrayCamadas = [];//Armazena objetos cuja as propriedades possuem as informações sobre as camadas, como os elementos canvas, icones, etc.
 let arrayTelasCamadas = [];//Armazena objetos cuja as propriedades possuem o contexto 2d das camadas, se elas são visíveis, a opacidade das camadas.
 let arrayIconesCamadas = [];//Armazena o contexto 2d dos icones das camadas.
-let contentTelaPreview;
+let contentTelas;//Elemento onde ficará a "tela" para desenhar.
+let telasCanvas;//Elemento onde ficarão os canvas "camadas".
+let contentTelaPreview;//Div que contém o "telaPreview" e o "moverScroll".
 let telaPreview;//Armazena o canvas que será utilizado como preview do projeto.
 let ctxTelaPreview;//Armazena o contexto 2d do preview.
-let moverScroll;
+let moverScroll;//Div que será usada para mover os scrolls do "contentTelas".
 let resolucaoProjeto = { largura: 0, altura: 0 };//Armazena a resolução que o usuário escolheu para o projeto.
 let proporcaoProjeto = 0;//Armazena a relação entre largura e altura do projeto para ajustar os icones.
-let contentTelas;//Elemento onde ficará a "tela" para desenhar.
 let camadaSelecionada = 0;//Armazena a posição do arrayTelasCamadas com a camada selecionada.
-let telasCanvas;//Elemento onde ficarão os canvas "camadas".
 let desenho;//Armazena o canvas que receberá o "desenho completo".
 let ctxDesenho;//Armazena o contexto 2d de "desenho".
 let corFundo;//Div de fundo que receberá a cor de fundo escolhida para o projeto.
 let pintar;//Armazena o canvas onde ocorrerá os "eventos" de pintura.
 let ctxPintar;//Armazena o contexto 2d de "pintar".
-let tamanhoFerramenta = 5;
+let tamanhoFerramenta = 5;//Armazena a espessura do traço das ferramentas em pixels.
 let opacidadeFerramenta = 100;//Armazena o valor da opacidade da cor de O a 100.
 let projetoCriado = false;//Saber se existe projeto já criado.
 let nomeDoProjeto;//Armazena o nome do projeto.
 let txtCorEscolhida;//Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
 let txtResolucao;//Recebe a string da resolução que o usuário escolheu para o projeto para informar ao usuário.
-let txtPosicaoCursor;
+let txtPosicaoCursor;//Recebe a string com a posição do cursor no eixo X e Y sobre a "telasCanvas".
 let janelaSeleciona;//Recebe toda a função "janelaSeletorDeCor".
 let zoomTelasCanvas;//Armazena o quanto de zoom tem na "TelasCanvas".
-let MouseNoBttVer = false;
-let coordenadaClick = [];
+let MouseNoBttVer = false;//Saber se o mouse está sobre os botões que deixam as camadas invisíveis ou visíveis.
+let coordenadaClick = [];//Armazena as coordenadas do cursor do mouse desde quando o mesmo é pressionado e movimentado enquanto pressionado.
 let arrayVoltarAlteracoes = [];//Armazena as 20 últimas alterações no desenho. Comando Ctrl + Z.
 let arrayAvancarAlteracoes = [];//Armazena as alterações que foram "voltadas". Comando Ctrl + Y.
 function colorPaint() {
@@ -63,16 +63,15 @@ function colorPaint() {
     ctxTelaPreview = telaPreview.getContext("2d");
     moverScroll = document.getElementById("moverScroll");
     janelaSeleciona = new janelaSeletorDeCor(corEscolhidaPrincipal);
-    let mudarTamanhoFerramenta = false;
-    let mudarOpacidadeFerramenta = false;
-    let moverScrollPreview = false;
-    let posicaoMouseX;
-    let posicaoMouseY;
-    let pintando = false;
-    let ctrlPressionado = false;
-    let altPressionado = false;
-    let ferramentaSelecionada = 1;
-    let arrayFerramentas = [{ ferramenta: document.getElementById("pincel"), nome: "Pincel", id: 1 },
+    let posicaoMouseX, posicaoMouseY;//Armazena a posição do mouse no tela canvas em relação a resolução do projeto.
+    let mudarTamanhoFerramenta = false;//Saber se o mouse está pressionado na "barraTamanho".
+    let mudarOpacidadeFerramenta = false;//Saber se o mouse está pressionado na "barraOpacidade". 
+    let moverScrollPreview = false;//Saber se o mouse está pressionado na "contentTelaPreview".
+    let pintando = false;//Saber se o mouse está pressionado na "contentTelas".
+    let ctrlPressionado = false;//Saber se os Ctrl's estão pressionados.
+    let altPressionado = false;//Saber se o Alt está pressionado.(provisório).
+    let ferramentaSelecionada = 1;//Saber qual ferramenta está selecionada.
+    let arrayFerramentas = [{ ferramenta: document.getElementById("pincel"), nome: "Pincel", id: 1 },//Armazena as ferramentas.
     { ferramenta: document.getElementById("borracha"), nome: "Borracha", id: 2 },]
 
     menuPadrao();
@@ -331,17 +330,22 @@ function colorPaint() {
         if (altPressionado === true && projetoCriado === true) {
             e.preventDefault();
             if (e.deltaY < 0) {
-                zoomNoProjeto(true, false, 1.075);
+                zoomNoProjeto(true, false, 1.075, e);
             }
             else {
-                zoomNoProjeto(false, false, 1.075);
+                zoomNoProjeto(false, false, 1.075, e);
             }
             let posContentTelas = pegarPosicaoMouse(contentTelas, e);
             let proporcaoPosY = posicaoMouseY / resolucaoProjeto.altura;
             let proporcaoPosX = posicaoMouseX / resolucaoProjeto.largura;
             contentTelas.scrollTop = (contentTelas.scrollHeight * proporcaoPosY) - (posContentTelas.Y) - 5;
             contentTelas.scrollLeft = (contentTelas.scrollWidth * proporcaoPosX) - (posContentTelas.X) - 5;
+            contentTelasMoverScroll(contentTelas.scrollTop, contentTelas.scrollLeft);
         }
+    });
+
+    contentTelas.addEventListener("scroll", function (e) {//Zoom com o scroll do mouse.
+        contentTelasMoverScroll(contentTelas.scrollTop, contentTelas.scrollLeft);
     });
 
     contentTelaPreview.addEventListener("mousedown", function (e) {
@@ -358,7 +362,8 @@ function colorPaint() {
 
     window.addEventListener("resize", function () {
         ajustarContents();
-        ajustarTelasCanvas();
+        tamanhoMoverScroll();
+        contentTelasMoverScroll(contentTelas.scrollTop, contentTelas.scrollLeft);
         menuPadrao();
         setTimeout(function () {
             ajustarContents();
@@ -960,12 +965,12 @@ function ajustarPreview(cor) {
     document.getElementById("bttsZoomPreview").style.display = "block";
     let proporcaoEspaco = 256 / 150;
     if (proporcaoProjeto >= proporcaoEspaco) {
-        let novaAltura = Math.round(256 / proporcaoProjeto);
+        let novaAltura = (256 / proporcaoProjeto);
         contentTelaPreview.style.width = "256px";
         contentTelaPreview.style.height = novaAltura + "px";
     }
     else {
-        let novaLargura = Math.round(150 * proporcaoProjeto);
+        let novaLargura = (150 * proporcaoProjeto);
         contentTelaPreview.style.width = novaLargura + "px";
         contentTelaPreview.style.height = "150px";
     }
@@ -1033,32 +1038,31 @@ function zoomNoProjeto(zoom, centralizar, quanto) {
 function tamanhoMoverScroll() {
     let tamanhoTelasCanvas = { X: telasCanvas.offsetWidth, Y: telasCanvas.offsetHeight };
     let tamanhoContentTelas = { X: contentTelas.offsetWidth, Y: contentTelas.offsetHeight };
-    let tamanhoContentTelaPreview ={ X: contentTelaPreview.offsetWidth, Y: contentTelaPreview.offsetHeight }
+    let tamanhoContentTelaPreview = { X: contentTelaPreview.offsetWidth, Y: contentTelaPreview.offsetHeight }
 
     if (tamanhoTelasCanvas.X <= (tamanhoContentTelas.X - 10) && tamanhoTelasCanvas.Y <= (tamanhoContentTelas.Y - 10)) {
         moverScroll.style.display = "none";
     }
-    else if(tamanhoTelasCanvas.X > (tamanhoContentTelas.X - 10) && tamanhoTelasCanvas.Y > (tamanhoContentTelas.Y - 10)){
+    else if (tamanhoTelasCanvas.X > (tamanhoContentTelas.X - 10) && tamanhoTelasCanvas.Y > (tamanhoContentTelas.Y - 10)) {
         let proporcaoTamanhoX = (tamanhoContentTelas.X - 10) / tamanhoTelasCanvas.X;
         let proporcaoTamanhoY = (tamanhoContentTelas.Y - 10) / tamanhoTelasCanvas.Y;
         moverScroll.style.display = "block";
-        moverScroll.style.width = (tamanhoContentTelaPreview.X * proporcaoTamanhoX) + "px"; 
+        moverScroll.style.width = (tamanhoContentTelaPreview.X * proporcaoTamanhoX) + "px";
         moverScroll.style.height = (tamanhoContentTelaPreview.Y * proporcaoTamanhoY) + "px";
     }
-    else if(tamanhoTelasCanvas.X > (tamanhoContentTelas.X - 10)){
+    else if (tamanhoTelasCanvas.X > (tamanhoContentTelas.X - 10)) {
         let proporcaoTamanhoX = (tamanhoContentTelas.X - 10) / tamanhoTelasCanvas.X;
         moverScroll.style.display = "block";
-        moverScroll.style.width = (tamanhoContentTelaPreview.X * proporcaoTamanhoX) + "px"; 
+        moverScroll.style.width = (tamanhoContentTelaPreview.X * proporcaoTamanhoX) + "px";
         moverScroll.style.height = tamanhoContentTelaPreview.Y + "px";
     }
-    else if(tamanhoTelasCanvas.Y > (tamanhoContentTelas.Y - 10)){
+    else if (tamanhoTelasCanvas.Y > (tamanhoContentTelas.Y - 10)) {
         let proporcaoTamanhoY = (tamanhoContentTelas.Y - 10) / tamanhoTelasCanvas.Y;
         moverScroll.style.display = "block";
         moverScroll.style.width = tamanhoContentTelaPreview.X + "px";
         moverScroll.style.height = (tamanhoContentTelaPreview.Y * proporcaoTamanhoY) + "px";;
     }
 }
-
 
 function moverScrollNaTelaPreview(mouseX, mouseY) {
     let metadeLargura = moverScroll.offsetWidth / 2;
@@ -1083,6 +1087,19 @@ function moverScrollNaTelaPreview(mouseX, mouseY) {
     else {
         moverScroll.style.top = mouseY - metadeAltura + "px";
     }
+    moverScrollContentTelas(moverScroll.offsetTop, moverScroll.offsetLeft);
+}
+
+function moverScrollContentTelas(topPos, leftPos) {//Mudar o valor dos Scroll's do contentTelas movendo o "moverScroll".
+    let mult = (contentTelas.scrollWidth) / telaPreview.offsetWidth;
+    contentTelas.scrollTop = (topPos * mult);
+    contentTelas.scrollLeft = (leftPos * mult);
+}
+
+function contentTelasMoverScroll(scrollTop, scrollLeft) {//Mover o "moverScroll" quando o valor dos Scroll's do contentTelas mudar.
+    let mult = (contentTelas.scrollWidth) / telaPreview.offsetWidth;
+    moverScroll.style.top = (scrollTop / (mult)) + "px";
+    moverScroll.style.left = (scrollLeft / (mult)) + "px";
 }
 // ==========================================================================================================================================================================================================================================
 
