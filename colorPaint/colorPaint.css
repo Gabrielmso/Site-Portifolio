@@ -66,14 +66,14 @@ p {
     margin-right: 3px;
 }
 
-.propriedades label{
+.propriedades label {
     line-height: 25px;
     font-size: 13px;
     color: rgb(165, 165, 165);
     margin-left: 7px;
 }
 
-.barraPropriedade{
+.barraPropriedade {
     position: relative;
     width: 190px;
     height: 10px;
@@ -83,15 +83,15 @@ p {
     margin-left: 3px;
 }
 
-.cursorPropriedade{
+.cursorPropriedade {
     position: absolute;
     border-radius: 50%;
-    top : -2.5px;
+    top: -2.5px;
     left: -7px;
     width: 15px;
     height: 15px;
     background-color: rgb(10, 10, 10);
-    border: 1px solid rgb(102, 102, 102); 
+    border: 1px solid rgb(102, 102, 102);
 }
 
 #bttCriarNovoProjeto {
@@ -355,7 +355,7 @@ p {
     height: 150px;
 }
 
-#contentTelaPreview{
+#contentTelaPreview {
     position: relative;
     top: 50%;
     left: 50%;
@@ -366,25 +366,24 @@ p {
     position: relative;
     width: 100%;
     height: 100%;
-    
 }
 
-#moverScroll{
+#moverScroll {
     position: absolute;
     display: none;
     z-index: 2;
-    top:0;
+    top: 0;
     left: 0;
-    border:1px solid rgb(0,0,0);
+    border: 1px solid rgb(0, 0, 0);
     width: 30px;
     height: 30px;
 }
 
-#moverScroll div{
-    position:relative;
+#moverScroll div {
+    position: relative;
     width: 100%;
     height: 100%;
-    border:1px solid rgb(255, 255, 255);
+    border: 1px solid rgb(255, 255, 255);
 }
 
 #bttsZoomPreview {
@@ -748,6 +747,32 @@ p {
 }
 
 /* ============================================= FIM Seletor de cores ============================================= */
+
+#cursorComparaContaGotas {
+    display: none;
+    position: absolute;
+    top: 200px;
+    left: 200px;
+    width: 200px;
+    height: 200px;
+    z-index: 20;
+    border: 25px solid rgb(127, 127, 127);
+    border-radius: 50%;
+    cursor: url("../colorPaint/imagens/cursor/cursorContaGotas.png") 0 20, pointer;
+}
+
+#comparaCoresContaGotas {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border-bottom: 25px solid rgb(255, 0, 0);
+    border-left: 25px solid rgb(255, 0, 0);
+    border-top: 25px solid rgb(4, 0, 255);
+    border-right: 25px solid rgb(4, 0, 255);
+    transform: rotate(45deg);
+}
 
 .camadas {
     position: relative;
