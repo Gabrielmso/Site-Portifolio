@@ -3,10 +3,15 @@ let janelaSelecionarCorVisivel = false;//Saber se a janela de seleção de cor e
 let corPrincipal, corSecundaria, corPrincipalOuSecundaria;
 let corEscolhidaPrincipal = { R: 0, G: 0, B: 0 };//Armazena a cor escolhida do primeiro plano.
 let corEscolhidaSecudaria = { R: 255, G: 255, B: 255 };//Armazena a cor escolhida no segundo plano.
+let arrayVoltarAlteracoes = [];//Armazena as 20 últimas alterações no desenho. Comando Ctrl + Z.
+let arrayAvancarAlteracoes = [];//Armazena as alterações que foram "voltadas". Comando Ctrl + Y.
 let arrayCoresSalvas = [];//Armazena objetos cuja as propriedades possuem as informações sobre as cores salvas.
 let arrayCamadas = [];//Armazena objetos cuja as propriedades possuem as informações sobre as camadas, como os elementos canvas, icones, etc.
 let arrayTelasCamadas = [];//Armazena objetos cuja as propriedades possuem o contexto 2d das camadas, se elas são visíveis, a opacidade das camadas.
 let arrayIconesCamadas = [];//Armazena o contexto 2d dos icones das camadas.
+let arrayFerramentas = [];//Armazena os elementos que selecionam as ferramentas.
+let ferramentaSelecionada = 1;//Saber qual ferramenta está selecionada.
+let ferramentaAnterior;//Armazena a ferramenta que estava selecionada antes de "abrir" a "janelaSelecionarCor".
 let contentTelas;//Elemento onde ficará a "tela" para desenhar.
 let telasCanvas;//Elemento onde ficarão os canvas "camadas".
 let contentTelaPreview;//Div que contém o "telaPreview" e o "moverScroll".
@@ -18,6 +23,7 @@ let proporcaoProjeto = 0;//Armazena a relação entre largura e altura do projet
 let camadaSelecionada = 0;//Armazena a posição do arrayTelasCamadas com a camada selecionada.
 let desenho;//Armazena o canvas que receberá o "desenho completo".
 let ctxDesenho;//Armazena o contexto 2d de "desenho".
+let corDeFundoEscolhida;
 let corFundo;//Div de fundo que receberá a cor de fundo escolhida para o projeto.
 let pintar;//Armazena o canvas onde ocorrerá os "eventos" de pintura.
 let ctxPintar;//Armazena o contexto 2d de "pintar".
@@ -32,8 +38,6 @@ let janelaSeleciona;//Recebe toda a função "janelaSeletorDeCor".
 let zoomTelasCanvas;//Armazena o quanto de zoom tem na "TelasCanvas".
 let MouseNoBttVer = false;//Saber se o mouse está sobre os botões que deixam as camadas invisíveis ou visíveis.
 let coordenadaClick = [];//Armazena as coordenadas do cursor do mouse desde quando o mesmo é pressionado e movimentado enquanto pressionado.
-let arrayVoltarAlteracoes = [];//Armazena as 20 últimas alterações no desenho. Comando Ctrl + Z.
-let arrayAvancarAlteracoes = [];//Armazena as alterações que foram "voltadas". Comando Ctrl + Y.
 function colorPaint() {
     const contentJanelaCriarProjeto = document.getElementById("contentJanelaCriarProjeto");
     const janelaPrincipal = document.getElementById("janelaPrincipal");
@@ -70,9 +74,9 @@ function colorPaint() {
     let pintando = false;//Saber se o mouse está pressionado na "contentTelas".
     let ctrlPressionado = false;//Saber se os Ctrl's estão pressionados.
     let altPressionado = false;//Saber se o Alt está pressionado.(provisório).
-    let ferramentaSelecionada = 1;//Saber qual ferramenta está selecionada.
-    let arrayFerramentas = [{ ferramenta: document.getElementById("pincel"), nome: "Pincel", id: 1 },//Armazena as ferramentas.
-    { ferramenta: document.getElementById("borracha"), nome: "Borracha", id: 2 },]
+    arrayFerramentas = [{ ferramenta: document.getElementById("pincel"), nome: "Pincel", id: 1 },//Armazena as ferramentas.
+    { ferramenta: document.getElementById("borracha"), nome: "Borracha", id: 2 },
+    { ferramenta: document.getElementById("contaGotas"), nome: "Conta-gotas", id: 3 },]
 
     menuPadrao();
     ajustarContents();
@@ -93,6 +97,11 @@ function colorPaint() {
             }
         });
     }
+
+    arrayFerramentas[2].ferramenta.addEventListener("click", function () {
+        if (!projetoCriado) { return };
+        desenhoCompleto();
+    });
 
     document.getElementById("bttCriarNovoProjeto").addEventListener("click", function () {
         if (projetoCriado === false) {
@@ -213,6 +222,9 @@ function colorPaint() {
                 arrayTelasCamadas[camadaSelecionada].ctx.lineJoin = "round"
                 ferramentaBorrarra(arrayTelasCamadas[camadaSelecionada].ctx, posicaoMouseX, posicaoMouseY, tamanhoFerramenta);
             }
+            // else if (ferramentaSelecionada === 3) {//Conta-gotas.
+            //     ferramentaContaGotas(posicaoMouseX, posicaoMouseY);
+            // }
         }
     });
 
@@ -229,6 +241,9 @@ function colorPaint() {
                 arrayTelasCamadas[camadaSelecionada].ctx.lineJoin = "round";
                 ferramentaBorrarra(arrayTelasCamadas[camadaSelecionada].ctx, posicaoMouseX, posicaoMouseY, tamanhoFerramenta);
             }
+            // else if (ferramentaSelecionada === 3) {//Conta-gotas.
+            //     ferramentaContaGotas(posicaoMouseX, posicaoMouseY);
+            // }
         }
         else if (mudarTamanhoFerramenta === true) {
             calculaTamanhoFerramenta(e);
@@ -256,7 +271,10 @@ function colorPaint() {
         if (pintando === true) {
             pintando = false;
             desenharNaCamada();
-            DesenhoCompleto();
+            desenhoNoPreviewEIcone();
+            if (ferramentaSelecionada === 3) {//Conta-gotas.
+                ferramentaContaGotas(posicaoMouseX, posicaoMouseY);
+            }
         }
         mudarOpacidadeFerramenta = false;
         mudarTamanhoFerramenta = false;
@@ -550,12 +568,23 @@ function ferramentaBorrarra(contexto, mouseX, mouseY, cursorTamanho) {
     contexto.globalCompositeOperation = "source-over";
 }
 
-function desenharNaCamada() {
-    arrayTelasCamadas[camadaSelecionada].ctx.drawImage(ctxPintar.canvas, 0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
-    ctxPintar.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
+function ferramentaContaGotas(mouseX, mouseY) {
+    let pixel = ctxDesenho.getImageData(mouseX, mouseY, 1, 1).data;
+    if (janelaSelecionarCorVisivel === true) {
+        janelaSeleciona.procurarCor({ R: pixel[0], G: pixel[1], B: pixel[2] });
+    }
+    else {
+        corEscolhidaPrincipal = { R: pixel[0], G: pixel[1], B: pixel[2] };
+        corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+        txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+    }
 }
 
 function mudarAparenciaCursor() {
+    if (ferramentaSelecionada === 3) {
+        ////CURSOR CONTA-GOTAS.
+        return
+    };
     let tamanho = tamanhoFerramenta * ((telasCanvas.offsetWidth) / resolucaoProjeto.largura);
     if (tamanho <= 10) {
         contentTelas.style.cursor = "url('/colorPaint/imagens/cursor/crossHair.png') 12.5 12.5, pointer";
@@ -564,10 +593,15 @@ function mudarAparenciaCursor() {
         contentTelas.style.cursor = "url('/colorPaint/imagens/cursor/circle.png') 10 10, pointer";
     }
 }
+// ==========================================================================================================================================================================================================================================
 
-function DesenhoCompleto() {
+function desenharNaCamada() {
+    arrayTelasCamadas[camadaSelecionada].ctx.drawImage(ctxPintar.canvas, 0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
+    ctxPintar.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
+}
+
+function desenhoNoPreviewEIcone() {
     ctxTelaPreview.clearRect(0, 0, ctxTelaPreview.canvas.width, ctxTelaPreview.canvas.height);
-    ctxDesenho.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
     for (let i = 0; i < arrayTelasCamadas.length; i++) {
         if (arrayTelasCamadas[i].visivel === true) {
             let opacidadeCamada = (arrayTelasCamadas[i].opacidade / 100);
@@ -575,15 +609,28 @@ function DesenhoCompleto() {
             ctxTelaPreview.globalAlpha = opacidadeCamada;
             ctxTelaPreview.drawImage(arrayTelasCamadas[i].ctx.canvas, 0, 0, ctxTelaPreview.canvas.width, ctxTelaPreview.canvas.height);
             ctxTelaPreview.closePath();
+        };
+    }
+    arrayIconesCamadas[camadaSelecionada].clearRect(0, 0, arrayIconesCamadas[camadaSelecionada].canvas.width, arrayIconesCamadas[camadaSelecionada].canvas.height);
+    arrayIconesCamadas[camadaSelecionada].globalAlpha = (arrayTelasCamadas[camadaSelecionada].opacidade / 100);
+    arrayIconesCamadas[camadaSelecionada].drawImage(arrayTelasCamadas[camadaSelecionada].ctx.canvas, 0, 0, arrayIconesCamadas[camadaSelecionada].canvas.width, arrayIconesCamadas[camadaSelecionada].canvas.height);
+}
 
+function desenhoCompleto() {
+    ctxDesenho.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
+    if (corDeFundoEscolhida != false) {
+        ctxDesenho.fillStyle = "rgb(" + corDeFundoEscolhida.R + ", " + corDeFundoEscolhida.G + ", " + corDeFundoEscolhida.B + ")";
+        ctxDesenho.fillRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
+    }
+    for (let i = 0; i < arrayTelasCamadas.length; i++) {
+        if (arrayTelasCamadas[i].visivel === true) {
+            let opacidadeCamada = (arrayTelasCamadas[i].opacidade / 100);
             ctxDesenho.beginPath();
             ctxDesenho.globalAlpha = opacidadeCamada;
             ctxDesenho.drawImage(arrayTelasCamadas[i].ctx.canvas, 0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
             ctxDesenho.closePath();
         };
     }
-    arrayIconesCamadas[camadaSelecionada].clearRect(0, 0, arrayIconesCamadas[camadaSelecionada].canvas.width, arrayIconesCamadas[camadaSelecionada].canvas.height);
-    arrayIconesCamadas[camadaSelecionada].drawImage(arrayTelasCamadas[camadaSelecionada].ctx.canvas, 0, 0, arrayIconesCamadas[camadaSelecionada].canvas.width, arrayIconesCamadas[camadaSelecionada].canvas.height);
 }
 // ==========================================================================================================================================================================================================================================
 
@@ -613,7 +660,7 @@ function voltarAlteracao() {
         arrayTelasCamadas[camada].ctx.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
         arrayTelasCamadas[camada].ctx.putImageData(imagemCamada, 0, 0);
         arrayVoltarAlteracoes.pop();
-        DesenhoCompleto();
+        desenhoNoPreviewEIcone();
     }
 }
 
@@ -630,10 +677,9 @@ function avancarAlteracao() {
         arrayTelasCamadas[camada].ctx.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
         arrayTelasCamadas[camada].ctx.putImageData(imagemCamada, 0, 0);
         arrayAvancarAlteracoes.pop();
-        DesenhoCompleto();
+        desenhoNoPreviewEIcone();
     }
 }
-
 // ==========================================================================================================================================================================================================================================
 
 function criarProjeto() {
@@ -648,7 +694,6 @@ function criarProjeto() {
             let el = arrayPropriedades[i];
             el.style.backgroundColor = "rgb(37, 37, 37)";
         }
-        let corDeFundo;
         nomeDoProjeto = (arrayPropriedades[0].value).replace(" ", "-");
         let resolucaoTela = { largura: parseInt(arrayPropriedades[1].value), altura: parseInt(arrayPropriedades[2].value) };
         resolucaoProjeto = resolucaoTela;
@@ -656,20 +701,20 @@ function criarProjeto() {
         let numCamadas = parseInt(arrayPropriedades[4].value);
         let cor;
         if (arrayPropriedades[3].value === "1") {
-            corDeFundo = { R: 255, G: 255, B: 255 };
-            cor = "rgb(" + corDeFundo.R + ", " + corDeFundo.G + ", " + corDeFundo.B + ")";
+            corDeFundoEscolhida = { R: 255, G: 255, B: 255 };
+            cor = "rgb(" + corDeFundoEscolhida.R + ", " + corDeFundoEscolhida.G + ", " + corDeFundoEscolhida.B + ")";
         }
         else if (arrayPropriedades[3].value === "2") {
-            corDeFundo = { R: 0, G: 0, B: 0 };
-            cor = "rgb(" + corDeFundo.R + ", " + corDeFundo.G + ", " + corDeFundo.B + ")";
+            corDeFundoEscolhida = { R: 0, G: 0, B: 0 };
+            cor = "rgb(" + corDeFundoEscolhida.R + ", " + corDeFundoEscolhida.G + ", " + corDeFundoEscolhida.B + ")";
         }
         else if (arrayPropriedades[3].value === "3") {
-            corDeFundo = false;
+            corDeFundoEscolhida = false;
             cor = false;
         }
         else if (arrayPropriedades[3].value === "4") {
-            corDeFundo = corEscolhidaPrincipal;
-            cor = "rgb(" + corDeFundo.R + ", " + corDeFundo.G + ", " + corDeFundo.B + ")";
+            corDeFundoEscolhida = corEscolhidaPrincipal;
+            cor = "rgb(" + corDeFundoEscolhida.R + ", " + corDeFundoEscolhida.G + ", " + corDeFundoEscolhida.B + ")";
         }
         while (numCamadas > arrayCamadas.length) {
             criarCamada(cor, resolucaoTela);
@@ -678,7 +723,7 @@ function criarProjeto() {
         camadaSelecionada = 0;
         arrayCamadas[0].icone.classList.add("camadaSalecionada");
         arrayCamadas[0].icone.classList.remove("camadas");
-        if (corDeFundo != false) {
+        if (corDeFundoEscolhida != false) {
             corFundo.style.backgroundColor = cor;
         }
         desenho.width = resolucaoProjeto.largura;
@@ -892,7 +937,7 @@ function clickCamadaVisivel() {
         this.classList.add("iconVer");
         this.classList.remove("iconNaoVer");
     }
-    DesenhoCompleto();
+    desenhoNoPreviewEIcone();
 }
 
 function mouseSobre() {
@@ -1035,7 +1080,7 @@ function zoomNoProjeto(zoom, centralizar, quanto) {
 }
 // ==========================================================================================================================================================================================================================================
 
-function tamanhoMoverScroll() {
+function tamanhoMoverScroll() {//De acordo com o zoom que é dado muda o tamanho do "moverScroll".
     let tamanhoTelasCanvas = { X: telasCanvas.offsetWidth, Y: telasCanvas.offsetHeight };
     let tamanhoContentTelas = { X: contentTelas.offsetWidth, Y: contentTelas.offsetHeight };
     let tamanhoContentTelaPreview = { X: contentTelaPreview.offsetWidth, Y: contentTelaPreview.offsetHeight }
@@ -1064,7 +1109,7 @@ function tamanhoMoverScroll() {
     }
 }
 
-function moverScrollNaTelaPreview(mouseX, mouseY) {
+function moverScrollNaTelaPreview(mouseX, mouseY) {//Mover o "moverScroll" com o mouse.
     let metadeLargura = moverScroll.offsetWidth / 2;
     let metadeAltura = moverScroll.offsetHeight / 2;
 
@@ -1250,9 +1295,7 @@ function janelaSeletorDeCor(AcharCor) {
             corSecundaria.style.backgroundColor = "rgb(" + corEscolhida.R + ", " + corEscolhida.G + ", " + corEscolhida.B + ")";
         }
         txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
-        janelaSelecionarCor.style.display = "none";
-        janelaSelecionarCorVisivel = false;
-
+        fecharJanelaSelecionarCor();
         for (let i = 0; i < arrayCoresSalvas.length; i++) {
             arrayCoresSalvas[i].selecionado = false;
             arrayCoresSalvas[i].elemento.style.border = "none";
@@ -1547,6 +1590,8 @@ function janelaSeletorDeCor(AcharCor) {
 
 
 function abrirJanelaSelecionarCor() {
+    ferramentaAnterior = ferramentaSelecionada;
+    arrayFerramentas[2].ferramenta.click();//Mudar para a ferramenta Conta-gotas.
     janelaSelecionarCor.style.display = "block";
     janelaSelecionarCorVisivel = true;
 }
@@ -1554,6 +1599,7 @@ function abrirJanelaSelecionarCor() {
 function fecharJanelaSelecionarCor() {
     janelaSelecionarCor.style.display = "none";
     janelaSelecionarCorVisivel = false;
+    arrayFerramentas[ferramentaAnterior - 1].ferramenta.click();//Voltar para a ferramenta selecionada antes de abrir a "janelaSelecionarCor".
 }
 
 //================================================================================================================================
@@ -1587,7 +1633,6 @@ function rgbToHsv(cor) {
         rr = diffc(rabs);
         gg = diffc(gabs);
         bb = diffc(babs);
-
         if (rabs === v) {
             h = bb - gg;
         } else if (gabs === v) {
@@ -1612,14 +1657,11 @@ function hsvToRgb(h, s, v) {
     let r, g, b;
     let i;
     let f, p, q, t;
-
     h = Math.max(0, Math.min(360, h));
     s = Math.max(0, Math.min(100, s));
     v = Math.max(0, Math.min(100, v));
-
     s = s / 100;
     v = v / 100;
-
     if (s == 0) {//Cinza
         r = g = b = v;
         return [
@@ -1628,14 +1670,12 @@ function hsvToRgb(h, s, v) {
             Math.round(b * 255)
         ];
     }
-
     h /= 60; // sector 0 to 5
     i = Math.floor(h);
     f = h - i; // factorial part of h
     p = v * (1 - s);
     q = v * (1 - s * f);
     t = v * (1 - s * (1 - f));
-
     switch (i) {
         case 0:
             r = v;
