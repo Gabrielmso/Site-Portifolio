@@ -80,7 +80,8 @@ function colorPaint() {
     let altPressionado = false;//Saber se o Alt está pressionado.(provisório).
     arrayFerramentas = [{ ferramenta: document.getElementById("pincel"), nome: "Pincel", id: 1 },//Armazena as ferramentas.
     { ferramenta: document.getElementById("borracha"), nome: "Borracha", id: 2 },
-    { ferramenta: document.getElementById("contaGotas"), nome: "Conta-gotas", id: 3 },]
+    { ferramenta: document.getElementById("contaGotas"), nome: "Conta-gotas", id: 3 },
+    { ferramenta: document.getElementById("linha"), nome: "Linha", id: 4 },]
 
     menuPadrao();
     ajustarContents();
@@ -106,7 +107,7 @@ function colorPaint() {
     arrayFerramentas[2].ferramenta.addEventListener("click", function () {
         if (projetoCriado === true) {
             desenhoCompleto();
-        };       
+        };
     });
 
     document.getElementById("bttCriarNovoProjeto").addEventListener("click", function () {
@@ -154,6 +155,17 @@ function colorPaint() {
         }
     });
 
+    document.getElementById("bttAlternaCor").addEventListener("mousedown", function () {//Alterna entre a corPrincipalEcolhida e a corSecundariaEscolhida.
+        if (janelaSelecionarCorVisivel === false) {
+            corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.R + ", " + corEscolhidaSecudaria.G + ", " + corEscolhidaSecudaria.B + ")";
+            corSecundaria.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+            let cor = corEscolhidaPrincipal;
+            corEscolhidaPrincipal = corEscolhidaSecudaria;
+            corEscolhidaSecudaria = cor;
+            txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+        }
+    });
+
     document.getElementById("bttCriarprojeto").addEventListener("click", function () {
         criarProjeto();
         if (projetoCriado === true) {
@@ -172,17 +184,6 @@ function colorPaint() {
 
     telasCanvas.addEventListener("mouseleave", function () {
         txtPosicaoCursor.value = "";
-    });
-
-    document.getElementById("bttAlternaCor").addEventListener("mousedown", function () {//Alterna entre a corPrincipalEcolhida e a corSecundariaEscolhida.
-        if (janelaSelecionarCorVisivel === false) {
-            corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.R + ", " + corEscolhidaSecudaria.G + ", " + corEscolhidaSecudaria.B + ")";
-            corSecundaria.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
-            let cor = corEscolhidaPrincipal;
-            corEscolhidaPrincipal = corEscolhidaSecudaria;
-            corEscolhidaSecudaria = cor;
-            txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
-        }
     });
 
     barraOpacidade.addEventListener("mouseup", function () {
@@ -237,6 +238,14 @@ function colorPaint() {
                 comparaCoresContaGotas.style.borderBottom = corAtual;
                 ferramentaContaGotas(e.clientX, e.clientY, posicaoMouseX, posicaoMouseY, true);
             }
+            else if (ferramentaSelecionada === 4) {//Linha.
+                coordenadaClick[0] = { x: posicaoMouseX, y: posicaoMouseY };
+                ctxPintar.lineWidth = tamanhoFerramenta;
+                ctxPintar.lineCap = "round";
+                ctxPintar.lineJoin = "round";
+                ctxPintar.strokeStyle = "rgba(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ", " + opacidadeFerramenta + ")";
+                ferramentaLinha(posicaoMouseX, posicaoMouseY);
+            }
         }
     });
 
@@ -255,6 +264,9 @@ function colorPaint() {
             }
             else if (ferramentaSelecionada === 3) {//Conta-gotas.
                 ferramentaContaGotas(e.clientX, e.clientY, posicaoMouseX, posicaoMouseY, true);
+            }
+            else if (ferramentaSelecionada === 4) {//Linha.
+                ferramentaLinha(posicaoMouseX, posicaoMouseY);
             }
         }
         else if (mudarTamanhoFerramenta === true) {
@@ -572,6 +584,17 @@ function ferramentaPincel(mouseX, mouseY) {
     }
 }
 
+function ferramentaLinha(mouseX, mouseY) {
+    coordenadaClick[1] = { x: mouseX, y: mouseY };
+    ctxPintar.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
+    let ponto1 = coordenadaClick[0];
+    let ponto2 = coordenadaClick[1];
+    ctxPintar.beginPath();    
+    ctxPintar.moveTo(ponto1.x, ponto1.y); 
+    ctxPintar.lineTo(ponto2.x, ponto2.y);   
+    ctxPintar.stroke();
+}
+
 function ferramentaBorrarra(contexto, mouseX, mouseY, cursorTamanho) {
     contexto.globalCompositeOperation = "destination-out";
     contexto.strokeStyle = "rgb(0, 0, 0)";
@@ -617,7 +640,7 @@ function ferramentaContaGotas(mouseX, mouseY, posTelaX, posTelaY, mouseMovendo) 
 function mudarAparenciaCursor() {
     if (ferramentaSelecionada === 3) {
         contentTelas.style.cursor = "url('/colorPaint/imagens/cursor/cursorContaGotas.png') 0 20, pointer";
-        return
+        return;
     };
     let tamanho = tamanhoFerramenta * ((telasCanvas.offsetWidth) / resolucaoProjeto.largura);
     if (tamanho <= 10) {
