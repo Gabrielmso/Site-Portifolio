@@ -169,8 +169,7 @@ p {
     width: 35px;
     height: 30px;
     display: inline-block;
-    border: 2px solid rgb(0, 0, 0);
-    background-color: rgb(0, 0, 0);
+    background-color: rgb(37, 37, 37);
     border-radius: 5px;
     background-repeat: no-repeat;
     background-size: 70%;
@@ -181,8 +180,7 @@ p {
     width: 35px;
     height: 30px;
     display: inline-block;
-    border: 1px solid rgb(143, 123, 44);
-    background-color: rgb(15, 15, 15);
+    background-color: rgb(13, 13, 13);
     border-radius: 5px;
     background-repeat: no-repeat;
     background-size: 70%;
@@ -751,10 +749,8 @@ p {
 #cursorComparaContaGotas {
     display: none;
     position: absolute;
-    top: 200px;
-    left: 200px;
-    width: 200px;
-    height: 200px;
+    width: 250px;
+    height: 250px;
     z-index: 20;
     border: 25px solid rgb(127, 127, 127);
     border-radius: 50%;
