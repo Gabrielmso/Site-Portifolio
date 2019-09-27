@@ -169,6 +169,10 @@ p {
     background-image: url("../colorPaint/imagens/icones/ferramentaLinha.png");
 }
 
+#curva {
+    background-image: url("../colorPaint/imagens/icones/ferramentaCurva.png");
+}
+
 .bttFerramentas {
     width: 35px;
     height: 30px;
