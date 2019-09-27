@@ -82,7 +82,8 @@ function colorPaint() {
     { ferramenta: document.getElementById("borracha"), nome: "Borracha", id: 2 },
     { ferramenta: document.getElementById("contaGotas"), nome: "Conta-gotas", id: 3 },
     { ferramenta: document.getElementById("linha"), nome: "Linha", id: 4 },
-    { ferramenta: document.getElementById("curva"), nome: "Curva", id: 5 },]
+    { ferramenta: document.getElementById("curva"), nome: "Curva", id: 5 },
+    { ferramenta: document.getElementById("retangulo"), nome: "Retângulo", id: 6 },]
 
     menuPadrao();
     ajustarContents();
@@ -221,8 +222,7 @@ function colorPaint() {
                 coordenadaClick.push({ x: posicaoMouseX, y: posicaoMouseY });
                 ctxPintar.lineWidth = tamanhoFerramenta;
                 if (tamanhoFerramenta > 1) {
-                    ctxPintar.lineCap = "round";
-                    ctxPintar.lineJoin = "round";
+                    ctxPintar.lineJoin = ctxPintar.lineCap = "round";
                 }
                 else {
                     ctxPintar.lineCap = "butt";
@@ -247,15 +247,13 @@ function colorPaint() {
             else if (ferramentaSelecionada === 4) {//Linha.
                 coordenadaClick[0] = { x: posicaoMouseX, y: posicaoMouseY };
                 ctxPintar.lineWidth = tamanhoFerramenta;
-                ctxPintar.lineCap = "round";
-                ctxPintar.lineJoin = "round";
+                ctxPintar.lineJoin = ctxPintar.lineCap = "round";
                 ctxPintar.strokeStyle = "rgba(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ", " + opacidadeFerramenta + ")";
                 ferramentaLinha(posicaoMouseX, posicaoMouseY);
             }
             else if (ferramentaSelecionada === 5) {//Curva.
                 ctxPintar.lineWidth = tamanhoFerramenta;
-                ctxPintar.lineCap = "round";
-                ctxPintar.lineJoin = "round";
+                ctxPintar.lineJoin = ctxPintar.lineCap = "round";
                 ctxPintar.strokeStyle = "rgba(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ", " + opacidadeFerramenta + ")";
                 if (clickCurva === false) {
                     coordenadaClick[0] = { x: posicaoMouseX, y: posicaoMouseY };
@@ -264,6 +262,13 @@ function colorPaint() {
                 else {
                     ferramentaCurva(posicaoMouseX, posicaoMouseY, true);
                 }
+            }
+            else if (ferramentaSelecionada === 6) {//Retângulo.
+                coordenadaClick[0] = { x: posicaoMouseX, y: posicaoMouseY };
+                ctxPintar.lineWidth = tamanhoFerramenta;
+                ctxPintar.lineJoin = "miter";
+                ctxPintar.strokeStyle = "rgba(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ", " + opacidadeFerramenta + ")";
+                ferramentaRetangulo(posicaoMouseX, posicaoMouseY);
             }
         }
     });
@@ -294,6 +299,9 @@ function colorPaint() {
                 else {
                     ferramentaCurva(posicaoMouseX, posicaoMouseY, true);
                 }
+            }
+            else if (ferramentaSelecionada === 6) {//Retângulo.
+                ferramentaRetangulo(posicaoMouseX, posicaoMouseY);
             }
         }
         else if (mudarTamanhoFerramenta === true) {
@@ -622,6 +630,15 @@ function ferramentaLinha(mouseX, mouseY) {
     ctxPintar.moveTo(pontoInicial.x, pontoInicial.y);
     ctxPintar.lineTo(pontoFinal.x, pontoFinal.y);
     ctxPintar.stroke();
+}
+
+function ferramentaRetangulo(mouseX, mouseY) {
+    coordenadaClick[1] = { x: mouseX, y: mouseY };
+    ctxPintar.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
+    let pontoInicial = coordenadaClick[0];
+    let pontoFinal = coordenadaClick[1];
+    ctxPintar.beginPath();
+    ctxPintar.strokeRect(pontoInicial.x, pontoInicial.y, pontoFinal.x - pontoInicial.x, pontoFinal.y - pontoInicial.y);
 }
 
 function ferramentaCurva(mouseX, mouseY, curvar) {
