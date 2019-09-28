@@ -177,6 +177,10 @@ p {
     background-image: url("../colorPaint/imagens/icones/ferramentaRetangulo.png");
 }
 
+#baldeDeTinta {
+    background-image: url("../colorPaint/imagens/icones/ferramentaBaldeDeTinta.png");
+}
+
 .bttFerramentas {
     width: 35px;
     height: 30px;

@@ -629,120 +629,98 @@ function ferramentaPincel(mouseX, mouseY) {
 }
 
 function ferramentaBaldeDeTinta(mouseX, mouseY, context, cor) {
+    let corSelecionada = cor,
+        camada = context.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura),
+        canvasEvent = ctxPintar.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
 
-    let curColor = cor,
-        colorLayerData = context.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura),
-        canvasEvent = ctxPintar.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura),
+    pintar(Math.round(mouseX), Math.round(mouseY));
+    function pintar(posX, posY) {
+        let pixelPos = (posY * resolucaoProjeto.largura + posX) * 4,
+            r = camada.data[pixelPos],
+            g = camada.data[pixelPos + 1],
+            b = camada.data[pixelPos + 2],
+            a = camada.data[pixelPos + 3];
+        if (r === corSelecionada.r && g === corSelecionada.g && b === corSelecionada.b && a === 255) {
+            return;
+        }
+        preencher(posX, posY, r, g, b, a);
+    }
 
-        matchStartColor = function (pixelPos, startR, startG, startB, startA) {
-            let r = colorLayerData.data[pixelPos],
-                g = colorLayerData.data[pixelPos + 1],
-                b = colorLayerData.data[pixelPos + 2],
-                a = colorLayerData.data[pixelPos + 3];
+    function preencher(posClickX, posClickY, R, G, B, A) {
+        let pixelsVerificados = [[posClickX, posClickY]];
+        while (pixelsVerificados.length > 0) {
+            let novaPosicao = pixelsVerificados.pop();
+            let x = novaPosicao[0], y = novaPosicao[1];
+            let posicaoPixel = (y * resolucaoProjeto.largura + x) * 4;
+            while (y >= -1 && compararCorInicial(posicaoPixel, R, G, B, A)) {
+                y = y - 1;
+                posicaoPixel = posicaoPixel - resolucaoProjeto.largura * 4;
+            }
+            posicaoPixel = posicaoPixel + resolucaoProjeto.largura * 4;
+            y = y + 1;
+            let ladoEsquerdo = false, ladoDireito = false;
+            while (y <= resolucaoProjeto.altura + 1 && compararCorInicial(posicaoPixel, R, G, B, A)) {
+                pintarPixel(posicaoPixel, corSelecionada.r, corSelecionada.g, corSelecionada.b, corSelecionada.a);
+                y = y + 1;
+                if (x > 0) {
+                    if (compararCorInicial(posicaoPixel - 4, R, G, B, A) === true) {
+                        if (ladoEsquerdo === false) {
+                            ladoEsquerdo = true;
+                            pixelsVerificados.push([x - 1, y]);
+                        }
+                    } else if (ladoEsquerdo === true) {
+                        ladoEsquerdo = false;
+                    }
+                }
+                if (x < resolucaoProjeto.largura + 1) {
+                    if (compararCorInicial(posicaoPixel + 4, R, G, B, A) === true) {
+                        if (ladoDireito === false) {
+                            ladoDireito = true;
+                            pixelsVerificados.push([x + 1, y]);
+                        }
+                    } else if (ladoDireito) {
+                        ladoDireito = false;
+                    }
+                }
+                posicaoPixel = posicaoPixel + resolucaoProjeto.largura * 4;
+            }
+        }
+        ctxPintar.putImageData(canvasEvent, 0, 0);
+    }
 
-            if(startR === curColor.r && startG === curColor.g && startB === curColor.b && startA === curColor.a){
+    function compararCorInicial(pixelPos, clickR, clickG, clickB, clickA) {
+        let r = camada.data[pixelPos],
+            g = camada.data[pixelPos + 1],
+            b = camada.data[pixelPos + 2],
+            a = camada.data[pixelPos + 3];
+
+        if (canvasEvent.data[pixelPos + 3] === 0) {
+            if (clickR === corSelecionada.r && clickG === corSelecionada.g && clickB === corSelecionada.b && clickA === 255) {
                 return false;
             }
-            if (a === 0) {
+            if (r === clickR && g === clickG && b === clickB && a === clickA) {
                 return true;
             }
-            if (r === 0 && g === 0 && b === 0 && a === 0) {
-                return true;
-            }
-            if (r === startR && g === startG && b === startB && a === startA) {
-                return true;
-            }
-            if (r === curColor.r && g === curColor.g && b === curColor.b && a === curColor.a) {
+            if (r === corSelecionada.r && g === corSelecionada.g && b === corSelecionada.b && a === corSelecionada.a) {
                 return false;
             }
-        },
+        }
+        else{
+            return false;
+        }
+    }
 
-        colorPixel = function (pixelPos, r, g, b, a) {
-            canvasEvent.data[pixelPos] = r;
-            canvasEvent.data[pixelPos + 1] = g;
-            canvasEvent.data[pixelPos + 2] = b;
-            canvasEvent.data[pixelPos + 3] = a;
+    function pintarPixel(pixelPos, R, G, B, A) {
+        canvasEvent.data[pixelPos] = R;
+        canvasEvent.data[pixelPos + 1] = G;
+        canvasEvent.data[pixelPos + 2] = B;
+        canvasEvent.data[pixelPos + 3] = A;
 
-            colorLayerData.data[pixelPos] = r;
-            colorLayerData.data[pixelPos + 1] = g;
-            colorLayerData.data[pixelPos + 2] = b;
-            colorLayerData.data[pixelPos + 3] = a;
-        },
-
-        floodFill = function (startX, startY, startR, startG, startB, startA) {
-
-            let newPos,
-                x,
-                y,
-                pixelPos,
-                reachLeft,
-                reachRight,
-                pixelStack = [[startX, startY]];
-
-            while (pixelStack.length > 0) {
-
-                newPos = pixelStack.pop();
-                x = newPos[0];
-                y = newPos[1];
-
-                pixelPos = (y * resolucaoProjeto.largura + x) * 4;
-
-                while (y >= -1 && matchStartColor(pixelPos, startR, startG, startB, startA)) {
-                    y -= 1;
-                    pixelPos -= resolucaoProjeto.largura * 4;
-                }
-                pixelPos += resolucaoProjeto.largura * 4;
-                y += 1;
-                reachLeft = false;
-                reachRight = false;
-
-                while (y <= resolucaoProjeto.altura + 1 && matchStartColor(pixelPos, startR, startG, startB, startA)) {
-                    y += 1;
-
-                    colorPixel(pixelPos, curColor.r, curColor.g, curColor.b, curColor.a);
-
-                    if (x > 0) {
-                        if (matchStartColor(pixelPos - 4, startR, startG, startB, startA)) {
-                            if (!reachLeft) {
-                                pixelStack.push([x - 1, y]);
-                                reachLeft = true;
-                            }
-                        } else if (reachLeft) {
-                            reachLeft = false;
-                        }
-                    }
-
-                    if (x < resolucaoProjeto.largura + 1) {
-                        if (matchStartColor(pixelPos + 4, startR, startG, startB, startA)) {
-                            if (!reachRight) {
-                                pixelStack.push([x + 1, y]);
-                                reachRight = true;
-                            }
-                        } else if (reachRight) {
-                            reachRight = false;
-                        }
-                    }
-
-                    pixelPos += resolucaoProjeto.largura * 4;
-                }
-            }
-            ctxPintar.putImageData(canvasEvent, 0, 0);
-        },
-        paintAt = function (startX, startY) {
-            var pixelPos = (startY * resolucaoProjeto.largura + startX) * 4,
-                r = colorLayerData.data[pixelPos],
-                g = colorLayerData.data[pixelPos + 1],
-                b = colorLayerData.data[pixelPos + 2],
-                a = colorLayerData.data[pixelPos + 3];
-
-            if (r === curColor.r && g === curColor.g && b === curColor.b && a === 255) {
-                return;
-            }
-
-            console.log(r, g, b, a);
-            floodFill(startX, startY, r, g, b, a);
-        };
-    paintAt(Math.round(mouseX), Math.round(mouseY));
+        camada.data[pixelPos] = R;
+        camada.data[pixelPos + 1] = G;
+        camada.data[pixelPos + 2] = B;
+        camada.data[pixelPos + 3] = A;
+    }
 };
 
 function ferramentaLinha(mouseX, mouseY) {
@@ -754,15 +732,6 @@ function ferramentaLinha(mouseX, mouseY) {
     ctxPintar.moveTo(pontoInicial.x, pontoInicial.y);
     ctxPintar.lineTo(pontoFinal.x, pontoFinal.y);
     ctxPintar.stroke();
-}
-
-function ferramentaRetangulo(mouseX, mouseY) {
-    coordenadaClick[1] = { x: mouseX, y: mouseY };
-    ctxPintar.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
-    let pontoInicial = coordenadaClick[0];
-    let pontoFinal = coordenadaClick[1];
-    ctxPintar.beginPath();
-    ctxPintar.strokeRect(pontoInicial.x, pontoInicial.y, pontoFinal.x - pontoInicial.x, pontoFinal.y - pontoInicial.y);
 }
 
 function ferramentaCurva(mouseX, mouseY, curvar) {
@@ -782,6 +751,15 @@ function ferramentaCurva(mouseX, mouseY, curvar) {
         ctxPintar.lineTo(pontoFinal.x, pontoFinal.y);
     }
     ctxPintar.stroke();
+}
+
+function ferramentaRetangulo(mouseX, mouseY) {
+    coordenadaClick[1] = { x: mouseX, y: mouseY };
+    ctxPintar.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
+    let pontoInicial = coordenadaClick[0];
+    let pontoFinal = coordenadaClick[1];
+    ctxPintar.beginPath();
+    ctxPintar.strokeRect(pontoInicial.x, pontoInicial.y, pontoFinal.x - pontoInicial.x, pontoFinal.y - pontoInicial.y);
 }
 
 function ferramentaBorracha(contexto, mouseX, mouseY, cursorTamanho) {
@@ -829,6 +807,10 @@ function ferramentaContaGotas(mouseX, mouseY, posTelaX, posTelaY, mouseMovendo) 
 function mudarAparenciaCursor() {
     if (ferramentaSelecionada === 3) {
         contentTelas.style.cursor = "url('/colorPaint/imagens/cursor/cursorContaGotas.png') 0 20, pointer";
+        return;
+    };
+    if (ferramentaSelecionada === 7) {
+        contentTelas.style.cursor = "url('/colorPaint/imagens/cursor/cursorBaldeDeTinta.png') 0 0, pointer";
         return;
     };
     let tamanho = tamanhoFerramenta * ((telasCanvas.offsetWidth) / resolucaoProjeto.largura);
