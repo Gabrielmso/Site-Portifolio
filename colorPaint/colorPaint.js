@@ -83,7 +83,8 @@ function colorPaint() {
     { ferramenta: document.getElementById("contaGotas"), nome: "Conta-gotas", id: 3 },
     { ferramenta: document.getElementById("linha"), nome: "Linha", id: 4 },
     { ferramenta: document.getElementById("curva"), nome: "Curva", id: 5 },
-    { ferramenta: document.getElementById("retangulo"), nome: "Retângulo", id: 6 },]
+    { ferramenta: document.getElementById("retangulo"), nome: "Retângulo", id: 6 },
+    { ferramenta: document.getElementById("baldeDeTinta"), nome: "Balde de tinta", id: 7 }]
 
     menuPadrao();
     ajustarContents();
@@ -269,6 +270,12 @@ function colorPaint() {
                 ctxPintar.lineJoin = "miter";
                 ctxPintar.strokeStyle = "rgba(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ", " + opacidadeFerramenta + ")";
                 ferramentaRetangulo(posicaoMouseX, posicaoMouseY);
+            }
+            else if (ferramentaSelecionada === 7) {
+                if (posicaoMouseX >= 0 && posicaoMouseX <= resolucaoProjeto.largura && posicaoMouseY >= 0 && posicaoMouseY <= resolucaoProjeto.altura) {
+                    let cor = { r: corEscolhidaPrincipal.R, g: corEscolhidaPrincipal.G, b: corEscolhidaPrincipal.B, a: Math.round(opacidadeFerramenta * 255) };
+                    ferramentaBaldeDeTinta(posicaoMouseX, posicaoMouseY, arrayTelasCamadas[camadaSelecionada].ctx, cor);
+                }
             }
         }
     });
@@ -620,6 +627,123 @@ function ferramentaPincel(mouseX, mouseY) {
         };
     }
 }
+
+function ferramentaBaldeDeTinta(mouseX, mouseY, context, cor) {
+
+    let curColor = cor,
+        colorLayerData = context.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura),
+        canvasEvent = ctxPintar.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura),
+
+        matchStartColor = function (pixelPos, startR, startG, startB, startA) {
+            let r = colorLayerData.data[pixelPos],
+                g = colorLayerData.data[pixelPos + 1],
+                b = colorLayerData.data[pixelPos + 2],
+                a = colorLayerData.data[pixelPos + 3];
+
+            if(startR === curColor.r && startG === curColor.g && startB === curColor.b && startA === curColor.a){
+                return false;
+            }
+            if (a === 0) {
+                return true;
+            }
+            if (r === 0 && g === 0 && b === 0 && a === 0) {
+                return true;
+            }
+            if (r === startR && g === startG && b === startB && a === startA) {
+                return true;
+            }
+            if (r === curColor.r && g === curColor.g && b === curColor.b && a === curColor.a) {
+                return false;
+            }
+        },
+
+        colorPixel = function (pixelPos, r, g, b, a) {
+            canvasEvent.data[pixelPos] = r;
+            canvasEvent.data[pixelPos + 1] = g;
+            canvasEvent.data[pixelPos + 2] = b;
+            canvasEvent.data[pixelPos + 3] = a;
+
+            colorLayerData.data[pixelPos] = r;
+            colorLayerData.data[pixelPos + 1] = g;
+            colorLayerData.data[pixelPos + 2] = b;
+            colorLayerData.data[pixelPos + 3] = a;
+        },
+
+        floodFill = function (startX, startY, startR, startG, startB, startA) {
+
+            let newPos,
+                x,
+                y,
+                pixelPos,
+                reachLeft,
+                reachRight,
+                pixelStack = [[startX, startY]];
+
+            while (pixelStack.length > 0) {
+
+                newPos = pixelStack.pop();
+                x = newPos[0];
+                y = newPos[1];
+
+                pixelPos = (y * resolucaoProjeto.largura + x) * 4;
+
+                while (y >= -1 && matchStartColor(pixelPos, startR, startG, startB, startA)) {
+                    y -= 1;
+                    pixelPos -= resolucaoProjeto.largura * 4;
+                }
+                pixelPos += resolucaoProjeto.largura * 4;
+                y += 1;
+                reachLeft = false;
+                reachRight = false;
+
+                while (y <= resolucaoProjeto.altura + 1 && matchStartColor(pixelPos, startR, startG, startB, startA)) {
+                    y += 1;
+
+                    colorPixel(pixelPos, curColor.r, curColor.g, curColor.b, curColor.a);
+
+                    if (x > 0) {
+                        if (matchStartColor(pixelPos - 4, startR, startG, startB, startA)) {
+                            if (!reachLeft) {
+                                pixelStack.push([x - 1, y]);
+                                reachLeft = true;
+                            }
+                        } else if (reachLeft) {
+                            reachLeft = false;
+                        }
+                    }
+
+                    if (x < resolucaoProjeto.largura + 1) {
+                        if (matchStartColor(pixelPos + 4, startR, startG, startB, startA)) {
+                            if (!reachRight) {
+                                pixelStack.push([x + 1, y]);
+                                reachRight = true;
+                            }
+                        } else if (reachRight) {
+                            reachRight = false;
+                        }
+                    }
+
+                    pixelPos += resolucaoProjeto.largura * 4;
+                }
+            }
+            ctxPintar.putImageData(canvasEvent, 0, 0);
+        },
+        paintAt = function (startX, startY) {
+            var pixelPos = (startY * resolucaoProjeto.largura + startX) * 4,
+                r = colorLayerData.data[pixelPos],
+                g = colorLayerData.data[pixelPos + 1],
+                b = colorLayerData.data[pixelPos + 2],
+                a = colorLayerData.data[pixelPos + 3];
+
+            if (r === curColor.r && g === curColor.g && b === curColor.b && a === 255) {
+                return;
+            }
+
+            console.log(r, g, b, a);
+            floodFill(startX, startY, r, g, b, a);
+        };
+    paintAt(Math.round(mouseX), Math.round(mouseY));
+};
 
 function ferramentaLinha(mouseX, mouseY) {
     coordenadaClick[1] = { x: mouseX, y: mouseY };
