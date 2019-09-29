@@ -84,7 +84,8 @@ function colorPaint() {
     { ferramenta: document.getElementById("linha"), nome: "Linha", id: 4 },
     { ferramenta: document.getElementById("curva"), nome: "Curva", id: 5 },
     { ferramenta: document.getElementById("retangulo"), nome: "Retângulo", id: 6 },
-    { ferramenta: document.getElementById("baldeDeTinta"), nome: "Balde de tinta", id: 7 }]
+    { ferramenta: document.getElementById("baldeDeTinta"), nome: "Balde de tinta", id: 7 },
+    { ferramenta: document.getElementById("elipse"), nome: "Elipse", id: 8 }]
 
     menuPadrao();
     ajustarContents();
@@ -271,11 +272,18 @@ function colorPaint() {
                 ctxPintar.strokeStyle = "rgba(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ", " + opacidadeFerramenta + ")";
                 ferramentaRetangulo(posicaoMouseX, posicaoMouseY);
             }
-            else if (ferramentaSelecionada === 7) {
+            else if (ferramentaSelecionada === 7) {//Balde de tinta.
                 if (posicaoMouseX >= 0 && posicaoMouseX <= resolucaoProjeto.largura && posicaoMouseY >= 0 && posicaoMouseY <= resolucaoProjeto.altura) {
                     let cor = { r: corEscolhidaPrincipal.R, g: corEscolhidaPrincipal.G, b: corEscolhidaPrincipal.B, a: Math.round(opacidadeFerramenta * 255) };
                     ferramentaBaldeDeTinta(posicaoMouseX, posicaoMouseY, arrayTelasCamadas[camadaSelecionada].ctx, cor);
                 }
+            }
+            else if (ferramentaSelecionada === 8) {//Elipse.
+                coordenadaClick[0] = { x: posicaoMouseX, y: posicaoMouseY };
+                ctxPintar.lineWidth = tamanhoFerramenta;
+                ctxPintar.lineJoin = "round";
+                ctxPintar.strokeStyle = "rgba(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ", " + opacidadeFerramenta + ")";
+                ferramentaElipse(posicaoMouseX, posicaoMouseY);
             }
         }
     });
@@ -309,6 +317,9 @@ function colorPaint() {
             }
             else if (ferramentaSelecionada === 6) {//Retângulo.
                 ferramentaRetangulo(posicaoMouseX, posicaoMouseY);
+            }
+            else if (ferramentaSelecionada === 8) {//Elipse.
+                ferramentaElipse(posicaoMouseX, posicaoMouseY);
             }
         }
         else if (mudarTamanhoFerramenta === true) {
@@ -607,8 +618,7 @@ function colorPaint() {
 function ferramentaPincel(mouseX, mouseY) {
     coordenadaClick.push({ x: mouseX, y: mouseY });
     ctxPintar.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
-    let ponto1 = coordenadaClick[0];
-    let ponto2 = coordenadaClick[1];
+    let ponto1 = coordenadaClick[0], ponto2 = coordenadaClick[1];
     ctxPintar.beginPath();
     ctxPintar.moveTo(ponto1.x, ponto1.y);
     for (let i = 0; i < coordenadaClick.length; i++) {
@@ -705,7 +715,7 @@ function ferramentaBaldeDeTinta(mouseX, mouseY, context, cor) {
                 return false;
             }
         }
-        else{
+        else {
             return false;
         }
     }
@@ -726,8 +736,7 @@ function ferramentaBaldeDeTinta(mouseX, mouseY, context, cor) {
 function ferramentaLinha(mouseX, mouseY) {
     coordenadaClick[1] = { x: mouseX, y: mouseY };
     ctxPintar.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
-    let pontoInicial = coordenadaClick[0];
-    let pontoFinal = coordenadaClick[1];
+    let pontoInicial = coordenadaClick[0], pontoFinal = coordenadaClick[1];
     ctxPintar.beginPath();
     ctxPintar.moveTo(pontoInicial.x, pontoInicial.y);
     ctxPintar.lineTo(pontoFinal.x, pontoFinal.y);
@@ -739,8 +748,7 @@ function ferramentaCurva(mouseX, mouseY, curvar) {
         coordenadaClick[1] = { x: mouseX, y: mouseY };
     }
     ctxPintar.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
-    let pontoInicial = coordenadaClick[0];
-    let pontoFinal = coordenadaClick[1];
+    let pontoInicial = coordenadaClick[0], pontoFinal = coordenadaClick[1];
     ctxPintar.beginPath();
     ctxPintar.moveTo(pontoInicial.x, pontoInicial.y);
     if (curvar === true) {
@@ -754,12 +762,26 @@ function ferramentaCurva(mouseX, mouseY, curvar) {
 }
 
 function ferramentaRetangulo(mouseX, mouseY) {
-    coordenadaClick[1] = { x: mouseX, y: mouseY };
     ctxPintar.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
-    let pontoInicial = coordenadaClick[0];
-    let pontoFinal = coordenadaClick[1];
+    let pontoInicial = coordenadaClick[0], pontoFinal = { x: mouseX, y: mouseY };
     ctxPintar.beginPath();
     ctxPintar.strokeRect(pontoInicial.x, pontoInicial.y, pontoFinal.x - pontoInicial.x, pontoFinal.y - pontoInicial.y);
+}
+
+function ferramentaElipse(mouseX, mouseY) {
+    ctxPintar.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
+    let pontoInicial = coordenadaClick[0], pontoFinal = { x: mouseX, y: mouseY };
+    let raioX = (pontoFinal.x - pontoInicial.x) / 2, raioY = (pontoFinal.y - pontoInicial.y) / 2;
+    let centroEixoX = pontoInicial.x + raioX, centroEixoY = pontoInicial.y + raioY;
+    let passoAngulo = 0.005;
+    let angulo = 0;
+    let voltaCompleta = Math.PI * 2 + passoAngulo;
+    ctxPintar.beginPath();
+    ctxPintar.moveTo(centroEixoX + raioX * Math.cos(angulo), centroEixoY + raioY * Math.sin(angulo));
+    for (; angulo < voltaCompleta; angulo += passoAngulo) {
+        ctxPintar.lineTo(centroEixoX + raioX * Math.cos(angulo), centroEixoY + raioY * Math.sin(angulo));
+    }
+    ctxPintar.stroke();
 }
 
 function ferramentaBorracha(contexto, mouseX, mouseY, cursorTamanho) {

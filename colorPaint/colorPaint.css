@@ -177,6 +177,10 @@ p {
     background-image: url("../colorPaint/imagens/icones/ferramentaRetangulo.png");
 }
 
+#elipse{
+    background-image: url("../colorPaint/imagens/icones/ferramentaElipse.png");
+}
+
 #baldeDeTinta {
     background-image: url("../colorPaint/imagens/icones/ferramentaBaldeDeTinta.png");
 }
