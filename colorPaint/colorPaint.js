@@ -40,6 +40,8 @@ let janelaSeleciona;//Recebe toda a função "janelaSeletorDeCor".
 let zoomTelasCanvas;//Armazena o quanto de zoom tem na "TelasCanvas".
 let MouseNoBttVer = false;//Saber se o mouse está sobre os botões que deixam as camadas invisíveis ou visíveis.
 let coordenadaClick = [];//Armazena as coordenadas do cursor do mouse desde quando o mesmo é pressionado e movimentado enquanto pressionado.
+let barraOpacidadeCamada;
+let cursorOpacidadeCamada;
 function colorPaint() {
     const contentJanelaCriarProjeto = document.getElementById("contentJanelaCriarProjeto");
     const janelaPrincipal = document.getElementById("janelaPrincipal");
@@ -70,10 +72,13 @@ function colorPaint() {
     telaPreview = document.getElementById("telaPreview");
     ctxTelaPreview = telaPreview.getContext("2d");
     moverScroll = document.getElementById("moverScroll");
+    barraOpacidadeCamada = document.getElementById("barraOpacidadeCamada");
+    cursorOpacidadeCamada = document.getElementById("cursorOpacidadeCamada");
     janelaSeleciona = new janelaSeletorDeCor(corEscolhidaPrincipal);
     let posicaoMouseX, posicaoMouseY;//Armazena a posição do mouse no tela canvas em relação a resolução do projeto.
     let mudarTamanhoFerramenta = false;//Saber se o mouse está pressionado na "barraTamanho".
     let mudarOpacidadeFerramenta = false;//Saber se o mouse está pressionado na "barraOpacidade". 
+    let mudarOpacidadeCamada = false;//Saber se o mouse está pressionado na "barraOpacidadeCamada". 
     let moverScrollPreview = false;//Saber se o mouse está pressionado na "contentTelaPreview".
     let pintando = false;//Saber se o mouse está pressionado na "contentTelas".
     let ctrlPressionado = false;//Saber se os Ctrl's estão pressionados.
@@ -213,6 +218,11 @@ function colorPaint() {
         calculaTamanhoFerramenta(e);
     })
 
+    barraOpacidadeCamada.addEventListener("mousedown", function (e) {
+        mudarOpacidadeCamada = true;
+        calculaOpacidadeCamada(e);
+    })
+
     contentTelas.addEventListener("mousedown", function (e) {
         if (!projetoCriado) { return };
         if (arrayTelasCamadas[camadaSelecionada].visivel === true) {
@@ -326,7 +336,10 @@ function colorPaint() {
             calculaTamanhoFerramenta(e);
         }
         else if (mudarOpacidadeFerramenta === true) {
-            calculaOpacidadeFerramenta(e)
+            calculaOpacidadeFerramenta(e);
+        }
+        else if (mudarOpacidadeCamada === true) {
+            calculaOpacidadeCamada(e);
         }
         else if (moverScrollPreview === true) {
             let mousePos = pegarPosicaoMouse(contentTelaPreview, e);
@@ -372,6 +385,10 @@ function colorPaint() {
         }
         mudarOpacidadeFerramenta = false;
         mudarTamanhoFerramenta = false;
+        if(mudarOpacidadeCamada === true){
+            desenhoNoPreviewEIcone();
+            mudarOpacidadeCamada = false;
+        }
         moverScrollPreview = false;
     });
 
@@ -475,6 +492,29 @@ function colorPaint() {
             menuPadrao();
         }, 120);
     });
+
+    function calculaOpacidadeCamada(e) {
+        let mouse = pegarPosicaoMouse(barraOpacidadeCamada, e);
+        let porcentagem = (mouse.X * 100) / barraOpacidadeCamada.offsetWidth;
+        porcentagem = Math.round(porcentagem);
+
+        if (mouse.X <= 1) {
+            porcentagem = 1;
+            cursorOpacidadeCamada.style.left = "-7px";
+            arrayCamadas[camadaSelecionada].porcentagemOpa.value = "1%";
+        }
+        else if (mouse.X >= 200) {
+            porcentagem = 100;
+            cursorOpacidadeCamada.style.left = "193px";
+            arrayCamadas[camadaSelecionada].porcentagemOpa.value = "100%";
+        }
+        else {
+            cursorOpacidadeCamada.style.left = mouse.X - 7 + "px";
+            arrayCamadas[camadaSelecionada].porcentagemOpa.value = porcentagem + "%";
+        }
+        arrayTelasCamadas[camadaSelecionada].opacidade = porcentagem / 100;
+        arrayCamadas[camadaSelecionada].camada.style.opacity = porcentagem / 100;
+    }
 
     function calculaTamanhoFerramenta(e) {
         let mouse = pegarPosicaoMouse(barraTamanho, e);
@@ -854,7 +894,7 @@ function desenhoNoPreviewEIcone() {
     ctxTelaPreview.clearRect(0, 0, ctxTelaPreview.canvas.width, ctxTelaPreview.canvas.height);
     for (let i = 0; i < arrayTelasCamadas.length; i++) {
         if (arrayTelasCamadas[i].visivel === true) {
-            let opacidadeCamada = (arrayTelasCamadas[i].opacidade / 100);
+            let opacidadeCamada = arrayTelasCamadas[i].opacidade;
             ctxTelaPreview.beginPath();
             ctxTelaPreview.globalAlpha = opacidadeCamada;
             ctxTelaPreview.drawImage(arrayTelasCamadas[i].ctx.canvas, 0, 0, ctxTelaPreview.canvas.width, ctxTelaPreview.canvas.height);
@@ -862,7 +902,7 @@ function desenhoNoPreviewEIcone() {
         };
     }
     arrayIconesCamadas[camadaSelecionada].clearRect(0, 0, arrayIconesCamadas[camadaSelecionada].canvas.width, arrayIconesCamadas[camadaSelecionada].canvas.height);
-    arrayIconesCamadas[camadaSelecionada].globalAlpha = (arrayTelasCamadas[camadaSelecionada].opacidade / 100);
+    arrayIconesCamadas[camadaSelecionada].globalAlpha = arrayTelasCamadas[camadaSelecionada].opacidade;
     arrayIconesCamadas[camadaSelecionada].drawImage(arrayTelasCamadas[camadaSelecionada].ctx.canvas, 0, 0, arrayIconesCamadas[camadaSelecionada].canvas.width, arrayIconesCamadas[camadaSelecionada].canvas.height);
 }
 
@@ -874,7 +914,7 @@ function desenhoCompleto() {
     }
     for (let i = 0; i < arrayTelasCamadas.length; i++) {
         if (arrayTelasCamadas[i].visivel === true) {
-            let opacidadeCamada = (arrayTelasCamadas[i].opacidade / 100);
+            let opacidadeCamada = arrayTelasCamadas[i].opacidade;
             ctxDesenho.beginPath();
             ctxDesenho.globalAlpha = opacidadeCamada;
             ctxDesenho.drawImage(arrayTelasCamadas[i].ctx.canvas, 0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
@@ -971,7 +1011,7 @@ function criarProjeto() {
         }
         ajustarTelasCanvas();
         camadaSelecionada = 0;
-        arrayCamadas[0].icone.classList.add("camadaSalecionada");
+        arrayCamadas[0].icone.classList.add("camadaSelecionada");
         arrayCamadas[0].icone.classList.remove("camadas");
         if (corDeFundoEscolhida != false) {
             corFundo.style.backgroundColor = cor;
@@ -980,6 +1020,7 @@ function criarProjeto() {
         desenho.height = resolucaoProjeto.altura;
         pintar.width = resolucaoProjeto.largura;
         pintar.height = resolucaoProjeto.altura;
+        document.getElementById("propriedadeOpacidadeCamada").style.display = "flex";
         ajustarPreview(cor);
         projetoCriado = true;
     }
@@ -1055,17 +1096,17 @@ function criarCamada(cor, resolucao) {
     let txtOpacidade = document.createElement("span");
     txtOpacidade.innerHTML = "Opacidade: ";
     let idPocentagem = "porcent" + num;
-    let txtPorcentagem = document.createElement("span");
+    let txtPorcentagem = document.createElement("input");
+    txtPorcentagem.setAttribute("type", "text");
     txtPorcentagem.setAttribute("id", idPocentagem);
-    txtPorcentagem.innerHTML = "100";
-    let simbolo = document.createElement("span");
-    simbolo.innerHTML = "%";
+    txtPorcentagem.setAttribute("readOnly", "true");
+    txtPorcentagem.setAttribute("class", "opacidadeCamada");
+    txtPorcentagem.setAttribute("value", "100%");
 
     info.appendChild(nomeCamada);
     info.appendChild(br);
     info.appendChild(txtOpacidade);
     info.appendChild(txtPorcentagem);
-    info.appendChild(simbolo);
     iconeCamada.appendChild(info);
 
     let contentMiniIcon = document.createElement("div");
@@ -1138,7 +1179,7 @@ function criarCamada(cor, resolucao) {
         let objTela = {
             id: num,
             ctx: arrayCamadas[arrayCamadas.length - 1].camada.getContext("2d"),
-            opacidade: 100,
+            opacidade: 1,
             visivel: true
         }
         arrayTelasCamadas.push(objTela);
@@ -1157,12 +1198,12 @@ function clickIconeCamada() {
             if (i === indiceArrayCamadas) {
                 camadaSelecionada = i;
                 pintar.style.zIndex = (id * 2) + 1;
-                this.classList.add("camadaSalecionada");
+                this.classList.add("camadaSelecionada");
                 this.classList.remove("camadas");
             }
             else {
                 arrayCamadas[i].icone.classList.add("camadas");
-                arrayCamadas[i].icone.classList.remove("camadaSalecionada");
+                arrayCamadas[i].icone.classList.remove("camadaSelecionada");
             }
         }
     }
