@@ -1,4 +1,5 @@
 mudarMenu = false; //impede que o menu mude de estilo.
+let nomeDoProjeto;//Armazena o nome do projeto.
 let janelaSelecionarCorVisivel = false;//Saber se a janela de seleção de cor está "aberta".
 let corPrincipal, corSecundaria, corPrincipalOuSecundaria;
 let corEscolhidaPrincipal = { R: 0, G: 0, B: 0 };//Armazena a cor escolhida do primeiro plano.
@@ -32,7 +33,6 @@ let ctxPintar;//Armazena o contexto 2d de "pintar".
 let tamanhoFerramenta = 5;//Armazena a espessura do traço das ferramentas em pixels.
 let opacidadeFerramenta = 100;//Armazena o valor da opacidade da cor de O a 100.
 let projetoCriado = false;//Saber se existe projeto já criado.
-let nomeDoProjeto;//Armazena o nome do projeto.
 let txtCorEscolhida;//Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
 let txtResolucao;//Recebe a string da resolução que o usuário escolheu para o projeto para informar ao usuário.
 let txtPosicaoCursor;//Recebe a string com a posição do cursor no eixo X e Y sobre a "telasCanvas".
@@ -189,6 +189,15 @@ function colorPaint() {
         contentJanelaCriarProjeto.style.display = "none";
     });
 
+    document.getElementById("bttSalvarDesenho").addEventListener("click", function(){
+        if(projetoCriado === true){
+            salvarDesenho();
+        }
+        else{
+            alert("Nenhum projeto criado!");
+        }
+    });
+
     telasCanvas.addEventListener("mousemove", function () {
         txtPosicaoCursor.value = ((Math.floor(posicaoMouseX)) + 1) + ", " + ((Math.floor(posicaoMouseY)) + 1);
     });
@@ -229,16 +238,16 @@ function colorPaint() {
             if (clickCurva === false && ferramentaSelecionada != 3) {
                 guardarAlteracoes();
             }
+            ctxPintar.lineWidth = tamanhoFerramenta;
+            ctxPintar.strokeStyle = "rgba(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ", " + opacidadeFerramenta + ")";
             if (ferramentaSelecionada === 1) {//Pincel.
                 coordenadaClick.push({ x: posicaoMouseX, y: posicaoMouseY });
-                ctxPintar.lineWidth = tamanhoFerramenta;
                 if (tamanhoFerramenta > 1) {
                     ctxPintar.lineJoin = ctxPintar.lineCap = "round";
                 }
                 else {
                     ctxPintar.lineCap = "butt";
                 }
-                ctxPintar.strokeStyle = "rgba(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ", " + opacidadeFerramenta + ")";
                 ctxPintar.beginPath();
                 ferramentaPincel(posicaoMouseX, posicaoMouseY);
             }
@@ -257,15 +266,11 @@ function colorPaint() {
             }
             else if (ferramentaSelecionada === 4) {//Linha.
                 coordenadaClick[0] = { x: posicaoMouseX, y: posicaoMouseY };
-                ctxPintar.lineWidth = tamanhoFerramenta;
                 ctxPintar.lineJoin = ctxPintar.lineCap = "round";
-                ctxPintar.strokeStyle = "rgba(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ", " + opacidadeFerramenta + ")";
                 ferramentaLinha(posicaoMouseX, posicaoMouseY);
             }
             else if (ferramentaSelecionada === 5) {//Curva.
-                ctxPintar.lineWidth = tamanhoFerramenta;
                 ctxPintar.lineJoin = ctxPintar.lineCap = "round";
-                ctxPintar.strokeStyle = "rgba(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ", " + opacidadeFerramenta + ")";
                 if (clickCurva === false) {
                     coordenadaClick[0] = { x: posicaoMouseX, y: posicaoMouseY };
                     ferramentaCurva(posicaoMouseX, posicaoMouseY, false);
@@ -276,9 +281,7 @@ function colorPaint() {
             }
             else if (ferramentaSelecionada === 6) {//Retângulo.
                 coordenadaClick[0] = { x: posicaoMouseX, y: posicaoMouseY };
-                ctxPintar.lineWidth = tamanhoFerramenta;
                 ctxPintar.lineJoin = "miter";
-                ctxPintar.strokeStyle = "rgba(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ", " + opacidadeFerramenta + ")";
                 ferramentaRetangulo(posicaoMouseX, posicaoMouseY);
             }
             else if (ferramentaSelecionada === 7) {//Balde de tinta.
@@ -289,9 +292,7 @@ function colorPaint() {
             }
             else if (ferramentaSelecionada === 8) {//Elipse.
                 coordenadaClick[0] = { x: posicaoMouseX, y: posicaoMouseY };
-                ctxPintar.lineWidth = tamanhoFerramenta;
                 ctxPintar.lineJoin = "round";
-                ctxPintar.strokeStyle = "rgba(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ", " + opacidadeFerramenta + ")";
                 ferramentaElipse(posicaoMouseX, posicaoMouseY);
             }
         }
@@ -1441,6 +1442,18 @@ function contentTelasMoverScroll(scrollTop, scrollLeft) {//Mover o "moverScroll"
     let mult = (contentTelas.scrollWidth) / telaPreview.offsetWidth;
     moverScroll.style.top = (scrollTop / (mult)) + "px";
     moverScroll.style.left = (scrollLeft / (mult)) + "px";
+}
+// ==========================================================================================================================================================================================================================================
+
+function salvarDesenho() {
+    desenhoCompleto();
+    let d = ctxDesenho.canvas.toDataURL();           
+    let downloadLink = document.createElement("a");
+    downloadLink.download = nomeDoProjeto + ".png";     
+    downloadLink.href = d;          
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
 }
 // ==========================================================================================================================================================================================================================================
 
