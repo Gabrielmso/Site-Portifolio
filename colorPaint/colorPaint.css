@@ -291,7 +291,7 @@ p {
     display: none;
     width: 75px;
     height: 20px;
-    left: 22px;
+    left: 12px;
     border-radius: 7px;
     background-color: rgb(80, 80, 80);
     transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
