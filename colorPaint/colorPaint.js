@@ -40,7 +40,6 @@ let janelaSeleciona;//Recebe toda a função "janelaSeletorDeCor".
 let zoomTelasCanvas;//Armazena o quanto de zoom tem na "TelasCanvas".
 let MouseNoBttVer = false;//Saber se o mouse está sobre os botões que deixam as camadas invisíveis ou visíveis.
 let coordenadaClick = [];//Armazena as coordenadas do cursor do mouse desde quando o mesmo é pressionado e movimentado enquanto pressionado.
-let barraOpacidadeCamada;
 let cursorOpacidadeCamada;
 function colorPaint() {
     const contentJanelaCriarProjeto = document.getElementById("contentJanelaCriarProjeto");
@@ -54,6 +53,8 @@ function colorPaint() {
     const cursorOpacidade = document.getElementById("cursorOpacidade");
     const barraTamanho = document.getElementById("barraTamanho");
     const cursorTamanho = document.getElementById("cursorTamanho");
+    const barraOpacidadeCamada = document.getElementById("barraOpacidadeCamada");
+    cursorOpacidadeCamada = document.getElementById("cursorOpacidadeCamada");
     contentTelas = document.getElementById("contentTelas");
     telasCanvas = document.getElementById("telasCanvas");
     corFundo = document.getElementById("corFundo");
@@ -72,8 +73,6 @@ function colorPaint() {
     telaPreview = document.getElementById("telaPreview");
     ctxTelaPreview = telaPreview.getContext("2d");
     moverScroll = document.getElementById("moverScroll");
-    barraOpacidadeCamada = document.getElementById("barraOpacidadeCamada");
-    cursorOpacidadeCamada = document.getElementById("cursorOpacidadeCamada");
     janelaSeleciona = new janelaSeletorDeCor(corEscolhidaPrincipal);
     let posicaoMouseX, posicaoMouseY;//Armazena a posição do mouse no tela canvas em relação a resolução do projeto.
     let mudarTamanhoFerramenta = false;//Saber se o mouse está pressionado na "barraTamanho".
@@ -385,7 +384,7 @@ function colorPaint() {
         }
         mudarOpacidadeFerramenta = false;
         mudarTamanhoFerramenta = false;
-        if(mudarOpacidadeCamada === true){
+        if (mudarOpacidadeCamada === true) {
             desenhoNoPreviewEIcone();
             mudarOpacidadeCamada = false;
         }
@@ -512,8 +511,10 @@ function colorPaint() {
             cursorOpacidadeCamada.style.left = mouse.X - 7 + "px";
             arrayCamadas[camadaSelecionada].porcentagemOpa.value = porcentagem + "%";
         }
-        arrayTelasCamadas[camadaSelecionada].opacidade = porcentagem / 100;
-        arrayCamadas[camadaSelecionada].camada.style.opacity = porcentagem / 100;
+        let opacidade = porcentagem / 100;
+        arrayTelasCamadas[camadaSelecionada].opacidade = opacidade;
+        pintar.style.opacity = opacidade;
+        arrayCamadas[camadaSelecionada].camada.style.opacity = opacidade;
     }
 
     function calculaTamanhoFerramenta(e) {
@@ -1206,6 +1207,10 @@ function clickIconeCamada() {
                 arrayCamadas[i].icone.classList.remove("camadaSelecionada");
             }
         }
+        let opacidade = arrayTelasCamadas[camadaSelecionada].opacidade;
+        let posCursorOpacidadeCamada = (200 * opacidade) - 7;
+        cursorOpacidadeCamada.style.left = posCursorOpacidadeCamada + "px";
+        pintar.style.opacity = opacidade;
     }
 }
 // ==========================================================================================================================================================================================================================================
