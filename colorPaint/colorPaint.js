@@ -91,6 +91,8 @@ function colorPaint() {
 
     menuPadrao();
     ajustarContents();
+    criarOuAbrirProjeto();
+
     txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
 
     for (let i = 0; i < arrayFerramentas.length; i++) {
@@ -126,7 +128,10 @@ function colorPaint() {
             }
         }
         else {
-            window.location.reload();
+            if (confirm("Você perderá todo o progresso no projeto atual, deseja continuar?") === true) {
+                sessionStorage.setItem("criarNovoProjeto", "true");
+                window.location.reload();
+            }
         }
     });
 
@@ -208,6 +213,7 @@ function colorPaint() {
     document.getElementById("bttAbrirProjeto").addEventListener("click", function () {
         if (projetoCriado === true) {
             if (confirm("Você perderá todo o progresso no projeto atual, deseja continuar?") === true) {
+                sessionStorage.setItem("abrirProjetoSalvo", "true");
                 window.location.reload();
             }
         }
@@ -671,6 +677,22 @@ function colorPaint() {
         contentTools.style.height = janelaPrincipal.offsetHeight - 90 + "px";
         contentTelas.style.width = contentTools.offsetWidth - barraLateralEsquerda.offsetWidth - barraLateralDireita.offsetWidth - 1 + "px";
         contentTelas.style.height = contentTools.style.height;
+    }
+
+    function criarOuAbrirProjeto() {
+        if (sessionStorage.getItem("abrirProjetoSalvo") === "true") {
+            setTimeout(function () {
+                abrirProjeto();
+            }, 200);
+            sessionStorage.setItem("abrirProjetoSalvo", "false");
+        }
+
+        if (sessionStorage.getItem("criarNovoProjeto") === "true") {            
+            setTimeout(function () {
+                contentJanelaCriarProjeto.style.display = "flex";
+            }, 200);
+            sessionStorage.setItem("criarNovoProjeto", "false");
+        }
     }
 }
 // ==========================================================================================================================================================================================================================================
