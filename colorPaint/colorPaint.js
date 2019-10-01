@@ -1566,7 +1566,7 @@ function abrirProjeto() {
         document.getElementById("propriedadeOpacidadeCamada").style.display = "flex";
         ajustarPreview(cor);
         projetoCriado = true;
-
+        txtResolucao.value = resolucaoProjeto.largura + ", " + resolucaoProjeto.altura;
         for (let i = 0; i < numCamadas; i++) {
             let opacidade = objProjeto.camadas[i].opacidade;
             arrayCamadas[i].porcentagemOpa.value = opacidade * 100 + "%";
