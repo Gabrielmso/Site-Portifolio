@@ -189,14 +189,34 @@ function colorPaint() {
         contentJanelaCriarProjeto.style.display = "none";
     });
 
-    document.getElementById("bttSalvarDesenho").addEventListener("click", function(){
-        if(projetoCriado === true){
+    document.getElementById("bttSalvarDesenho").addEventListener("click", function () {
+        if (projetoCriado === true) {
             salvarDesenho();
         }
-        else{
+        else {
             alert("Nenhum projeto criado!");
         }
     });
+
+    document.getElementById("bttSalvarProjeto").addEventListener("click", function () {
+        if (projetoCriado === true) {
+            salvarProjeto();
+        }
+        else {
+            alert("Nenhum projeto criado!");
+        }
+    });
+
+    document.getElementById("bttAbrirProjeto").addEventListener("click", function () {
+        if (projetoCriado === true) {
+            if (confirm("Você perderá todo o progresso no projeto atual, deseja continuar?") === true) {
+                window.location.reload();
+            }
+        }
+        else {
+            abrirProjeto();
+        }
+    })
 
     telasCanvas.addEventListener("mousemove", function () {
         txtPosicaoCursor.value = ((Math.floor(posicaoMouseX)) + 1) + ", " + ((Math.floor(posicaoMouseY)) + 1);
@@ -1447,13 +1467,133 @@ function contentTelasMoverScroll(scrollTop, scrollLeft) {//Mover o "moverScroll"
 
 function salvarDesenho() {
     desenhoCompleto();
-    let d = ctxDesenho.canvas.toDataURL();           
+    let d = ctxDesenho.canvas.toDataURL("imagem/png");
     let downloadLink = document.createElement("a");
-    downloadLink.download = nomeDoProjeto + ".png";     
-    downloadLink.href = d;          
+    downloadLink.download = nomeDoProjeto + ".png";
+    downloadLink.href = d;
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
+}
+
+function salvarProjeto() {
+    let dadosCamadas = [];
+    for (let i = 0; i < arrayTelasCamadas.length; i++) {
+        dadosCamadas[i] = {
+            imgDataCamada: arrayTelasCamadas[i].ctx.canvas.toDataURL("imagem/png"),
+            opacidade: arrayTelasCamadas[i].opacidade,
+            visivel: arrayTelasCamadas[i].visivel,
+        };
+    }
+    let objProjeto = {
+        nomeProjeto: nomeDoProjeto,
+        resolucaoDoProjeto: resolucaoProjeto,
+        corDeFundo: corDeFundoEscolhida,
+        numeroDeCamadas: arrayTelasCamadas.length,
+        camadas: dadosCamadas
+    }
+    let salvarProjeto = document.createElement("a");
+    salvarProjeto.href = "data:application/octet-stream;charset=utf-8," + JSON.stringify(objProjeto);
+    salvarProjeto.download = nomeDoProjeto + ".gm";
+    document.body.appendChild(salvarProjeto);
+    salvarProjeto.click();
+    document.body.removeChild(salvarProjeto);
+}
+
+function abrirProjeto() {
+    let projetoSalvo = null;
+    let input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.addEventListener("change", carregarArquivoProjeto, false);
+
+    function carregarArquivoProjeto(e) {
+        let arquivo = e.target.files[0];
+        if (!arquivo) {
+            alert("Erro ao carregar projeto, tente novamente!");
+        }
+        else {
+            let extencao = e.target.files[0].name.split('.').pop().toLowerCase();
+            if (extencao === "gm") {
+                let reader = new FileReader();
+                reader.onload = function (e) {
+                    projetoSalvo = e.target.result;
+                    if (projetoSalvo != null) {
+                        carregarProjeto();
+                    }
+                };
+                reader.readAsText(arquivo);
+            }
+            else {
+                alert("Arquivo selecionado inválido!");
+            }
+        }
+    }
+
+    function carregarProjeto() {
+        let objProjeto = JSON.parse(projetoSalvo);
+        nomeDoProjeto = objProjeto.nomeProjeto;
+        resolucaoProjeto = objProjeto.resolucaoDoProjeto;
+        proporcaoProjeto = resolucaoProjeto.largura / resolucaoProjeto.altura;
+        corDeFundoEscolhida = objProjeto.corDeFundo;
+        let numCamadas = objProjeto.numeroDeCamadas;
+        let cor;
+        arrayCamadas = [];
+        arrayTelasCamadas = [];
+        arrayIconesCamadas = [];
+        arrayVoltarAlteracoes = [];
+        arrayAvancarAlteracoes = [];
+        if (corDeFundoEscolhida === false) {
+            cor = false;
+        }
+        else {
+            cor = "rgb(" + corDeFundoEscolhida.R + ", " + corDeFundoEscolhida.G + ", " + corDeFundoEscolhida.B + ")";
+        }
+
+        while (numCamadas > arrayCamadas.length) {
+            criarCamada(cor, resolucaoProjeto);
+        }
+        ajustarTelasCanvas();
+        camadaSelecionada = 0;
+        arrayCamadas[0].icone.classList.add("camadaSelecionada");
+        arrayCamadas[0].icone.classList.remove("camadas");
+        if (corDeFundoEscolhida != false) {
+            corFundo.style.backgroundColor = cor;
+        }
+        desenho.width = resolucaoProjeto.largura;
+        desenho.height = resolucaoProjeto.altura;
+        pintar.width = resolucaoProjeto.largura;
+        pintar.height = resolucaoProjeto.altura;
+        document.getElementById("propriedadeOpacidadeCamada").style.display = "flex";
+        ajustarPreview(cor);
+        projetoCriado = true;
+
+        for (let i = 0; i < numCamadas; i++) {
+            let opacidade = objProjeto.camadas[i].opacidade;
+            arrayCamadas[i].porcentagemOpa.value = opacidade * 100 + "%";
+            arrayTelasCamadas[i].opacidade = opacidade;
+            arrayCamadas[i].camada.style.opacity = opacidade;
+
+            let imgData = new Image();
+            imgData.src = objProjeto.camadas[i].imgDataCamada;
+            imgData.onload = function () {
+                arrayTelasCamadas[i].ctx.drawImage(imgData, 0, 0);
+
+                let opacidadeCamada = arrayTelasCamadas[i].opacidade;
+                arrayIconesCamadas[i].clearRect(0, 0, arrayIconesCamadas[i].canvas.width, arrayIconesCamadas[i].canvas.height);
+                arrayIconesCamadas[i].globalAlpha = opacidadeCamada;
+                arrayIconesCamadas[i].drawImage(arrayTelasCamadas[i].ctx.canvas, 0, 0, arrayIconesCamadas[i].canvas.width, arrayIconesCamadas[i].canvas.height);
+
+                ctxTelaPreview.globalAlpha = opacidadeCamada;
+                ctxTelaPreview.drawImage(arrayTelasCamadas[i].ctx.canvas, 0, 0, ctxTelaPreview.canvas.width, ctxTelaPreview.canvas.height);
+            }
+            if (objProjeto.camadas[i].visivel === false) {
+                clickCamadaVisivel.call(arrayCamadas[i].bttVer);
+            };
+        }
+        pintar.style.opacity = arrayTelasCamadas[0].opacidade;
+        cursorOpacidadeCamada.style.left = ((arrayTelasCamadas[0].opacidade * 200) - 7) + "px";
+    }
+    input.click();
 }
 // ==========================================================================================================================================================================================================================================
 

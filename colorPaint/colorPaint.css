@@ -103,16 +103,9 @@ p {
     left: 183px;
 }
 
-#bttCriarNovoProjeto {
-    float: right;
-}
-
-#bttSalvarDesenho{
-    float: right;
-}
-
 .bttBarraSuperior {
     position: relative;
+    float: right;
     top: 5px;
     margin-right: 10px;
     border-radius: 7px;
