@@ -8,8 +8,6 @@ let arrayVoltarAlteracoes = [];//Armazena as 20 últimas alterações no desenho
 let arrayAvancarAlteracoes = [];//Armazena as alterações que foram "voltadas". Comando Ctrl + Y.
 let arrayCoresSalvas = [];//Armazena objetos cuja as propriedades possuem as informações sobre as cores salvas.
 let arrayCamadas = [];//Armazena objetos cuja as propriedades possuem as informações sobre as camadas, como os elementos canvas, icones, etc.
-let arrayTelasCamadas = [];//Armazena objetos cuja as propriedades possuem o contexto 2d das camadas, se elas são visíveis, a opacidade das camadas.
-let arrayIconesCamadas = [];//Armazena o contexto 2d dos icones das camadas.
 let arrayFerramentas = [];//Armazena os elementos que selecionam as ferramentas.
 let cursorComparaContaGotas;//Div que aparece acompanhando o cursor quando a ferramenta for a conta-gotas.
 let comparaCoresContaGotas;//Div que fica dentro da "cursorComparaContaGotas" cuja a cor das bordas comparam as cores selecionadas.
@@ -253,7 +251,7 @@ function colorPaint() {
 
     contentTelas.addEventListener("mousedown", function (e) {
         if (!projetoCriado) { return };
-        if (arrayTelasCamadas[camadaSelecionada].visivel === true) {
+        if (arrayCamadas[camadaSelecionada].visivel === true) {
             pintando = true;
             if (clickCurva === false && ferramentaSelecionada != 3) {
                 guardarAlteracoes();
@@ -272,10 +270,10 @@ function colorPaint() {
                 ferramentaPincel(posicaoMouseX, posicaoMouseY);
             }
             else if (ferramentaSelecionada === 2) {//Borracha.    
-                arrayTelasCamadas[camadaSelecionada].ctx.beginPath();
-                arrayTelasCamadas[camadaSelecionada].ctx.lineCap = "square";
-                arrayTelasCamadas[camadaSelecionada].ctx.lineJoin = "round"
-                ferramentaBorracha(arrayTelasCamadas[camadaSelecionada].ctx, posicaoMouseX, posicaoMouseY, tamanhoFerramenta);
+                arrayCamadas[camadaSelecionada].ctx.beginPath();
+                arrayCamadas[camadaSelecionada].ctx.lineCap = "square";
+                arrayCamadas[camadaSelecionada].ctx.lineJoin = "round"
+                ferramentaBorracha(arrayCamadas[camadaSelecionada].ctx, posicaoMouseX, posicaoMouseY, tamanhoFerramenta);
             }
             else if (ferramentaSelecionada === 3) {//Conta-gotas.
                 cursorComparaContaGotas.style.display = "block";
@@ -307,7 +305,7 @@ function colorPaint() {
             else if (ferramentaSelecionada === 7) {//Balde de tinta.
                 if (posicaoMouseX >= 0 && posicaoMouseX <= resolucaoProjeto.largura && posicaoMouseY >= 0 && posicaoMouseY <= resolucaoProjeto.altura) {
                     let cor = { r: corEscolhidaPrincipal.R, g: corEscolhidaPrincipal.G, b: corEscolhidaPrincipal.B, a: Math.round(opacidadeFerramenta * 255) };
-                    ferramentaBaldeDeTinta(posicaoMouseX, posicaoMouseY, arrayTelasCamadas[camadaSelecionada].ctx, cor);
+                    ferramentaBaldeDeTinta(posicaoMouseX, posicaoMouseY, arrayCamadas[camadaSelecionada].ctx, cor);
                 }
             }
             else if (ferramentaSelecionada === 8) {//Elipse.
@@ -327,9 +325,9 @@ function colorPaint() {
                 ferramentaPincel(posicaoMouseX, posicaoMouseY);
             }
             else if (ferramentaSelecionada === 2) {//Borracha.
-                arrayTelasCamadas[camadaSelecionada].ctx.lineCap = "round";
-                arrayTelasCamadas[camadaSelecionada].ctx.lineJoin = "round";
-                ferramentaBorracha(arrayTelasCamadas[camadaSelecionada].ctx, posicaoMouseX, posicaoMouseY, tamanhoFerramenta);
+                arrayCamadas[camadaSelecionada].ctx.lineCap = "round";
+                arrayCamadas[camadaSelecionada].ctx.lineJoin = "round";
+                ferramentaBorracha(arrayCamadas[camadaSelecionada].ctx, posicaoMouseX, posicaoMouseY, tamanhoFerramenta);
             }
             else if (ferramentaSelecionada === 3) {//Conta-gotas.
                 ferramentaContaGotas(e.clientX, e.clientY, posicaoMouseX, posicaoMouseY, true);
@@ -533,7 +531,7 @@ function colorPaint() {
             arrayCamadas[camadaSelecionada].porcentagemOpa.value = porcentagem + "%";
         }
         let opacidade = porcentagem / 100;
-        arrayTelasCamadas[camadaSelecionada].opacidade = opacidade;
+        arrayCamadas[camadaSelecionada].opacidade = opacidade;
         pintar.style.opacity = opacidade;
         arrayCamadas[camadaSelecionada].camada.style.opacity = opacidade;
     }
@@ -908,38 +906,40 @@ function mudarAparenciaCursor() {
 // ==========================================================================================================================================================================================================================================
 
 function desenharNaCamada() {
-    arrayTelasCamadas[camadaSelecionada].ctx.drawImage(ctxPintar.canvas, 0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
+    arrayCamadas[camadaSelecionada].ctx.drawImage(ctxPintar.canvas, 0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
     ctxPintar.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
 }
 
 function desenhoNoPreviewEIcone() {
     ctxTelaPreview.clearRect(0, 0, ctxTelaPreview.canvas.width, ctxTelaPreview.canvas.height);
-    for (let i = 0; i < arrayTelasCamadas.length; i++) {
-        if (arrayTelasCamadas[i].visivel === true) {
-            let opacidadeCamada = arrayTelasCamadas[i].opacidade;
+    for (let i = 0; i < arrayCamadas.length; i++) {
+        if (arrayCamadas[i].visivel === true) {
+            let opacidadeCamada = arrayCamadas[i].opacidade;
             ctxTelaPreview.beginPath();
             ctxTelaPreview.globalAlpha = opacidadeCamada;
-            ctxTelaPreview.drawImage(arrayTelasCamadas[i].ctx.canvas, 0, 0, ctxTelaPreview.canvas.width, ctxTelaPreview.canvas.height);
+            ctxTelaPreview.drawImage(arrayCamadas[i].ctx.canvas, 0, 0, ctxTelaPreview.canvas.width, ctxTelaPreview.canvas.height);
             ctxTelaPreview.closePath();
         };
     }
-    arrayIconesCamadas[camadaSelecionada].clearRect(0, 0, arrayIconesCamadas[camadaSelecionada].canvas.width, arrayIconesCamadas[camadaSelecionada].canvas.height);
-    arrayIconesCamadas[camadaSelecionada].globalAlpha = arrayTelasCamadas[camadaSelecionada].opacidade;
-    arrayIconesCamadas[camadaSelecionada].drawImage(arrayTelasCamadas[camadaSelecionada].ctx.canvas, 0, 0, arrayIconesCamadas[camadaSelecionada].canvas.width, arrayIconesCamadas[camadaSelecionada].canvas.height);
+    let larguraMiniatura = arrayCamadas[camadaSelecionada].ctxMiniatura.canvas.width, alturaMiniatura = arrayCamadas[camadaSelecionada].ctxMiniatura.canvas.height;
+    arrayCamadas[camadaSelecionada].ctxMiniatura.clearRect(0, 0, larguraMiniatura, alturaMiniatura);
+    arrayCamadas[camadaSelecionada].ctxMiniatura.globalAlpha = arrayCamadas[camadaSelecionada].opacidade;
+    arrayCamadas[camadaSelecionada].ctxMiniatura.drawImage(arrayCamadas[camadaSelecionada].ctx.canvas, 0, 0, larguraMiniatura, alturaMiniatura);
 }
 
 function desenhoCompleto() {
     ctxDesenho.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
     if (corDeFundoEscolhida != false) {
+        ctxDesenho.globalAlpha = 1;
         ctxDesenho.fillStyle = "rgb(" + corDeFundoEscolhida.R + ", " + corDeFundoEscolhida.G + ", " + corDeFundoEscolhida.B + ")";
         ctxDesenho.fillRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
     }
-    for (let i = 0; i < arrayTelasCamadas.length; i++) {
-        if (arrayTelasCamadas[i].visivel === true) {
-            let opacidadeCamada = arrayTelasCamadas[i].opacidade;
+    for (let i = 0; i < arrayCamadas.length; i++) {
+        if (arrayCamadas[i].visivel === true) {
+            let opacidadeCamada = arrayCamadas[i].opacidade;
             ctxDesenho.beginPath();
             ctxDesenho.globalAlpha = opacidadeCamada;
-            ctxDesenho.drawImage(arrayTelasCamadas[i].ctx.canvas, 0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
+            ctxDesenho.drawImage(arrayCamadas[i].ctx.canvas, 0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
             ctxDesenho.closePath();
         };
     }
@@ -947,7 +947,7 @@ function desenhoCompleto() {
 // ==========================================================================================================================================================================================================================================
 
 function guardarAlteracoes() {
-    let objAlteracao = { camadaAlterada: camadaSelecionada, alteracao: arrayTelasCamadas[camadaSelecionada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
+    let objAlteracao = { camadaAlterada: camadaSelecionada, alteracao: arrayCamadas[camadaSelecionada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
     arrayVoltarAlteracoes.push(objAlteracao);
     arrayAvancarAlteracoes = [];
     if (arrayVoltarAlteracoes.length > 20) {
@@ -960,17 +960,17 @@ function voltarAlteracao() {
         let ultimoIndice = arrayVoltarAlteracoes.length - 1;
         let camada = arrayVoltarAlteracoes[ultimoIndice].camadaAlterada;
         let imagemCamada = arrayVoltarAlteracoes[ultimoIndice].alteracao;
-        let objAlteracao = { camadaAlterada: camada, visivel: arrayTelasCamadas[camada].visivel, alteracao: arrayTelasCamadas[camada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
+        let objAlteracao = { camadaAlterada: camada, visivel: arrayCamadas[camada].visivel, alteracao: arrayCamadas[camada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
         if (camadaSelecionada != camada) {
             clickIconeCamada.call(arrayCamadas[camada].icone);
         }
-        if (arrayTelasCamadas[camada].visivel === false) {
+        if (arrayCamadas[camada].visivel === false) {
             clickCamadaVisivel.call(arrayCamadas[camada].bttVer);
             return;
         }
         arrayAvancarAlteracoes.push(objAlteracao);
-        arrayTelasCamadas[camada].ctx.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
-        arrayTelasCamadas[camada].ctx.putImageData(imagemCamada, 0, 0);
+        arrayCamadas[camada].ctx.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
+        arrayCamadas[camada].ctx.putImageData(imagemCamada, 0, 0);
         arrayVoltarAlteracoes.pop();
         desenhoNoPreviewEIcone();
     }
@@ -981,13 +981,13 @@ function avancarAlteracao() {
         let ultimoIndice = arrayAvancarAlteracoes.length - 1;
         let camada = arrayAvancarAlteracoes[ultimoIndice].camadaAlterada;
         let imagemCamada = arrayAvancarAlteracoes[ultimoIndice].alteracao;
-        let objAlteracao = { camadaAlterada: camada, visivel: arrayTelasCamadas[camada].visivel, alteracao: arrayTelasCamadas[camada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
+        let objAlteracao = { camadaAlterada: camada, visivel: arrayCamadas[camada].visivel, alteracao: arrayCamadas[camada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
         if (camadaSelecionada != camada) {
             clickIconeCamada.call(arrayCamadas[camada].icone);
         }
         arrayVoltarAlteracoes.push(objAlteracao);
-        arrayTelasCamadas[camada].ctx.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
-        arrayTelasCamadas[camada].ctx.putImageData(imagemCamada, 0, 0);
+        arrayCamadas[camada].ctx.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
+        arrayCamadas[camada].ctx.putImageData(imagemCamada, 0, 0);
         arrayAvancarAlteracoes.pop();
         desenhoNoPreviewEIcone();
     }
@@ -1186,26 +1186,20 @@ function criarCamada(cor, resolucao) {
             id: num,
             nome: nomeCamada,
             camada: elCamada,
+            ctx: elCamada.getContext("2d"),
             icone: iconeCamada,
             miniatura: iconTela,
+            ctxMiniatura: iconTela.getContext("2d"),
             bttVer: bttVisivel,
             porcentagemOpa: txtPorcentagem,
+            opacidade: 1,
+            visivel: true
         };
-
         arrayCamadas.push(objCamada);
         arrayCamadas[arrayCamadas.length - 1].icone.addEventListener("click", clickIconeCamada);
         arrayCamadas[arrayCamadas.length - 1].bttVer.addEventListener("mousedown", clickCamadaVisivel);
         arrayCamadas[arrayCamadas.length - 1].bttVer.addEventListener("mouseenter", mouseSobre);
         arrayCamadas[arrayCamadas.length - 1].bttVer.addEventListener("mouseleave", mouseFora);
-
-        let objTela = {
-            id: num,
-            ctx: arrayCamadas[arrayCamadas.length - 1].camada.getContext("2d"),
-            opacidade: 1,
-            visivel: true
-        }
-        arrayTelasCamadas.push(objTela);
-        arrayIconesCamadas.push(arrayCamadas[arrayCamadas.length - 1].miniatura.getContext("2d"));
     }
 }
 // ==========================================================================================================================================================================================================================================
@@ -1228,7 +1222,7 @@ function clickIconeCamada() {
                 arrayCamadas[i].icone.classList.remove("camadaSelecionada");
             }
         }
-        let opacidade = arrayTelasCamadas[camadaSelecionada].opacidade;
+        let opacidade = arrayCamadas[camadaSelecionada].opacidade;
         let posCursorOpacidadeCamada = (200 * opacidade) - 7;
         cursorOpacidadeCamada.style.left = posCursorOpacidadeCamada + "px";
         pintar.style.opacity = opacidade;
@@ -1241,15 +1235,15 @@ function clickCamadaVisivel() {
     id = txtId.substring(7, 11);
     id = parseInt(id);
     let indiceArrayCamadas = id - 1;
-    let visible = arrayTelasCamadas[indiceArrayCamadas].visivel;
-    if (visible === true) {
-        arrayTelasCamadas[indiceArrayCamadas].visivel = false;
+    let visivel = arrayCamadas[indiceArrayCamadas].visivel;
+    if (visivel === true) {
+        arrayCamadas[indiceArrayCamadas].visivel = false;
         arrayCamadas[indiceArrayCamadas].camada.style.display = "none";
         this.classList.add("iconNaoVer");
         this.classList.remove("iconVer");
     }
     else {
-        arrayTelasCamadas[indiceArrayCamadas].visivel = true;
+        arrayCamadas[indiceArrayCamadas].visivel = true;
         arrayCamadas[indiceArrayCamadas].camada.style.display = "block";
         this.classList.add("iconVer");
         this.classList.remove("iconNaoVer");
@@ -1471,33 +1465,29 @@ function salvarDesenho() {
     let downloadLink = document.createElement("a");
     downloadLink.download = nomeDoProjeto + ".png";
     downloadLink.href = d;
-    document.body.appendChild(downloadLink);
     downloadLink.click();
-    document.body.removeChild(downloadLink);
 }
 
 function salvarProjeto() {
     let dadosCamadas = [];
-    for (let i = 0; i < arrayTelasCamadas.length; i++) {
+    for (let i = 0; i < arrayCamadas.length; i++) {
         dadosCamadas[i] = {
-            imgDataCamada: arrayTelasCamadas[i].ctx.canvas.toDataURL("imagem/png"),
-            opacidade: arrayTelasCamadas[i].opacidade,
-            visivel: arrayTelasCamadas[i].visivel,
+            imgDataCamada: arrayCamadas[i].ctx.canvas.toDataURL("imagem/png"),
+            opacidade: arrayCamadas[i].opacidade,
+            visivel: arrayCamadas[i].visivel,
         };
     }
     let objProjeto = {
         nomeProjeto: nomeDoProjeto,
         resolucaoDoProjeto: resolucaoProjeto,
         corDeFundo: corDeFundoEscolhida,
-        numeroDeCamadas: arrayTelasCamadas.length,
+        numeroDeCamadas: arrayCamadas.length,
         camadas: dadosCamadas
     }
     let salvarProjeto = document.createElement("a");
     salvarProjeto.href = "data:application/octet-stream;charset=utf-8," + JSON.stringify(objProjeto);
     salvarProjeto.download = nomeDoProjeto + ".gm";
-    document.body.appendChild(salvarProjeto);
     salvarProjeto.click();
-    document.body.removeChild(salvarProjeto);
 }
 
 function abrirProjeto() {
@@ -1538,8 +1528,6 @@ function abrirProjeto() {
         let numCamadas = objProjeto.numeroDeCamadas;
         let cor;
         arrayCamadas = [];
-        arrayTelasCamadas = [];
-        arrayIconesCamadas = [];
         arrayVoltarAlteracoes = [];
         arrayAvancarAlteracoes = [];
         if (corDeFundoEscolhida === false) {
@@ -1569,29 +1557,27 @@ function abrirProjeto() {
         txtResolucao.value = resolucaoProjeto.largura + ", " + resolucaoProjeto.altura;
         for (let i = 0; i < numCamadas; i++) {
             let opacidade = objProjeto.camadas[i].opacidade;
-            arrayCamadas[i].porcentagemOpa.value = opacidade * 100 + "%";
-            arrayTelasCamadas[i].opacidade = opacidade;
+            arrayCamadas[i].porcentagemOpa.value = Math.round(opacidade * 100) + "%";
+            arrayCamadas[i].opacidade = opacidade;
             arrayCamadas[i].camada.style.opacity = opacidade;
-
             let imgData = new Image();
             imgData.src = objProjeto.camadas[i].imgDataCamada;
             imgData.onload = function () {
-                arrayTelasCamadas[i].ctx.drawImage(imgData, 0, 0);
-
-                let opacidadeCamada = arrayTelasCamadas[i].opacidade;
-                arrayIconesCamadas[i].clearRect(0, 0, arrayIconesCamadas[i].canvas.width, arrayIconesCamadas[i].canvas.height);
-                arrayIconesCamadas[i].globalAlpha = opacidadeCamada;
-                arrayIconesCamadas[i].drawImage(arrayTelasCamadas[i].ctx.canvas, 0, 0, arrayIconesCamadas[i].canvas.width, arrayIconesCamadas[i].canvas.height);
-
+                arrayCamadas[i].ctx.drawImage(imgData, 0, 0);
+                let opacidadeCamada = arrayCamadas[i].opacidade;
+                let larguraMiniatura = arrayCamadas[i].ctxMiniatura.canvas.width, alturaMiniatura = arrayCamadas[i].ctxMiniatura.canvas.height;
+                arrayCamadas[i].ctxMiniatura.clearRect(0, 0, larguraMiniatura, alturaMiniatura);
+                arrayCamadas[i].ctxMiniatura.globalAlpha = opacidadeCamada;
+                arrayCamadas[i].ctxMiniatura.drawImage(arrayCamadas[i].ctx.canvas, 0, 0, larguraMiniatura, alturaMiniatura);
                 ctxTelaPreview.globalAlpha = opacidadeCamada;
-                ctxTelaPreview.drawImage(arrayTelasCamadas[i].ctx.canvas, 0, 0, ctxTelaPreview.canvas.width, ctxTelaPreview.canvas.height);
+                ctxTelaPreview.drawImage(arrayCamadas[i].ctx.canvas, 0, 0, ctxTelaPreview.canvas.width, ctxTelaPreview.canvas.height);
+                if (objProjeto.camadas[i].visivel === false) {
+                    clickCamadaVisivel.call(arrayCamadas[i].bttVer);
+                };
             }
-            if (objProjeto.camadas[i].visivel === false) {
-                clickCamadaVisivel.call(arrayCamadas[i].bttVer);
-            };
         }
-        pintar.style.opacity = arrayTelasCamadas[0].opacidade;
-        cursorOpacidadeCamada.style.left = ((arrayTelasCamadas[0].opacidade * 200) - 7) + "px";
+        pintar.style.opacity = arrayCamadas[0].opacidade;
+        cursorOpacidadeCamada.style.left = ((arrayCamadas[0].opacidade * 200) - 7) + "px";
     }
     input.click();
 }
@@ -2036,7 +2022,6 @@ function janelaSeletorDeCor(AcharCor) {
         ctxGradiente.closePath();
     }
 }
-
 
 function abrirJanelaSelecionarCor() {
     ferramentaAnterior = ferramentaSelecionada;
