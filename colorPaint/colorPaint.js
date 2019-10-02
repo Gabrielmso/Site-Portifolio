@@ -687,7 +687,7 @@ function colorPaint() {
             sessionStorage.setItem("abrirProjetoSalvo", "false");
         }
 
-        if (sessionStorage.getItem("criarNovoProjeto") === "true") {            
+        if (sessionStorage.getItem("criarNovoProjeto") === "true") {
             setTimeout(function () {
                 contentJanelaCriarProjeto.style.display = "flex";
             }, 200);
@@ -748,6 +748,7 @@ function ferramentaBaldeDeTinta(mouseX, mouseY, context, cor) {
                 y = y - 1;
                 posicaoPixel = posicaoPixel - resolucaoProjeto.largura * 4;
             }
+            pintarPixel(posicaoPixel, corSelecionada.r, corSelecionada.g, corSelecionada.b, corSelecionada.a);
             posicaoPixel = posicaoPixel + resolucaoProjeto.largura * 4;
             y = y + 1;
             let ladoEsquerdo = false, ladoDireito = false;
@@ -760,8 +761,12 @@ function ferramentaBaldeDeTinta(mouseX, mouseY, context, cor) {
                             ladoEsquerdo = true;
                             pixelsVerificados.push([x - 1, y]);
                         }
-                    } else if (ladoEsquerdo === true) {
-                        ladoEsquerdo = false;
+                    }
+                    else {
+                        pintarPixel(posicaoPixel - 4, corSelecionada.r, corSelecionada.g, corSelecionada.b, corSelecionada.a);
+                        if (ladoEsquerdo === true) {
+                            ladoEsquerdo = false;
+                        }
                     }
                 }
                 if (x < resolucaoProjeto.largura + 1) {
@@ -770,12 +775,17 @@ function ferramentaBaldeDeTinta(mouseX, mouseY, context, cor) {
                             ladoDireito = true;
                             pixelsVerificados.push([x + 1, y]);
                         }
-                    } else if (ladoDireito) {
-                        ladoDireito = false;
+                    }
+                    else {
+                        pintarPixel(posicaoPixel + 4, corSelecionada.r, corSelecionada.g, corSelecionada.b, corSelecionada.a);
+                        if (ladoDireito === true) {
+                            ladoDireito = false;
+                        }
                     }
                 }
                 posicaoPixel = posicaoPixel + resolucaoProjeto.largura * 4;
             }
+            pintarPixel(posicaoPixel, corSelecionada.r, corSelecionada.g, corSelecionada.b, corSelecionada.a);
         }
         ctxPintar.putImageData(canvasEvent, 0, 0);
     }
