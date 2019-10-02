@@ -103,11 +103,72 @@ p {
     left: 183px;
 }
 
+#salvarDesenhoProjeto {
+    position: relative;
+    float: right;
+    list-style: none;
+    text-align: center;
+}
+
+#salvarDesenhoProjeto li {
+    color: rgb(165, 165, 165);
+    height: 36px;
+    width: 100px;
+    padding-left: 5px;
+    padding-right: 5px;
+    transition: all 0.35s;
+    -webkit-transition: all 0.35s;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+}
+
+#salvarDesenhoProjeto label {
+    line-height: 36px;
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+#salvarDesenhoProjeto ul {
+    width: 120px;
+    position: absolute;
+    overflow: hidden;
+    max-height: 0;
+    left: -20px;
+    list-style: none;
+    transition: all 0.35s;
+    -webkit-transition: all 0.35s;
+    border-radius: 5px;
+    border-top-right-radius: 0px;
+    z-index: 9000;
+}
+
+#salvarDesenhoProjeto ul li {
+    background-color: rgba(213, 192, 107, 0.85);
+    color: rgb(44, 29, 0);
+    border-top-right-radius: 0px;
+    border-top-left-radius: 0px;
+    width: 100%;
+}
+
+#salvarDesenhoProjeto ul li:hover {
+    background-color: rgba(100, 68, 8, 0.85);
+    color: rgb(213, 192, 107);
+}
+
+#salvarDesenhoProjeto:hover li {
+    background-color: rgba(213, 192, 107, 0.85);
+    color: rgb(0, 0, 0);
+}
+
+#salvarDesenhoProjeto:hover ul {
+    max-height: 120px;
+}
+
 .bttBarraSuperior {
     position: relative;
     float: right;
     top: 5px;
-    margin-right: 10px;
+    margin-right: 5px;
     border-radius: 7px;
     background-color: rgb(58, 58, 58);
     color: rgb(165, 165, 165);
@@ -126,7 +187,7 @@ p {
 
 .bttBarraSuperior:hover {
     background-color: rgb(10, 10, 10);
-    color: rgba(213, 192, 107, 0.5);
+    color: rgba(213, 192, 107, 0.65);
 }
 
 #contentTools {
@@ -874,7 +935,7 @@ p {
 .camadas label {
     position: absolute;
     top: 20px;
-    left: 50px;
+    left: 47px;
     text-align: center;
     background-color: rgba(0, 0, 0, 0);
 }
@@ -882,7 +943,7 @@ p {
 .camadaSelecionada label {
     position: absolute;
     top: 20px;
-    left: 50px;
+    left: 47px;
     text-align: center;
     background-color: rgba(0, 0, 0, 0);
 }
@@ -934,7 +995,7 @@ p {
 }
 
 .opacidadeCamada {
-    width: 33px;
+    width: 38px;
     background-color: rgba(0, 0, 0, 0);
     outline: none;
     border: none;

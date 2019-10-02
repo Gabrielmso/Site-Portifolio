@@ -120,18 +120,24 @@
                         </div>
                     </div>
                 </div>
-                <div id="bttAbrirProjeto" class="bttBarraSuperior noSelection cursor">
-                    <p>Abrir projeto</p>
-                </div>
-                <div id="bttSalvarProjeto" class="bttBarraSuperior noSelection cursor">
-                    <p>Salvar projeto</p>
-                </div>
-                <div id="bttSalvarDesenho" class="bttBarraSuperior noSelection cursor">
-                    <p>Salvar</p>
-                </div>
+                <ul id="salvarDesenhoProjeto" class="noSelection">
+                    <li><label>Arquivo<span style="font-size: 15px; line-height: 33px;">&#9662;</span></label>
+                        <ul>
+                            <li id="bttSalvarDesenho" class="cursor" title="Salva o desenho como arquivo de imagem no formato PNG.">
+                                <label class="cursor">Salvar</label>
+                            </li>
+                            <li id="bttSalvarProjeto" class="cursor" title="Salva as propriedades do projeto, o conteúdo das camadas, em um arquivo no formato GM.">
+                                <label class="cursor">Salvar projeto</label>
+                            </li>
+                            <li id="bttAbrirProjeto" class="cursor" title="Carrega um projeto salvo.">
+                                <label class="cursor">Abrir projeto</label>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
                 <div id="bttCriarNovoProjeto" class="bttBarraSuperior noSelection cursor">
                     <p>Criar novo projeto</p>
-                </div>                
+                </div>
             </div>
             <div id="contentTools" class="noSelection">
                 <div id="barraLateralEsquerda">
@@ -203,19 +209,10 @@
                     <div id="janelaCamadas" class="janelasBarraLateralDireita">
                         <label class="tituloJanelas">Camadas:</label>
                         <div id="contentIconeCamadas">
-                            <!-- <div id="camada1" class="camadas">
-                                <div id="visivel1" class="iconVer"></div>                                
-                                <label><span id="nomeCamada1">Camada 1</span><br><span>Opacidade: </span><span id="porcen1">100</span>%</label>
-                                <div class="contentIcon">
-                                    <canvas id="iconTela1" class="iconTela">
-                                    </canvas>
-                                    <div></div>
-                                </div>
-                            </div> -->
                         </div>
                     </div>
                     <div id="propriedadeOpacidadeCamada" class="noSelection">
-                        <label>Opacidade:</label><!-- <input type="text" id="txtOpacidadeCamada" value="100%"> -->
+                        <label>Opacidade:</label>
                         <div id="barraOpacidadeCamada" class="barraPropriedadeCamada">
                             <div id="cursorOpacidadeCamada" class="cursorPropriedadeCamada cursor"></div>
                         </div>

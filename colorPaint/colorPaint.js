@@ -1497,7 +1497,9 @@ function salvarDesenho() {
     let downloadLink = document.createElement("a");
     downloadLink.download = nomeDoProjeto + ".png";
     downloadLink.href = d;
+    document.body.appendChild(downloadLink);
     downloadLink.click();
+    document.body.removeChild(downloadLink);
 }
 
 function salvarProjeto() {
@@ -1519,7 +1521,9 @@ function salvarProjeto() {
     let salvarProjeto = document.createElement("a");
     salvarProjeto.href = "data:application/octet-stream;charset=utf-8," + JSON.stringify(objProjeto);
     salvarProjeto.download = nomeDoProjeto + ".gm";
+    document.body.appendChild(salvarProjeto);
     salvarProjeto.click();
+    document.body.removeChild(salvarProjeto);
 }
 
 function abrirProjeto() {
