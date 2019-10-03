@@ -351,6 +351,33 @@ p {
     transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
 }
 
+#bttAtalhos{
+    position: absolute;
+    display: inline-block;
+    bottom: 10px;
+    left: 12px;
+    border-radius: 7px;
+    background-color: rgb(80, 80, 80);
+    text-transform: uppercase;
+    padding-left: 10px;
+    padding-right: 10px;
+    transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
+    height: 25px;
+    text-align: center;
+}
+
+#bttAtalhos p {
+    color: rgb(156, 156, 156);
+    font-size: 12px;
+    text-align: center;
+    line-height: 25px;
+}
+
+#bttAtalhos:hover {
+    background-color: rgb(37, 37, 37);
+    color: rgb(110, 110, 110);
+}
+
 #bttRemoverCorSalva p {
     color: rgb(136, 136, 136);
     text-align: center;
@@ -719,7 +746,76 @@ p {
 }
 
 /* ========================================= FIM JANELA CRIAR PROJETO ========================================  */
+#contentJanelaAtalhos{
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    z-index: 1000001;
+    background-color: rgba(0, 0, 0, 0.4);
+}
 
+#janelaAtalhos{
+    position: relative;
+    overflow: hidden;
+    background-color: rgb(37, 37, 37);
+    width: 350px;
+    height: 360px;
+    border-radius: 7px;
+    padding: 10px;
+}
+
+#tituloJanelaAtalhos{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 2px solid rgb(61, 61, 61);
+    height: 35px;
+    color: rgb(151, 151, 151);
+}
+
+#contentAtalhos{
+    position: relative;
+    width: 330px;
+    height: 271px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 2px solid rgb(61, 61, 61);
+    margin-bottom: 4px;
+}
+
+#contentAtalhos ul{
+    position: relative;
+    display: inline-block;
+    list-style: none;
+}
+
+#contentAtalhos ul li label{
+    font-size: 13.5px;
+    color: rgb(151, 151, 151);
+}
+
+#botoesAtalhos{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 330px;
+    height: 35px;
+}
+
+#bttOkAtalhos{
+    width: 100px;
+}
 /* ============================================= Seletor de cores ============================================= */
 
 #janelaSelecionarCor {

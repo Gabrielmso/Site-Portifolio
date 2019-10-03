@@ -123,10 +123,12 @@
                 <ul id="salvarDesenhoProjeto" class="noSelection">
                     <li><label>Arquivo<span style="font-size: 15px; line-height: 33px;">&#9662;</span></label>
                         <ul>
-                            <li id="bttSalvarDesenho" class="cursor" title="Salva o desenho como arquivo de imagem no formato PNG.">
+                            <li id="bttSalvarDesenho" class="cursor"
+                                title="Salva o desenho em um arquivo no formato PNG.">
                                 <label class="cursor">Salvar</label>
                             </li>
-                            <li id="bttSalvarProjeto" class="cursor" title="Salva as propriedades do projeto, o conteúdo das camadas, em um arquivo no formato GM.">
+                            <li id="bttSalvarProjeto" class="cursor"
+                                title="Salva as propriedades do projeto, o conteúdo das camadas, em um arquivo no formato GM.">
                                 <label class="cursor">Salvar projeto</label>
                             </li>
                             <li id="bttAbrirProjeto" class="cursor" title="Carrega um projeto salvo.">
@@ -174,6 +176,9 @@
                     <div id="coresSalvas"></div>
                     <div id="bttRemoverCorSalva" class="cursor noSelection" title="Deletar cor">
                         <p>x</p>
+                    </div>
+                    <div id="bttAtalhos" class="noSelection cursor">
+                        <p>Atalhos</p>
                     </div>
                 </div>
                 <div id="contentTelas">
@@ -264,6 +269,50 @@
             </div>
         </div>
         <!-- ================================= FIM JANELA CRIAR PROJETO =========================== -->
+        <!-- ====================================== JANELA ATALHOS ================================ -->
+        <div id="contentJanelaAtalhos">
+            <div id="janelaAtalhos">
+                <div id="tituloJanelaAtalhos" class="noSelection">
+                    <p>Atalhos:</p>
+                </div>
+                <div id="contentAtalhos">
+                    <ul>
+                        <li>
+                            <label>[ : Aumentar tamanho das ferramentas.</label>
+                        </li>
+                        <li>
+                            <label>] : Diminuir tamanho das ferramentas.</label>
+                        </li>
+                        <li>
+                            <label>Ctrl + Z: Desfazer alteração.</label>
+                        </li>
+                        <li>
+                            <label>Ctrl + Y: Refazer alteração.</label>
+                        </li>
+                        <li>
+                            <label>Ctrl + 0: Ajustar na visualização.</label>
+                        </li>
+                        <li>
+                            <label>Ctrl + 1: Zoom 100%.</label>
+                        </li>
+                        <li>
+                            <label>Ctrl + + (mais): Mais zoom.</label>
+                        </li>
+                        <li>
+                            <label>Ctrl + - (menos): Menos zoom.</label>
+                        </li>
+                        <li>
+                            <label>Ctrl + scroll do mouse: Controlar o zoom.</label>
+                        </li>
+                    </ul>
+                </div>
+                <div id="botoesAtalhos" class="noSelection">
+                    <div id="bttOkAtalhos" class="bttBarraSuperior cursor">
+                        <p>Ok</p>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- ================================ JANELA PARA SELECIONAR COR ========================== -->
         <div id="janelaSelecionarCor">
             <div id="comparaCorAtualEEscolhida">

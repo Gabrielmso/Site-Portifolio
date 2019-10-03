@@ -41,6 +41,7 @@ let coordenadaClick = [];//Armazena as coordenadas do cursor do mouse desde quan
 let cursorOpacidadeCamada;
 function colorPaint() {
     const contentJanelaCriarProjeto = document.getElementById("contentJanelaCriarProjeto");
+    const contentJanelaAtalhos = document.getElementById("contentJanelaAtalhos");
     const janelaPrincipal = document.getElementById("janelaPrincipal");
     const contentTools = document.getElementById("contentTools");
     const barraLateralEsquerda = document.getElementById("barraLateralEsquerda");
@@ -379,6 +380,14 @@ function colorPaint() {
         if (telasCanvas.offsetWidth >= 25) {
             zoomNoProjeto(false, true, 1.25);
         }
+    });
+
+    document.getElementById("bttAtalhos").addEventListener("click", function () {
+        contentJanelaAtalhos.style.display = "flex";
+    });
+
+    document.getElementById("bttOkAtalhos").addEventListener("click", function () {
+        contentJanelaAtalhos.style.display = "none";
     });
 
     document.addEventListener("mouseup", function (e) {
