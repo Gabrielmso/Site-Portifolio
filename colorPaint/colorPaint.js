@@ -263,6 +263,7 @@ function colorPaint() {
             if (clickCurva === false && ferramentaSelecionada != 3) {
                 guardarAlteracoes();
             }
+            arrayCamadas[camadaSelecionada].ctx.globalCompositeOperation = "source-over";
             ctxPintar.lineWidth = tamanhoFerramenta;
             ctxPintar.strokeStyle = "rgba(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ", " + opacidadeFerramenta + ")";
             if (ferramentaSelecionada === 1) {//Pincel.
@@ -276,11 +277,14 @@ function colorPaint() {
                 ctxPintar.beginPath();
                 ferramentaPincel(posicaoMouseX, posicaoMouseY);
             }
-            else if (ferramentaSelecionada === 2) {//Borracha.    
-                arrayCamadas[camadaSelecionada].ctx.beginPath();
-                arrayCamadas[camadaSelecionada].ctx.lineCap = "square";
-                arrayCamadas[camadaSelecionada].ctx.lineJoin = "round"
-                ferramentaBorracha(arrayCamadas[camadaSelecionada].ctx, posicaoMouseX, posicaoMouseY, tamanhoFerramenta);
+            else if (ferramentaSelecionada === 2) {//Borracha.                  
+                coordenadaClick.push({ x: posicaoMouseX, y: posicaoMouseY });
+                arrayCamadas[camadaSelecionada].ctx.globalCompositeOperation = "destination-out";
+                ctxPintar.lineJoin = "round";
+                ctxPintar.lineCap = "square";
+                ctxPintar.strokeStyle = "rgba(255, 0, 0, " + opacidadeFerramenta + ")";
+                ctxPintar.beginPath();
+                ferramentaPincel(posicaoMouseX, posicaoMouseY);
             }
             else if (ferramentaSelecionada === 3) {//Conta-gotas.
                 cursorComparaContaGotas.style.display = "block";
@@ -332,9 +336,9 @@ function colorPaint() {
                 ferramentaPincel(posicaoMouseX, posicaoMouseY);
             }
             else if (ferramentaSelecionada === 2) {//Borracha.
-                arrayCamadas[camadaSelecionada].ctx.lineCap = "round";
-                arrayCamadas[camadaSelecionada].ctx.lineJoin = "round";
-                ferramentaBorracha(arrayCamadas[camadaSelecionada].ctx, posicaoMouseX, posicaoMouseY, tamanhoFerramenta);
+                ctxPintar.lineCap = "round";
+                ctxPintar.lineJoin = "round";
+                ferramentaPincel(posicaoMouseX, posicaoMouseY);
             }
             else if (ferramentaSelecionada === 3) {//Conta-gotas.
                 ferramentaContaGotas(e.clientX, e.clientY, posicaoMouseX, posicaoMouseY, true);
@@ -883,15 +887,6 @@ function ferramentaElipse(mouseX, mouseY) {
         ctxPintar.lineTo(centroEixoX + raioX * Math.cos(angulo), centroEixoY + raioY * Math.sin(angulo));
     }
     ctxPintar.stroke();
-}
-
-function ferramentaBorracha(contexto, mouseX, mouseY, cursorTamanho) {
-    contexto.globalCompositeOperation = "destination-out";
-    contexto.strokeStyle = "rgb(0, 0, 0)";
-    contexto.lineWidth = cursorTamanho;
-    contexto.lineTo(mouseX, mouseY);
-    contexto.stroke();
-    contexto.globalCompositeOperation = "source-over";
 }
 
 function ferramentaContaGotas(mouseX, mouseY, posTelaX, posTelaY, mouseMovendo) {
