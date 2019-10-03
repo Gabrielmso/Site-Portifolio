@@ -129,7 +129,7 @@ function colorPaint() {
             }
         }
         else {
-            if (confirm("Você perderá todo o progresso no projeto atual, deseja continuar?") === true) {
+            if (confirm("Todo o progresso não salvo será perdido, deseja continuar?") === true) {
                 sessionStorage.setItem("criarNovoProjeto", "true");
                 window.location.reload();
             }
@@ -213,7 +213,7 @@ function colorPaint() {
 
     document.getElementById("bttAbrirProjeto").addEventListener("click", function () {
         if (projetoCriado === true) {
-            if (confirm("Você perderá todo o progresso no projeto atual, deseja continuar?") === true) {
+            if (confirm("Todo o progresso não salvo será perdido, deseja continuar?") === true) {
                 sessionStorage.setItem("abrirProjetoSalvo", "true");
                 window.location.reload();
             }
@@ -1503,12 +1503,10 @@ function contentTelasMoverScroll(scrollTop, scrollLeft) {//Mover o "moverScroll"
 function salvarDesenho() {
     desenhoCompleto();
     let d = ctxDesenho.canvas.toDataURL("imagem/png");
-    let downloadLink = document.createElement("a");
-    downloadLink.download = nomeDoProjeto + ".png";
-    downloadLink.href = d;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    let salvarImagem = document.getElementById("salvarImagem");
+    salvarImagem.setAttribute("download", nomeDoProjeto + ".png");
+    salvarImagem.setAttribute("href", d);
+    salvarImagem.click();
 }
 
 function salvarProjeto() {
@@ -1527,12 +1525,10 @@ function salvarProjeto() {
         numeroDeCamadas: arrayCamadas.length,
         camadas: dadosCamadas
     }
-    let salvarProjeto = document.createElement("a");
-    salvarProjeto.href = "data:application/octet-stream;charset=utf-8," + JSON.stringify(objProjeto);
-    salvarProjeto.download = nomeDoProjeto + ".gm";
-    document.body.appendChild(salvarProjeto);
+    let salvarProjeto = document.getElementById("salvarProjeto");
+    salvarProjeto.setAttribute("download", nomeDoProjeto + ".gm");
+    salvarProjeto.setAttribute("href", ("data:application/octet-stream;charset=utf-8," + JSON.stringify(objProjeto)));
     salvarProjeto.click();
-    document.body.removeChild(salvarProjeto);
 }
 
 function abrirProjeto() {
