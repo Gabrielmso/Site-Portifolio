@@ -473,7 +473,7 @@ function colorPaint() {
         if (e.code === "ControlRight" || e.code === "ControlLeft" || e.keyCode === 17) {
             e.preventDefault();
             ctrlPressionado = true;
-            if(ferramentaSelecionada === 1){
+            if (ferramentaSelecionada === 1) {
                 ferramentaAnterior = 1;
                 arrayFerramentas[2].ferramenta.click();
             }
@@ -490,7 +490,7 @@ function colorPaint() {
         if (e.code === "ControlRight" || e.code === "ControlLeft" || e.keyCode === 17) {
             e.preventDefault();
             ctrlPressionado = false;
-            if(ferramentaAnterior === 1){
+            if (ferramentaAnterior === 1) {
                 arrayFerramentas[0].ferramenta.click();
                 cursorComparaContaGotas.style.display = "none";
             }
@@ -760,7 +760,7 @@ function colorPaint() {
     }
 
     function avancarAlteracao() {
-        if (arrayAvancarAlteracoes.length > 0  && pintando === false) {
+        if (arrayAvancarAlteracoes.length > 0 && pintando === false) {
             let ultimoIndice = arrayAvancarAlteracoes.length - 1;
             let camada = arrayAvancarAlteracoes[ultimoIndice].camadaAlterada;
             let imagemCamada = arrayAvancarAlteracoes[ultimoIndice].alteracao;
@@ -1565,10 +1565,22 @@ function salvarProjeto() {
         numeroDeCamadas: arrayCamadas.length,
         camadas: dadosCamadas
     }
-    let salvarProjeto = document.getElementById("salvarProjeto");
-    salvarProjeto.setAttribute("download", nomeDoProjeto + ".gm");
-    salvarProjeto.setAttribute("href", ("data:application/octet-stream;charset=utf-8," + JSON.stringify(objProjeto)));
-    salvarProjeto.click();
+
+    let data = encode(JSON.stringify(objProjeto));
+    let blob = new Blob([data], { type: "application/octet-stream;charset=utf-8" });
+    let url = URL.createObjectURL(blob);
+    var link = document.getElementById("salvarProjeto");
+    link.setAttribute("href", url);
+    link.setAttribute("target", "_blank");
+    link.setAttribute("download", nomeDoProjeto + ".gm");
+    link.click();
+    function encode(s) {
+        let out = [];
+        for (let i = 0; i < s.length; i++) {
+            out[i] = s.charCodeAt(i);
+        }
+        return new Uint8Array(out);
+    }
 }
 
 function abrirProjeto() {
