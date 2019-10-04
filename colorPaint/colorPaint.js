@@ -53,6 +53,8 @@ function colorPaint() {
     const barraTamanho = document.getElementById("barraTamanho");
     const cursorTamanho = document.getElementById("cursorTamanho");
     const barraOpacidadeCamada = document.getElementById("barraOpacidadeCamada");
+    const bttRefazer = document.getElementById("bttRefazer");
+    const bttDesfazer = document.getElementById("bttDesfazer");
     cursorOpacidadeCamada = document.getElementById("cursorOpacidadeCamada");
     contentTelas = document.getElementById("contentTelas");
     telasCanvas = document.getElementById("telasCanvas");
@@ -81,6 +83,7 @@ function colorPaint() {
     let pintando = false;//Saber se o mouse está pressionado na "contentTelas".
     let ctrlPressionado = false;//Saber se os Ctrl's estão pressionados.
     let clickCurva = false;//Saber o momento de curvar a linha feita com a ferramenta Curva.
+
     arrayFerramentas = [{ ferramenta: document.getElementById("pincel"), nome: "Pincel", id: 1 },//Armazena as ferramentas.
     { ferramenta: document.getElementById("borracha"), nome: "Borracha", id: 2 },
     { ferramenta: document.getElementById("contaGotas"), nome: "Conta-gotas", id: 3 },
@@ -180,6 +183,14 @@ function colorPaint() {
             txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
         }
     });
+
+    bttRefazer.addEventListener("click", function () {
+        avancarAlteracao();
+    })
+
+    bttDesfazer.addEventListener("click", function () {
+        voltarAlteracao();
+    })
 
     document.getElementById("bttCriarprojeto").addEventListener("click", function () {
         criarProjeto();
@@ -692,6 +703,81 @@ function colorPaint() {
         contentTelas.style.height = contentTools.style.height;
     }
 
+    function guardarAlteracoes() {
+        let objAlteracao = { camadaAlterada: camadaSelecionada, alteracao: arrayCamadas[camadaSelecionada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
+        arrayVoltarAlteracoes.push(objAlteracao);
+        if (arrayVoltarAlteracoes.length > 20) {
+            arrayVoltarAlteracoes.shift();
+        }
+        if (arrayAvancarAlteracoes.length > 0 || arrayVoltarAlteracoes.length === 1) {
+            bttDesfazer.classList.add("bttHover");
+            bttDesfazer.classList.add("cursor");
+            bttDesfazer.style.opacity = "1";
+            bttRefazer.classList.remove("bttHover");
+            bttRefazer.classList.remove("cursor");
+            bttRefazer.style.opacity = "0.5";
+        }
+        arrayAvancarAlteracoes = [];
+    }
+
+    function voltarAlteracao() {
+        if (arrayVoltarAlteracoes.length > 0 && pintando === false) {
+            let ultimoIndice = arrayVoltarAlteracoes.length - 1;
+            let camada = arrayVoltarAlteracoes[ultimoIndice].camadaAlterada;
+            let imagemCamada = arrayVoltarAlteracoes[ultimoIndice].alteracao;
+            let objAlteracao = { camadaAlterada: camada, visivel: arrayCamadas[camada].visivel, alteracao: arrayCamadas[camada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
+            if (camadaSelecionada != camada) {
+                clickIconeCamada.call(arrayCamadas[camada].icone);
+            }
+            if (arrayCamadas[camada].visivel === false) {
+                clickCamadaVisivel.call(arrayCamadas[camada].bttVer);
+                return;
+            }
+            arrayAvancarAlteracoes.push(objAlteracao);
+            arrayCamadas[camada].ctx.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
+            arrayCamadas[camada].ctx.putImageData(imagemCamada, 0, 0);
+            arrayVoltarAlteracoes.pop();
+            if (arrayVoltarAlteracoes.length === 0) {
+                bttDesfazer.classList.remove("bttHover");
+                bttDesfazer.classList.remove("cursor");
+                bttDesfazer.style.opacity = "0.5";
+            }
+            if (arrayAvancarAlteracoes.length === 1) {
+                bttRefazer.classList.add("bttHover");
+                bttRefazer.classList.add("cursor");
+                bttRefazer.style.opacity = "1";
+            }
+            desenhoNoPreviewEIcone();
+        }
+    }
+
+    function avancarAlteracao() {
+        if (arrayAvancarAlteracoes.length > 0  && pintando === false) {
+            let ultimoIndice = arrayAvancarAlteracoes.length - 1;
+            let camada = arrayAvancarAlteracoes[ultimoIndice].camadaAlterada;
+            let imagemCamada = arrayAvancarAlteracoes[ultimoIndice].alteracao;
+            let objAlteracao = { camadaAlterada: camada, visivel: arrayCamadas[camada].visivel, alteracao: arrayCamadas[camada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
+            if (camadaSelecionada != camada) {
+                clickIconeCamada.call(arrayCamadas[camada].icone);
+            }
+            arrayVoltarAlteracoes.push(objAlteracao);
+            arrayCamadas[camada].ctx.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
+            arrayCamadas[camada].ctx.putImageData(imagemCamada, 0, 0);
+            arrayAvancarAlteracoes.pop();
+            if (arrayVoltarAlteracoes.length === 1) {
+                bttDesfazer.classList.add("bttHover");
+                bttDesfazer.classList.add("cursor");
+                bttDesfazer.style.opacity = "1";
+            }
+            if (arrayAvancarAlteracoes.length === 0) {
+                bttRefazer.classList.remove("bttHover");
+                bttRefazer.classList.remove("cursor");
+                bttRefazer.style.opacity = "0.5";
+            }
+            desenhoNoPreviewEIcone();
+        }
+    }
+
     function criarOuAbrirProjeto() {
         if (sessionStorage.getItem("abrirProjetoSalvo") === "true") {
             setTimeout(function () {
@@ -982,52 +1068,6 @@ function desenhoCompleto() {
 }
 // ==========================================================================================================================================================================================================================================
 
-function guardarAlteracoes() {
-    let objAlteracao = { camadaAlterada: camadaSelecionada, alteracao: arrayCamadas[camadaSelecionada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
-    arrayVoltarAlteracoes.push(objAlteracao);
-    arrayAvancarAlteracoes = [];
-    if (arrayVoltarAlteracoes.length > 20) {
-        arrayVoltarAlteracoes.shift();
-    }
-}
-
-function voltarAlteracao() {
-    if (arrayVoltarAlteracoes.length > 0) {
-        let ultimoIndice = arrayVoltarAlteracoes.length - 1;
-        let camada = arrayVoltarAlteracoes[ultimoIndice].camadaAlterada;
-        let imagemCamada = arrayVoltarAlteracoes[ultimoIndice].alteracao;
-        let objAlteracao = { camadaAlterada: camada, visivel: arrayCamadas[camada].visivel, alteracao: arrayCamadas[camada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
-        if (camadaSelecionada != camada) {
-            clickIconeCamada.call(arrayCamadas[camada].icone);
-        }
-        if (arrayCamadas[camada].visivel === false) {
-            clickCamadaVisivel.call(arrayCamadas[camada].bttVer);
-            return;
-        }
-        arrayAvancarAlteracoes.push(objAlteracao);
-        arrayCamadas[camada].ctx.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
-        arrayCamadas[camada].ctx.putImageData(imagemCamada, 0, 0);
-        arrayVoltarAlteracoes.pop();
-        desenhoNoPreviewEIcone();
-    }
-}
-
-function avancarAlteracao() {
-    if (arrayAvancarAlteracoes.length > 0) {
-        let ultimoIndice = arrayAvancarAlteracoes.length - 1;
-        let camada = arrayAvancarAlteracoes[ultimoIndice].camadaAlterada;
-        let imagemCamada = arrayAvancarAlteracoes[ultimoIndice].alteracao;
-        let objAlteracao = { camadaAlterada: camada, visivel: arrayCamadas[camada].visivel, alteracao: arrayCamadas[camada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
-        if (camadaSelecionada != camada) {
-            clickIconeCamada.call(arrayCamadas[camada].icone);
-        }
-        arrayVoltarAlteracoes.push(objAlteracao);
-        arrayCamadas[camada].ctx.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
-        arrayCamadas[camada].ctx.putImageData(imagemCamada, 0, 0);
-        arrayAvancarAlteracoes.pop();
-        desenhoNoPreviewEIcone();
-    }
-}
 // ==========================================================================================================================================================================================================================================
 
 function criarProjeto() {
