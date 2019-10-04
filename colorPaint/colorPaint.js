@@ -478,7 +478,7 @@ function colorPaint() {
         }
     });
 
-    contentTelas.addEventListener("wheel", function (e) {//Zoom com o scroll do mouse.
+    janelaPrincipal.addEventListener("wheel", function (e) {//Zoom com o scroll do mouse.
         if (ctrlPressionado === true && projetoCriado === true) {
             e.preventDefault();
             if (e.deltaY < 0) {
@@ -496,7 +496,7 @@ function colorPaint() {
         }
     });
 
-    contentTelas.addEventListener("scroll", function (e) {//Zoom com o scroll do mouse.
+    contentTelas.addEventListener("scroll", function (e) {
         contentTelasMoverScroll(contentTelas.scrollTop, contentTelas.scrollLeft);
     });
 
@@ -1354,7 +1354,6 @@ function AjustarnavisualizacaoTelasCanvas() {
 // ==========================================================================================================================================================================================================================================
 
 function ajustarPreview(cor) {
-    document.getElementById("bttsZoomPreview").style.display = "block";
     let proporcaoEspaco = 256 / 150;
     if (proporcaoProjeto >= proporcaoEspaco) {
         let novaAltura = (256 / proporcaoProjeto);

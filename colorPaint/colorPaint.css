@@ -252,6 +252,26 @@ p {
     background-image: url("../colorPaint/imagens/icones/ferramentaBaldeDeTinta.png");
 }
 
+#bttZoomMenos{
+    background-image: url("../colorPaint/imagens/icones/zoomMenos.png");
+}
+
+#bttZoomMais{
+    background-image: url("../colorPaint/imagens/icones/zoomMais.png");
+}
+
+#bttDesfazer{
+    background-image: url("../colorPaint/imagens/icones/iconeDesfazer.png");
+}
+
+#bttRefazer{
+    background-image: url("../colorPaint/imagens/icones/iconeRefazer.png");
+}
+
+.bttHover:hover{
+    background-color: rgb(13, 13, 13);
+}
+
 .bttFerramentas {
     width: 35px;
     height: 30px;
@@ -331,7 +351,7 @@ p {
     width: 80px;
     height: auto;
     padding: 7px;
-    max-height: 160px;
+    max-height: 120px;
     overflow-x: auto;
     background-color: rgb(37, 37, 37);
     border-radius: 7px;
@@ -496,37 +516,6 @@ p {
     width: 100%;
     height: 100%;
     border: 1px solid rgb(255, 255, 255);
-}
-
-#bttsZoomPreview {
-    position: relative;
-    display: none;
-    padding-left: 4px;
-    width: 100%;
-    height: 25px;
-}
-
-.bttZoom {
-    position: relative;
-    display: inline-block;
-    width: 25px;
-    height: 25px;
-    text-align: center;
-    margin-left: 4px;
-    border: 1px solid rgb(91, 91, 91);
-    background-color: rgb(15, 15, 15);
-    border-radius: 4px;
-}
-
-.bttZoom:hover {
-    border: 1px solid rgb(15, 15, 15);
-    background-color: rgb(51, 51, 51);
-}
-
-.bttZoom p {
-    font-size: 20px;
-    line-height: 24px;
-    background-color: rgba(0, 0, 0, 0);
 }
 
 #janelaInfo {

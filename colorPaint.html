@@ -154,16 +154,10 @@
                         <div id="elipse" class="bttFerramentas cursor" title="Ferramenta Elipse"></div>
                         <div id="borracha" class="bttFerramentas cursor" title="Ferramenta Borracha"></div>
                         <div id="contaGotas" class="bttFerramentas cursor" title="Ferramenta Conta-gotas"></div>
-                        <div class="bttFerramentas cursor"></div>
-                        <div class="bttFerramentas cursor"></div>
-                        <div id="bttsZoomPreview">
-                            <div id="bttZoomMenos" class="bttZoom noSelection cursor">
-                                <p>-</p>
-                            </div>
-                            <div id="bttZoomMais" class="bttZoom noSelection cursor">
-                                <p>+</p>
-                            </div>
-                        </div>
+                        <div id="bttZoomMenos" class="bttFerramentas bttHover noSelection cursor" title="Menos zoom"></div>
+                        <div id="bttZoomMais" class="bttFerramentas bttHover noSelection cursor" title="Mais zoom"></div>
+                        <div id="bttDesfazer" class="bttFerramentas bttHover cursor" title="Desfazer (Ctrl + Z)"></div>
+                        <div id="bttRefazer" class="bttFerramentas bttHover cursor" title="Refazer (Ctrl + Y)"></div>
                     </div>
                     <div id="coresSelecionadas">
                         <div id="corPrincipal" class="corEscolhida cursor">
@@ -327,7 +321,6 @@
                     <div></div>
                 </div>
             </div>
-
             <div id="contentBarraeEspectroCor" class="noSelection">
                 <canvas id="barraeEspectroCor" width="530" height="20"></canvas>
                 <div id="cursorBarra" class="cursorSeletor">
@@ -350,9 +343,7 @@
         </div>
         <!-- ================================FIM JANELA PARA SELECIONAR COR========================== -->
         <div id="cursorComparaContaGotas">
-            <div id="comparaCoresContaGotas">
-
-            </div>
+            <div id="comparaCoresContaGotas"></div>
         </div>
     </header>
 </body>
