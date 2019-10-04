@@ -1542,11 +1542,26 @@ function contentTelasMoverScroll(scrollTop, scrollLeft) {//Mover o "moverScroll"
 
 function salvarDesenho() {
     desenhoCompleto();
-    let d = ctxDesenho.canvas.toDataURL("imagem/png");
+    let blob = dataURLtoBlob(ctxDesenho.canvas.toDataURL("imagem/png"));
+    let url = URL.createObjectURL(blob);
     let salvarImagem = document.getElementById("salvarImagem");
     salvarImagem.setAttribute("download", nomeDoProjeto + ".png");
-    salvarImagem.setAttribute("href", d);
+    salvarImagem.setAttribute("href", url);
     salvarImagem.click();
+
+    function dataURLtoBlob(dataURI) {
+        let BASE64_MARKER = ';base64,';
+        let base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
+        let base64 = dataURI.substring(base64Index);
+        let raw = window.atob(base64);
+        let rawLength = raw.length;
+        let array = new Uint8Array(rawLength);
+        for (i = 0; i < rawLength; i++) {
+            array[i] = raw.charCodeAt(i);
+        }
+        let blob = new Blob([array], { type: 'image/png' });
+        return blob;
+    }
 }
 
 function salvarProjeto() {
@@ -1573,6 +1588,9 @@ function salvarProjeto() {
     link.setAttribute("href", url);
     link.setAttribute("target", "_blank");
     link.setAttribute("download", nomeDoProjeto + ".gm");
+    // let event = document.createEvent('MouseEvents');
+    // event.initMouseEvent('click', true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+    // link.dispatchEvent(event);
     link.click();
     function encode(s) {
         let out = [];
@@ -1581,6 +1599,13 @@ function salvarProjeto() {
         }
         return new Uint8Array(out);
     }
+    // // let arquivo = new Blob([JSON.stringify(objProjeto)], {type: "application/octet-stream;charset=utf-8"});
+    // // saveAs(arquivo, )
+    // let stringJson = JSON.stringify(objProjeto)
+    // let salvarProjeto = document.getElementById("salvarProjeto");
+    // salvarProjeto.setAttribute("download", nomeDoProjeto + ".gm");
+    // salvarProjeto.setAttribute("href", ("data:application/octet-stream;charset=utf-8," + JSON.stringify(objProjeto)));
+    // salvarProjeto.click();
 }
 
 function abrirProjeto() {
