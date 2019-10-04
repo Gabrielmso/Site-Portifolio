@@ -473,6 +473,10 @@ function colorPaint() {
         if (e.code === "ControlRight" || e.code === "ControlLeft" || e.keyCode === 17) {
             e.preventDefault();
             ctrlPressionado = true;
+            if(ferramentaSelecionada === 1){
+                ferramentaAnterior = 1;
+                arrayFerramentas[2].ferramenta.click();
+            }
         }
         else if (e.code === "BracketRight") {//Aumentar o tamanho da ferramenta.
             alterarTamanhoFerramenta(true);
@@ -486,6 +490,10 @@ function colorPaint() {
         if (e.code === "ControlRight" || e.code === "ControlLeft" || e.keyCode === 17) {
             e.preventDefault();
             ctrlPressionado = false;
+            if(ferramentaAnterior === 1){
+                arrayFerramentas[0].ferramenta.click();
+                cursorComparaContaGotas.style.display = "none";
+            }
         }
     });
 
@@ -1066,8 +1074,6 @@ function desenhoCompleto() {
         };
     }
 }
-// ==========================================================================================================================================================================================================================================
-
 // ==========================================================================================================================================================================================================================================
 
 function criarProjeto() {
