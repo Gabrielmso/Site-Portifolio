@@ -177,7 +177,7 @@ function colorPaint() {
         if (janelaSelecionarCorVisivel === false) {
             corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.R + ", " + corEscolhidaSecudaria.G + ", " + corEscolhidaSecudaria.B + ")";
             corSecundaria.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
-            let cor = corEscolhidaPrincipal;
+            const cor = corEscolhidaPrincipal;
             corEscolhidaPrincipal = corEscolhidaSecudaria;
             corEscolhidaSecudaria = cor;
             txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
@@ -242,14 +242,6 @@ function colorPaint() {
         txtPosicaoCursor.value = "";
     });
 
-    barraOpacidade.addEventListener("mouseup", function () {
-        mudarOpacidadeFerramenta = false;
-    })
-
-    barraTamanho.addEventListener("mouseup", function () {
-        mudarTamanhoFerramenta = false;
-    })
-
     barraOpacidade.addEventListener("mousedown", function (e) {
         if (ferramentaSelecionada === 3 || clickCurva === true) { return };
         mudarOpacidadeFerramenta = true;
@@ -299,7 +291,7 @@ function colorPaint() {
             }
             else if (ferramentaSelecionada === 3) {//Conta-gotas.
                 cursorComparaContaGotas.style.display = "block";
-                let corAtual = "25px solid rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+                const corAtual = "25px solid rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
                 comparaCoresContaGotas.style.borderLeft = corAtual;
                 comparaCoresContaGotas.style.borderBottom = corAtual;
                 ferramentaContaGotas(e.clientX, e.clientY, posicaoMouseX, posicaoMouseY, true);
@@ -326,7 +318,7 @@ function colorPaint() {
             }
             else if (ferramentaSelecionada === 7) {//Balde de tinta.
                 if (posicaoMouseX >= 0 && posicaoMouseX <= resolucaoProjeto.largura && posicaoMouseY >= 0 && posicaoMouseY <= resolucaoProjeto.altura) {
-                    let cor = { r: corEscolhidaPrincipal.R, g: corEscolhidaPrincipal.G, b: corEscolhidaPrincipal.B, a: Math.round(opacidadeFerramenta * 255) };
+                    const cor = { r: corEscolhidaPrincipal.R, g: corEscolhidaPrincipal.G, b: corEscolhidaPrincipal.B, a: Math.round(opacidadeFerramenta * 255) };
                     ferramentaBaldeDeTinta(posicaoMouseX, posicaoMouseY, arrayCamadas[camadaSelecionada].ctx, cor);
                 }
             }
@@ -339,7 +331,7 @@ function colorPaint() {
     });
 
     document.addEventListener("mousemove", function (e) {//Pegar a posição do mouse em relação ao "telaCanvas" e enquanto o mousse estiver pressionado executar a função referente a ferramenta escolhida.
-        let mouse = pegarPosicaoMouse(telasCanvas, e);
+        const mouse = pegarPosicaoMouse(telasCanvas, e);
         posicaoMouseX = (resolucaoProjeto.largura / telasCanvas.offsetWidth) * mouse.X;
         posicaoMouseY = (resolucaoProjeto.altura / telasCanvas.offsetHeight) * mouse.Y;
         if (pintando === true) {
@@ -382,7 +374,7 @@ function colorPaint() {
             calculaOpacidadeCamada(e);
         }
         else if (moverScrollPreview === true) {
-            let mousePos = pegarPosicaoMouse(contentTelaPreview, e);
+            const mousePos = pegarPosicaoMouse(contentTelaPreview, e);
             moverScrollNaTelaPreview(mousePos.X, mousePos.Y);
         }
     });
@@ -506,9 +498,9 @@ function colorPaint() {
             else {
                 zoomNoProjeto(false, false, 1.075, e);
             }
-            let posContentTelas = pegarPosicaoMouse(contentTelas, e);
-            let proporcaoPosY = posicaoMouseY / resolucaoProjeto.altura;
-            let proporcaoPosX = posicaoMouseX / resolucaoProjeto.largura;
+            const posContentTelas = pegarPosicaoMouse(contentTelas, e);
+            const proporcaoPosY = posicaoMouseY / resolucaoProjeto.altura;
+            const proporcaoPosX = posicaoMouseX / resolucaoProjeto.largura;
             contentTelas.scrollTop = (contentTelas.scrollHeight * proporcaoPosY) - (posContentTelas.Y) - 5;
             contentTelas.scrollLeft = (contentTelas.scrollWidth * proporcaoPosX) - (posContentTelas.X) - 5;
             contentTelasMoverScroll(contentTelas.scrollTop, contentTelas.scrollLeft);
@@ -522,13 +514,8 @@ function colorPaint() {
     contentTelaPreview.addEventListener("mousedown", function (e) {
         if (!projetoCriado) { return };
         moverScrollPreview = true;
-        let mousePos = pegarPosicaoMouse(this, e);
+        const mousePos = pegarPosicaoMouse(this, e);
         moverScrollNaTelaPreview(mousePos.X, mousePos.Y);
-    });
-
-    contentTelaPreview.addEventListener("mouseup", function () {
-        if (!projetoCriado) { return };
-        moverScrollPreview = false;
     });
 
     window.addEventListener("resize", function () {
@@ -550,7 +537,7 @@ function colorPaint() {
     });
 
     function calculaOpacidadeCamada(e) {
-        let mouse = pegarPosicaoMouse(barraOpacidadeCamada, e);
+        const mouse = pegarPosicaoMouse(barraOpacidadeCamada, e);
         let porcentagem = (mouse.X * 100) / barraOpacidadeCamada.offsetWidth;
         porcentagem = Math.round(porcentagem);
 
@@ -661,33 +648,25 @@ function colorPaint() {
     }
 
     function calculaOpacidadeFerramenta(e) {
-        let mouse = pegarPosicaoMouse(barraOpacidade, e);
+        const txtOpacidadeFerramenta = document.getElementById("txtOpacidadeFerramenta");
+        const mouse = pegarPosicaoMouse(barraOpacidade, e);
         let porcentagem = (mouse.X * 100) / barraOpacidade.offsetWidth;
         porcentagem = Math.round(porcentagem);
-
         if (mouse.X <= 1) {
             porcentagem = 1;
             cursorOpacidade.style.left = "-7px";
-            document.getElementById("txtOpacidadeFerramenta").value = "1%";
+            txtOpacidadeFerramenta.value = "1%";
         }
         else if (mouse.X >= 190) {
             porcentagem = 100;
             cursorOpacidade.style.left = "183px";
-            document.getElementById("txtOpacidadeFerramenta").value = "100%";
+            txtOpacidadeFerramenta.value = "100%";
         }
         else {
             cursorOpacidade.style.left = mouse.X - 7 + "px";
-            document.getElementById("txtOpacidadeFerramenta").value = porcentagem + "%";
+            txtOpacidadeFerramenta.value = porcentagem + "%";
         }
         opacidadeFerramenta = porcentagem / 100;
-    }
-
-    function pegarPosicaoMouse(elemento, e) {
-        let pos = elemento.getBoundingClientRect();
-        return {
-            X: e.clientX - pos.left,
-            Y: e.clientY - pos.top
-        }
     }
 
     function menuPadrao() {
@@ -712,7 +691,7 @@ function colorPaint() {
     }
 
     function guardarAlteracoes() {
-        let objAlteracao = { camadaAlterada: camadaSelecionada, alteracao: arrayCamadas[camadaSelecionada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
+        const objAlteracao = { camadaAlterada: camadaSelecionada, alteracao: arrayCamadas[camadaSelecionada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
         arrayVoltarAlteracoes.push(objAlteracao);
         if (arrayVoltarAlteracoes.length > 20) {
             arrayVoltarAlteracoes.shift();
@@ -730,10 +709,10 @@ function colorPaint() {
 
     function voltarAlteracao() {
         if (arrayVoltarAlteracoes.length > 0 && pintando === false) {
-            let ultimoIndice = arrayVoltarAlteracoes.length - 1;
-            let camada = arrayVoltarAlteracoes[ultimoIndice].camadaAlterada;
-            let imagemCamada = arrayVoltarAlteracoes[ultimoIndice].alteracao;
-            let objAlteracao = { camadaAlterada: camada, visivel: arrayCamadas[camada].visivel, alteracao: arrayCamadas[camada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
+            const ultimoIndice = arrayVoltarAlteracoes.length - 1,
+                camada = arrayVoltarAlteracoes[ultimoIndice].camadaAlterada,
+                imagemCamada = arrayVoltarAlteracoes[ultimoIndice].alteracao,
+                objAlteracao = { camadaAlterada: camada, visivel: arrayCamadas[camada].visivel, alteracao: arrayCamadas[camada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
             if (camadaSelecionada != camada) {
                 clickIconeCamada.call(arrayCamadas[camada].icone);
             }
@@ -761,10 +740,10 @@ function colorPaint() {
 
     function avancarAlteracao() {
         if (arrayAvancarAlteracoes.length > 0 && pintando === false) {
-            let ultimoIndice = arrayAvancarAlteracoes.length - 1;
-            let camada = arrayAvancarAlteracoes[ultimoIndice].camadaAlterada;
-            let imagemCamada = arrayAvancarAlteracoes[ultimoIndice].alteracao;
-            let objAlteracao = { camadaAlterada: camada, visivel: arrayCamadas[camada].visivel, alteracao: arrayCamadas[camada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
+            const ultimoIndice = arrayAvancarAlteracoes.length - 1,
+                camada = arrayAvancarAlteracoes[ultimoIndice].camadaAlterada,
+                imagemCamada = arrayAvancarAlteracoes[ultimoIndice].alteracao,
+                objAlteracao = { camadaAlterada: camada, visivel: arrayCamadas[camada].visivel, alteracao: arrayCamadas[camada].ctx.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura) };
             if (camadaSelecionada != camada) {
                 clickIconeCamada.call(arrayCamadas[camada].icone);
             }
@@ -811,7 +790,7 @@ function ferramentaPincel(mouseX, mouseY) {
     ctxPintar.beginPath();
     ctxPintar.moveTo(ponto1.x, ponto1.y);
     for (let i = 0; i < coordenadaClick.length; i++) {
-        let midPoint = midPointBtw(ponto1, ponto2);
+        const midPoint = midPointBtw(ponto1, ponto2);
         ctxPintar.quadraticCurveTo(ponto1.x, ponto1.y, midPoint.x, midPoint.y);
         ponto1 = coordenadaClick[i];
         ponto2 = coordenadaClick[i + 1];
@@ -828,13 +807,13 @@ function ferramentaPincel(mouseX, mouseY) {
 }
 
 function ferramentaBaldeDeTinta(mouseX, mouseY, context, cor) {
-    let corSelecionada = cor,
+    const corSelecionada = cor,
         camada = context.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura),
         canvasEvent = ctxPintar.getImageData(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
 
     pintar(Math.round(mouseX), Math.round(mouseY));
     function pintar(posX, posY) {
-        let pixelPos = (posY * resolucaoProjeto.largura + posX) * 4,
+        const pixelPos = (posY * resolucaoProjeto.largura + posX) * 4,
             r = camada.data[pixelPos],
             g = camada.data[pixelPos + 1],
             b = camada.data[pixelPos + 2],
@@ -848,7 +827,7 @@ function ferramentaBaldeDeTinta(mouseX, mouseY, context, cor) {
     function preencher(posClickX, posClickY, R, G, B, A) {
         let pixelsVerificados = [[posClickX, posClickY]];
         while (pixelsVerificados.length > 0) {
-            let novaPosicao = pixelsVerificados.pop();
+            const novaPosicao = pixelsVerificados.pop();
             let x = novaPosicao[0], y = novaPosicao[1];
             let posicaoPixel = (y * resolucaoProjeto.largura + x) * 4;
             while (y >= -1 && compararCorInicial(posicaoPixel, R, G, B, A)) {
@@ -898,7 +877,7 @@ function ferramentaBaldeDeTinta(mouseX, mouseY, context, cor) {
     }
 
     function compararCorInicial(pixelPos, clickR, clickG, clickB, clickA) {
-        let r = camada.data[pixelPos],
+        const r = camada.data[pixelPos],
             g = camada.data[pixelPos + 1],
             b = camada.data[pixelPos + 2],
             a = camada.data[pixelPos + 3];
@@ -935,7 +914,7 @@ function ferramentaBaldeDeTinta(mouseX, mouseY, context, cor) {
 function ferramentaLinha(mouseX, mouseY) {
     coordenadaClick[1] = { x: mouseX, y: mouseY };
     ctxPintar.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
-    let pontoInicial = coordenadaClick[0], pontoFinal = coordenadaClick[1];
+    const pontoInicial = coordenadaClick[0], pontoFinal = coordenadaClick[1];
     ctxPintar.beginPath();
     ctxPintar.moveTo(pontoInicial.x, pontoInicial.y);
     ctxPintar.lineTo(pontoFinal.x, pontoFinal.y);
@@ -947,11 +926,11 @@ function ferramentaCurva(mouseX, mouseY, curvar) {
         coordenadaClick[1] = { x: mouseX, y: mouseY };
     }
     ctxPintar.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
-    let pontoInicial = coordenadaClick[0], pontoFinal = coordenadaClick[1];
+    const pontoInicial = coordenadaClick[0], pontoFinal = coordenadaClick[1];
     ctxPintar.beginPath();
     ctxPintar.moveTo(pontoInicial.x, pontoInicial.y);
     if (curvar === true) {
-        let pontoControle = coordenadaClick[2] = { x: mouseX, y: mouseY };
+        const pontoControle = coordenadaClick[2] = { x: mouseX, y: mouseY };
         ctxPintar.quadraticCurveTo(pontoControle.x, pontoControle.y, pontoFinal.x, pontoFinal.y);
     }
     else {
@@ -962,19 +941,19 @@ function ferramentaCurva(mouseX, mouseY, curvar) {
 
 function ferramentaRetangulo(mouseX, mouseY) {
     ctxPintar.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
-    let pontoInicial = coordenadaClick[0], pontoFinal = { x: mouseX, y: mouseY };
+    const pontoInicial = coordenadaClick[0], pontoFinal = { x: mouseX, y: mouseY };
     ctxPintar.beginPath();
     ctxPintar.strokeRect(pontoInicial.x, pontoInicial.y, pontoFinal.x - pontoInicial.x, pontoFinal.y - pontoInicial.y);
 }
 
 function ferramentaElipse(mouseX, mouseY) {
     ctxPintar.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
-    let pontoInicial = coordenadaClick[0], pontoFinal = { x: mouseX, y: mouseY };
-    let raioX = (pontoFinal.x - pontoInicial.x) / 2, raioY = (pontoFinal.y - pontoInicial.y) / 2;
-    let centroEixoX = pontoInicial.x + raioX, centroEixoY = pontoInicial.y + raioY;
-    let passoAngulo = 0.005;
+    const pontoInicial = coordenadaClick[0], pontoFinal = { x: mouseX, y: mouseY };
+    const raioX = (pontoFinal.x - pontoInicial.x) / 2, raioY = (pontoFinal.y - pontoInicial.y) / 2;
+    const centroEixoX = pontoInicial.x + raioX, centroEixoY = pontoInicial.y + raioY;
+    const passoAngulo = 0.005;
     let angulo = 0;
-    let voltaCompleta = Math.PI * 2 + passoAngulo;
+    const voltaCompleta = Math.PI * 2 + passoAngulo;
     ctxPintar.beginPath();
     ctxPintar.moveTo(centroEixoX + raioX * Math.cos(angulo), centroEixoY + raioY * Math.sin(angulo));
     for (; angulo < voltaCompleta; angulo += passoAngulo) {
@@ -984,19 +963,19 @@ function ferramentaElipse(mouseX, mouseY) {
 }
 
 function ferramentaContaGotas(mouseX, mouseY, posTelaX, posTelaY, mouseMovendo) {
-    let X = mouseX - (cursorComparaContaGotas.offsetWidth / 2);
-    let Y = mouseY - (cursorComparaContaGotas.offsetHeight / 2);
+    const X = mouseX - (cursorComparaContaGotas.offsetWidth / 2);
+    const Y = mouseY - (cursorComparaContaGotas.offsetHeight / 2);
     cursorComparaContaGotas.style.left = X + "px";
     cursorComparaContaGotas.style.top = Y + "px";
-    let pixel = ctxDesenho.getImageData(posTelaX, posTelaY, 1, 1).data;
+    const pixel = ctxDesenho.getImageData(posTelaX, posTelaY, 1, 1).data;
     if (mouseMovendo === true) {
         if (pixel[3] === 0) {
-            let novaCor = "25px solid rgba(0, 0, 0, 0)";
+            const novaCor = "25px solid rgba(0, 0, 0, 0)";
             comparaCoresContaGotas.style.borderRight = novaCor;
             comparaCoresContaGotas.style.borderTop = novaCor;
             return;
         }
-        let novaCor = "25px solid rgb(" + pixel[0] + ", " + pixel[1] + ", " + pixel[2] + ")";
+        const novaCor = "25px solid rgb(" + pixel[0] + ", " + pixel[1] + ", " + pixel[2] + ")";
         comparaCoresContaGotas.style.borderRight = novaCor;
         comparaCoresContaGotas.style.borderTop = novaCor;
     }
@@ -1010,7 +989,7 @@ function ferramentaContaGotas(mouseX, mouseY, posTelaX, posTelaY, mouseMovendo) 
         }
         else {
             corEscolhidaPrincipal = { R: pixel[0], G: pixel[1], B: pixel[2] };
-            let novaCor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+            const novaCor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
             corPrincipal.style.backgroundColor = novaCor;
             txtCorEscolhida.value = novaCor;
         }
@@ -1026,7 +1005,7 @@ function mudarAparenciaCursor() {
         contentTelas.style.cursor = "url('/colorPaint/imagens/cursor/cursorBaldeDeTinta.png') 0 0, pointer";
         return;
     };
-    let tamanho = tamanhoFerramenta * ((telasCanvas.offsetWidth) / resolucaoProjeto.largura);
+    const tamanho = tamanhoFerramenta * ((telasCanvas.offsetWidth) / resolucaoProjeto.largura);
     if (tamanho <= 10) {
         contentTelas.style.cursor = "url('/colorPaint/imagens/cursor/crossHair.png') 12.5 12.5, pointer";
     }
@@ -1045,14 +1024,14 @@ function desenhoNoPreviewEIcone() {
     ctxTelaPreview.clearRect(0, 0, ctxTelaPreview.canvas.width, ctxTelaPreview.canvas.height);
     for (let i = 0; i < arrayCamadas.length; i++) {
         if (arrayCamadas[i].visivel === true) {
-            let opacidadeCamada = arrayCamadas[i].opacidade;
+            const opacidadeCamada = arrayCamadas[i].opacidade;
             ctxTelaPreview.beginPath();
             ctxTelaPreview.globalAlpha = opacidadeCamada;
             ctxTelaPreview.drawImage(arrayCamadas[i].ctx.canvas, 0, 0, ctxTelaPreview.canvas.width, ctxTelaPreview.canvas.height);
             ctxTelaPreview.closePath();
         };
     }
-    let larguraMiniatura = arrayCamadas[camadaSelecionada].ctxMiniatura.canvas.width, alturaMiniatura = arrayCamadas[camadaSelecionada].ctxMiniatura.canvas.height;
+    const larguraMiniatura = arrayCamadas[camadaSelecionada].ctxMiniatura.canvas.width, alturaMiniatura = arrayCamadas[camadaSelecionada].ctxMiniatura.canvas.height;
     arrayCamadas[camadaSelecionada].ctxMiniatura.clearRect(0, 0, larguraMiniatura, alturaMiniatura);
     arrayCamadas[camadaSelecionada].ctxMiniatura.globalAlpha = arrayCamadas[camadaSelecionada].opacidade;
     arrayCamadas[camadaSelecionada].ctxMiniatura.drawImage(arrayCamadas[camadaSelecionada].ctx.canvas, 0, 0, larguraMiniatura, alturaMiniatura);
@@ -1067,7 +1046,7 @@ function desenhoCompleto() {
     }
     for (let i = 0; i < arrayCamadas.length; i++) {
         if (arrayCamadas[i].visivel === true) {
-            let opacidadeCamada = arrayCamadas[i].opacidade;
+            const opacidadeCamada = arrayCamadas[i].opacidade;
             ctxDesenho.beginPath();
             ctxDesenho.globalAlpha = opacidadeCamada;
             ctxDesenho.drawImage(arrayCamadas[i].ctx.canvas, 0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
@@ -1078,7 +1057,7 @@ function desenhoCompleto() {
 // ==========================================================================================================================================================================================================================================
 
 function criarProjeto() {
-    let arrayPropriedades = [document.getElementById("txtNomeProjeto"),
+    const arrayPropriedades = [document.getElementById("txtNomeProjeto"),
     document.getElementById("txtLarguraProjeto"),
     document.getElementById("txtAlturaProjeto"),
     document.getElementById("corDeFundoProjeto"),
@@ -1086,14 +1065,14 @@ function criarProjeto() {
 
     if (validarPropriedades()) {
         for (let i = 0; i < arrayPropriedades.length; i++) {
-            let el = arrayPropriedades[i];
+            const el = arrayPropriedades[i];
             el.style.backgroundColor = "rgb(37, 37, 37)";
         }
         nomeDoProjeto = (arrayPropriedades[0].value).replace(" ", "-");
-        let resolucaoTela = { largura: parseInt(arrayPropriedades[1].value), altura: parseInt(arrayPropriedades[2].value) };
+        const resolucaoTela = { largura: parseInt(arrayPropriedades[1].value), altura: parseInt(arrayPropriedades[2].value) };
         resolucaoProjeto = resolucaoTela;
         proporcaoProjeto = resolucaoProjeto.largura / resolucaoProjeto.altura;
-        let numCamadas = parseInt(arrayPropriedades[4].value);
+        const numCamadas = parseInt(arrayPropriedades[4].value);
         let cor;
         if (arrayPropriedades[3].value === "1") {
             corDeFundoEscolhida = { R: 255, G: 255, B: 255 };
@@ -1132,7 +1111,7 @@ function criarProjeto() {
 
     function validarPropriedades() {
         for (let i = 0; i < arrayPropriedades.length; i++) {
-            let el = arrayPropriedades[i];
+            const el = arrayPropriedades[i];
             if (el.value === "") {
                 el.focus();
                 el.style.backgroundColor = "rgba(255, 0, 0, 0.25)"
@@ -1168,11 +1147,11 @@ function criarProjeto() {
 // ==========================================================================================================================================================================================================================================
 
 function criarCamada(cor, resolucao) {
-    let num = arrayCamadas.length + 1;
+    const num = arrayCamadas.length + 1;
     // ============= CRIA O ICONE DA CAMADA ==================
     const contentIconeCamadas = document.getElementById("contentIconeCamadas");
-    let idicone = "camadaIcone" + num;
-    let iconeCamada = document.createElement("div");
+    const idicone = "camadaIcone" + num;
+    const iconeCamada = document.createElement("div");
     iconeCamada.setAttribute("id", idicone);
     iconeCamada.setAttribute("class", "camadas");
 
@@ -1180,28 +1159,28 @@ function criarCamada(cor, resolucao) {
         contentIconeCamadas.appendChild(iconeCamada);
     }
     else {
-        let idElAnterior = "camadaIcone" + (num - 1);
+        const idElAnterior = "camadaIcone" + (num - 1);
         const elAnterior = document.getElementById(idElAnterior);
         contentIconeCamadas.insertBefore(iconeCamada, elAnterior);
     }
     contentIconeCamadas.scrollTop = contentIconeCamadas.scrollHeight;
 
-    let bttVisivel = document.createElement("div");
-    let idBttVisivel = "visivel" + num;
+    const bttVisivel = document.createElement("div");
+    const idBttVisivel = "visivel" + num;
     bttVisivel.setAttribute("id", idBttVisivel);
     bttVisivel.setAttribute("class", "iconVer cursor");
     iconeCamada.appendChild(bttVisivel);
 
-    let info = document.createElement("label");
-    let idNome = "nomeCamada" + num;
-    let nomeCamada = document.createElement("span");
+    const info = document.createElement("label");
+    const idNome = "nomeCamada" + num;
+    const nomeCamada = document.createElement("span");
     nomeCamada.setAttribute("id", idNome);
     nomeCamada.innerHTML = "Camada " + num;
-    let br = document.createElement("br");
-    let txtOpacidade = document.createElement("span");
+    const br = document.createElement("br");
+    const txtOpacidade = document.createElement("span");
     txtOpacidade.innerHTML = "Opacidade: ";
-    let idPocentagem = "porcent" + num;
-    let txtPorcentagem = document.createElement("input");
+    const idPocentagem = "porcent" + num;
+    const txtPorcentagem = document.createElement("input");
     txtPorcentagem.setAttribute("type", "text");
     txtPorcentagem.setAttribute("id", idPocentagem);
     txtPorcentagem.setAttribute("readOnly", "true");
@@ -1214,21 +1193,21 @@ function criarCamada(cor, resolucao) {
     info.appendChild(txtPorcentagem);
     iconeCamada.appendChild(info);
 
-    let contentMiniIcon = document.createElement("div");
+    const contentMiniIcon = document.createElement("div");
     contentMiniIcon.setAttribute("class", "contentIcon");
     iconeCamada.appendChild(contentMiniIcon);
 
-    let idIconTela = "iconTela" + num;
-    let iconTela = document.createElement("canvas");
+    const idIconTela = "iconTela" + num;
+    const iconTela = document.createElement("canvas");
     iconTela.setAttribute("id", idIconTela);
     let styleIconTela;
 
     if (proporcaoProjeto >= 1) {
-        let iconAltura = Math.round(80 / proporcaoProjeto);
+        const iconAltura = Math.round(80 / proporcaoProjeto);
         styleIconTela = "width: 80px; height: " + iconAltura + "px; ";
     }
     else {
-        let iconLargura = Math.round(80 * proporcaoProjeto);
+        const iconLargura = Math.round(80 * proporcaoProjeto);
         styleIconTela = "width: " + iconLargura + "px; height: 80px; ";
     }
 
@@ -1245,13 +1224,13 @@ function criarCamada(cor, resolucao) {
     iconTela.width = iconTela.offsetWidth;
     iconTela.height = iconTela.offsetHeight;
 
-    let sobrePor = document.createElement("div");
+    const sobrePor = document.createElement("div");
     contentMiniIcon.appendChild(sobrePor);
 
     // ============== CRIA A CAMADA ================
-    let idCamada = "telaCamada" + num;
-    let camadaStyle = "z-index: " + (num * 2) + ";";
-    let elCamada = document.createElement("canvas");
+    const idCamada = "telaCamada" + num;
+    const camadaStyle = "z-index: " + (num * 2) + ";";
+    const elCamada = document.createElement("canvas");
     elCamada.setAttribute("id", idCamada);
     elCamada.setAttribute("class", "telaCanvas");
     elCamada.setAttribute("style", camadaStyle);
@@ -1265,7 +1244,7 @@ function criarCamada(cor, resolucao) {
         document.getElementById(idPocentagem) != null &&
         document.getElementById(idIconTela) != null &&
         document.getElementById(idCamada) != null) {
-        let objCamada = {
+        const objCamada = {
             id: num,
             nome: nomeCamada,
             camada: elCamada,
@@ -1289,10 +1268,9 @@ function criarCamada(cor, resolucao) {
 
 function clickIconeCamada() {
     if (MouseNoBttVer === false) {
-        let txtId = this.getAttribute("id");
-        id = txtId.substring(11, 15);
-        id = parseInt(id);
-        let indiceArrayCamadas = id - 1;
+        const txtId = this.getAttribute("id"),
+            id = parseInt(txtId.substring(11, 15)),
+            indiceArrayCamadas = id - 1;
         for (let i = 0; i < arrayCamadas.length; i++) {
             if (i === indiceArrayCamadas) {
                 camadaSelecionada = i;
@@ -1305,8 +1283,8 @@ function clickIconeCamada() {
                 arrayCamadas[i].icone.classList.remove("camadaSelecionada");
             }
         }
-        let opacidade = arrayCamadas[camadaSelecionada].opacidade;
-        let posCursorOpacidadeCamada = (200 * opacidade) - 7;
+        const opacidade = arrayCamadas[camadaSelecionada].opacidade,
+            posCursorOpacidadeCamada = (200 * opacidade) - 7;
         cursorOpacidadeCamada.style.left = posCursorOpacidadeCamada + "px";
         pintar.style.opacity = opacidade;
     }
@@ -1314,11 +1292,10 @@ function clickIconeCamada() {
 // ==========================================================================================================================================================================================================================================
 
 function clickCamadaVisivel() {
-    let txtId = this.getAttribute("id");
-    id = txtId.substring(7, 11);
-    id = parseInt(id);
-    let indiceArrayCamadas = id - 1;
-    let visivel = arrayCamadas[indiceArrayCamadas].visivel;
+    const txtId = this.getAttribute("id"),
+        id = parseInt(txtId.substring(7, 11)),
+        indiceArrayCamadas = id - 1,
+        visivel = arrayCamadas[indiceArrayCamadas].visivel;
     if (visivel === true) {
         arrayCamadas[indiceArrayCamadas].visivel = false;
         arrayCamadas[indiceArrayCamadas].camada.style.display = "none";
@@ -1344,21 +1321,20 @@ function mouseFora() {
 // ==========================================================================================================================================================================================================================================
 
 function ajustarTelasCanvas() {
-    let larguraMax = contentTelas.offsetWidth - 10;
-    let alturaMax = contentTelas.offsetHeight - 10;
+    const larguraMax = contentTelas.offsetWidth - 10, alturaMax = contentTelas.offsetHeight - 10;
 
     if (resolucaoProjeto.largura > larguraMax && resolucaoProjeto.altura > alturaMax) {
         AjustarnavisualizacaoTelasCanvas();
     }
     else if (resolucaoProjeto.largura > larguraMax) {
-        let novaAltura = larguraMax / proporcaoProjeto;
+        const novaAltura = larguraMax / proporcaoProjeto;
         telasCanvas.style.width = larguraMax + "px";
         telasCanvas.style.height = novaAltura + "px";
         telasCanvas.style.top = alturaMax / 2 - novaAltura / 2 + "px"
         telasCanvas.style.left = "5px";
     }
     else if (resolucaoProjeto.altura > alturaMax) {
-        let novaLargura = alturaMax * proporcaoProjeto;
+        const novaLargura = alturaMax * proporcaoProjeto;
         telasCanvas.style.width = novaLargura + "px";
         telasCanvas.style.height = alturaMax + "px";
         telasCanvas.style.top = "5px";
@@ -1375,9 +1351,8 @@ function ajustarTelasCanvas() {
 }
 
 function AjustarnavisualizacaoTelasCanvas() {
-    let larguraMax = contentTelas.offsetWidth - 10;
-    let alturaMax = contentTelas.offsetHeight - 10;
-    let proporcaoContent = larguraMax / alturaMax;
+    const larguraMax = contentTelas.offsetWidth - 10, alturaMax = contentTelas.offsetHeight - 10,
+        proporcaoContent = larguraMax / alturaMax;
     let larguraTelasCanvas;
     if (proporcaoProjeto >= proporcaoContent) {
         let novaAltura = larguraMax / proporcaoProjeto;
@@ -1401,14 +1376,14 @@ function AjustarnavisualizacaoTelasCanvas() {
 // ==========================================================================================================================================================================================================================================
 
 function ajustarPreview(cor) {
-    let proporcaoEspaco = 256 / 150;
+    const proporcaoEspaco = 256 / 150;
     if (proporcaoProjeto >= proporcaoEspaco) {
-        let novaAltura = (256 / proporcaoProjeto);
+        const novaAltura = (256 / proporcaoProjeto);
         contentTelaPreview.style.width = "256px";
         contentTelaPreview.style.height = novaAltura + "px";
     }
     else {
-        let novaLargura = (150 * proporcaoProjeto);
+        const novaLargura = (150 * proporcaoProjeto);
         contentTelaPreview.style.width = novaLargura + "px";
         contentTelaPreview.style.height = "150px";
     }
@@ -1424,9 +1399,8 @@ function ajustarPreview(cor) {
 // ==========================================================================================================================================================================================================================================
 
 function zoomNoProjeto(zoom, centralizar, quanto) {
-    let larguraAnterior = telasCanvas.offsetWidth;
-    let larguraAtual;
-    let alturaAtual;
+    const larguraAnterior = telasCanvas.offsetWidth;
+    let larguraAtual, alturaAtual;
 
     if (zoom === "porcentagem") {
         larguraAtual = resolucaoProjeto.largura * (quanto / 100);
@@ -1474,28 +1448,28 @@ function zoomNoProjeto(zoom, centralizar, quanto) {
 // ==========================================================================================================================================================================================================================================
 
 function tamanhoMoverScroll() {//De acordo com o zoom que é dado muda o tamanho do "moverScroll".
-    let tamanhoTelasCanvas = { X: telasCanvas.offsetWidth, Y: telasCanvas.offsetHeight };
-    let tamanhoContentTelas = { X: contentTelas.offsetWidth, Y: contentTelas.offsetHeight };
-    let tamanhoContentTelaPreview = { X: contentTelaPreview.offsetWidth, Y: contentTelaPreview.offsetHeight }
+    const tamanhoTelasCanvas = { X: telasCanvas.offsetWidth, Y: telasCanvas.offsetHeight },
+        tamanhoContentTelas = { X: contentTelas.offsetWidth, Y: contentTelas.offsetHeight },
+        tamanhoContentTelaPreview = { X: contentTelaPreview.offsetWidth, Y: contentTelaPreview.offsetHeight };
 
     if (tamanhoTelasCanvas.X <= (tamanhoContentTelas.X - 10) && tamanhoTelasCanvas.Y <= (tamanhoContentTelas.Y - 10)) {
         moverScroll.style.display = "none";
     }
     else if (tamanhoTelasCanvas.X > (tamanhoContentTelas.X - 10) && tamanhoTelasCanvas.Y > (tamanhoContentTelas.Y - 10)) {
-        let proporcaoTamanhoX = (tamanhoContentTelas.X - 10) / tamanhoTelasCanvas.X;
-        let proporcaoTamanhoY = (tamanhoContentTelas.Y - 10) / tamanhoTelasCanvas.Y;
+        const proporcaoTamanhoX = (tamanhoContentTelas.X - 10) / tamanhoTelasCanvas.X,
+            proporcaoTamanhoY = (tamanhoContentTelas.Y - 10) / tamanhoTelasCanvas.Y;
         moverScroll.style.display = "block";
         moverScroll.style.width = (tamanhoContentTelaPreview.X * proporcaoTamanhoX) + "px";
         moverScroll.style.height = (tamanhoContentTelaPreview.Y * proporcaoTamanhoY) + "px";
     }
     else if (tamanhoTelasCanvas.X > (tamanhoContentTelas.X - 10)) {
-        let proporcaoTamanhoX = (tamanhoContentTelas.X - 10) / tamanhoTelasCanvas.X;
+        const proporcaoTamanhoX = (tamanhoContentTelas.X - 10) / tamanhoTelasCanvas.X;
         moverScroll.style.display = "block";
         moverScroll.style.width = (tamanhoContentTelaPreview.X * proporcaoTamanhoX) + "px";
         moverScroll.style.height = tamanhoContentTelaPreview.Y + "px";
     }
     else if (tamanhoTelasCanvas.Y > (tamanhoContentTelas.Y - 10)) {
-        let proporcaoTamanhoY = (tamanhoContentTelas.Y - 10) / tamanhoTelasCanvas.Y;
+        const proporcaoTamanhoY = (tamanhoContentTelas.Y - 10) / tamanhoTelasCanvas.Y;
         moverScroll.style.display = "block";
         moverScroll.style.width = tamanhoContentTelaPreview.X + "px";
         moverScroll.style.height = (tamanhoContentTelaPreview.Y * proporcaoTamanhoY) + "px";;
@@ -1503,8 +1477,7 @@ function tamanhoMoverScroll() {//De acordo com o zoom que é dado muda o tamanho
 }
 
 function moverScrollNaTelaPreview(mouseX, mouseY) {//Mover o "moverScroll" com o mouse.
-    let metadeLargura = moverScroll.offsetWidth / 2;
-    let metadeAltura = moverScroll.offsetHeight / 2;
+    const metadeLargura = (moverScroll.offsetWidth / 2), metadeAltura = (moverScroll.offsetHeight / 2);
 
     if (mouseX <= metadeLargura) {
         moverScroll.style.left = "0px";
@@ -1529,13 +1502,13 @@ function moverScrollNaTelaPreview(mouseX, mouseY) {//Mover o "moverScroll" com o
 }
 
 function moverScrollContentTelas(topPos, leftPos) {//Mudar o valor dos Scroll's do contentTelas movendo o "moverScroll".
-    let mult = (contentTelas.scrollWidth) / telaPreview.offsetWidth;
+    const mult = (contentTelas.scrollWidth) / telaPreview.offsetWidth;
     contentTelas.scrollTop = (topPos * mult);
     contentTelas.scrollLeft = (leftPos * mult);
 }
 
 function contentTelasMoverScroll(scrollTop, scrollLeft) {//Mover o "moverScroll" quando o valor dos Scroll's do contentTelas mudar.
-    let mult = (contentTelas.scrollWidth) / telaPreview.offsetWidth;
+    const mult = (contentTelas.scrollWidth) / telaPreview.offsetWidth;
     moverScroll.style.top = (scrollTop / (mult)) + "px";
     moverScroll.style.left = (scrollLeft / (mult)) + "px";
 }
@@ -1543,23 +1516,23 @@ function contentTelasMoverScroll(scrollTop, scrollLeft) {//Mover o "moverScroll"
 
 function salvarDesenho() {
     desenhoCompleto();
-    let blob = dataURLtoBlob(ctxDesenho.canvas.toDataURL("imagem/png"));
-    let url = URL.createObjectURL(blob);
-    let salvarImagem = document.getElementById("salvarImagem");
+    const blob = dataURLtoBlob(ctxDesenho.canvas.toDataURL("imagem/png"));
+    const url = URL.createObjectURL(blob);
+    const salvarImagem = document.getElementById("salvarImagem");
     salvarImagem.setAttribute("download", nomeDoProjeto + ".png");
     salvarImagem.setAttribute("href", url);
     salvarImagem.click();
     function dataURLtoBlob(dataURI) {
-        let BASE64_MARKER = ";base64,";
-        let base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
-        let base64 = dataURI.substring(base64Index);
-        let raw = window.atob(base64);
-        let rawLength = raw.length;
+        const BASE64_MARKER = ";base64,";
+        const base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
+        const base64 = dataURI.substring(base64Index);
+        const raw = window.atob(base64);
+        const rawLength = raw.length;
         let array = new Uint8Array(rawLength);
         for (i = 0; i < rawLength; i++) {
             array[i] = raw.charCodeAt(i);
         }
-        let blob = new Blob([array], { type: "image/png" });
+        const blob = new Blob([array], { type: "image/png" });
         return blob;
     }
 }
@@ -1573,7 +1546,7 @@ function salvarProjeto() {
             visivel: arrayCamadas[i].visivel,
         };
     }
-    let objProjeto = {
+    const objProjeto = {
         nomeProjeto: nomeDoProjeto,
         resolucaoDoProjeto: resolucaoProjeto,
         corDeFundo: corDeFundoEscolhida,
@@ -1581,10 +1554,10 @@ function salvarProjeto() {
         camadas: dadosCamadas
     }
 
-    let data = encode(JSON.stringify(objProjeto));
-    let blob = new Blob([data], { type: "application/octet-stream;charset=utf-8" });
-    let url = URL.createObjectURL(blob);
-    var link = document.getElementById("salvarProjeto");
+    const data = encode(JSON.stringify(objProjeto));
+    const blob = new Blob([data], { type: "application/octet-stream;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.getElementById("salvarProjeto");
     link.setAttribute("href", url);
     link.setAttribute("target", "_blank");
     link.setAttribute("download", nomeDoProjeto + ".gm");
@@ -1600,17 +1573,17 @@ function salvarProjeto() {
 
 function abrirProjeto() {
     let projetoSalvo = null;
-    let input = document.createElement("input");
+    const input = document.createElement("input");
     input.setAttribute("type", "file");
     input.addEventListener("change", carregarArquivoProjeto, false);
 
     function carregarArquivoProjeto(e) {
-        let arquivo = e.target.files[0];
+        const arquivo = e.target.files[0];
         if (!arquivo) {
             alert("Erro ao carregar projeto, tente novamente!");
         }
         else {
-            let extencao = e.target.files[0].name.split('.').pop().toLowerCase();
+            const extencao = e.target.files[0].name.split('.').pop().toLowerCase();
             if (extencao === "gm") {
                 let reader = new FileReader();
                 reader.onload = function (e) {
@@ -1628,12 +1601,12 @@ function abrirProjeto() {
     }
 
     function carregarProjeto() {
-        let objProjeto = JSON.parse(projetoSalvo);
+        const objProjeto = JSON.parse(projetoSalvo);
         nomeDoProjeto = objProjeto.nomeProjeto;
         resolucaoProjeto = objProjeto.resolucaoDoProjeto;
         proporcaoProjeto = resolucaoProjeto.largura / resolucaoProjeto.altura;
         corDeFundoEscolhida = objProjeto.corDeFundo;
-        let numCamadas = objProjeto.numeroDeCamadas;
+        const numCamadas = objProjeto.numeroDeCamadas;
         let cor;
         arrayCamadas = [];
         arrayVoltarAlteracoes = [];
@@ -1664,16 +1637,16 @@ function abrirProjeto() {
         projetoCriado = true;
         txtResolucao.value = resolucaoProjeto.largura + ", " + resolucaoProjeto.altura;
         for (let i = 0; i < numCamadas; i++) {
-            let opacidade = objProjeto.camadas[i].opacidade;
+            const opacidade = objProjeto.camadas[i].opacidade;
             arrayCamadas[i].porcentagemOpa.value = Math.round(opacidade * 100) + "%";
             arrayCamadas[i].opacidade = opacidade;
             arrayCamadas[i].camada.style.opacity = opacidade;
-            let imgData = new Image();
+            const imgData = new Image();
             imgData.src = objProjeto.camadas[i].imgDataCamada;
             imgData.onload = function () {
                 arrayCamadas[i].ctx.drawImage(imgData, 0, 0);
-                let opacidadeCamada = arrayCamadas[i].opacidade;
-                let larguraMiniatura = arrayCamadas[i].ctxMiniatura.canvas.width, alturaMiniatura = arrayCamadas[i].ctxMiniatura.canvas.height;
+                const opacidadeCamada = arrayCamadas[i].opacidade;
+                const larguraMiniatura = arrayCamadas[i].ctxMiniatura.canvas.width, alturaMiniatura = arrayCamadas[i].ctxMiniatura.canvas.height;
                 arrayCamadas[i].ctxMiniatura.clearRect(0, 0, larguraMiniatura, alturaMiniatura);
                 arrayCamadas[i].ctxMiniatura.globalAlpha = opacidadeCamada;
                 arrayCamadas[i].ctxMiniatura.drawImage(arrayCamadas[i].ctx.canvas, 0, 0, larguraMiniatura, alturaMiniatura);
@@ -1707,21 +1680,20 @@ function janelaSeletorDeCor(AcharCor) {
         codRGB = document.getElementById("codRGB"),
         codHEX = document.getElementById("codHEX");
 
-    const widthBarra = barraeEspectroCor.width, heightBarra = barraeEspectroCor.height;//Altura e largura do canvas "barraeEspectroCor" (Resolução).
-    const widthGradiente = gradienteCor.width, heightGradiente = gradienteCor.height;//Altura e largura do canvas "gradienteCor" (Resolução).
-    const cursorGradiente = document.getElementById("cursorGradiente");//Cursor que fica na "gradienteCor".
+    const widthBarra = barraeEspectroCor.width, heightBarra = barraeEspectroCor.height,//Altura e largura do canvas "barraeEspectroCor" (Resolução).
+        widthGradiente = gradienteCor.width, heightGradiente = gradienteCor.height,//Altura e largura do canvas "gradienteCor" (Resolução).
+        cursorGradiente = document.getElementById("cursorGradiente");//Cursor que fica na "gradienteCor".
 
-    let ctxBarra = barraeEspectroCor.getContext("2d");
-    let ctxGradiente = gradienteCor.getContext("2d");
-    let rgbBarra = { R: 255, G: 0, B: 0 };
-    let hsvBarra = { H: 0, S: 100, V: 100 };
+    const ctxBarra = barraeEspectroCor.getContext("2d"),
+        ctxGradiente = gradienteCor.getContext("2d");
+    let rgbBarra = { R: 255, G: 0, B: 0 },
+        hsvBarra = { H: 0, S: 100, V: 100 };
     let corParaAchar = {};//Armazena a cor a ser encontrada no formato RGB que foi digitada no "codRGB".
-    let clickBarra = false;//Saber se o click do mouse foi ou está pressionado em cima do "barraeEspectroCor".
-    let clickGradiente = false;//Saber se o click do mouse foi ou está pressionado em cima do "gradienteCor".
-    let clickMoverJanela = false;
+    let clickBarra = false,//Saber se o click do mouse foi ou está pressionado em cima do "barraeEspectroCor".
+        clickGradiente = false,//Saber se o click do mouse foi ou está pressionado em cima do "gradienteCor".
+        clickMoverJanela = false;
     let posMouseMoverJanela = {};
-    let posMouseSeletorCorX = 0;//Armazena a posição atual no eixo X na "janelaSelecionarCor";
-    let posMouseSeletorCorY = 0;//Armazena a posição atual no eixo Y na "janelaSelecionarCor";    
+    let posMouseSeletorCorX = 0, posMouseSeletorCorY = 0;//Armazena a posição do mouse na "janelaSelecionarCor";    
     codRGB.value = "255, 0, 0";
     codHEX.value = "#ff0000";
 
@@ -1736,11 +1708,9 @@ function janelaSeletorDeCor(AcharCor) {
 
     janelaSelecionarCor.addEventListener("mousemove", pegarPosMouse);//Calcula a posição do mouse na "janelaSelecionarCor"
     function pegarPosMouse(e) {
-        let coordenadas = janelaSelecionarCor.getBoundingClientRect();
-        let scrollposicaoY = document.body.scrollTop || document.documentElement.scrollTop;
-        let scrollposicaoX = document.body.scrollLeft || document.documentElement.scrollLeft;
-        posMouseSeletorCorX = e.pageX - coordenadas.left - scrollposicaoX;
-        posMouseSeletorCorY = e.pageY - coordenadas.top - scrollposicaoY;
+        const posMouse = pegarPosicaoMouse(janelaSelecionarCor, e);
+        posMouseSeletorCorX = posMouse.X;
+        posMouseSeletorCorY = posMouse.Y;
         if (clickGradiente === true) {
             moverCursor2();
         }
@@ -1751,12 +1721,8 @@ function janelaSeletorDeCor(AcharCor) {
 
     colorPaintContent.addEventListener("mousemove", function (e) {
         if (clickMoverJanela === true && clickBarra === false && clickGradiente === false) {
-            let coordenadas = colorPaintContent.getBoundingClientRect();
-            let scrollposicaoY = document.body.scrollTop || document.documentElement.scrollTop;
-            let scrollposicaoX = document.body.scrollLeft || document.documentElement.scrollLeft;
-            let posMouseXcolorPaintContent = e.pageX - coordenadas.left - scrollposicaoX;
-            let posMouseYcolorPaintContent = e.pageY - coordenadas.top - scrollposicaoY;
-            moverjanelaSelecionarCorNaPagina(posMouseXcolorPaintContent, posMouseYcolorPaintContent);
+            const posMouse = pegarPosicaoMouse(colorPaintContent, e);
+            moverjanelaSelecionarCorNaPagina(posMouse.X, posMouse.Y);
         }
     });
 
@@ -1821,10 +1787,8 @@ function janelaSeletorDeCor(AcharCor) {
     });
 
     document.addEventListener("mouseup", function () {
-        clickGradiente = false;
         clickBarra = false;
         clickGradiente = false;
-        clickBarra = false;
         clickMoverJanela = false;
     });
 
@@ -1885,7 +1849,7 @@ function janelaSeletorDeCor(AcharCor) {
             }
             arrayCoresSalvas = novoArray;
             for (let i = 0; i < arrayCoresSalvas.length; i++) {
-                let id = "cor" + (i);
+                const id = "cor" + (i);
                 arrayCoresSalvas[i].id = i;
                 arrayCoresSalvas.selecionado = false;
                 arrayCoresSalvas[i].elemento.setAttribute("id", id);
@@ -1903,9 +1867,8 @@ function janelaSeletorDeCor(AcharCor) {
 
     function bttCorSalva() {//O que ocorre quando clicamos numa cor salva.
         if (janelaSelecionarCorVisivel === false) {
-            let txtId = this.getAttribute("id");
-            id = txtId.substring(3, 7);
-            id = parseInt(id);
+            const txtId = this.getAttribute("id");
+            const id = parseInt(txtId.substring(3, 7));
             arrayCoresSalvas[id].selecionado = true;
             arrayCoresSalvas[id].elemento.style.border = "1px solid rgb(255, 255, 255)";
             corEscolhidaPrincipal = arrayCoresSalvas[id].cor;
@@ -1985,12 +1948,9 @@ function janelaSeletorDeCor(AcharCor) {
     }
 
     function moverjanelaSelecionarCorNaPagina(x, y) {
-        let novaPosicaoXJanela = x - posMouseMoverJanela.X;
-        let novaPosicaoYJanela = y - posMouseMoverJanela.Y;
-        let limiteDireita = x + (janelaSelecionarCor.offsetWidth - posMouseMoverJanela.X);
-        let limiteEsquerda = x - (posMouseMoverJanela.X);
-        let limiteCima = y - (posMouseMoverJanela.Y);
-        let limiteBaixo = y + (janelaSelecionarCor.offsetHeight - posMouseMoverJanela.Y);
+        const novaPosicaoXJanela = x - posMouseMoverJanela.X, novaPosicaoYJanela = y - posMouseMoverJanela.Y,
+            limiteDireita = x + (janelaSelecionarCor.offsetWidth - posMouseMoverJanela.X), limiteEsquerda = x - (posMouseMoverJanela.X),
+            limiteCima = y - (posMouseMoverJanela.Y), limiteBaixo = y + (janelaSelecionarCor.offsetHeight - posMouseMoverJanela.Y);
 
         if (limiteDireita < colorPaintContent.offsetWidth && limiteEsquerda > 0 && limiteCima > 50 && limiteBaixo < colorPaintContent.offsetHeight - 7) {
             janelaSelecionarCor.style.left = novaPosicaoXJanela + "px";
@@ -2031,8 +1991,7 @@ function janelaSeletorDeCor(AcharCor) {
     }
 
     function encontrarCorDoCodigoNoGradiente(s, v) {
-        let posx = (gradienteCor.offsetWidth / 100) * s;
-        let posy = gradienteCor.offsetHeight - ((gradienteCor.offsetHeight / 100) * v);
+        const posx = (gradienteCor.offsetWidth / 100) * s, posy = gradienteCor.offsetHeight - ((gradienteCor.offsetHeight / 100) * v);
         moverCursorGradiente(posx - 10, posy - 10);
         calcularPosiDaCorCursorBarra(hsvBarra.H);
     }
@@ -2049,7 +2008,7 @@ function janelaSeletorDeCor(AcharCor) {
     }
 
     function calcularCorCursorBarra(x) {
-        let H = ((x * 360) / barraeEspectroCor.offsetWidth);
+        const H = ((x * 360) / barraeEspectroCor.offsetWidth);
         let cor;
         if (H === 360) {
             cursorBarra.style.backgroundColor = "rgb( 255, 0, 0)";
@@ -2066,8 +2025,8 @@ function janelaSeletorDeCor(AcharCor) {
     }
 
     function calcularPosiDaCorCursorBarra(h) {
-        let posx = (barraeEspectroCor.offsetWidth / 360) * h;
-        let cor = hsvToRgb(h, 100, 100);
+        const posx = (barraeEspectroCor.offsetWidth / 360) * h;
+        const cor = hsvToRgb(h, 100, 100);
         cursorBarra.style.backgroundColor = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
         rgbBarra = cor;
         moverCursorBarra(posx, false);
@@ -2088,8 +2047,8 @@ function janelaSeletorDeCor(AcharCor) {
         if (V == 0) {
             V = 0.02;
         }
-        let cor = hsvToRgb(hsvBarra.H, S, V);
-        let stringCorRGB = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
+        const cor = hsvToRgb(hsvBarra.H, S, V);
+        const stringCorRGB = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
         cursorGradiente.style.backgroundColor = stringCorRGB;
         corSelecionada.style.backgroundColor = stringCorRGB;
         codHEX.value = rgbTohex(cor);
@@ -2099,7 +2058,7 @@ function janelaSeletorDeCor(AcharCor) {
 
     function preencheBarraEspectro() {
         ctxBarra.rect(0, 0, widthBarra, heightBarra);
-        let gradiente = ctxBarra.createLinearGradient(0, 0, widthBarra, 0);
+        const gradiente = ctxBarra.createLinearGradient(0, 0, widthBarra, 0);
         gradiente.addColorStop(0, "rgb(255, 0, 0)");
         gradiente.addColorStop(0.16666666666666666667, "rgb(255, 255, 0)");
         gradiente.addColorStop(0.33333333333333333334, "rgb(0, 255, 0)");
@@ -2116,13 +2075,13 @@ function janelaSeletorDeCor(AcharCor) {
         ctxGradiente.fillStyle = "rgb(" + rgbBarra.R + ", " + rgbBarra.G + ", " + rgbBarra.B + ")";
         ctxGradiente.fillRect(0, 0, widthGradiente, heightGradiente);
 
-        let gradienteBranco = ctxBarra.createLinearGradient(0, 0, widthGradiente, 0);
+        const gradienteBranco = ctxBarra.createLinearGradient(0, 0, widthGradiente, 0);
         gradienteBranco.addColorStop(0, "rgba(255, 255, 255, 1)");
         gradienteBranco.addColorStop(1, "rgba(255, 255, 255, 0)");
         ctxGradiente.fillStyle = gradienteBranco;
         ctxGradiente.fillRect(0, 0, widthGradiente, heightGradiente);
 
-        let gradientePreto = ctxBarra.createLinearGradient(0, 0, 0, heightGradiente);
+        const gradientePreto = ctxBarra.createLinearGradient(0, 0, 0, heightGradiente);
         gradientePreto.addColorStop(0, "rgba(0, 0, 0, 0)");
         gradientePreto.addColorStop(1, "rgba(0, 0, 0, 1)");
         ctxGradiente.fillStyle = gradientePreto;
@@ -2144,10 +2103,17 @@ function fecharJanelaSelecionarCor() {
     arrayFerramentas[ferramentaAnterior - 1].ferramenta.click();//Voltar para a ferramenta selecionada antes de abrir a "janelaSelecionarCor".
 }
 
+function pegarPosicaoMouse(elemento, e) {
+    const pos = elemento.getBoundingClientRect();
+    return {
+        X: e.clientX - pos.left,
+        Y: e.clientY - pos.top
+    }
+}
+
 //================================================================================================================================
 function hexToRgb(hex) {
-    let resul;
-    resul = hex.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
+    const resul = hex.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
     if (resul) {
         return resul.slice(1, 4).map(function (x) { return parseInt(x, 16); });
     }
@@ -2155,7 +2121,7 @@ function hexToRgb(hex) {
 }
 
 function rgbTohex(cor) {
-    let rgb = cor.B | (cor.G << 8) | (cor.R << 16);
+    const rgb = cor.B | (cor.G << 8) | (cor.R << 16);
     return '#' + (0x1000000 + rgb).toString(16).slice(1)
 }
 
