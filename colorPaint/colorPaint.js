@@ -482,7 +482,7 @@ function colorPaint() {
         if (e.code === "ControlRight" || e.code === "ControlLeft" || e.keyCode === 17) {
             e.preventDefault();
             ctrlPressionado = false;
-            if (ferramentaAnterior === 1) {
+            if (ferramentaAnterior === 1 && ferramentaSelecionada === 3) {
                 arrayFerramentas[0].ferramenta.click();
                 cursorComparaContaGotas.style.display = "none";
             }
@@ -735,6 +735,7 @@ function colorPaint() {
                 bttRefazer.style.opacity = "1";
             }
             desenhoNoPreviewEIcone();
+            desenhoCompleto();
         }
     }
 
@@ -762,6 +763,7 @@ function colorPaint() {
                 bttRefazer.style.opacity = "0.5";
             }
             desenhoNoPreviewEIcone();
+            desenhoCompleto();
         }
     }
 
@@ -1813,21 +1815,21 @@ function janelaSeletorDeCor(AcharCor) {
         let corJaSalva = false;
         bttRemoverCorSalva.style.display = "block";
         for (let i = 0; i < arrayCoresSalvas.length; i++) {
-            let cor = arrayCoresSalvas[i].cor;
+            const cor = arrayCoresSalvas[i].cor;
             if (cor.R === corEscolhida.R && cor.G === corEscolhida.G && cor.B === corEscolhida.B) {
                 corJaSalva = true;
                 alert("Essa cor já está salva!");
             }
         }
         if (corJaSalva === false) {
-            let cor = "background-color: rgb(" + corEscolhida.R + ", " + corEscolhida.G + ", " + corEscolhida.B + ");";
-            let id = "cor" + (arrayCoresSalvas.length);
-            let corSalva = document.createElement("div");
-            let div = document.createElement("div");
+            const cor = "background-color: rgb(" + corEscolhida.R + ", " + corEscolhida.G + ", " + corEscolhida.B + ");";
+            const id = "cor" + (arrayCoresSalvas.length);
+            const corSalva = document.createElement("div");
+            const div = document.createElement("div");
             corSalva.setAttribute("id", id);
             corSalva.setAttribute("class", "corSalva cursor");
             corSalva.setAttribute("style", cor);
-            let infoCorSalva = { id: arrayCoresSalvas.length, elemento: corSalva, cor: { R: corEscolhida.R, G: corEscolhida.G, B: corEscolhida.B }, selecionado: false }
+            const infoCorSalva = { id: arrayCoresSalvas.length, elemento: corSalva, cor: { R: corEscolhida.R, G: corEscolhida.G, B: corEscolhida.B }, selecionado: false }
             arrayCoresSalvas.push(infoCorSalva);
             coresSalvas.appendChild(corSalva);
             corSalva.appendChild(div);
