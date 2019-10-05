@@ -294,7 +294,8 @@ function colorPaint() {
                 const corAtual = "25px solid rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
                 comparaCoresContaGotas.style.borderLeft = corAtual;
                 comparaCoresContaGotas.style.borderBottom = corAtual;
-                ferramentaContaGotas(e.clientX, e.clientY, posicaoMouseX, posicaoMouseY, true);
+                const mousePos = pegarPosicaoMouse(janelaPrincipal, e);
+                ferramentaContaGotas(mousePos.X, mousePos.Y, posicaoMouseX, posicaoMouseY, true);
             }
             else if (ferramentaSelecionada === 4) {//Linha.
                 coordenadaClick[0] = { x: posicaoMouseX, y: posicaoMouseY };
@@ -344,7 +345,8 @@ function colorPaint() {
                 ferramentaPincel(posicaoMouseX, posicaoMouseY);
             }
             else if (ferramentaSelecionada === 3) {//Conta-gotas.
-                ferramentaContaGotas(e.clientX, e.clientY, posicaoMouseX, posicaoMouseY, true);
+                const mousePos = pegarPosicaoMouse(janelaPrincipal, e);
+                ferramentaContaGotas(mousePos.X, mousePos.Y, posicaoMouseX, posicaoMouseY, true);
             }
             else if (ferramentaSelecionada === 4) {//Linha.
                 ferramentaLinha(posicaoMouseX, posicaoMouseY);
@@ -410,8 +412,9 @@ function colorPaint() {
                 desenharNaCamada();
                 desenhoNoPreviewEIcone();
             }
-            if (ferramentaSelecionada === 3) {//Conta-gotas.                
-                ferramentaContaGotas(e.clientX, e.clientY, posicaoMouseX, posicaoMouseY, false);
+            if (ferramentaSelecionada === 3) {//Conta-gotas.  
+                const mousePos = pegarPosicaoMouse(janelaPrincipal, e); 
+                ferramentaContaGotas(mousePos.X, mousePos.Y, posicaoMouseX, posicaoMouseY, false);             
                 cursorComparaContaGotas.style.display = "none";
             }
             else if (ferramentaSelecionada === 5) {//Curva. 
@@ -1732,7 +1735,7 @@ function janelaSeletorDeCor(AcharCor) {
         let codCorAchar = this.value;
         codCorAchar = codCorAchar.split(",") || codCorAchar.split(", ");
         for (let i = 0; i < codCorAchar.length; i++) {
-            codCorAchar[i] = parseInt(codCorAchar[i]);//Converte as STRINGS em INT.
+            codCorAchar[i] = parseInt(codCorAchar[i]);
         }
         if (codCorAchar.length === 3) {
             if (codCorAchar[0] <= 255 && codCorAchar[1] <= 255 && codCorAchar[2] <= 255) {
