@@ -269,23 +269,23 @@ p {
     background-image: url("../colorPaint/imagens/icones/ferramentaBaldeDeTinta.png");
 }
 
-#bttZoomMenos{
+#bttZoomMenos {
     background-image: url("../colorPaint/imagens/icones/zoomMenos.png");
 }
 
-#bttZoomMais{
+#bttZoomMais {
     background-image: url("../colorPaint/imagens/icones/zoomMais.png");
 }
 
-#bttDesfazer{
+#bttDesfazer {
     background-image: url("../colorPaint/imagens/icones/iconeDesfazer.png");
 }
 
-#bttRefazer{
+#bttRefazer {
     background-image: url("../colorPaint/imagens/icones/iconeRefazer.png");
 }
 
-.bttHover:hover{
+.bttHover:hover {
     background-color: rgb(13, 13, 13);
 }
 
@@ -388,7 +388,7 @@ p {
     transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
 }
 
-#bttAtalhos{
+#bttAtalhos {
     position: absolute;
     display: inline-block;
     bottom: 10px;
@@ -426,9 +426,14 @@ p {
     color: rgb(110, 110, 110);
 }
 
-#contentTelas {
+#contentCentro {
     position: relative;
     float: left;
+}
+
+#contentTelas {
+    position: relative;
+    width: 100%;
     overflow: auto;
     cursor: url("../colorPaint/imagens/cursor/circle.png") 10 10, pointer;
 }
@@ -439,7 +444,6 @@ p {
     background-image: url("../colorPaint/imagens/fundoTela/transparente.png");
     background-color: rgb(255, 255, 255);
     margin-right: 10px;
-    /* transition: height 100ms ease-in-out, width 100ms ease-in-out, left 100ms ease-in-out, top 100ms ease-in-out; */
 }
 
 #desenho {
@@ -478,12 +482,44 @@ p {
     z-index: 1000;
 }
 
+#barraInferior {
+    display: none;
+    width: 100%;
+    height: 20px;
+    background-color: rgb(37, 37, 37);
+}
+
+#barraInferior input {
+    width: 70px;
+    height: 20px;
+    float: left;
+    background: rgb(27, 27, 27);
+    color: rgb(131, 131, 131);
+    border: none;
+    border-right: 2px solid rgb(60, 60, 60);
+    text-align: center;
+    font-size: 13px;
+    line-height: 20px;
+    outline: none;
+    padding: 2px;
+    text-transform: uppercase;
+    margin-right: 5px;
+}
+
+#barraInferior label {
+    color: rgb(145, 145, 145);
+    line-height: 20px;
+    float: left;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
 #barraLateralDireita {
     position: relative;
     font-size: 12px;
     overflow: hidden;
     overflow-y: auto;
-    color: rgb(131, 131, 131);
+    color: rgb(151, 151, 151);
     float: right;
     width: 300px;
     height: 100%;
@@ -752,7 +788,8 @@ p {
 }
 
 /* ========================================= FIM JANELA CRIAR PROJETO ========================================  */
-#contentJanelaAtalhos{
+
+#contentJanelaAtalhos {
     position: absolute;
     display: none;
     flex-direction: row;
@@ -766,7 +803,7 @@ p {
     background-color: rgba(0, 0, 0, 0.4);
 }
 
-#janelaAtalhos{
+#janelaAtalhos {
     position: relative;
     overflow: hidden;
     background-color: rgb(37, 37, 37);
@@ -776,7 +813,7 @@ p {
     padding: 10px;
 }
 
-#tituloJanelaAtalhos{
+#tituloJanelaAtalhos {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -787,7 +824,7 @@ p {
     color: rgb(151, 151, 151);
 }
 
-#contentAtalhos{
+#contentAtalhos {
     position: relative;
     width: 330px;
     height: 271px;
@@ -799,18 +836,18 @@ p {
     margin-bottom: 4px;
 }
 
-#contentAtalhos ul{
+#contentAtalhos ul {
     position: relative;
     display: inline-block;
     list-style: none;
 }
 
-#contentAtalhos ul li label{
+#contentAtalhos ul li label {
     font-size: 13.5px;
     color: rgb(151, 151, 151);
 }
 
-#botoesAtalhos{
+#botoesAtalhos {
     position: relative;
     display: flex;
     flex-direction: row;
@@ -819,9 +856,10 @@ p {
     height: 35px;
 }
 
-#bttOkAtalhos{
+#bttOkAtalhos {
     width: 100px;
 }
+
 /* ============================================= Seletor de cores ============================================= */
 
 #janelaSelecionarCor {
@@ -939,7 +977,6 @@ p {
 .cursorSeletor {
     position: absolute;
     display: inline-block;
-    /* background-color: rgb(255, 0, 0); */
     width: 20px;
     height: 20px;
     border-radius: 50%;
