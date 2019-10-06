@@ -485,20 +485,20 @@ p {
 #barraInferior {
     display: none;
     width: 100%;
-    height: 20px;
+    height: 15px;
     background-color: rgb(37, 37, 37);
 }
 
 #barraInferior input {
     width: 70px;
-    height: 20px;
+    height: 15px;
     float: left;
     background: rgb(27, 27, 27);
     color: rgb(131, 131, 131);
     border: none;
     border-right: 2px solid rgb(60, 60, 60);
     text-align: center;
-    font-size: 13px;
+    font-size: 11px;
     line-height: 20px;
     outline: none;
     padding: 2px;
@@ -508,9 +508,9 @@ p {
 
 #barraInferior label {
     color: rgb(145, 145, 145);
-    line-height: 20px;
+    line-height: 16px;
     float: left;
-    font-size: 14px;
+    font-size: 11px;
     margin-left: 10px;
 }
 

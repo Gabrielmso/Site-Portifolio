@@ -393,6 +393,15 @@ function colorPaint() {
         }
     });
 
+    txtPorcentagemZoom.addEventListener("keyup", function (e) {
+        if (e.code === "Enter" || e.keyCode === 13) {
+            const valor = parseFloat(((this.value).replace("%", "")).replace(",", "."));
+            if (isNaN(valor) === false) {
+                zoomNoProjeto("porcentagem", true, valor);
+            }
+        }
+    });
+
     document.getElementById("bttAtalhos").addEventListener("click", function () {
         contentJanelaAtalhos.style.display = "flex";
     });
@@ -693,7 +702,7 @@ function colorPaint() {
         contentTools.style.height = (janelaPrincipal.offsetHeight - 90) + "px";
         contentCentro.style.width = contentTools.offsetWidth - barraLateralEsquerda.offsetWidth - barraLateralDireita.offsetWidth - 0.1 + "px";
         contentCentro.style.height = contentTools.style.height;
-        contentTelas.style.height = (contentCentro.offsetHeight - 20) + "px";
+        contentTelas.style.height = (contentCentro.offsetHeight - 15) + "px";
     }
 
     function guardarAlteracoes() {
@@ -1416,19 +1425,19 @@ function zoomNoProjeto(zoom, centralizar, quanto) {
 
     if (zoom === "porcentagem") {
         larguraAtual = resolucaoProjeto.largura * (quanto / 100);
-        alturaAtual = Math.round(larguraAtual / proporcaoProjeto);
+        alturaAtual = larguraAtual / proporcaoProjeto;
         telasCanvas.style.width = larguraAtual + "px";
         telasCanvas.style.height = alturaAtual + "px";
     }
     else if (zoom === true) {
         larguraAtual = larguraAnterior * quanto;
-        alturaAtual = Math.round(larguraAtual / proporcaoProjeto);
+        alturaAtual = larguraAtual / proporcaoProjeto;
         telasCanvas.style.width = larguraAtual + "px";
         telasCanvas.style.height = alturaAtual + "px";
     }
     else if (zoom === false) {
         larguraAtual = larguraAnterior / quanto;
-        alturaAtual = Math.round(larguraAtual / proporcaoProjeto);
+        alturaAtual = larguraAtual / proporcaoProjeto;
         telasCanvas.style.width = larguraAtual + "px";
         telasCanvas.style.height = alturaAtual + "px";
     }
@@ -1532,6 +1541,7 @@ function salvarDesenho() {
     const url = URL.createObjectURL(blob);
     const salvarImagem = document.getElementById("salvarImagem");
     salvarImagem.setAttribute("download", nomeDoProjeto + ".png");
+    salvarImagem.setAttribute("href", url);
     salvarImagem.click();
     function dataURLtoBlob(dataURI) {
         const BASE64_MARKER = ";base64,";
