@@ -74,13 +74,15 @@ p {
 
 #propriedadesFerramentas li ul {
     position: absolute;
+    display: block;
+    height: 0px;
     overflow: hidden;
-    max-height: 0;
     top: 36px;
     list-style: none;
     z-index: 9000;
     border-radius: 5px;
     box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.45);
+    transition: height 180ms ease-in-out;
 }
 
 #propriedadesFerramentas li ul li {
@@ -89,9 +91,9 @@ p {
     background-color: rgb(37, 37, 37);
 }
 
-#propriedadesFerramentas li:hover ul {
+/* #propriedadesFerramentas li:hover ul {
     max-height: 120px;
-}
+} */
 
 #propriedadesFerramentas input[type="text"] {
     width: 35px;

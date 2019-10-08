@@ -56,6 +56,10 @@ function colorPaint() {
     const bttRefazer = document.getElementById("bttRefazer");
     const bttDesfazer = document.getElementById("bttDesfazer");
     const contentCentro = document.getElementById("contentCentro");
+    const arrayPropriedadesFerramentas = [
+        { propriedade: document.getElementById("propriedadeTamanho"), barra: document.getElementById("contentBarraTamanho") },
+        { propriedade: document.getElementById("propriedadeOpacidade"), barra: document.getElementById("contentBarraOpacidade") },
+        { propriedade: document.getElementById("propriedadeDureza"), barra: document.getElementById("contentBarraDureza") }];
     cursorOpacidadeCamada = document.getElementById("cursorOpacidadeCamada");
     contentTelas = document.getElementById("contentTelas");
     telasCanvas = document.getElementById("telasCanvas");
@@ -85,7 +89,6 @@ function colorPaint() {
     let pintando = false;//Saber se o mouse está pressionado na "contentTelas".
     let ctrlPressionado = false;//Saber se os Ctrl's estão pressionados.
     let clickCurva = false;//Saber o momento de curvar a linha feita com a ferramenta Curva.
-
     arrayFerramentas = [{ ferramenta: document.getElementById("pincel"), nome: "Pincel", id: 1 },//Armazena as ferramentas.
     { ferramenta: document.getElementById("borracha"), nome: "Borracha", id: 2 },
     { ferramenta: document.getElementById("contaGotas"), nome: "Conta-gotas", id: 3 },
@@ -119,6 +122,15 @@ function colorPaint() {
                 ctxPintar.clearRect(0, 0, resolucaoProjeto.largura, resolucaoProjeto.altura);
             }
         });
+    }
+
+    for (let i = 0; i < arrayPropriedadesFerramentas.length; i++) {
+        arrayPropriedadesFerramentas[i].propriedade.addEventListener("mouseenter", function () {
+            if (pintando === false) { arrayPropriedadesFerramentas[i].barra.style.height = "36px"; }
+        })
+        arrayPropriedadesFerramentas[i].propriedade.addEventListener("mouseleave", function () {
+            arrayPropriedadesFerramentas[i].barra.style.height = "0px";
+        })
     }
 
     arrayFerramentas[2].ferramenta.addEventListener("click", function () {//Criar o desenho completo para selecionar a cor.
