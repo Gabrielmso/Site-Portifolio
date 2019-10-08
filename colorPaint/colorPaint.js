@@ -30,6 +30,7 @@ let pintar;//Armazena o canvas onde ocorrerá os "eventos" de pintura.
 let ctxPintar;//Armazena o contexto 2d de "pintar".
 let tamanhoFerramenta = 5;//Armazena a espessura do traço das ferramentas em pixels.
 let opacidadeFerramenta = 100;//Armazena o valor da opacidade da cor de O a 100.
+let durezaFerramenta = 100;
 let projetoCriado = false;//Saber se existe projeto já criado.
 let txtCorEscolhida;//Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
 let txtResolucao;//Recebe a string da resolução que o usuário escolheu para o projeto para informar ao usuário.
@@ -52,6 +53,8 @@ function colorPaint() {
     const cursorOpacidade = document.getElementById("cursorOpacidade");
     const barraTamanho = document.getElementById("barraTamanho");
     const cursorTamanho = document.getElementById("cursorTamanho");
+    const barraDureza = document.getElementById("barraDureza");
+    const cursorDureza = document.getElementById("cursorDureza");
     const barraOpacidadeCamada = document.getElementById("barraOpacidadeCamada");
     const bttRefazer = document.getElementById("bttRefazer");
     const bttDesfazer = document.getElementById("bttDesfazer");
@@ -84,6 +87,7 @@ function colorPaint() {
     let posicaoMouseX, posicaoMouseY;//Armazena a posição do mouse no tela canvas em relação a resolução do projeto.
     let mudarTamanhoFerramenta = false;//Saber se o mouse está pressionado na "barraTamanho".
     let mudarOpacidadeFerramenta = false;//Saber se o mouse está pressionado na "barraOpacidade". 
+    let mudarDurezaFerramenta = false;//Saber se o mouse está pressionado na "barraDureza". 
     let mudarOpacidadeCamada = false;//Saber se o mouse está pressionado na "barraOpacidadeCamada". 
     let moverScrollPreview = false;//Saber se o mouse está pressionado na "contentTelaPreview".
     let pintando = false;//Saber se o mouse está pressionado na "contentTelas".
@@ -96,7 +100,7 @@ function colorPaint() {
     { ferramenta: document.getElementById("curva"), nome: "Curva", id: 5 },
     { ferramenta: document.getElementById("retangulo"), nome: "Retângulo", id: 6 },
     { ferramenta: document.getElementById("baldeDeTinta"), nome: "Balde de tinta", id: 7 },
-    { ferramenta: document.getElementById("elipse"), nome: "Elipse", id: 8 }]
+    { ferramenta: document.getElementById("elipse"), nome: "Elipse", id: 8 }];
 
     menuPadrao();
     ajustarContents();
@@ -124,6 +128,12 @@ function colorPaint() {
         });
     }
 
+    arrayFerramentas[2].ferramenta.addEventListener("click", function () {//Criar o desenho completo para selecionar a cor.
+        if (projetoCriado === true) {
+            desenhoCompleto();
+        };
+    });
+
     for (let i = 0; i < arrayPropriedadesFerramentas.length; i++) {
         arrayPropriedadesFerramentas[i].propriedade.addEventListener("mouseenter", function () {
             if (pintando === false) { arrayPropriedadesFerramentas[i].barra.style.height = "36px"; }
@@ -132,12 +142,6 @@ function colorPaint() {
             arrayPropriedadesFerramentas[i].barra.style.height = "0px";
         })
     }
-
-    arrayFerramentas[2].ferramenta.addEventListener("click", function () {//Criar o desenho completo para selecionar a cor.
-        if (projetoCriado === true) {
-            desenhoCompleto();
-        };
-    });
 
     document.getElementById("bttCriarNovoProjeto").addEventListener("click", function () {
         if (projetoCriado === false) {
@@ -268,6 +272,12 @@ function colorPaint() {
         calculaTamanhoFerramenta(e);
     })
 
+    barraDureza.addEventListener("mousedown", function (e) {
+        if (ferramentaSelecionada === 3 || clickCurva === true) { return };
+        mudarDurezaFerramenta = true;
+        calculaDurezaFerramenta(e);
+    })
+
     barraOpacidadeCamada.addEventListener("mousedown", function (e) {
         mudarOpacidadeCamada = true;
         calculaOpacidadeCamada(e);
@@ -281,7 +291,7 @@ function colorPaint() {
                 guardarAlteracoes();
             }
             arrayCamadas[camadaSelecionada].ctx.globalCompositeOperation = "source-over";
-            ctxPintar.filter = "blur(0px)"
+            ctxPintar.filter = "blur("+ calculaBlur() +"px)"
             ctxPintar.lineWidth = tamanhoFerramenta;
             ctxPintar.strokeStyle = "rgba(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ", " + opacidadeFerramenta + ")";
             if (ferramentaSelecionada === 1) {//Pincel.
@@ -387,6 +397,9 @@ function colorPaint() {
         else if (mudarOpacidadeFerramenta === true) {
             calculaOpacidadeFerramenta(e);
         }
+        else if (mudarDurezaFerramenta === true) {
+            calculaDurezaFerramenta(e);
+        }
         else if (mudarOpacidadeCamada === true) {
             calculaOpacidadeCamada(e);
         }
@@ -452,6 +465,7 @@ function colorPaint() {
         }
         mudarOpacidadeFerramenta = false;
         mudarTamanhoFerramenta = false;
+        mudarDurezaFerramenta = false;
         if (mudarOpacidadeCamada === true) {
             desenhoNoPreviewEIcone();
             mudarOpacidadeCamada = false;
@@ -691,6 +705,33 @@ function colorPaint() {
             txtOpacidadeFerramenta.value = porcentagem + "%";
         }
         opacidadeFerramenta = porcentagem / 100;
+    }
+
+    function calculaDurezaFerramenta(e) {
+        const txtDurezaFerramenta = document.getElementById("txtDurezaFerramenta");
+        const mouse = pegarPosicaoMouse(barraDureza, e);
+        let porcentagem = Math.round((mouse.X * 100) / barraDureza.offsetWidth);
+        if (mouse.X < 1) {
+            porcentagem = 0;
+            cursorDureza.style.left = "-7px";
+            txtDurezaFerramenta.value = "0%";
+        }
+        else if (mouse.X >= 190) {
+            porcentagem = 100;
+            cursorDureza.style.left = "183px";
+            txtDurezaFerramenta.value = "100%";
+        }
+        else {
+            cursorDureza.style.left = mouse.X - 7 + "px";
+            txtDurezaFerramenta.value = porcentagem + "%";
+        }
+        durezaFerramenta = porcentagem / 100;
+    }
+
+    function calculaBlur() {
+        const maximoBlur = tamanhoFerramenta / 7;
+        const dureza = maximoBlur - (maximoBlur * durezaFerramenta);
+        return (dureza).toFixed(2);
     }
 
     function menuPadrao() {

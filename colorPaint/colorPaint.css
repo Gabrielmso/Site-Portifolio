@@ -91,10 +91,6 @@ p {
     background-color: rgb(37, 37, 37);
 }
 
-/* #propriedadesFerramentas li:hover ul {
-    max-height: 120px;
-} */
-
 #propriedadesFerramentas input[type="text"] {
     width: 35px;
     display: inline-block;
@@ -118,18 +114,18 @@ p {
 .barraPropriedade {
     position: relative;
     width: 190px;
-    height: 10px;
+    height: 13px;
     border-radius: 10px;
     border: 1px solid rgb(100, 100, 100);
     background-color: rgb(58, 58, 58);
     margin-left: 10px;
-    margin-top: 7px;
+    margin-top: 6px;
 }
 
 .cursorPropriedade {
     position: absolute;
     border-radius: 50%;
-    top: -3px;
+    top: -2px;
     left: -7px;
     width: 15px;
     height: 15px;
