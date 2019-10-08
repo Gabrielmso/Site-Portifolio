@@ -396,7 +396,7 @@ function colorPaint() {
     txtPorcentagemZoom.addEventListener("keyup", function (e) {
         if (e.code === "Enter" || e.keyCode === 13) {
             const valor = parseFloat(((this.value).replace("%", "")).replace(",", "."));
-            if (isNaN(valor) === false) {
+            if (isNaN(valor) === false && valor >= 1) {
                 zoomNoProjeto("porcentagem", true, valor);
             }
         }
