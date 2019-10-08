@@ -269,6 +269,7 @@ function colorPaint() {
                 guardarAlteracoes();
             }
             arrayCamadas[camadaSelecionada].ctx.globalCompositeOperation = "source-over";
+            ctxPintar.filter = "blur(0px)"
             ctxPintar.lineWidth = tamanhoFerramenta;
             ctxPintar.strokeStyle = "rgba(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ", " + opacidadeFerramenta + ")";
             if (ferramentaSelecionada === 1) {//Pincel.
@@ -552,9 +553,7 @@ function colorPaint() {
 
     function calculaOpacidadeCamada(e) {
         const mouse = pegarPosicaoMouse(barraOpacidadeCamada, e);
-        let porcentagem = (mouse.X * 100) / barraOpacidadeCamada.offsetWidth;
-        porcentagem = Math.round(porcentagem);
-
+        let porcentagem = Math.round((mouse.X * 100) / barraOpacidadeCamada.offsetWidth);
         if (mouse.X <= 1) {
             porcentagem = 1;
             cursorOpacidadeCamada.style.left = "-7px";
@@ -664,8 +663,7 @@ function colorPaint() {
     function calculaOpacidadeFerramenta(e) {
         const txtOpacidadeFerramenta = document.getElementById("txtOpacidadeFerramenta");
         const mouse = pegarPosicaoMouse(barraOpacidade, e);
-        let porcentagem = (mouse.X * 100) / barraOpacidade.offsetWidth;
-        porcentagem = Math.round(porcentagem);
+        let porcentagem = Math.round((mouse.X * 100) / barraOpacidade.offsetWidth);
         if (mouse.X <= 1) {
             porcentagem = 1;
             cursorOpacidade.style.left = "-7px";
@@ -2192,7 +2190,7 @@ function hsvToRgb(h, s, v) {
     v = Math.max(0, Math.min(100, v));
     s = s / 100;
     v = v / 100;
-    if (s == 0) {//Cinza
+    if (s == 0) {
         r = g = b = v;
         return [
             Math.round(r * 255),
@@ -2200,9 +2198,9 @@ function hsvToRgb(h, s, v) {
             Math.round(b * 255)
         ];
     }
-    h /= 60; // sector 0 to 5
+    h /= 60;
     i = Math.floor(h);
-    f = h - i; // factorial part of h
+    f = h - i;
     p = v * (1 - s);
     q = v * (1 - s * f);
     t = v * (1 - s * (1 - f));
