@@ -106,8 +106,43 @@
     <header id="colorPaintContent">
         <div id="janelaPrincipal">
             <div id="barraSuperior">
-                <div id="propriedadesFerramentas">
-                    <div id="propriedadeTamanho" class="propriedades noSelection">
+                <!-- <div id="propriedadesFerramentas"> -->
+                <ul id="propriedadesFerramentas" class="noSelection">
+                    <li>
+                        <label>Tamanho&#9662; </label><input type="text" id="txtTamanhoFerramenta" value="5px">
+                        <ul>
+                            <li>
+                                <div id="barraTamanho" class="barraPropriedade">
+                                    <div id="cursorTamanho" class="cursorPropriedade cursor"></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <label>Opacidade&#9662; </label><input type="text" id="txtOpacidadeFerramenta" value="100%">
+                        <ul>
+                            <li>
+                                <div id="barraOpacidade" class="barraPropriedade">
+                                    <div id="cursorOpacidade" class="cursorPropriedade cursor"></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <label>Dureza&#9662; </label><input type="text" id="txtDurezaFerramenta" value="100%">
+                    </li>
+                </ul>
+
+
+
+
+
+
+
+
+
+
+                <!-- <div id="propriedadeTamanho" class="propriedades noSelection">
                         <label>Tamanho:</label><input type="text" id="txtTamanhoFerramenta" value="5px">
                         <div id="barraTamanho" class="barraPropriedade">
                             <div id="cursorTamanho" class="cursorPropriedade cursor"></div>
@@ -118,8 +153,8 @@
                         <div id="barraOpacidade" class="barraPropriedade">
                             <div id="cursorOpacidade" class="cursorPropriedade cursor"></div>
                         </div>
-                    </div>
-                </div>
+                    </div> -->
+                <!-- </div> -->
                 <ul id="salvarDesenhoProjeto" class="noSelection">
                     <li><label>Arquivo<span style="font-size: 15px; line-height: 33px;">&#9662;</span></label>
                         <ul>
@@ -154,10 +189,14 @@
                         <div id="elipse" class="bttFerramentas cursor" title="Ferramenta Elipse"></div>
                         <div id="borracha" class="bttFerramentas cursor" title="Ferramenta Borracha"></div>
                         <div id="contaGotas" class="bttFerramentas cursor" title="Ferramenta Conta-gotas"></div>
-                        <div id="bttZoomMenos" class="bttFerramentas bttHover noSelection cursor" title="Menos zoom"></div>
-                        <div id="bttZoomMais" class="bttFerramentas bttHover noSelection cursor" title="Mais zoom"></div>
-                        <div id="bttDesfazer" class="bttFerramentas" style="opacity: 0.5;" title="Desfazer (Ctrl + Z)"></div>
-                        <div id="bttRefazer" class="bttFerramentas" style="opacity: 0.5;" title="Refazer (Ctrl + Y)"></div>
+                        <div id="bttZoomMenos" class="bttFerramentas bttHover noSelection cursor" title="Menos zoom">
+                        </div>
+                        <div id="bttZoomMais" class="bttFerramentas bttHover noSelection cursor" title="Mais zoom">
+                        </div>
+                        <div id="bttDesfazer" class="bttFerramentas" style="opacity: 0.5;" title="Desfazer (Ctrl + Z)">
+                        </div>
+                        <div id="bttRefazer" class="bttFerramentas" style="opacity: 0.5;" title="Refazer (Ctrl + Y)">
+                        </div>
                     </div>
                     <div id="coresSelecionadas">
                         <div id="corPrincipal" class="corEscolhida cursor">

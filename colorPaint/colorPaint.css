@@ -58,21 +58,40 @@ p {
     position: relative;
     left: 90px;
     float: left;
-    overflow: hidden;
-    height: 40px;
+    height: 36px;
     width: auto;
 }
 
-.propriedades {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+#propriedadesFerramentas li {
+    display: block;
     float: left;
-    height: 35px;
-    width: 325px;
+    padding: 5px;
+    height: 36px;
+    border-right: 3px solid rgb(49, 49, 49);
+    list-style: none;
 }
 
-.propriedades input[type="text"] {
+#propriedadesFerramentas li ul {
+    position: absolute;
+    overflow: hidden;
+    max-height: 0;
+    margin-top: 5px;
+    list-style: none;
+    z-index: 9000;
+}
+
+#propriedadesFerramentas li ul li {
+    width: 220px;
+    border-right: none;
+    background-color: rgb(37, 37, 37);
+    border-radius: 5px;
+}
+
+#propriedadesFerramentas li:hover ul {
+    max-height: 120px;
+}
+
+#propriedadesFerramentas input[type="text"] {
     width: 35px;
     display: inline-block;
     background: rgba(0, 0, 0, 0);
@@ -85,11 +104,20 @@ p {
     margin-right: 3px;
 }
 
-.propriedades label {
+#propriedadesFerramentas label {
     line-height: 25px;
     font-size: 13px;
     color: rgb(165, 165, 165);
     margin-left: 7px;
+}
+
+.propriedades {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    float: left;
+    height: 35px;
+    width: 325px;
 }
 
 .barraPropriedade {
@@ -99,13 +127,14 @@ p {
     border-radius: 10px;
     border: 1px solid rgb(100, 100, 100);
     background-color: rgb(58, 58, 58);
-    margin-left: 3px;
+    margin-left: 10px;
+    margin-top: 7px;
 }
 
 .cursorPropriedade {
     position: absolute;
     border-radius: 50%;
-    top: -2.5px;
+    top: -3px;
     left: -7px;
     width: 15px;
     height: 15px;
