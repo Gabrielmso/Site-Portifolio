@@ -29,8 +29,8 @@ let corFundo;//Div de fundo que receberá a cor de fundo escolhida para o projet
 let pintar;//Armazena o canvas onde ocorrerá os "eventos" de pintura.
 let ctxPintar;//Armazena o contexto 2d de "pintar".
 let tamanhoFerramenta = 5;//Armazena a espessura do traço das ferramentas em pixels.
-let opacidadeFerramenta = 100;//Armazena o valor da opacidade da cor de O a 100.
-let durezaFerramenta = 100;
+let opacidadeFerramenta = 1;//Armazena o valor da opacidade da cor de O a 1.
+let durezaFerramenta = 1;
 let projetoCriado = false;//Saber se existe projeto já criado.
 let txtCorEscolhida;//Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
 let txtResolucao;//Recebe a string da resolução que o usuário escolheu para o projeto para informar ao usuário.
@@ -291,8 +291,9 @@ function colorPaint() {
                 guardarAlteracoes();
             }
             arrayCamadas[camadaSelecionada].ctx.globalCompositeOperation = "source-over";
-            ctxPintar.filter = "blur("+ calculaBlur() +"px)"
-            ctxPintar.lineWidth = tamanhoFerramenta;
+            const blur = calculaBlur();
+            ctxPintar.filter = "blur("+ blur +"px)"
+            ctxPintar.lineWidth = (tamanhoFerramenta - blur);            
             ctxPintar.strokeStyle = "rgba(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ", " + opacidadeFerramenta + ")";
             if (ferramentaSelecionada === 1) {//Pincel.
                 coordenadaClick.push({ x: posicaoMouseX, y: posicaoMouseY });
@@ -729,9 +730,9 @@ function colorPaint() {
     }
 
     function calculaBlur() {
-        const maximoBlur = tamanhoFerramenta / 7;
+        const maximoBlur = tamanhoFerramenta / 6.2;
         const dureza = maximoBlur - (maximoBlur * durezaFerramenta);
-        return (dureza).toFixed(2);
+        return parseFloat((dureza).toFixed(2));
     }
 
     function menuPadrao() {
