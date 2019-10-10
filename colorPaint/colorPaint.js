@@ -292,8 +292,8 @@ function colorPaint() {
             }
             arrayCamadas[camadaSelecionada].ctx.globalCompositeOperation = "source-over";
             const blur = calculaBlur();
-            ctxPintar.filter = "blur("+ blur +"px)"
-            ctxPintar.lineWidth = (tamanhoFerramenta - blur);            
+            ctxPintar.filter = "blur(" + blur + "px)"
+            ctxPintar.lineWidth = (tamanhoFerramenta - blur);
             ctxPintar.strokeStyle = "rgba(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ", " + opacidadeFerramenta + ")";
             if (ferramentaSelecionada === 1) {//Pincel.
                 coordenadaClick.push({ x: posicaoMouseX, y: posicaoMouseY });
@@ -731,7 +731,11 @@ function colorPaint() {
 
     function calculaBlur() {
         const maximoBlur = tamanhoFerramenta / 6.2;
-        const dureza = maximoBlur - (maximoBlur * durezaFerramenta);
+        let dureza = maximoBlur - (maximoBlur * durezaFerramenta);
+        if (tamanhoFerramenta < 100) {
+            const proporcao = ((100 - tamanhoFerramenta) / 180);
+            dureza += (dureza * proporcao);
+        }
         return parseFloat((dureza).toFixed(2));
     }
 
