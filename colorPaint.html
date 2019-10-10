@@ -106,10 +106,10 @@
     <header id="colorPaintContent">
         <div id="janelaPrincipal">
             <div id="barraSuperior">
-                <!-- <div id="propriedadesFerramentas"> -->
                 <ul id="propriedadesFerramentas" class="noSelection">
                     <li id="propriedadeTamanho">
-                        <label>Tamanho &#9662; </label><input type="text" id="txtTamanhoFerramenta" value="5px">
+                        <label>Tamanho &#9662; </label><input type="text" id="txtTamanhoFerramenta" readonly="true"
+                            value="5px">
                         <ul id="contentBarraTamanho">
                             <li>
                                 <div id="barraTamanho" class="barraPropriedade">
@@ -119,7 +119,8 @@
                         </ul>
                     </li>
                     <li id="propriedadeOpacidade">
-                        <label>Opacidade &#9662; </label><input type="text" id="txtOpacidadeFerramenta" value="100%">
+                        <label>Opacidade &#9662; </label><input type="text" id="txtOpacidadeFerramenta" readonly="true"
+                            value="100%">
                         <ul id="contentBarraOpacidade">
                             <li>
                                 <div id="barraOpacidade" class="barraPropriedade">
@@ -129,7 +130,8 @@
                         </ul>
                     </li>
                     <li id="propriedadeDureza">
-                        <label>Dureza &#9662; </label><input type="text" id="txtDurezaFerramenta" value="100%">
+                        <label>Dureza &#9662; </label><input type="text" id="txtDurezaFerramenta" readonly="true"
+                            value="100%">
                         <ul id="contentBarraDureza">
                             <li>
                                 <div id="barraDureza" class="barraPropriedade">
@@ -140,7 +142,7 @@
                     </li>
                 </ul>
                 <ul id="salvarDesenhoProjeto" class="noSelection">
-                    <li><label>Arquivo<span style="font-size: 15px; line-height: 33px;">&#9662;</span></label>
+                    <li><label>Arquivo <span style="font-size: 15px; line-height: 33px;">&#9662;</span></label>
                         <ul>
                             <li id="bttSalvarDesenho" class="cursor"
                                 title="Salva o desenho em um arquivo no formato PNG.">
@@ -338,6 +340,7 @@
                 </div>
             </div>
         </div>
+        <!-- =================================== FIM JANELA ATALHOS ================================ -->
         <!-- ================================ JANELA PARA SELECIONAR COR ========================== -->
         <div id="janelaSelecionarCor">
             <div id="comparaCorAtualEEscolhida">
@@ -375,6 +378,11 @@
             <div id="comparaCoresContaGotas"></div>
         </div>
     </header>
+    <!-- ======================================= CARREGAMENTO =================================== -->
+    <div id="carregamento">
+        <div id="logoCarregamento"></div>
+    </div>
+    <!-- ===================================== FIM CARREGAMENTO ================================= -->
 </body>
 
 </html>

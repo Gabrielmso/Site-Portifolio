@@ -249,7 +249,10 @@
 #socials {
     background-color: rgba(0, 0, 0, 0.60);
     position: relative;
-    display: none;
+    display: block;
+    height: 0px;
+    transition: height 200ms ease-in-out;
+    overflow: hidden;
 }
 
 .cursor {

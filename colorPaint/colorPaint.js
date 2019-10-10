@@ -59,6 +59,7 @@ function colorPaint() {
     const bttRefazer = document.getElementById("bttRefazer");
     const bttDesfazer = document.getElementById("bttDesfazer");
     const contentCentro = document.getElementById("contentCentro");
+    const propriedadesFerramentas = document.getElementById("propriedadesFerramentas");
     const arrayPropriedadesFerramentas = [
         { propriedade: document.getElementById("propriedadeTamanho"), barra: document.getElementById("contentBarraTamanho") },
         { propriedade: document.getElementById("propriedadeOpacidade"), barra: document.getElementById("contentBarraOpacidade") },
@@ -105,6 +106,7 @@ function colorPaint() {
     menuPadrao();
     ajustarContents();
     criarOuAbrirProjeto();
+    
 
     txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
 
@@ -119,6 +121,12 @@ function colorPaint() {
                         arrayFerramentas[e].ferramenta.classList.remove("bttFerramentasEscolhida");
                         arrayFerramentas[e].ferramenta.classList.add("bttFerramentas");
                     }
+                }
+                if(ferramentaSelecionada === 3 || ferramentaSelecionada === 7){
+                    propriedadesFerramentas.style.display = "none";
+                }
+                else{
+                    propriedadesFerramentas.style.display = "block";
                 }
                 coordenadaClick = [];
                 clickCurva = false;
@@ -261,19 +269,19 @@ function colorPaint() {
     });
 
     barraOpacidade.addEventListener("mousedown", function (e) {
-        if (ferramentaSelecionada === 3 || clickCurva === true) { return };
+        if (clickCurva === true) { return };
         mudarOpacidadeFerramenta = true;
         calculaOpacidadeFerramenta(e);
     })
 
     barraTamanho.addEventListener("mousedown", function (e) {
-        if (ferramentaSelecionada === 3 || clickCurva === true) { return };
+        if (clickCurva === true) { return };
         mudarTamanhoFerramenta = true;
         calculaTamanhoFerramenta(e);
     })
 
     barraDureza.addEventListener("mousedown", function (e) {
-        if (ferramentaSelecionada === 3 || clickCurva === true) { return };
+        if (clickCurva === true) { return };
         mudarDurezaFerramenta = true;
         calculaDurezaFerramenta(e);
     })
@@ -837,22 +845,6 @@ function colorPaint() {
             desenhoCompleto();
         }
     }
-
-    function criarOuAbrirProjeto() {
-        if (sessionStorage.getItem("abrirProjetoSalvo") === "true") {
-            setTimeout(function () {
-                abrirProjeto();
-            }, 200);
-            sessionStorage.setItem("abrirProjetoSalvo", "false");
-        }
-
-        if (sessionStorage.getItem("criarNovoProjeto") === "true") {
-            setTimeout(function () {
-                contentJanelaCriarProjeto.style.display = "flex";
-            }, 200);
-            sessionStorage.setItem("criarNovoProjeto", "false");
-        }
-    }
 }
 // ==========================================================================================================================================================================================================================================
 
@@ -1320,7 +1312,6 @@ function criarCamada(cor, resolucao) {
         document.getElementById(idIconTela) != null &&
         document.getElementById(idCamada) != null) {
         const objCamada = {
-            id: num,
             nome: nomeCamada,
             camada: elCamada,
             ctx: elCamada.getContext("2d"),
@@ -1739,6 +1730,45 @@ function abrirProjeto() {
         cursorOpacidadeCamada.style.left = ((arrayCamadas[0].opacidade * 200) - 7) + "px";
     }
     input.click();
+}
+
+function criarOuAbrirProjeto() {
+    const carregar = document.getElementById("carregamento");
+    if (sessionStorage.getItem("abrirProjetoSalvo") === "true") {
+        document.body.removeChild(carregar);
+        abrirProjeto();
+        sessionStorage.setItem("abrirProjetoSalvo", "false");
+    }
+    else if (sessionStorage.getItem("criarNovoProjeto") === "true") {   
+        document.body.removeChild(carregar);         
+        contentJanelaCriarProjeto.style.display = "flex";           
+        sessionStorage.setItem("criarNovoProjeto", "false");
+    }
+    else {
+        carregamento();
+    }
+    function carregamento(){
+        const logoCarregamento = document.getElementById("logoCarregamento");       
+        logoCarregamento.style.transition = "opacity 1.5s linear";
+        setTimeout(function  () {
+            logoCarregamento.style.opacity = "1";
+            setTimeout(() => {
+                const posLogo = logoBlack.getBoundingClientRect();
+                logoCarregamento.style.transition = "width 400ms linear, height 400ms linear, opacity 400ms linear, top 400ms linear, left 400ms linear";
+                logoCarregamento.style.height = "50px";
+                logoCarregamento.style.width = "90px";
+                logoCarregamento.style.opacity = "0.75";
+                logoCarregamento.style.left = posLogo.left + 45 + "px";
+                logoCarregamento.style.top = posLogo.top + 25 + "px";
+                setTimeout(() => {
+                    carregar.style.opacity = "0";
+                    setTimeout(() => {
+                        document.body.removeChild(carregar);
+                    }, 1200);
+                }, 350);
+            }, 1500);
+        }, 150)
+    }
 }
 // ==========================================================================================================================================================================================================================================
 

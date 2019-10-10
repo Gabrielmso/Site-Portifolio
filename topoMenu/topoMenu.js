@@ -2,7 +2,7 @@ let arrayop = [];
 let logoBlack;
 let scrollposicao;
 let mudarMenu = true;
-let iconemenublack, iconesetablack, opcoesmenu2, fundomenu, menu, submenu, socials, traco1, traco2, traco3ocument;
+let iconemenublack, iconesetablack, opcoesmenu2, fundomenu, menu, submenu, socials, traco1, traco2, traco3;
 function topoMenu() {
     iconemenublack = document.getElementById("iconemenublack");
     iconesetablack = document.getElementById("iconesetablack");
@@ -21,6 +21,8 @@ function topoMenu() {
     document.getElementById("tracoseta3"),
     document.getElementById("tracoseta4")];
 
+    let clickSocials = false;
+
     arrayop = [document.getElementById("op1"),
     document.getElementById("op2"),
     document.getElementById("op3"),
@@ -33,16 +35,22 @@ function topoMenu() {
     telamenor651px();
 
     window.addEventListener("resize", function () {
-        $(socials).slideUp("fast");
-        iconesetablacknormal();
+        if (clickSocials === true) {
+            clickSocials = false;
+            socials.style.height = "0px";
+            iconesetablacknormal();
+        }
         redimencionarjanela();
         telamenor651px();
     });
 
     window.addEventListener("scroll", throttle(function () {
         scrollposicao = document.body.scrollTop || document.documentElement.scrollTop;
-        iconesetablacknormal();
-        $(socials).slideUp("fast");
+        if (clickSocials === true) {
+            clickSocials = false;
+            socials.style.height = "0px";
+            iconesetablacknormal();
+        }
         if (scrollposicao > 5 && mudarMenu === true) {
             menu.classList.remove("iniciomenu");
             menu.classList.add("mudamenu");
@@ -74,11 +82,14 @@ function topoMenu() {
     }, 110, true));
 
     iconesetablack.addEventListener("click", function () {
-        $(socials).slideToggle(170);
-        if (arraytracoseta[0].classList.contains("movertracoseta0") === true) {
+        if (clickSocials === true) {
+            clickSocials = false;
+            socials.style.height = "0px";
             iconesetablacknormal();
         }
         else {
+            clickSocials = true;
+            socials.style.height = "150px";
             for (let i = 0; i < arraytracoseta.length; i++) {
                 let nomeclasseinicio = "iniciotracoseta" + i;
                 let nomeclassemuda = "movertracoseta" + i;
@@ -89,8 +100,11 @@ function topoMenu() {
     });
 
     submenu.addEventListener("mouseleave", function () {
-        $(socials).slideUp("fast");
-        iconesetablacknormal();
+        if (clickSocials === true) {
+            clickSocials = false;
+            socials.style.height = "0px";
+            iconesetablacknormal();
+        }
     });
 
     iconemenublack.addEventListener("click", acaobotaomenu);
