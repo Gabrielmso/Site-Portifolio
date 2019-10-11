@@ -1,4 +1,4 @@
-function colisaoParticulas(arguments) {
+function colisaoParticulas() {
     const fundo = document.getElementById("fundo");
     ajustarFundo();
     window.addEventListener("resize", ajustarFundo);
