@@ -1,4 +1,5 @@
 mudarMenu = false; //impede que o menu mude de estilo.
+const ferramenta = { tamanho: 5, opacidade: 1, dureza: 1 };//Armazena as configurações do traço das ferramentas.
 let nomeDoProjeto;//Armazena o nome do projeto.
 let janelaSelecionarCorVisivel = false;//Saber se a janela de seleção de cor está "aberta".
 let corPrincipal, corSecundaria, corPrincipalOuSecundaria;
@@ -28,9 +29,6 @@ let corDeFundoEscolhida;//Armazena a cor de fundo escolhida para o projeto.
 let corFundo;//Div de fundo que receberá a cor de fundo escolhida para o projeto.
 let pintar;//Armazena o canvas onde ocorrerá os "eventos" de pintura.
 let ctxPintar;//Armazena o contexto 2d de "pintar".
-let tamanhoFerramenta = 5;//Armazena a espessura em pixels do traço das ferramentas.
-let opacidadeFerramenta = 1;//Armazena o valor da opacidade da cor de O a 1.
-let durezaFerramenta = 1;
 let projetoCriado = false;//Saber se existe projeto já criado.
 let txtCorEscolhida;//Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
 let txtResolucao;//Recebe a string da resolução que o usuário escolheu para o projeto para informar ao usuário.
@@ -60,6 +58,7 @@ function colorPaint() {
     const bttDesfazer = document.getElementById("bttDesfazer");
     const contentCentro = document.getElementById("contentCentro");
     const propriedadesFerramentas = document.getElementById("propriedadesFerramentas");
+    const posicaoMouse = { X: 0, Y: 0 };//Armazena a posição do mouse no tela canvas em relação a resolução do projeto.
     const arrayPropriedadesFerramentas = [
         { propriedade: document.getElementById("propriedadeTamanho"), barra: document.getElementById("contentBarraTamanho") },
         { propriedade: document.getElementById("propriedadeOpacidade"), barra: document.getElementById("contentBarraOpacidade") },
@@ -85,7 +84,6 @@ function colorPaint() {
     ctxTelaPreview = telaPreview.getContext("2d");
     moverScroll = document.getElementById("moverScroll");
     janelaSeleciona = new janelaSeletorDeCor(corEscolhidaPrincipal);
-    let posicaoMouseX, posicaoMouseY;//Armazena a posição do mouse no tela canvas em relação a resolução do projeto.
     let mudarTamanhoFerramenta = false;//Saber se o mouse está pressionado na "barraTamanho".
     let mudarOpacidadeFerramenta = false;//Saber se o mouse está pressionado na "barraOpacidade". 
     let mudarDurezaFerramenta = false;//Saber se o mouse está pressionado na "barraDureza". 
@@ -260,7 +258,7 @@ function colorPaint() {
     })
 
     telasCanvas.addEventListener("mousemove", function () {
-        txtPosicaoCursor.value = ((Math.floor(posicaoMouseX)) + 1) + ", " + ((Math.floor(posicaoMouseY)) + 1);
+        txtPosicaoCursor.value = ((Math.floor(posicaoMouse.X)) + 1) + ", " + ((Math.floor(posicaoMouse.Y)) + 1);
     });
 
     telasCanvas.addEventListener("mouseleave", function () {
@@ -298,26 +296,26 @@ function colorPaint() {
                 guardarAlteracoes();
             }
             arrayCamadas[camadaSelecionada].ctx.globalCompositeOperation = "source-over";
-            configuraFerramenta(ctxPintar, tamanhoFerramenta, corEscolhidaPrincipal, opacidadeFerramenta);
+            configuraFerramenta(ctxPintar, ferramenta.tamanho, corEscolhidaPrincipal, ferramenta.opacidade);
             if (ferramentaSelecionada === 1) {//Pincel.
-                coordenadaClick.push({ x: posicaoMouseX, y: posicaoMouseY });
-                if (tamanhoFerramenta > 1) {
+                coordenadaClick.push({ x: posicaoMouse.X, y: posicaoMouse.Y });
+                if (ferramenta.tamanho > 1) {
                     ctxPintar.lineJoin = ctxPintar.lineCap = "round";
                 }
                 else {
                     ctxPintar.lineCap = "butt";
                 }
                 ctxPintar.beginPath();
-                ferramentaPincel(posicaoMouseX, posicaoMouseY);
+                ferramentaPincel(posicaoMouse.X, posicaoMouse.Y);
             }
             else if (ferramentaSelecionada === 2) {//Borracha.                  
-                coordenadaClick.push({ x: posicaoMouseX, y: posicaoMouseY });
+                coordenadaClick.push({ x: posicaoMouse.X, y: posicaoMouse.Y });
                 arrayCamadas[camadaSelecionada].ctx.globalCompositeOperation = "destination-out";
                 ctxPintar.lineJoin = "round";
                 ctxPintar.lineCap = "square";
-                ctxPintar.strokeStyle = "rgba(255, 0, 0, " + opacidadeFerramenta + ")";
+                ctxPintar.strokeStyle = "rgba(255, 0, 0, " + ferramenta.opacidade + ")";
                 ctxPintar.beginPath();
-                ferramentaPincel(posicaoMouseX, posicaoMouseY);
+                ferramentaPincel(posicaoMouse.X, posicaoMouse.Y);
             }
             else if (ferramentaSelecionada === 3) {//Conta-gotas.
                 cursorComparaContaGotas.style.display = "block";
@@ -325,75 +323,75 @@ function colorPaint() {
                 comparaCoresContaGotas.style.borderLeft = corAtual;
                 comparaCoresContaGotas.style.borderBottom = corAtual;
                 const mousePos = pegarPosicaoMouse(janelaPrincipal, e);
-                ferramentaContaGotas(mousePos.X, mousePos.Y, posicaoMouseX, posicaoMouseY, true);
+                ferramentaContaGotas(mousePos.X, mousePos.Y, posicaoMouse.X, posicaoMouse.Y, true);
             }
             else if (ferramentaSelecionada === 4) {//Linha.
-                coordenadaClick[0] = { x: posicaoMouseX, y: posicaoMouseY };
+                coordenadaClick[0] = { x: posicaoMouse.X, y: posicaoMouse.Y };
                 ctxPintar.lineJoin = ctxPintar.lineCap = "round";
-                ferramentaLinha(posicaoMouseX, posicaoMouseY);
+                ferramentaLinha(posicaoMouse.X, posicaoMouse.Y);
             }
             else if (ferramentaSelecionada === 5) {//Curva.
                 ctxPintar.lineJoin = ctxPintar.lineCap = "round";
                 if (clickCurva === false) {
-                    coordenadaClick[0] = { x: posicaoMouseX, y: posicaoMouseY };
-                    ferramentaCurva(posicaoMouseX, posicaoMouseY, false);
+                    coordenadaClick[0] = { x: posicaoMouse.X, y: posicaoMouse.Y };
+                    ferramentaCurva(posicaoMouse.X, posicaoMouse.Y, false);
                 }
                 else {
-                    ferramentaCurva(posicaoMouseX, posicaoMouseY, true);
+                    ferramentaCurva(posicaoMouse.X, posicaoMouse.Y, true);
                 }
             }
             else if (ferramentaSelecionada === 6) {//Retângulo.
-                coordenadaClick[0] = { x: posicaoMouseX, y: posicaoMouseY };
+                coordenadaClick[0] = { x: posicaoMouse.X, y: posicaoMouse.Y };
                 ctxPintar.lineJoin = "miter";
-                ferramentaRetangulo(posicaoMouseX, posicaoMouseY);
+                ferramentaRetangulo(posicaoMouse.X, posicaoMouse.Y);
             }
             else if (ferramentaSelecionada === 7) {//Balde de tinta.
-                if (posicaoMouseX >= 0 && posicaoMouseX <= resolucaoProjeto.largura && posicaoMouseY >= 0 && posicaoMouseY <= resolucaoProjeto.altura) {
-                    const cor = { r: corEscolhidaPrincipal.R, g: corEscolhidaPrincipal.G, b: corEscolhidaPrincipal.B, a: Math.round(opacidadeFerramenta * 255) };
-                    ferramentaBaldeDeTinta(posicaoMouseX, posicaoMouseY, arrayCamadas[camadaSelecionada].ctx, cor);
+                if (posicaoMouse.X >= 0 && posicaoMouse.X <= resolucaoProjeto.largura && posicaoMouse.Y >= 0 && posicaoMouse.Y <= resolucaoProjeto.altura) {
+                    const cor = { r: corEscolhidaPrincipal.R, g: corEscolhidaPrincipal.G, b: corEscolhidaPrincipal.B, a: Math.round(ferramenta.opacidade * 255) };
+                    ferramentaBaldeDeTinta(posicaoMouse.X, posicaoMouse.Y, arrayCamadas[camadaSelecionada].ctx, cor);
                 }
             }
             else if (ferramentaSelecionada === 8) {//Elipse.
-                coordenadaClick[0] = { x: posicaoMouseX, y: posicaoMouseY };
+                coordenadaClick[0] = { x: posicaoMouse.X, y: posicaoMouse.Y };
                 ctxPintar.lineJoin = "round";
-                ferramentaElipse(posicaoMouseX, posicaoMouseY);
+                ferramentaElipse(posicaoMouse.X, posicaoMouse.Y);
             }
         }
     });
 
     document.addEventListener("mousemove", function (e) {//Pegar a posição do mouse em relação ao "telaCanvas" e enquanto o mousse estiver pressionado executar a função referente a ferramenta escolhida.
         const mouse = pegarPosicaoMouse(telasCanvas, e);
-        posicaoMouseX = (resolucaoProjeto.largura / telasCanvas.offsetWidth) * mouse.X;
-        posicaoMouseY = (resolucaoProjeto.altura / telasCanvas.offsetHeight) * mouse.Y;
+        posicaoMouse.X = (resolucaoProjeto.largura / telasCanvas.offsetWidth) * mouse.X;
+        posicaoMouse.Y = (resolucaoProjeto.altura / telasCanvas.offsetHeight) * mouse.Y;
         if (pintando === true) {
             if (ferramentaSelecionada === 1) {//Pincel.
-                ferramentaPincel(posicaoMouseX, posicaoMouseY);
+                ferramentaPincel(posicaoMouse.X, posicaoMouse.Y);
             }
             else if (ferramentaSelecionada === 2) {//Borracha.
                 ctxPintar.lineCap = "round";
                 ctxPintar.lineJoin = "round";
-                ferramentaPincel(posicaoMouseX, posicaoMouseY);
+                ferramentaPincel(posicaoMouse.X, posicaoMouse.Y);
             }
             else if (ferramentaSelecionada === 3) {//Conta-gotas.
                 const mousePos = pegarPosicaoMouse(janelaPrincipal, e);
-                ferramentaContaGotas(mousePos.X, mousePos.Y, posicaoMouseX, posicaoMouseY, true);
+                ferramentaContaGotas(mousePos.X, mousePos.Y, posicaoMouse.X, posicaoMouse.Y, true);
             }
             else if (ferramentaSelecionada === 4) {//Linha.
-                ferramentaLinha(posicaoMouseX, posicaoMouseY);
+                ferramentaLinha(posicaoMouse.X, posicaoMouse.Y);
             }
             else if (ferramentaSelecionada === 5) {//Curva.
                 if (clickCurva === false) {
-                    ferramentaCurva(posicaoMouseX, posicaoMouseY, false);
+                    ferramentaCurva(posicaoMouse.X, posicaoMouse.Y, false);
                 }
                 else {
-                    ferramentaCurva(posicaoMouseX, posicaoMouseY, true);
+                    ferramentaCurva(posicaoMouse.X, posicaoMouse.Y, true);
                 }
             }
             else if (ferramentaSelecionada === 6) {//Retângulo.
-                ferramentaRetangulo(posicaoMouseX, posicaoMouseY);
+                ferramentaRetangulo(posicaoMouse.X, posicaoMouse.Y);
             }
             else if (ferramentaSelecionada === 8) {//Elipse.
-                ferramentaElipse(posicaoMouseX, posicaoMouseY);
+                ferramentaElipse(posicaoMouse.X, posicaoMouse.Y);
             }
         }
         else if (mudarTamanhoFerramenta === true) {
@@ -456,7 +454,7 @@ function colorPaint() {
             }
             if (ferramentaSelecionada === 3) {//Conta-gotas.  
                 const mousePos = pegarPosicaoMouse(janelaPrincipal, e);
-                ferramentaContaGotas(mousePos.X, mousePos.Y, posicaoMouseX, posicaoMouseY, false);
+                ferramentaContaGotas(mousePos.X, mousePos.Y, posicaoMouse.X, posicaoMouse.Y, false);
                 cursorComparaContaGotas.style.display = "none";
             }
             else if (ferramentaSelecionada === 5) {//Curva. 
@@ -507,20 +505,22 @@ function colorPaint() {
                     avancarAlteracao();
                 }
             }
-        }
-        if (e.code === "ControlRight" || e.code === "ControlLeft" || e.keyCode === 17) {
-            e.preventDefault();
-            ctrlPressionado = true;
-            if (ferramentaSelecionada === 1) {
-                ferramentaAnterior = 1;
-                arrayFerramentas[2].ferramenta.click();
+            if (pintando === false) {
+                if (e.code === "BracketRight") {//Aumentar o tamanho da ferramenta.
+                    alterarTamanhoFerramenta(true);
+                }
+                else if (e.code === "Backslash") {//Diminuir o tamanho da ferramenta.
+                    alterarTamanhoFerramenta(false);
+                }
             }
-        }
-        else if (e.code === "BracketRight") {//Aumentar o tamanho da ferramenta.
-            alterarTamanhoFerramenta(true);
-        }
-        else if (e.code === "Backslash") {//Diminuir o tamanho da ferramenta.
-            alterarTamanhoFerramenta(false);
+            if (e.code === "ControlRight" || e.code === "ControlLeft" || e.keyCode === 17) {
+                e.preventDefault();
+                ctrlPressionado = true;
+                if (ferramentaSelecionada === 1) {
+                    ferramentaAnterior = 1;
+                    arrayFerramentas[2].ferramenta.click();
+                }
+            }
         }
     });
 
@@ -531,6 +531,7 @@ function colorPaint() {
             if (ferramentaAnterior === 1 && ferramentaSelecionada === 3) {
                 arrayFerramentas[0].ferramenta.click();
                 cursorComparaContaGotas.style.display = "none";
+                ferramentaAnterior = null;
             }
         }
     });
@@ -545,8 +546,8 @@ function colorPaint() {
                 zoomNoProjeto(false, false, 1.075, e);
             }
             const posContentTelas = pegarPosicaoMouse(contentTelas, e);
-            const proporcaoPosY = posicaoMouseY / resolucaoProjeto.altura;
-            const proporcaoPosX = posicaoMouseX / resolucaoProjeto.largura;
+            const proporcaoPosY = posicaoMouse.Y / resolucaoProjeto.altura;
+            const proporcaoPosX = posicaoMouse.X / resolucaoProjeto.largura;
             contentTelas.scrollTop = (contentTelas.scrollHeight * proporcaoPosY) - (posContentTelas.Y) - 5;
             contentTelas.scrollLeft = (contentTelas.scrollWidth * proporcaoPosX) - (posContentTelas.X) - 5;
             contentTelasMoverScroll(contentTelas.scrollTop, contentTelas.scrollLeft);
@@ -567,6 +568,7 @@ function colorPaint() {
     window.addEventListener("resize", function () {
         ajustarContents();
         tamanhoMoverScroll();
+        AjustarnavisualizacaoTelasCanvas();
         contentTelasMoverScroll(contentTelas.scrollTop, contentTelas.scrollLeft);
         menuPadrao();
         setTimeout(function () {
@@ -601,7 +603,6 @@ function colorPaint() {
         }
         let opacidade = porcentagem / 100;
         arrayCamadas[camadaSelecionada].opacidade = opacidade;
-        pintar.style.opacity = opacidade;
         arrayCamadas[camadaSelecionada].camada.style.opacity = opacidade;
     }
 
@@ -629,61 +630,61 @@ function colorPaint() {
                 txtTamanhoFerramenta.value = mouse.X + "px";
             }
         }
-        tamanhoFerramenta = mouse.X;
+        ferramenta.tamanho = mouse.X;
         mudarAparenciaCursor();
     }
 
     function alterarTamanhoFerramenta(aumentar) {
         if (aumentar === true) {
-            if (tamanhoFerramenta === 0.49) {
-                tamanhoFerramenta = 0.97;
+            if (ferramenta.tamanho === 0.49) {
+                ferramenta.tamanho = 0.97;
                 cursorTamanho.style.left = 1 - 7 + "px";
                 txtTamanhoFerramenta.value = "1px";
             }
-            else if (tamanhoFerramenta === 0.97) {
-                tamanhoFerramenta = 2;
+            else if (ferramenta.tamanho === 0.97) {
+                ferramenta.tamanho = 2;
                 txtTamanhoFerramenta.value = "2px";
                 cursorTamanho.style.left = 2 - 7 + "px";
             }
-            else if (tamanhoFerramenta < 15) {
-                tamanhoFerramenta = tamanhoFerramenta + 1;
-                txtTamanhoFerramenta.value = tamanhoFerramenta + "px";
-                cursorTamanho.style.left = tamanhoFerramenta - 7 + "px";
+            else if (ferramenta.tamanho < 15) {
+                ferramenta.tamanho = ferramenta.tamanho + 1;
+                txtTamanhoFerramenta.value = ferramenta.tamanho + "px";
+                cursorTamanho.style.left = ferramenta.tamanho - 7 + "px";
             }
-            else if (tamanhoFerramenta >= 15 && tamanhoFerramenta <= 185) {
-                tamanhoFerramenta = tamanhoFerramenta + 5;
-                txtTamanhoFerramenta.value = tamanhoFerramenta + "px";
-                cursorTamanho.style.left = tamanhoFerramenta - 7 + "px";
+            else if (ferramenta.tamanho >= 15 && ferramenta.tamanho <= 185) {
+                ferramenta.tamanho = ferramenta.tamanho + 5;
+                txtTamanhoFerramenta.value = ferramenta.tamanho + "px";
+                cursorTamanho.style.left = ferramenta.tamanho - 7 + "px";
             }
-            else if (tamanhoFerramenta > 190) {
-                tamanhoFerramenta = 190;
-                txtTamanhoFerramenta.value = tamanhoFerramenta + "px";
-                cursorTamanho.style.left = tamanhoFerramenta - 7 + "px";
+            else if (ferramenta.tamanho > 190) {
+                ferramenta.tamanho = 190;
+                txtTamanhoFerramenta.value = ferramenta.tamanho + "px";
+                cursorTamanho.style.left = ferramenta.tamanho - 7 + "px";
             }
         }
         else {
-            if (tamanhoFerramenta <= 190 && tamanhoFerramenta > 15) {
-                tamanhoFerramenta = tamanhoFerramenta - 5;
-                cursorTamanho.style.left = tamanhoFerramenta - 7 + "px";
-                txtTamanhoFerramenta.value = tamanhoFerramenta + "px";
+            if (ferramenta.tamanho <= 190 && ferramenta.tamanho > 15) {
+                ferramenta.tamanho = ferramenta.tamanho - 5;
+                cursorTamanho.style.left = ferramenta.tamanho - 7 + "px";
+                txtTamanhoFerramenta.value = ferramenta.tamanho + "px";
             }
-            else if (tamanhoFerramenta <= 15 && tamanhoFerramenta > 2) {
-                tamanhoFerramenta = tamanhoFerramenta - 1;
-                txtTamanhoFerramenta.value = tamanhoFerramenta + "px";
-                cursorTamanho.style.left = tamanhoFerramenta - 7 + "px";
+            else if (ferramenta.tamanho <= 15 && ferramenta.tamanho > 2) {
+                ferramenta.tamanho = ferramenta.tamanho - 1;
+                txtTamanhoFerramenta.value = ferramenta.tamanho + "px";
+                cursorTamanho.style.left = ferramenta.tamanho - 7 + "px";
             }
-            else if (tamanhoFerramenta === 2) {
-                tamanhoFerramenta = 0.97;
+            else if (ferramenta.tamanho === 2) {
+                ferramenta.tamanho = 0.97;
                 cursorTamanho.style.left = 1 - 7 + "px";
                 txtTamanhoFerramenta.value = "1px";
             }
-            else if (tamanhoFerramenta === 0.97) {
-                tamanhoFerramenta = 0.49;
+            else if (ferramenta.tamanho === 0.97) {
+                ferramenta.tamanho = 0.49;
                 cursorTamanho.style.left = "-7px"
                 txtTamanhoFerramenta.value = "0.5px";
             }
-            else if (tamanhoFerramenta === 0.49) {
-                tamanhoFerramenta = 0.49;
+            else if (ferramenta.tamanho === 0.49) {
+                ferramenta.tamanho = 0.49;
                 cursorTamanho.style.left = "-7px"
                 txtTamanhoFerramenta.value = "0.5px";
             }
@@ -709,7 +710,7 @@ function colorPaint() {
             cursorOpacidade.style.left = mouse.X - 7 + "px";
             txtOpacidadeFerramenta.value = porcentagem + "%";
         }
-        opacidadeFerramenta = porcentagem / 100;
+        ferramenta.opacidade = porcentagem / 100;
     }
 
     function calculaDurezaFerramenta(e) {
@@ -730,12 +731,12 @@ function colorPaint() {
             cursorDureza.style.left = mouse.X - 7 + "px";
             txtDurezaFerramenta.value = porcentagem + "%";
         }
-        durezaFerramenta = porcentagem / 100;
+        ferramenta.dureza = porcentagem / 100;
     }
 
     function configuraFerramenta(ctx, tamanho, cor, opacidade) {
         const maximoBlur = tamanho / 6.2;
-        let dureza = maximoBlur - (maximoBlur * durezaFerramenta);
+        let dureza = maximoBlur - (maximoBlur * ferramenta.dureza);
         if (tamanho < 100) {
             const proporcao = ((100 - tamanho) / 180);
             dureza += (dureza * proporcao);
@@ -1068,7 +1069,7 @@ function mudarAparenciaCursor() {
         contentTelas.style.cursor = "url('/colorPaint/imagens/cursor/cursorBaldeDeTinta.png') 0 0, pointer";
         return;
     };
-    const tamanho = tamanhoFerramenta * ((telasCanvas.offsetWidth) / resolucaoProjeto.largura);
+    const tamanho = ferramenta.tamanho * ((telasCanvas.offsetWidth) / resolucaoProjeto.largura);
     if (tamanho <= 10) {
         contentTelas.style.cursor = "url('/colorPaint/imagens/cursor/crossHair.png') 12.5 12.5, pointer";
     }
@@ -1350,7 +1351,6 @@ function clickIconeCamada() {
         const opacidade = arrayCamadas[camadaSelecionada].opacidade,
             posCursorOpacidadeCamada = (200 * opacidade) - 7;
         cursorOpacidadeCamada.style.left = posCursorOpacidadeCamada + "px";
-        pintar.style.opacity = opacidade;
     }
 }
 // ==========================================================================================================================================================================================================================================
@@ -1724,7 +1724,6 @@ function abrirProjeto() {
                 };
             }
         }
-        pintar.style.opacity = arrayCamadas[0].opacidade;
         cursorOpacidadeCamada.style.left = ((arrayCamadas[0].opacidade * 200) - 7) + "px";
     }
     input.click();
