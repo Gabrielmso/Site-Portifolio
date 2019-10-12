@@ -28,7 +28,7 @@ let corDeFundoEscolhida;//Armazena a cor de fundo escolhida para o projeto.
 let corFundo;//Div de fundo que receberá a cor de fundo escolhida para o projeto.
 let pintar;//Armazena o canvas onde ocorrerá os "eventos" de pintura.
 let ctxPintar;//Armazena o contexto 2d de "pintar".
-let tamanhoFerramenta = 5;//Armazena a espessura do traço das ferramentas em pixels.
+let tamanhoFerramenta = 5;//Armazena a espessura em pixels do traço das ferramentas.
 let opacidadeFerramenta = 1;//Armazena o valor da opacidade da cor de O a 1.
 let durezaFerramenta = 1;
 let projetoCriado = false;//Saber se existe projeto já criado.
@@ -106,7 +106,6 @@ function colorPaint() {
     menuPadrao();
     ajustarContents();
     criarOuAbrirProjeto();
-    
 
     txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
 
@@ -122,10 +121,10 @@ function colorPaint() {
                         arrayFerramentas[e].ferramenta.classList.add("bttFerramentas");
                     }
                 }
-                if(ferramentaSelecionada === 3 || ferramentaSelecionada === 7){
+                if (ferramentaSelecionada === 3 || ferramentaSelecionada === 7) {
                     propriedadesFerramentas.style.display = "none";
                 }
-                else{
+                else {
                     propriedadesFerramentas.style.display = "block";
                 }
                 coordenadaClick = [];
@@ -299,10 +298,7 @@ function colorPaint() {
                 guardarAlteracoes();
             }
             arrayCamadas[camadaSelecionada].ctx.globalCompositeOperation = "source-over";
-            const blur = calculaBlur();
-            ctxPintar.filter = "blur(" + blur + "px)"
-            ctxPintar.lineWidth = (tamanhoFerramenta - blur);
-            ctxPintar.strokeStyle = "rgba(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ", " + opacidadeFerramenta + ")";
+            configuraFerramenta(ctxPintar, tamanhoFerramenta, corEscolhidaPrincipal, opacidadeFerramenta);
             if (ferramentaSelecionada === 1) {//Pincel.
                 coordenadaClick.push({ x: posicaoMouseX, y: posicaoMouseY });
                 if (tamanhoFerramenta > 1) {
@@ -737,14 +733,16 @@ function colorPaint() {
         durezaFerramenta = porcentagem / 100;
     }
 
-    function calculaBlur() {
-        const maximoBlur = tamanhoFerramenta / 6.2;
+    function configuraFerramenta(ctx, tamanho, cor, opacidade) {
+        const maximoBlur = tamanho / 6.2;
         let dureza = maximoBlur - (maximoBlur * durezaFerramenta);
-        if (tamanhoFerramenta < 100) {
-            const proporcao = ((100 - tamanhoFerramenta) / 180);
+        if (tamanho < 100) {
+            const proporcao = ((100 - tamanho) / 180);
             dureza += (dureza * proporcao);
         }
-        return parseFloat((dureza).toFixed(2));
+        ctx.filter = "blur(" + dureza + "px)";
+        ctx.lineWidth = (tamanho - dureza);
+        ctx.strokeStyle = "rgba(" + cor.R + ", " + cor.G + ", " + cor.B + ", " + opacidade + ")";
     }
 
     function menuPadrao() {
@@ -1739,22 +1737,22 @@ function criarOuAbrirProjeto() {
         abrirProjeto();
         sessionStorage.setItem("abrirProjetoSalvo", "false");
     }
-    else if (sessionStorage.getItem("criarNovoProjeto") === "true") {   
-        document.body.removeChild(carregar);         
-        contentJanelaCriarProjeto.style.display = "flex";           
+    else if (sessionStorage.getItem("criarNovoProjeto") === "true") {
+        document.body.removeChild(carregar);
+        contentJanelaCriarProjeto.style.display = "flex";
         sessionStorage.setItem("criarNovoProjeto", "false");
     }
     else {
         carregamento();
     }
-    function carregamento(){
-        const logoCarregamento = document.getElementById("logoCarregamento");       
+    function carregamento() {
+        const logoCarregamento = document.getElementById("logoCarregamento");
         logoCarregamento.style.transition = "opacity 1.5s linear";
-        setTimeout(function  () {
+        setTimeout(function () {
             logoCarregamento.style.opacity = "1";
             setTimeout(() => {
                 const posLogo = logoBlack.getBoundingClientRect();
-                logoCarregamento.style.transition = "width 400ms linear, height 400ms linear, opacity 400ms linear, top 400ms linear, left 400ms linear";
+                logoCarregamento.style.transition = "width 500ms ease-out, height 500ms ease-out, opacity 500ms ease-out, top 500ms ease-out, left 500ms ease-out";
                 logoCarregamento.style.height = "50px";
                 logoCarregamento.style.width = "90px";
                 logoCarregamento.style.opacity = "0.75";
@@ -1766,7 +1764,7 @@ function criarOuAbrirProjeto() {
                         document.body.removeChild(carregar);
                     }, 1200);
                 }, 350);
-            }, 1500);
+            }, 1550);
         }, 150)
     }
 }
