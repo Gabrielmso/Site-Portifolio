@@ -481,7 +481,7 @@ function colorPaint() {
             if (ctrlPressionado === true) {
                 if (e.code === "Digit0" || e.keyCode === 48) {
                     e.preventDefault();
-                    AjustarnavisualizacaoTelasCanvas();
+                    ajustarNaVisualizacaoTelasCanvas();
                 }
                 else if (e.code === "Digit1" || e.keyCode === 49) {
                     e.preventDefault();
@@ -568,7 +568,7 @@ function colorPaint() {
     window.addEventListener("resize", function () {
         ajustarContents();
         tamanhoMoverScroll();
-        AjustarnavisualizacaoTelasCanvas();
+        ajustarNaVisualizacaoTelasCanvas();
         contentTelasMoverScroll(contentTelas.scrollTop, contentTelas.scrollLeft);
         menuPadrao();
         setTimeout(function () {
@@ -1386,15 +1386,14 @@ function mouseFora() {
 
 function ajustarTelasCanvas() {
     const larguraMax = contentTelas.offsetWidth - 12, alturaMax = contentTelas.offsetHeight - 12;
-
-    if (resolucaoProjeto.largura > larguraMax && resolucaoProjeto.altura > alturaMax) {
-        AjustarnavisualizacaoTelasCanvas();
+    if (resolucaoProjeto.largura >= larguraMax && resolucaoProjeto.altura >= alturaMax) {
+        ajustarNaVisualizacaoTelasCanvas();
     }
     else if (resolucaoProjeto.largura > larguraMax) {
         const novaAltura = larguraMax / proporcaoProjeto;
         telasCanvas.style.width = larguraMax + "px";
         telasCanvas.style.height = novaAltura + "px";
-        telasCanvas.style.top = alturaMax / 2 - novaAltura / 2 + "px"
+        telasCanvas.style.top = (alturaMax / 2) - (novaAltura / 2) + "px"
         telasCanvas.style.left = "6px";
     }
     else if (resolucaoProjeto.altura > alturaMax) {
@@ -1402,19 +1401,18 @@ function ajustarTelasCanvas() {
         telasCanvas.style.width = novaLargura + "px";
         telasCanvas.style.height = alturaMax + "px";
         telasCanvas.style.top = "6px";
-        telasCanvas.style.left = larguraMax / 2 - novaLargura / 2 + "px";
+        telasCanvas.style.left = (larguraMax / 2) - (novaLargura / 2) + "px";
     }
     else {
         telasCanvas.style.width = resolucaoProjeto.largura + "px";
         telasCanvas.style.height = resolucaoProjeto.altura + "px";
-        telasCanvas.style.top = alturaMax / 2 - resolucaoProjeto.altura / 2 + "px";
-        telasCanvas.style.left = larguraMax / 2 - resolucaoProjeto.largura / 2 + "px";
+        telasCanvas.style.top = (alturaMax / 2) - (resolucaoProjeto.altura / 2) + "px";
+        telasCanvas.style.left = (larguraMax / 2) - (resolucaoProjeto.largura / 2) + "px";
     }
-    zoomTelasCanvas = telasCanvas.offsetWidth / resolucaoProjeto.largura;
     mudarAparenciaCursor();
 }
 
-function AjustarnavisualizacaoTelasCanvas() {
+function ajustarNaVisualizacaoTelasCanvas() {
     const larguraMax = contentTelas.offsetWidth - 12, alturaMax = contentTelas.offsetHeight - 12,
         proporcaoContent = larguraMax / alturaMax;
     let larguraTelasCanvas;
@@ -1422,7 +1420,7 @@ function AjustarnavisualizacaoTelasCanvas() {
         let novaAltura = larguraMax / proporcaoProjeto;
         telasCanvas.style.width = larguraMax + "px";
         telasCanvas.style.height = novaAltura + "px";
-        telasCanvas.style.top = alturaMax / 2 - novaAltura / 2 + "px";
+        telasCanvas.style.top = ((alturaMax + 12) / 2) - (novaAltura / 2) + "px";
         telasCanvas.style.left = "6px";
         larguraTelasCanvas = larguraMax;
     }
@@ -1431,10 +1429,10 @@ function AjustarnavisualizacaoTelasCanvas() {
         telasCanvas.style.width = novaLargura + "px";
         telasCanvas.style.height = alturaMax + "px";
         telasCanvas.style.top = "6px";
-        telasCanvas.style.left = larguraMax / 2 - novaLargura / 2 + "px";
+        telasCanvas.style.left = ((larguraMax + 12) / 2) - (novaLargura / 2) + "px";
         larguraTelasCanvas = novaLargura;
     }
-    let zoomTelasCanvas = ((larguraTelasCanvas * 100) / resolucaoProjeto.largura).toFixed(1);
+    let zoomTelasCanvas = ((larguraTelasCanvas * 100) / resolucaoProjeto.largura).toFixed(2);
     zoomTelasCanvas = zoomTelasCanvas.replace(".", ",");
     txtPorcentagemZoom.value = zoomTelasCanvas + "%";
     tamanhoMoverScroll();
@@ -1467,26 +1465,24 @@ function ajustarPreview(cor) {
 function zoomNoProjeto(zoom, centralizar, quanto) {
     const larguraAnterior = telasCanvas.offsetWidth;
     let larguraAtual, alturaAtual;
-
     if (zoom === "porcentagem") {
         larguraAtual = resolucaoProjeto.largura * (quanto / 100);
-        alturaAtual = larguraAtual / proporcaoProjeto;
+        alturaAtual = (larguraAtual / proporcaoProjeto);
         telasCanvas.style.width = larguraAtual + "px";
         telasCanvas.style.height = alturaAtual + "px";
     }
     else if (zoom === true) {
-        larguraAtual = larguraAnterior * quanto;
-        alturaAtual = larguraAtual / proporcaoProjeto;
+        larguraAtual = (larguraAnterior * quanto);
+        alturaAtual = (larguraAtual / proporcaoProjeto);
         telasCanvas.style.width = larguraAtual + "px";
         telasCanvas.style.height = alturaAtual + "px";
     }
     else if (zoom === false) {
-        larguraAtual = larguraAnterior / quanto;
-        alturaAtual = larguraAtual / proporcaoProjeto;
+        larguraAtual = (larguraAnterior / quanto);
+        alturaAtual = (larguraAtual / proporcaoProjeto);
         telasCanvas.style.width = larguraAtual + "px";
         telasCanvas.style.height = alturaAtual + "px";
     }
-
     if (larguraAtual >= (contentTelas.offsetWidth - 12)) {
         telasCanvas.style.left = "6px";
     }
@@ -1499,7 +1495,6 @@ function zoomNoProjeto(zoom, centralizar, quanto) {
     else {
         telasCanvas.style.top = (contentTelas.offsetHeight / 2) - (alturaAtual / 2) + "px";
     }
-
     if (centralizar === true) {
         contentTelas.scrollTop = ((alturaAtual / 2) + 12) - (contentTelas.offsetHeight / 2);
         contentTelas.scrollLeft = ((larguraAtual / 2) + 12) - (contentTelas.offsetWidth / 2);
@@ -1518,23 +1513,23 @@ function tamanhoMoverScroll() {//De acordo com o zoom que é dado muda o tamanho
         tamanhoContentTelas = { X: contentTelas.offsetWidth, Y: contentTelas.offsetHeight },
         tamanhoContentTelaPreview = { X: contentTelaPreview.offsetWidth, Y: contentTelaPreview.offsetHeight };
 
-    if (tamanhoTelasCanvas.X <= (tamanhoContentTelas.X - 7) && tamanhoTelasCanvas.Y <= (tamanhoContentTelas.Y - 7)) {
+    if (tamanhoTelasCanvas.X <= (tamanhoContentTelas.X - 10) && tamanhoTelasCanvas.Y <= (tamanhoContentTelas.Y - 10)) {
         moverScroll.style.display = "none";
     }
-    else if (tamanhoTelasCanvas.X > (tamanhoContentTelas.X - 7) && tamanhoTelasCanvas.Y > (tamanhoContentTelas.Y - 7)) {
+    else if (tamanhoTelasCanvas.X > (tamanhoContentTelas.X - 10) && tamanhoTelasCanvas.Y > (tamanhoContentTelas.Y - 10)) {
         const proporcaoTamanhoX = (tamanhoContentTelas.X - 12) / (tamanhoTelasCanvas.X + 12),
             proporcaoTamanhoY = (tamanhoContentTelas.Y - 12) / (tamanhoTelasCanvas.Y + 12);
         moverScroll.style.display = "block";
         moverScroll.style.width = (tamanhoContentTelaPreview.X * proporcaoTamanhoX) + "px";
         moverScroll.style.height = (tamanhoContentTelaPreview.Y * proporcaoTamanhoY) + "px";
     }
-    else if (tamanhoTelasCanvas.X > (tamanhoContentTelas.X - 7)) {
+    else if (tamanhoTelasCanvas.X > (tamanhoContentTelas.X - 10)) {
         const proporcaoTamanhoX = (tamanhoContentTelas.X - 12) / (tamanhoTelasCanvas.X + 12);
         moverScroll.style.display = "block";
         moverScroll.style.width = (tamanhoContentTelaPreview.X * proporcaoTamanhoX) + "px";
         moverScroll.style.height = tamanhoContentTelaPreview.Y + "px";
     }
-    else if (tamanhoTelasCanvas.Y > (tamanhoContentTelas.Y - 7)) {
+    else if (tamanhoTelasCanvas.Y > (tamanhoContentTelas.Y - 10)) {
         const proporcaoTamanhoY = (tamanhoContentTelas.Y - 12) / (tamanhoTelasCanvas.Y + 12);
         moverScroll.style.display = "block";
         moverScroll.style.width = tamanhoContentTelaPreview.X + "px";
