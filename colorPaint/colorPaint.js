@@ -23,12 +23,10 @@ let moverScroll;//Div que será usada para mover os scrolls do "contentTelas".
 let resolucaoProjeto = { largura: 0, altura: 0 };//Armazena a resolução que o usuário escolheu para o projeto.
 let proporcaoProjeto = 0;//Armazena a relação entre largura e altura do projeto para ajustar os icones.
 let camadaSelecionada = 0;//Armazena a posição do arrayTelasCamadas com a camada selecionada.
-let desenho;//Armazena o canvas que receberá o "desenho completo".
-let ctxDesenho;//Armazena o contexto 2d de "desenho".
+let ctxDesenho;//Armazena o contexto 2d do canvas "desenho" que receberá o "desenho completo".
 let corDeFundoEscolhida;//Armazena a cor de fundo escolhida para o projeto.
 let corFundo;//Div de fundo que receberá a cor de fundo escolhida para o projeto.
-let pintar;//Armazena o canvas onde ocorrerá os "eventos" de pintura.
-let ctxPintar;//Armazena o contexto 2d de "pintar".
+let ctxPintar;//Armazena o contexto 2d do canvas "pintar" onde ocorrerá os "eventos" de pintura.
 let projetoCriado = false;//Saber se existe projeto já criado.
 let txtCorEscolhida;//Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
 let txtResolucao;//Recebe a string da resolução que o usuário escolheu para o projeto para informar ao usuário.
@@ -58,7 +56,7 @@ function colorPaint() {
     const bttDesfazer = document.getElementById("bttDesfazer");
     const contentCentro = document.getElementById("contentCentro");
     const propriedadesFerramentas = document.getElementById("propriedadesFerramentas");
-    const grid = {tamanho: 75, posicao: {X: 0, Y: 0}, visivel: false};//Propriedades do grid, e saber se está visível.
+    const grid = {tela: document.getElementById("grid").getContext("2d"), tamanho: 75, posicao: {X: 0, Y: 0}, visivel: false};//Propriedades do grid, e saber se está visível.
     const posicaoMouse = { X: 0, Y: 0 };//Armazena a posição do mouse no tela canvas em relação a resolução do projeto.
     const arrayPropriedadesFerramentas = [
         { propriedade: document.getElementById("propriedadeTamanho"), barra: document.getElementById("contentBarraTamanho") },
@@ -76,10 +74,8 @@ function colorPaint() {
     txtResolucao = document.getElementById("txtResolucao");
     txtPosicaoCursor = document.getElementById("txtPosicaoCursor");
     txtPorcentagemZoom = document.getElementById("txtPorcentagemZoom");
-    pintar = document.getElementById("pintar");
-    ctxPintar = pintar.getContext("2d");
-    desenho = document.getElementById("desenho");
-    ctxDesenho = desenho.getContext("2d");
+    ctxPintar = document.getElementById("pintar").getContext("2d");
+    ctxDesenho = document.getElementById("desenho").getContext("2d");
     contentTelaPreview = document.getElementById("contentTelaPreview");
     telaPreview = document.getElementById("telaPreview");
     ctxTelaPreview = telaPreview.getContext("2d");
@@ -259,7 +255,7 @@ function colorPaint() {
     })
 
     telasCanvas.addEventListener("mousemove", function () {
-        txtPosicaoCursor.value = ((Math.floor(posicaoMouse.X)) + 1) + ", " + ((Math.floor(posicaoMouse.Y)) + 1);
+        txtPosicaoCursor.value = Math.floor(posicaoMouse.X) + ", " + Math.floor(posicaoMouse.Y);
     });
 
     telasCanvas.addEventListener("mouseleave", function () {
@@ -735,7 +731,7 @@ function colorPaint() {
         ferramenta.dureza = porcentagem / 100;
     }
 
-    function configuraFerramenta(ctx, tamanho, cor, opacidade) {
+    function configuraFerramenta(ctx, tamanho, cor, opacidade) {//Pegar totas as propriedades das ferramentas e atribui a camada "pintar".
         const maximoBlur = tamanho / 6.2;
         let dureza = maximoBlur - (maximoBlur * ferramenta.dureza);
         if (tamanho < 100) {
@@ -1166,10 +1162,10 @@ function criarProjeto() {
         if (corDeFundoEscolhida != false) {
             corFundo.style.backgroundColor = cor;
         }
-        desenho.width = resolucaoProjeto.largura;
-        desenho.height = resolucaoProjeto.altura;
-        pintar.width = resolucaoProjeto.largura;
-        pintar.height = resolucaoProjeto.altura;
+        ctxDesenho.canvas.width = resolucaoProjeto.largura;
+        ctxDesenho.canvas.height = resolucaoProjeto.altura;
+        ctxPintar.canvas.width = resolucaoProjeto.largura;
+        ctxPintar.canvas.height = resolucaoProjeto.altura;
         document.getElementById("propriedadeOpacidadeCamada").style.display = "flex";
         document.getElementById("barraInferior").style.display = "block";
         ajustarPreview(cor);
@@ -1340,7 +1336,7 @@ function clickIconeCamada() {
         for (let i = 0; i < arrayCamadas.length; i++) {
             if (i === indiceArrayCamadas) {
                 camadaSelecionada = i;
-                pintar.style.zIndex = (id * 2) + 1;
+                ctxPintar.canvas.style.zIndex = (id * 2) + 1;
                 this.classList.add("camadaSelecionada");
                 this.classList.remove("camadas");
             }
@@ -1690,10 +1686,10 @@ function abrirProjeto() {
         if (corDeFundoEscolhida != false) {
             corFundo.style.backgroundColor = cor;
         }
-        desenho.width = resolucaoProjeto.largura;
-        desenho.height = resolucaoProjeto.altura;
-        pintar.width = resolucaoProjeto.largura;
-        pintar.height = resolucaoProjeto.altura;
+        ctxDesenho.canvas.width = resolucaoProjeto.largura;
+        ctxDesenho.canvas.height = resolucaoProjeto.altura;
+        ctxPintar.canvas.width = resolucaoProjeto.largura;
+        ctxPintar.canvas.height = resolucaoProjeto.altura;
         document.getElementById("propriedadeOpacidadeCamada").style.display = "flex";
         document.getElementById("barraInferior").style.display = "block";
         ajustarPreview(cor);
