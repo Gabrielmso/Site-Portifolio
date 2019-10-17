@@ -1,6 +1,8 @@
 mudarMenu = false; //impede que o menu mude de estilo.
 const ferramenta = { tamanho: 5, opacidade: 1, dureza: 1 };//Armazena as configurações do traço das ferramentas.
 let nomeDoProjeto;//Armazena o nome do projeto.
+let resolucaoProjeto = { largura: 0, altura: 0 };//Armazena a resolução que o usuário escolheu para o projeto.
+let corDeFundoEscolhida;//Armazena a cor de fundo escolhida para o projeto.
 let janelaSelecionarCorVisivel = false;//Saber se a janela de seleção de cor está "aberta".
 let corPrincipal, corSecundaria, corPrincipalOuSecundaria;
 let corEscolhidaPrincipal = { R: 0, G: 0, B: 0 };//Armazena a cor escolhida do primeiro plano.
@@ -20,11 +22,9 @@ let contentTelaPreview;//Div que contém o "telaPreview" e o "moverScroll".
 let telaPreview;//Armazena o canvas que será utilizado como preview do projeto.
 let ctxTelaPreview;//Armazena o contexto 2d do preview.
 let moverScroll;//Div que será usada para mover os scrolls do "contentTelas".
-let resolucaoProjeto = { largura: 0, altura: 0 };//Armazena a resolução que o usuário escolheu para o projeto.
 let proporcaoProjeto = 0;//Armazena a relação entre largura e altura do projeto para ajustar os icones.
 let camadaSelecionada = 0;//Armazena a posição do arrayTelasCamadas com a camada selecionada.
 let ctxDesenho;//Armazena o contexto 2d do canvas "desenho" que receberá o "desenho completo".
-let corDeFundoEscolhida;//Armazena a cor de fundo escolhida para o projeto.
 let corFundo;//Div de fundo que receberá a cor de fundo escolhida para o projeto.
 let ctxPintar;//Armazena o contexto 2d do canvas "pintar" onde ocorrerá os "eventos" de pintura.
 let projetoCriado = false;//Saber se existe projeto já criado.
@@ -56,7 +56,7 @@ function colorPaint() {
     const bttDesfazer = document.getElementById("bttDesfazer");
     const contentCentro = document.getElementById("contentCentro");
     const propriedadesFerramentas = document.getElementById("propriedadesFerramentas");
-    const grid = {tela: document.getElementById("grid").getContext("2d"), tamanho: 75, posicao: {X: 0, Y: 0}, visivel: false};//Propriedades do grid, e saber se está visível.
+    const grid = { tela: document.getElementById("grid").getContext("2d"), tamanho: 75, posicao: { X: 0, Y: 0 }, visivel: false };//Propriedades do grid, e saber se está visível.
     const posicaoMouse = { X: 0, Y: 0 };//Armazena a posição do mouse no tela canvas em relação a resolução do projeto.
     const arrayPropriedadesFerramentas = [
         { propriedade: document.getElementById("propriedadeTamanho"), barra: document.getElementById("contentBarraTamanho") },
@@ -213,10 +213,9 @@ function colorPaint() {
     })
 
     document.getElementById("bttCriarprojeto").addEventListener("click", function () {
-        criarProjeto();
+        validarPropriedades();
         if (projetoCriado === true) {
             contentJanelaCriarProjeto.style.display = "none";
-            txtResolucao.value = resolucaoProjeto.largura + ", " + resolucaoProjeto.altura;
         }
     });
 
@@ -1117,98 +1116,6 @@ function desenhoCompleto() {
 }
 // ==========================================================================================================================================================================================================================================
 
-function criarProjeto() {
-    const arrayPropriedades = [document.getElementById("txtNomeProjeto"),
-    document.getElementById("txtLarguraProjeto"),
-    document.getElementById("txtAlturaProjeto"),
-    document.getElementById("corDeFundoProjeto"),
-    document.getElementById("numeroCamadasProjeto")];
-
-    if (validarPropriedades()) {
-        for (let i = 0; i < arrayPropriedades.length; i++) {
-            const el = arrayPropriedades[i];
-            el.style.backgroundColor = "rgb(37, 37, 37)";
-        }
-        nomeDoProjeto = (arrayPropriedades[0].value).replace(" ", "-");
-        document.getElementById("nomeDoProjeto").innerText = nomeDoProjeto;
-        const resolucaoTela = { largura: parseInt(arrayPropriedades[1].value), altura: parseInt(arrayPropriedades[2].value) };
-        resolucaoProjeto = resolucaoTela;
-        proporcaoProjeto = resolucaoProjeto.largura / resolucaoProjeto.altura;
-        const numCamadas = parseInt(arrayPropriedades[4].value);
-        let cor;
-        if (arrayPropriedades[3].value === "1") {
-            corDeFundoEscolhida = { R: 255, G: 255, B: 255 };
-            cor = "rgb(" + corDeFundoEscolhida.R + ", " + corDeFundoEscolhida.G + ", " + corDeFundoEscolhida.B + ")";
-        }
-        else if (arrayPropriedades[3].value === "2") {
-            corDeFundoEscolhida = { R: 0, G: 0, B: 0 };
-            cor = "rgb(" + corDeFundoEscolhida.R + ", " + corDeFundoEscolhida.G + ", " + corDeFundoEscolhida.B + ")";
-        }
-        else if (arrayPropriedades[3].value === "3") {
-            corDeFundoEscolhida = false;
-            cor = false;
-        }
-        else if (arrayPropriedades[3].value === "4") {
-            corDeFundoEscolhida = corEscolhidaPrincipal;
-            cor = "rgb(" + corDeFundoEscolhida.R + ", " + corDeFundoEscolhida.G + ", " + corDeFundoEscolhida.B + ")";
-        }
-        while (numCamadas > arrayCamadas.length) {
-            criarCamada(cor, resolucaoTela);
-        }
-        ajustarTelasCanvas();
-        camadaSelecionada = 0;
-        arrayCamadas[0].icone.classList.add("camadaSelecionada");
-        arrayCamadas[0].icone.classList.remove("camadas");
-        if (corDeFundoEscolhida != false) {
-            corFundo.style.backgroundColor = cor;
-        }
-        ctxDesenho.canvas.width = resolucaoProjeto.largura;
-        ctxDesenho.canvas.height = resolucaoProjeto.altura;
-        ctxPintar.canvas.width = resolucaoProjeto.largura;
-        ctxPintar.canvas.height = resolucaoProjeto.altura;
-        document.getElementById("propriedadeOpacidadeCamada").style.display = "flex";
-        document.getElementById("barraInferior").style.display = "block";
-        ajustarPreview(cor);
-        projetoCriado = true;
-    }
-
-    function validarPropriedades() {
-        for (let i = 0; i < arrayPropriedades.length; i++) {
-            const el = arrayPropriedades[i];
-            if (el.value === "") {
-                el.focus();
-                el.style.backgroundColor = "rgba(255, 0, 0, 0.25)"
-                return false;
-            }
-            else {
-                el.style.backgroundColor = "rgba(0, 0, 0, 0)"
-            }
-        }
-        if (parseInt(arrayPropriedades[1].value) > 2560 || parseInt(arrayPropriedades[1].value) < 1) {
-            arrayPropriedades[1].focus();
-            arrayPropriedades[1].style.backgroundColor = "rgba(255, 0, 0, 0.25)";
-            return false;
-        }
-        else if (parseInt(arrayPropriedades[2].value) > 1440 || parseInt(arrayPropriedades[2].value) < 1) {
-            arrayPropriedades[2].focus();
-            arrayPropriedades[2].style.backgroundColor = "rgba(255, 0, 0, 0.25)";
-            return false;
-        }
-        else if (parseInt(arrayPropriedades[3].value) > 4 || parseInt(arrayPropriedades[3].value) < 1) {
-            arrayPropriedades[3].focus();
-            arrayPropriedades[3].style.backgroundColor = "rgba(255, 0, 0, 0.25)";
-            return false;
-        }
-        else if (parseInt(arrayPropriedades[4].value) > 5 || parseInt(arrayPropriedades[4].value) < 1) {
-            arrayPropriedades[4].focus();
-            arrayPropriedades[4].style.backgroundColor = "rgba(255, 0, 0, 0.25)";
-            return false;
-        }
-        return true;
-    }
-}
-// ==========================================================================================================================================================================================================================================
-
 function criarCamada(cor, resolucao) {
     const num = arrayCamadas.length + 1;
     // ============= CRIA O ICONE DA CAMADA ==================
@@ -1572,6 +1479,95 @@ function contentTelasMoverScroll(scrollTop, scrollLeft) {//Mover o "moverScroll"
 }
 // ==========================================================================================================================================================================================================================================
 
+function criarProjeto(nome, resolucao, corPlanoDeFundo, numeroCamadas) {
+    nomeDoProjeto = nome;
+    resolucaoProjeto = resolucao;
+    proporcaoProjeto = resolucaoProjeto.largura / resolucaoProjeto.altura;
+    const numCamadas = numeroCamadas;
+    corDeFundoEscolhida = corPlanoDeFundo;
+    let cor = false;
+    if (corDeFundoEscolhida != false) {
+        cor = "rgb(" + corDeFundoEscolhida.R + ", " + corDeFundoEscolhida.G + ", " + corDeFundoEscolhida.B + ")"
+        corFundo.style.backgroundColor = cor;
+    }
+    while (numCamadas > arrayCamadas.length) {
+        criarCamada(cor, resolucaoProjeto);
+    }
+    ajustarTelasCanvas();
+    ajustarPreview(cor);
+    clickIconeCamada.call(arrayCamadas[0].icone)
+    ctxDesenho.canvas.width = resolucaoProjeto.largura;
+    ctxDesenho.canvas.height = resolucaoProjeto.altura;
+    ctxPintar.canvas.width = resolucaoProjeto.largura;
+    ctxPintar.canvas.height = resolucaoProjeto.altura;
+    txtResolucao.value = resolucaoProjeto.largura + ", " + resolucaoProjeto.altura;
+    document.getElementById("nomeDoProjeto").innerText = nomeDoProjeto;
+    document.getElementById("propriedadeOpacidadeCamada").style.display = "flex";
+    document.getElementById("barraInferior").style.display = "block";
+    projetoCriado = true;
+}
+
+function validarPropriedades() {
+    const arrayPropriedades = [document.getElementById("txtNomeProjeto"),
+    document.getElementById("txtLarguraProjeto"),
+    document.getElementById("txtAlturaProjeto"),
+    document.getElementById("corDeFundoProjeto"),
+    document.getElementById("numeroCamadasProjeto")];
+    for (let i = 0; i < arrayPropriedades.length; i++) {
+        const el = arrayPropriedades[i];
+        if (el.value === "") {
+            campoInvalido(el)
+            return;
+        }
+        else {
+            el.style.backgroundColor = "rgba(0, 0, 0, 0)"
+        }
+    }
+    let nomeProjeto = (arrayPropriedades[0].value).replace(/ /g, "-"),
+        larguraProjeto = parseInt(arrayPropriedades[1].value),
+        alturaProjeto = parseInt(arrayPropriedades[2].value),
+        valueCor = parseInt(arrayPropriedades[3].value),
+        numeroCamadas = parseInt(arrayPropriedades[4].value);
+
+    if (larguraProjeto > 2560 || larguraProjeto < 1) {
+        campoInvalido(arrayPropriedades[1]);
+        return;
+    }
+    else if (alturaProjeto > 1440 || alturaProjeto < 1) {
+        campoInvalido(arrayPropriedades[2]);
+        return;
+    }
+    else if (valueCor > 4 || valueCor < 1) {
+        campoInvalido(arrayPropriedades[3]);
+        return;
+    }
+    else if (numeroCamadas > 5 || numeroCamadas < 1) {
+        campoInvalido(arrayPropriedades[4]);
+        return;
+    }
+    let cor;
+    if (valueCor === 1) {
+        cor = { R: 255, G: 255, B: 255 };
+    }
+    else if (valueCor === 2) {
+        cor = { R: 0, G: 0, B: 0 };
+    }
+    else if (valueCor === 3) {
+        cor = false;
+    }
+    else {
+        cor = corEscolhidaPrincipal;
+    }
+    for (let i = 0; i < arrayPropriedades.length; i++) {
+        arrayPropriedades[i].style.backgroundColor = "rgb(37, 37, 37)";
+    }
+    criarProjeto(nomeProjeto, { largura: larguraProjeto, altura: alturaProjeto }, cor, numeroCamadas);
+    function campoInvalido(campo) {
+        campo.focus();
+        campo.style.backgroundColor = "rgba(255, 0, 0, 0.25)";
+    }
+}
+
 function salvarDesenho() {
     desenhoCompleto();
     const blob = dataURLtoBlob(ctxDesenho.canvas.toDataURL("imagem/png"));
@@ -1659,43 +1655,11 @@ function abrirProjeto() {
 
     function carregarProjeto(projetoJSON) {
         const objProjeto = JSON.parse(projetoJSON);
-        nomeDoProjeto = objProjeto.nomeProjeto;
-        document.getElementById("nomeDoProjeto").innerText = nomeDoProjeto;
-        resolucaoProjeto = objProjeto.resolucaoDoProjeto;
-        proporcaoProjeto = resolucaoProjeto.largura / resolucaoProjeto.altura;
-        corDeFundoEscolhida = objProjeto.corDeFundo;
-        const numCamadas = objProjeto.numeroDeCamadas;
-        let cor;
         arrayCamadas = [];
         arrayVoltarAlteracoes = [];
         arrayAvancarAlteracoes = [];
-        if (corDeFundoEscolhida === false) {
-            cor = false;
-        }
-        else {
-            cor = "rgb(" + corDeFundoEscolhida.R + ", " + corDeFundoEscolhida.G + ", " + corDeFundoEscolhida.B + ")";
-        }
-
-        while (numCamadas > arrayCamadas.length) {
-            criarCamada(cor, resolucaoProjeto);
-        }
-        ajustarTelasCanvas();
-        camadaSelecionada = 0;
-        arrayCamadas[0].icone.classList.add("camadaSelecionada");
-        arrayCamadas[0].icone.classList.remove("camadas");
-        if (corDeFundoEscolhida != false) {
-            corFundo.style.backgroundColor = cor;
-        }
-        ctxDesenho.canvas.width = resolucaoProjeto.largura;
-        ctxDesenho.canvas.height = resolucaoProjeto.altura;
-        ctxPintar.canvas.width = resolucaoProjeto.largura;
-        ctxPintar.canvas.height = resolucaoProjeto.altura;
-        document.getElementById("propriedadeOpacidadeCamada").style.display = "flex";
-        document.getElementById("barraInferior").style.display = "block";
-        ajustarPreview(cor);
-        projetoCriado = true;
-        txtResolucao.value = resolucaoProjeto.largura + ", " + resolucaoProjeto.altura;
-        for (let i = 0; i < numCamadas; i++) {
+        criarProjeto(objProjeto.nomeProjeto, objProjeto.resolucaoDoProjeto, objProjeto.corDeFundo, objProjeto.numeroDeCamadas);
+        for (let i = 0; i < arrayCamadas.length; i++) {
             const opacidade = objProjeto.camadas[i].opacidade;
             arrayCamadas[i].porcentagemOpa.value = Math.round(opacidade * 100) + "%";
             arrayCamadas[i].opacidade = opacidade;
