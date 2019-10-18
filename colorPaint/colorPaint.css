@@ -468,6 +468,7 @@ p {
 #telasCanvas {
     position: relative;
     display: inline-block;
+    overflow: hidden;
     background-image: url("../colorPaint/imagens/fundoTela/transparente.png");
     background-color: rgb(255, 255, 255);
     margin-right: 10px;
@@ -485,9 +486,16 @@ p {
     z-index: 3;
 }
 
-#grid{
-    opacity: 0.6;
+#grid {
+    opacity: 0.7;
     z-index: 50;
+}
+
+.quadrado {
+    float: left;
+    border-bottom: dashed 1px rgb(0, 0, 0);
+    border-right: dashed 1px rgb(0, 0, 0);
+    box-shadow: 1px 1px 1px rgba(255, 255, 255, 0.55);
 }
 
 #sobrepor {

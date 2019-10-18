@@ -33,9 +33,6 @@ let janelaSeleciona;//Recebe toda a função "janelaSeletorDeCor".
 let MouseNoBttVer = false;//Saber se o mouse está sobre os botões que deixam as camadas invisíveis ou visíveis.
 let coordenadaClick = [];//Armazena as coordenadas do cursor do mouse desde quando o mesmo é pressionado e movimentado enquanto pressionado.
 let cursorOpacidadeCamada;
-let linhaVertical = new Image(), linhaHorizontal = new Image();
-linhaHorizontal.src = "colorPaint/imagens/grid/linhaHorizontal.png";
-linhaVertical.src = "colorPaint/imagens/grid/linhaVertical.png";
 function colorPaint() {
     const contentJanelaCriarProjeto = document.getElementById("contentJanelaCriarProjeto");
     const contentJanelaAtalhos = document.getElementById("contentJanelaAtalhos");
@@ -56,7 +53,7 @@ function colorPaint() {
     const bttDesfazer = document.getElementById("bttDesfazer");
     const contentCentro = document.getElementById("contentCentro");
     const propriedadesFerramentas = document.getElementById("propriedadesFerramentas");
-    const grid = { tela: document.getElementById("grid").getContext("2d"), tamanho: 75, posicao: { X: 0, Y: 0 }, visivel: true };//Propriedades do grid, e saber se está visível.
+    const grid = { tela: document.getElementById("grid"), tamanho: 75, posicao: { X: 0, Y: 0 }, visivel: true };//Propriedades do grid, e saber se está visível.
     const posicaoMouse = { X: 0, Y: 0 };//Armazena a posição do mouse no tela canvas em relação a resolução do projeto.
     const arrayPropriedadesFerramentas = [
         { propriedade: document.getElementById("propriedadeTamanho"), barra: document.getElementById("contentBarraTamanho") },
@@ -101,7 +98,6 @@ function colorPaint() {
     menuPadrao();
     ajustarContents();
     criarOuAbrirProjeto();
-
     txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
 
     for (let i = 0; i < arrayFerramentas.length; i++) {
@@ -216,6 +212,7 @@ function colorPaint() {
         validarPropriedades();
         if (projetoCriado === true) {
             contentJanelaCriarProjeto.style.display = "none";
+            calcularGrid(grid.tela, grid.tamanho, grid.posicao);
         }
     });
 
@@ -410,17 +407,11 @@ function colorPaint() {
 
     document.getElementById("bttZoomMais").addEventListener("click", function () {//Aumentar o zoom no projeto.
         zoomNoProjeto(true, true, 1.25);
-        if (grid.visivel === true) {
-            calcularGrid(grid.tela, grid.tamanho, grid.posicao);
-        }
     });
 
     document.getElementById("bttZoomMenos").addEventListener("click", function () {//Diminuir o zoom no projeto.
         if (telasCanvas.offsetWidth >= 25) {
             zoomNoProjeto(false, true, 1.25);
-        }
-        if (grid.visivel === true) {
-            calcularGrid(grid.tela, grid.tamanho, grid.posicao);
         }
     });
 
@@ -429,9 +420,6 @@ function colorPaint() {
             const valor = parseFloat(((this.value).replace("%", "")).replace(",", "."));
             if (isNaN(valor) === false && valor >= 1) {
                 zoomNoProjeto("porcentagem", true, valor);
-                if (grid.visivel === true) {
-                    calcularGrid(grid.tela, grid.tamanho, grid.posicao);
-                }
             }
         }
     });
@@ -509,9 +497,6 @@ function colorPaint() {
                     e.preventDefault();
                     avancarAlteracao();
                 }
-                if (grid.visivel === true) {
-                    calcularGrid(grid.tela, grid.tamanho, grid.posicao);
-                }
             }
             if (pintando === false) {
                 if (e.code === "BracketRight") {//Aumentar o tamanho da ferramenta.
@@ -552,9 +537,6 @@ function colorPaint() {
             }
             else {
                 zoomNoProjeto(false, false, 1.076, e);
-            }
-            if (grid.visivel === true) {
-                calcularGrid(grid.tela, grid.tamanho, grid.posicao);
             }
             const posContentTelas = pegarPosicaoMouse(contentTelas, e);
             const proporcaoPosY = posicaoMouse.Y / projeto.resolucao.altura;
@@ -1059,7 +1041,7 @@ function mudarAparenciaCursor() {
         return;
     };
     const tamanho = ferramenta.tamanho * ((telasCanvas.offsetWidth) / projeto.resolucao.largura);
-    if (tamanho <= 10) {
+    if (tamanho < 20) {
         contentTelas.style.cursor = "url('/colorPaint/imagens/cursor/crossHair.png') 12.5 12.5, pointer";
     }
     else {
@@ -1069,33 +1051,28 @@ function mudarAparenciaCursor() {
 // ==========================================================================================================================================================================================================================================
 
 function calcularGrid(tela, tamanho, posicao) {
-    let larguraGrid = tela.canvas.offsetWidth, alturaGrid = tela.canvas.offsetHeight;
-    if (larguraGrid * alturaGrid > 30000000) {
-        larguraGrid = Math.round(Math.sqrt(30000000 * projeto.resolucao.proporcao))
-        alturaGrid = Math.round(larguraGrid / projeto.resolucao.proporcao);
+    let el = tela.firstElementChild;
+    while (el != null) {
+        el.remove();
+        el = tela.firstElementChild;
     }
-    if (tela.canvas.height != alturaGrid) {
-        tela.canvas.height = alturaGrid;
-        tela.canvas.width = larguraGrid;
-        tela.clearRect(0, 0, larguraGrid, alturaGrid);
-        tela.lineWidth = 1;
-        let relacaoTelaGridEProjeto = larguraGrid / projeto.resolucao.largura;
-        let separacaoLinhas = tamanho * relacaoTelaGridEProjeto;
-        let posicaoGrid = { X: posicao.X * relacaoTelaGridEProjeto, Y: posicao.Y * relacaoTelaGridEProjeto }
-        for (let posicaoAtual = posicaoGrid.X; posicaoAtual <= larguraGrid; posicaoAtual += separacaoLinhas) {
-            if (posicaoAtual > 0) {
-                for (let tamanhoLinha = 0; tamanhoLinha <= alturaGrid; tamanhoLinha += 4001) {
-                    tela.drawImage(linhaVertical, posicaoAtual, tamanhoLinha)
-                }
-            }
-        }
-        for (let posicaoAtual = posicaoGrid.Y; posicaoAtual <= alturaGrid; posicaoAtual += separacaoLinhas) {
-            if (posicaoAtual > 0) {
-                for (let tamanhoLinha = 0; tamanhoLinha <= larguraGrid; tamanhoLinha += 4001) {
-                    tela.drawImage(linhaHorizontal, tamanhoLinha, posicaoAtual)
-                }
-            }
-        }
+    const numDeQuadrados = (Math.round((projeto.resolucao.largura / tamanho) + 2)) * (Math.round((projeto.resolucao.altura / tamanho) + 2));
+    console.log(numDeQuadrados);    
+    if(numDeQuadrados > 1000){
+        alert("O tamanho do grid está muito pequeno, isso pode acarretar problemas de performance!");
+    }
+    const larguraTela = (projeto.resolucao.largura + (tamanho * 2.2)), alturaTela = (projeto.resolucao.altura + (tamanho * 2.2));
+    const larguraQuadrado = ((tamanho / larguraTela) * 100), alturaQuadrado = ((tamanho / alturaTela) * 100);
+    const styleQuadrado = "width: " + larguraQuadrado + "%; height: " + alturaQuadrado + "%;";
+    tela.style.top = (-100 * ((tamanho - posicao.Y) / projeto.resolucao.altura)) + "%";
+    tela.style.left = (-100 * ((tamanho - posicao.X) / projeto.resolucao.largura)) + "%";
+    tela.style.width = ((larguraTela / projeto.resolucao.largura) * 100) + "%";
+    tela.style.height = ((alturaTela / projeto.resolucao.altura) * 100) + "%";
+    for (let i = 0; i < numDeQuadrados; i++) {
+        const quadrado = document.createElement("div");
+        quadrado.setAttribute("class", "quadrado");
+        quadrado.setAttribute("style", styleQuadrado);
+        tela.appendChild(quadrado);
     }
 }
 // ==========================================================================================================================================================================================================================================
@@ -1431,8 +1408,6 @@ function zoomNoProjeto(zoom, centralizar, quanto) {
     txtPorcentagemZoom.value = zoomTelasCanvas + "%";
     mudarAparenciaCursor();
     tamanhoMoverScroll();
-    // let telaGrid = document.getElementById("grid").getContext("2d");
-    // calcularGrid(telaGrid, 51.2, { X: 0, Y: 0 });
 }
 // ==========================================================================================================================================================================================================================================
 
