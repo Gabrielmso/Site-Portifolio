@@ -147,65 +147,76 @@ p {
     left: 183px;
 }
 
-#salvarDesenhoProjeto {
+#menuColorPaint {
     position: relative;
     float: right;
     list-style: none;
     text-align: center;
 }
 
-#salvarDesenhoProjeto li {
+#menuColorPaint li {
+    position: relative;
     color: rgb(165, 165, 165);
     height: 36px;
     width: 100px;
     padding-left: 5px;
     padding-right: 5px;
-    transition: all 0.35s;
-    -webkit-transition: all 0.35s;
+    float: left;
+    margin-left: 3px;
+    transition: all 0.3s;
+    -webkit-transition: all 0.3s;
     border-top-right-radius: 5px;
     border-top-left-radius: 5px;
 }
 
-#salvarDesenhoProjeto label {
+#menuColorPaint label {
     line-height: 36px;
     font-size: 11px;
     text-transform: uppercase;
 }
 
-#salvarDesenhoProjeto ul {
+#menuColorPaint ul {
     width: 120px;
     position: absolute;
     overflow: hidden;
     max-height: 0;
     left: -20px;
     list-style: none;
-    transition: all 0.35s;
-    -webkit-transition: all 0.35s;
+    transition: all 0.3s;
+    -webkit-transition: all 0.3s;
     border-radius: 5px;
     border-top-right-radius: 0px;
-    z-index: 9000;
+    z-index: 1000;
 }
 
-#salvarDesenhoProjeto ul li {
+#menuColorPaint li:hover ul {
+    max-height: 120px;
+}
+
+#menuColorPaint li ul li {
+    position: relative;
     background-color: rgba(213, 192, 107, 0.85);
     color: rgb(44, 29, 0);
     border-top-right-radius: 0px;
     border-top-left-radius: 0px;
     width: 100%;
+    cursor: pointer;
+    margin-left: 0px;
 }
 
-#salvarDesenhoProjeto ul li:hover {
+#menuColorPaint li ul li:hover{
     background-color: rgba(100, 68, 8, 0.85);
     color: rgb(213, 192, 107);
 }
 
-#salvarDesenhoProjeto:hover li {
-    background-color: rgba(213, 192, 107, 0.85);
-    color: rgb(0, 0, 0);
+#menuColorPaint li ul li:hover div{
+    background-color: rgba(100, 68, 8, 0.85);
+    color: rgb(213, 192, 107);
 }
 
-#salvarDesenhoProjeto:hover ul {
-    max-height: 120px;
+#menuColorPaint li:hover {
+    background-color: rgba(213, 192, 107, 0.85);
+    color: rgb(0, 0, 0);
 }
 
 .bttBarraSuperior {
@@ -396,6 +407,7 @@ p {
     padding: 7px;
     max-height: 120px;
     overflow-x: auto;
+    scrollbar-width: thin;
     background-color: rgb(37, 37, 37);
     border-radius: 7px;
     left: 10px;
@@ -487,7 +499,7 @@ p {
 }
 
 #grid {
-    opacity: 0.7;
+    opacity: 0.6;
     z-index: 50;
 }
 
@@ -495,7 +507,7 @@ p {
     float: left;
     border-bottom: dashed 1px rgb(0, 0, 0);
     border-right: dashed 1px rgb(0, 0, 0);
-    box-shadow: 1px 1px 1px rgba(255, 255, 255, 0.55);
+    box-shadow: 1px 1px 0.5px rgba(255, 255, 255, 0.5);
 }
 
 #sobrepor {
@@ -796,15 +808,9 @@ p {
     margin-left: 7px;
 }
 
-#contentPropriedadesProjeto input[type=number]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-}
-
 #contentPropriedadesProjeto input[type=number] {
-    -moz-appearance: textfield;
-    appearance: textfield;
-    width: 55px;
-}
+    width: 65px;
+} 
 
 #botoesCriarProjeto {
     position: relative;
@@ -885,7 +891,93 @@ p {
 }
 
 #bttOkAtalhos {
-    width: 100px;
+    width: 85px;
+}
+/* ==================================== JANELA PARA ADICIONAR GRID ================================= */
+
+#contentJanelaMenuGrid{
+    position: absolute;
+    display: none;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 10000001;
+}
+
+#janelaMenuGrid{
+    position: absolute;
+    top: 54%;
+    left:50%;
+    transform: translate(-50%, -50%);
+    width: 250px;
+    height: 205px;
+    background-color: rgb(37, 37, 37);
+    border-radius: 7px;
+    padding: 10px;
+    box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.45);
+}
+
+#tituloJanelaGrid{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 2px solid rgb(61, 61, 61);
+    height: 35px;
+    color: rgb(151, 151, 151);
+}
+
+#contentPropriedadesGrid{
+    position: relative;
+    height: 115px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 2px solid rgb(61, 61, 61);
+    margin-bottom: 4px;
+}
+
+#contentPropriedadesGrid ul {
+    position: relative;
+    display: inline-block;
+    list-style: none;
+}
+
+#contentPropriedadesGrid ul li {
+    display: block;
+    margin-bottom: 4px;
+}
+
+#contentPropriedadesGrid ul li label {
+    font-size: 13.5px;
+    color: rgb(151, 151, 151);
+}
+
+#janelaMenuGrid input{
+    outline: none;
+    border: none;
+    width: 50px;
+    border-bottom: 2px solid rgb(121, 121, 121);
+    font-size: 13.5px;
+    text-align: center;
+    background-color: rgb(37, 37, 37);
+    color: rgb(200, 200, 200);
+    margin-left: 7px;
+}
+
+#botoesGrid {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: 35px;
+}
+
+.bttGrid{
+    width: 85px;
 }
 
 /* ============================================= Seletor de cores ============================================= */

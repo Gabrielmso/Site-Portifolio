@@ -107,7 +107,8 @@
             <header id="barraSuperior">
                 <ul id="propriedadesFerramentas" class="noSelection">
                     <li id="propriedadeTamanho">
-                        <label>Tamanho &#9662; </label><input type="text" id="txtTamanhoFerramenta" readonly value="5px">
+                        <label>Tamanho &#9662; </label><input type="text" id="txtTamanhoFerramenta" readonly
+                            value="5px">
                         <ul id="contentBarraTamanho">
                             <li>
                                 <div id="barraTamanho" class="barraPropriedade">
@@ -117,7 +118,8 @@
                         </ul>
                     </li>
                     <li id="propriedadeOpacidade">
-                        <label>Opacidade &#9662; </label><input type="text" id="txtOpacidadeFerramenta" readonly value="100%">
+                        <label>Opacidade &#9662; </label><input type="text" id="txtOpacidadeFerramenta" readonly
+                            value="100%">
                         <ul id="contentBarraOpacidade">
                             <li>
                                 <div id="barraOpacidade" class="barraPropriedade">
@@ -137,20 +139,26 @@
                         </ul>
                     </li>
                 </ul>
-                <ul id="salvarDesenhoProjeto" class="noSelection">
+                <ul id="menuColorPaint" class="noSelection">
+                    <li><label>Visualizar <span style="font-size: 15px; line-height: 33px;">&#9662;</span></label>
+                        <ul>
+                            <li id="bttCriarGrade" title="Adiciona linhas guias de acordo com a preferências listadas.">
+                                <label class="cursor">Grade</label>
+                            </li>
+                        </ul>
+                    </li>
                     <li><label>Arquivo <span style="font-size: 15px; line-height: 33px;">&#9662;</span></label>
                         <ul>
-                            <li id="bttSalvarDesenho" class="cursor"
-                                title="Salva o desenho em um arquivo no formato PNG.">
+                            <li id="bttSalvarDesenho" title="Salva o desenho em um arquivo no formato PNG.">
                                 <label class="cursor">Salvar</label>
                                 <a id="salvarImagem"></a>
                             </li>
-                            <li id="bttSalvarProjeto" class="cursor"
+                            <li id="bttSalvarProjeto"
                                 title="Salva as propriedades do projeto, o conteúdo das camadas, em um arquivo no formato GM.">
                                 <label class="cursor">Salvar projeto</label>
                                 <a id="salvarProjeto" target="_blank"></a>
                             </li>
-                            <li id="bttAbrirProjeto" class="cursor" title="Carrega um projeto salvo.">
+                            <li id="bttAbrirProjeto" title="Carrega um projeto salvo.">
                                 <label class="cursor">Abrir projeto</label>
                             </li>
                         </ul>
@@ -256,14 +264,15 @@
                 </div>
                 <div id="contentPropriedadesProjeto">
                     <ul>
-                        <li><label class="noSelection">Nome:</label><input type="text" id="txtNomeProjeto" value="Sem-Título"></li>
+                        <li><label class="noSelection">Nome:</label><input type="text" id="txtNomeProjeto"
+                                value="Sem-Título"></li>
                         <li>
-                            <label class="noSelection">Largura:</label><input type="number"
-                                id="txtLarguraProjeto" value="1920"><label class="noSelection"> px - (limite 2560)</label>
+                            <label class="noSelection">Largura:</label><input type="number" id="txtLarguraProjeto"
+                                value="1920" min="1" max="2560"><label class="noSelection"> px - (limite 2560)</label>
                         </li>
                         <li>
-                            <label class="noSelection">Altura:</label><input type="number" id="txtAlturaProjeto" value="1080"><label
-                                class="noSelection">
+                            <label class="noSelection">Altura:</label><input type="number" id="txtAlturaProjeto"
+                                value="1080" min="1" max="1440"><label class="noSelection">
                                 px - (limite 1440)</label>
                         </li>
                         <li>
@@ -336,7 +345,38 @@
                 </div>
             </div>
         </div>
-        <!-- =================================== FIM JANELA ATALHOS ================================ -->
+        <!-- ================================ JANELA PARA ADICIONAR GRID ========================== -->
+        <div id="contentJanelaMenuGrid">
+            <div id="janelaMenuGrid">
+                <div id="tituloJanelaGrid" class="noSelection">
+                    <p>Propriedades da grade:</p>
+                </div>
+                <div id="contentPropriedadesGrid">
+                    <ul>
+                        <li>
+                            <label>Tamanho:</label><input id="txtTamanhoGrid" type="number" min="25" value="75"><label>
+                                px.</label>
+                        </li>
+                        <li>
+                            <label>Posição vertical:</label><input id="txtPosicaoVerticalGrid" type="number" min="0"
+                                max="74" value="0"><label> px.</label>
+                        </li>
+                        <li>
+                            <label>Posição Horizontal:</label><input id="txtPosicaoVerticalGrid" type="number" min="0"
+                                max="74" value="0"><label> px.</label>
+                        </li>
+                    </ul>
+                </div>
+                <div id="botoesGrid" class="noSelection">
+                    <div id=bttOkGrid class="bttBarraSuperior bttGrid cursor">
+                        <p>Ok</p>
+                    </div>
+                    <div id=bttcancelarGrid class="bttBarraSuperior bttGrid cursor">
+                        <p>Cancelar</p>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- ================================ JANELA PARA SELECIONAR COR ========================== -->
         <section id="janelaSelecionarCor">
             <div id="comparaCorAtualEEscolhida">
