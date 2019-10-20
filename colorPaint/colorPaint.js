@@ -55,7 +55,10 @@ function colorPaint() {
     const bttDesfazer = document.getElementById("bttDesfazer");
     const contentCentro = document.getElementById("contentCentro");
     const propriedadesFerramentas = document.getElementById("propriedadesFerramentas");
-    const grid = { tela: document.getElementById("grid"), tamanho: 80, posicao: { X: 0, Y: 0 }, visivel: false };//Propriedades do grid, e saber se está visível.
+    const grid = {//Propriedades do grid e da visualização do projeto antes de criar o grid, e saber se está visível.
+        tela: document.getElementById("grid"), tamanho: 80, posicao: { X: 0, Y: 0 }, visivel: false,
+        visualizacaoAnterior: { scrollX: 0, scrollY: 0, zoom: 0 }
+    };
     const posicaoMouse = { X: 0, Y: 0 };//Armazena a posição do mouse no tela canvas em relação a resolução do projeto.
     const arrayPropriedadesFerramentas = [
         { propriedade: document.getElementById("propriedadeTamanho"), barra: document.getElementById("contentBarraTamanho") },
@@ -158,6 +161,102 @@ function colorPaint() {
         }
     });
 
+    document.getElementById("bttCriarprojeto").addEventListener("click", function () {
+        validarPropriedades();
+        if (projetoCriado === true) {
+            contentJanelaCriarProjeto.style.display = "none";
+        }
+    });
+
+    document.getElementById("bttCancelaCriarprojetor").addEventListener("click", function () {
+        contentJanelaCriarProjeto.style.display = "none";
+    });
+
+    document.getElementById("bttCriarGrade").addEventListener("click", function () {
+        if (projetoCriado === true) {
+            grid.visualizacaoAnterior.scrollX = contentTelas.scrollLeft;
+            grid.visualizacaoAnterior.scrollY = contentTelas.scrollTop;
+            grid.visualizacaoAnterior.zoom = parseFloat(((txtPorcentagemZoom.value).replace("%", "")).replace(",", "."));
+            contentJanelaMenuGrid.style.display = "block";
+            ajustarNaVisualizacaoTelasCanvas();
+            if (grid.visivel === false) {
+                criarGrid(grid.tela, grid.tamanho, grid.posicao, true);
+                grid.visivel = true;
+            }
+        }
+        else {
+            alert("Nenhum projeto criado!");
+        }
+    });
+
+    document.getElementById("txtTamanhoGrid").addEventListener("change", function () {
+        const num = parseInt(this.value);
+        if (isNaN(num) === false && num > 0) {
+            grid.tamanho = num;
+            criarGrid(grid.tela, grid.tamanho, grid.posicao, true);
+        }
+    });
+
+    document.getElementById("txtPosicaoVerticalGrid").addEventListener("change", function () {
+        const num = parseInt(this.value);
+        if (isNaN(num) === false) {
+            grid.posicao.Y = num;
+            criarGrid(grid.tela, grid.tamanho, grid.posicao, true);
+        }
+    });
+
+    document.getElementById("txtPosicaoHorizontalGrid").addEventListener("change", function () {
+        const num = parseInt(this.value);
+        if (isNaN(num) === false) {
+            grid.posicao.X = num;
+            criarGrid(grid.tela, grid.tamanho, grid.posicao, true);
+        }
+    });
+
+    document.getElementById("bttOkGrid").addEventListener("click", function () {
+        contentJanelaMenuGrid.style.display = "none";
+        ajustarVisualizacaoAntesGrid();
+    });
+
+    document.getElementById("bttcancelarGrid").addEventListener("click", function () {
+        if (projetoCriado === true) {
+            criarGrid(grid.tela, grid.tamanho, grid.posicao, false);
+            contentJanelaMenuGrid.style.display = "none";
+            grid.visivel = false;
+            ajustarVisualizacaoAntesGrid();
+        }
+    });
+
+    document.getElementById("bttSalvarDesenho").addEventListener("click", function () {
+        if (projetoCriado === true) {
+            salvarDesenho();
+        }
+        else {
+            alert("Nenhum projeto criado!");
+        }
+    });
+
+    document.getElementById("bttSalvarProjeto").addEventListener("click", function () {
+        if (projetoCriado === true) {
+            salvarProjeto();
+        }
+        else {
+            alert("Nenhum projeto criado!");
+        }
+    });
+
+    document.getElementById("bttAbrirProjeto").addEventListener("click", function () {
+        if (projetoCriado === true) {
+            if (confirm("Todo o progresso não salvo será perdido, deseja continuar?") === true) {
+                sessionStorage.setItem("abrirProjetoSalvo", "true");
+                window.location.reload();
+            }
+        }
+        else {
+            abrirProjeto();
+        }
+    });
+
     corPrincipal.addEventListener("click", function () {
         if (janelaSelecionarCorVisivel === true) {
             janelaSeleciona.procurarCor(corEscolhidaPrincipal);
@@ -205,102 +304,11 @@ function colorPaint() {
 
     bttRefazer.addEventListener("click", function () {
         avancarAlteracao();
-    })
+    });
 
     bttDesfazer.addEventListener("click", function () {
         voltarAlteracao();
-    })
-
-    document.getElementById("bttCriarprojeto").addEventListener("click", function () {
-        validarPropriedades();
-        if (projetoCriado === true) {
-            contentJanelaCriarProjeto.style.display = "none";
-        }
     });
-
-    document.getElementById("bttCancelaCriarprojetor").addEventListener("click", function () {
-        contentJanelaCriarProjeto.style.display = "none";
-    });
-
-    document.getElementById("txtTamanhoGrid").addEventListener("change", function () {
-        const num = parseInt(this.value);
-        if (isNaN(num) === false && num > 0) {
-            grid.tamanho = num;
-            criarGrid(grid.tela, grid.tamanho, grid.posicao, true);
-        }
-    });
-
-    document.getElementById("txtPosicaoVerticalGrid").addEventListener("change", function () {
-        const num = parseInt(this.value);
-        if (isNaN(num) === false) {
-            grid.posicao.Y = num;
-            criarGrid(grid.tela, grid.tamanho, grid.posicao, true);
-        }
-    });
-
-    document.getElementById("txtPosicaoHorizontalGrid").addEventListener("change", function () {
-        const num = parseInt(this.value);
-        if (isNaN(num) === false) {
-            grid.posicao.X = num;
-            criarGrid(grid.tela, grid.tamanho, grid.posicao, true);
-        }
-    });
-
-    document.getElementById("bttCriarGrade").addEventListener("click", function () {
-        if (projetoCriado === true) {
-            contentJanelaMenuGrid.style.display = "block";
-            ajustarNaVisualizacaoTelasCanvas();
-            if (grid.visivel === false) {
-                criarGrid(grid.tela, grid.tamanho, grid.posicao, true);
-                grid.visivel = true;
-            }
-        }
-        else {
-            alert("Nenhum projeto criado!");
-        }
-    });
-
-    document.getElementById("bttOkGrid").addEventListener("click", function () {
-        contentJanelaMenuGrid.style.display = "none";
-    })
-
-    document.getElementById("bttcancelarGrid").addEventListener("click", function () {
-        if (projetoCriado === true) {
-            criarGrid(grid.tela, grid.tamanho, grid.posicao, false);
-            contentJanelaMenuGrid.style.display = "none";
-            grid.visivel = false;
-        }
-    });
-
-    document.getElementById("bttSalvarDesenho").addEventListener("click", function () {
-        if (projetoCriado === true) {
-            salvarDesenho();
-        }
-        else {
-            alert("Nenhum projeto criado!");
-        }
-    });
-
-    document.getElementById("bttSalvarProjeto").addEventListener("click", function () {
-        if (projetoCriado === true) {
-            salvarProjeto();
-        }
-        else {
-            alert("Nenhum projeto criado!");
-        }
-    });
-
-    document.getElementById("bttAbrirProjeto").addEventListener("click", function () {
-        if (projetoCriado === true) {
-            if (confirm("Todo o progresso não salvo será perdido, deseja continuar?") === true) {
-                sessionStorage.setItem("abrirProjetoSalvo", "true");
-                window.location.reload();
-            }
-        }
-        else {
-            abrirProjeto();
-        }
-    })
 
     telasCanvas.addEventListener("mousemove", function () {
         txtPosicaoCursor.value = Math.floor(posicaoMouse.X) + ", " + Math.floor(posicaoMouse.Y);
@@ -769,6 +777,14 @@ function colorPaint() {
         ctx.strokeStyle = "rgba(" + cor.R + ", " + cor.G + ", " + cor.B + ", " + opacidade + ")";
     }
 
+    function ajustarVisualizacaoAntesGrid() {
+        zoomNoProjeto("porcentagem", false, grid.visualizacaoAnterior.zoom);
+        setTimeout(function () {
+            contentTelas.scrollTop = grid.visualizacaoAnterior.scrollY;
+            contentTelas.scrollLeft = grid.visualizacaoAnterior.scrollX;
+        }, 3);
+    }
+
     function menuPadrao() {
         menu.classList.remove("iniciomenu");
         menu.classList.add("mudamenu");
@@ -789,10 +805,14 @@ function colorPaint() {
         contentCentro.style.width = contentTools.offsetWidth - barraLateralEsquerda.offsetWidth - barraLateralDireita.offsetWidth - 0.1 + "px";
         contentCentro.style.height = contentTools.style.height;
         contentTelas.style.height = (contentCentro.offsetHeight - 15) + "px";
+        document.getElementById("janelaCamadas").style.height = (barraLateralEsquerda.offsetHeight - 336) + "px";
     }
 
     function guardarAlteracoes() {
-        const objAlteracao = { camadaAlterada: camadaSelecionada, alteracao: arrayCamadas[camadaSelecionada].ctx.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura) };
+        const objAlteracao = {
+            camadaAlterada: camadaSelecionada,
+            alteracao: arrayCamadas[camadaSelecionada].ctx.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura)
+        };
         arrayVoltarAlteracoes.push(objAlteracao);
         if (arrayVoltarAlteracoes.length > 20) {
             arrayVoltarAlteracoes.shift();
@@ -1569,7 +1589,6 @@ function criarProjeto(nome, resolucao, corPlanoDeFundo, numeroCamadas) {
     txtResolucao.value = projeto.resolucao.largura + ", " + projeto.resolucao.altura;
     document.getElementById("nomeDoProjeto").innerText = projeto.nome;
     document.getElementById("propriedadeOpacidadeCamada").style.display = "flex";
-    document.getElementById("barraInferior").style.display = "block";
     projetoCriado = true;
 }
 

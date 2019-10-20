@@ -524,7 +524,7 @@ p {
 }
 
 #barraInferior {
-    display: none;
+    display: block;
     width: 100%;
     height: 15px;
     background-color: rgb(37, 37, 37);
@@ -611,14 +611,14 @@ p {
 }
 
 #janelaInfo {
-    height: 90px;
+    height: 80px;
 }
 
 #contentInfo {
     position: relative;
     width: 100%;
     height: 100%;
-    padding-top: 7px;
+    padding-top: 3px;
     padding-left: 24px;
 }
 
