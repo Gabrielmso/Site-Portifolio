@@ -142,7 +142,8 @@
                 <ul id="menuColorPaint" class="noSelection">
                     <li><label>Visualizar <span style="font-size: 15px; line-height: 33px;">&#9662;</span></label>
                         <ul>
-                            <li id="bttCriarGrade" title="Adiciona linhas guias de acordo com a preferências listadas.">
+                            <li id="bttCriarGrade"
+                                title="Adiciona linhas guias de acordo com as preferências listadas.">
                                 <label class="cursor">Grade</label>
                             </li>
                         </ul>
@@ -285,7 +286,7 @@
                         </li>
                         <li>
                             <label class="noSelection">Número de camadas:</label><input id="numeroCamadasProjeto"
-                                type="number" min="1" max="5" value="1"><label class="noSelection">
+                                type="number" min="1" max="5" value="3"><label class="noSelection">
                                 (limite 5)</label>
                         </li>
                     </ul>
@@ -354,16 +355,16 @@
                 <div id="contentPropriedadesGrid">
                     <ul>
                         <li>
-                            <label>Tamanho:</label><input id="txtTamanhoGrid" type="number" min="25" value="75"><label>
+                            <label>Tamanho:</label><input id="txtTamanhoGrid" type="number" value="80"><label>
                                 px.</label>
                         </li>
                         <li>
                             <label>Posição vertical:</label><input id="txtPosicaoVerticalGrid" type="number" min="0"
-                                max="74" value="0"><label> px.</label>
+                                value="0"><label> px.</label>
                         </li>
                         <li>
-                            <label>Posição Horizontal:</label><input id="txtPosicaoVerticalGrid" type="number" min="0"
-                                max="74" value="0"><label> px.</label>
+                            <label>Posição Horizontal:</label><input id="txtPosicaoHorizontalGrid" type="number" min="0"
+                                value="0"><label> px.</label>
                         </li>
                     </ul>
                 </div>
@@ -371,7 +372,7 @@
                     <div id=bttOkGrid class="bttBarraSuperior bttGrid cursor">
                         <p>Ok</p>
                     </div>
-                    <div id=bttcancelarGrid class="bttBarraSuperior bttGrid cursor">
+                    <div id=bttcancelarGrid class="bttBarraSuperior bttGrid cursor" title="Apaga a grade atual.">
                         <p>Cancelar</p>
                     </div>
                 </div>

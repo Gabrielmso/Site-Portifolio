@@ -55,7 +55,7 @@ function colorPaint() {
     const bttDesfazer = document.getElementById("bttDesfazer");
     const contentCentro = document.getElementById("contentCentro");
     const propriedadesFerramentas = document.getElementById("propriedadesFerramentas");
-    const grid = { tela: document.getElementById("grid"), tamanho: 75, posicao: { X: 0, Y: 0 }, visivel: false };//Propriedades do grid, e saber se está visível.
+    const grid = { tela: document.getElementById("grid"), tamanho: 80, posicao: { X: 0, Y: 0 }, visivel: false };//Propriedades do grid, e saber se está visível.
     const posicaoMouse = { X: 0, Y: 0 };//Armazena a posição do mouse no tela canvas em relação a resolução do projeto.
     const arrayPropriedadesFerramentas = [
         { propriedade: document.getElementById("propriedadeTamanho"), barra: document.getElementById("contentBarraTamanho") },
@@ -222,9 +222,34 @@ function colorPaint() {
         contentJanelaCriarProjeto.style.display = "none";
     });
 
+    document.getElementById("txtTamanhoGrid").addEventListener("change", function () {
+        const num = parseInt(this.value);
+        if (isNaN(num) === false && num > 0) {
+            grid.tamanho = num;
+            criarGrid(grid.tela, grid.tamanho, grid.posicao, true);
+        }
+    });
+
+    document.getElementById("txtPosicaoVerticalGrid").addEventListener("change", function () {
+        const num = parseInt(this.value);
+        if (isNaN(num) === false) {
+            grid.posicao.X = num;
+            criarGrid(grid.tela, grid.tamanho, grid.posicao, true);
+        }
+    });
+
+    document.getElementById("txtPosicaoHorizontalGrid").addEventListener("change", function () {
+        const num = parseInt(this.value);
+        if (isNaN(num) === false) {
+            grid.posicao.Y = num;
+            criarGrid(grid.tela, grid.tamanho, grid.posicao, true);
+        }
+    });
+
     document.getElementById("bttCriarGrade").addEventListener("click", function () {
         if (projetoCriado === true) {
             contentJanelaMenuGrid.style.display = "block";
+            ajustarNaVisualizacaoTelasCanvas();
             if (grid.visivel === false) {
                 criarGrid(grid.tela, grid.tamanho, grid.posicao, true);
                 grid.visivel = true;
@@ -235,10 +260,14 @@ function colorPaint() {
         }
     });
 
+    document.getElementById("bttOkGrid").addEventListener("click", function () {
+        contentJanelaMenuGrid.style.display = "none";
+    })
+
     document.getElementById("bttcancelarGrid").addEventListener("click", function () {
         if (projetoCriado === true) {
             criarGrid(grid.tela, grid.tamanho, grid.posicao, false);
-            contentJanelaMenuGrid.style.display = "none";            
+            contentJanelaMenuGrid.style.display = "none";
             grid.visivel = false;
         }
     });
@@ -1074,21 +1103,26 @@ function mudarAparenciaCursor() {
 // ==========================================================================================================================================================================================================================================
 
 function criarGrid(tela, tamanho, posicao, criar) {
+    const numDeQuadrados = (Math.floor((projeto.resolucao.largura / tamanho) + 2.07)) * (Math.floor((projeto.resolucao.altura / tamanho) + 2.07));        
+    if(numDeQuadrados > 5700){
+        alert("Aumente o tamanho da grade!");
+        return;
+    }
+    else if (numDeQuadrados > 1100) {
+        alert("O tamanho da grade está muito baixo, isso pode acarretar problemas de performance!");
+    }
     let el = tela.firstElementChild;
     while (el != null) {
         el.remove();
         el = tela.firstElementChild;
     }
     if (criar === true) {
-        const numDeQuadrados = (Math.floor((projeto.resolucao.largura / tamanho) + 2.07)) * (Math.floor((projeto.resolucao.altura / tamanho) + 2.07));
-        if (numDeQuadrados > 1000) {
-            alert("O tamanho do grid está muito pequeno, isso pode acarretar problemas de performance!");
-        }
+        const pos = { X: ((posicao.X / tamanho) - (Math.floor(posicao.X / tamanho))) * tamanho, Y: ((posicao.Y / tamanho) - (Math.floor(posicao.Y / tamanho))) * tamanho }
         const larguraTela = (projeto.resolucao.largura + (tamanho * 2.1)), alturaTela = (projeto.resolucao.altura + (tamanho * 2.1));
         const larguraQuadrado = ((tamanho / larguraTela) * 100), alturaQuadrado = ((tamanho / alturaTela) * 100);
         const styleQuadrado = "width: " + larguraQuadrado + "%; height: " + alturaQuadrado + "%;";
-        tela.style.top = (-100 * ((tamanho - posicao.Y) / projeto.resolucao.altura)) + "%";
-        tela.style.left = (-100 * ((tamanho - posicao.X) / projeto.resolucao.largura)) + "%";
+        tela.style.top = (-100 * ((tamanho - pos.Y) / projeto.resolucao.altura)) + "%";
+        tela.style.left = (-100 * ((tamanho - pos.X) / projeto.resolucao.largura)) + "%";
         tela.style.width = ((larguraTela / projeto.resolucao.largura) * 100) + "%";
         tela.style.height = ((alturaTela / projeto.resolucao.altura) * 100) + "%";
         for (let i = 0; i < numDeQuadrados; i++) {
@@ -1098,6 +1132,7 @@ function criarGrid(tela, tamanho, posicao, criar) {
             tela.appendChild(quadrado);
         }
     }
+
 }
 // ==========================================================================================================================================================================================================================================
 
