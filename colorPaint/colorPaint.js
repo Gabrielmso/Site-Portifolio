@@ -233,7 +233,7 @@ function colorPaint() {
     document.getElementById("txtPosicaoVerticalGrid").addEventListener("change", function () {
         const num = parseInt(this.value);
         if (isNaN(num) === false) {
-            grid.posicao.X = num;
+            grid.posicao.Y = num;
             criarGrid(grid.tela, grid.tamanho, grid.posicao, true);
         }
     });
@@ -241,7 +241,7 @@ function colorPaint() {
     document.getElementById("txtPosicaoHorizontalGrid").addEventListener("change", function () {
         const num = parseInt(this.value);
         if (isNaN(num) === false) {
-            grid.posicao.Y = num;
+            grid.posicao.X = num;
             criarGrid(grid.tela, grid.tamanho, grid.posicao, true);
         }
     });
@@ -1103,8 +1103,8 @@ function mudarAparenciaCursor() {
 // ==========================================================================================================================================================================================================================================
 
 function criarGrid(tela, tamanho, posicao, criar) {
-    const numDeQuadrados = (Math.floor((projeto.resolucao.largura / tamanho) + 2.07)) * (Math.floor((projeto.resolucao.altura / tamanho) + 2.07));        
-    if(numDeQuadrados > 5700){
+    const numDeQuadrados = (Math.floor((projeto.resolucao.largura / tamanho) + 2.07)) * (Math.floor((projeto.resolucao.altura / tamanho) + 2.07));
+    if (numDeQuadrados > 5700) {
         alert("Aumente o tamanho da grade!");
         return;
     }
@@ -1117,8 +1117,12 @@ function criarGrid(tela, tamanho, posicao, criar) {
         el = tela.firstElementChild;
     }
     if (criar === true) {
-        const pos = { X: ((posicao.X / tamanho) - (Math.floor(posicao.X / tamanho))) * tamanho, Y: ((posicao.Y / tamanho) - (Math.floor(posicao.Y / tamanho))) * tamanho }
-        const larguraTela = (projeto.resolucao.largura + (tamanho * 2.1)), alturaTela = (projeto.resolucao.altura + (tamanho * 2.1));
+        const pos = {
+            X: ((posicao.X / tamanho) - (Math.trunc(posicao.X / tamanho))) * tamanho,
+            Y: ((posicao.Y / tamanho) - (Math.trunc(posicao.Y / tamanho))) * tamanho
+        }
+        const larguraTela = (projeto.resolucao.largura + (tamanho * 2.1)),
+            alturaTela = (projeto.resolucao.altura + (tamanho * 2.1));
         const larguraQuadrado = ((tamanho / larguraTela) * 100), alturaQuadrado = ((tamanho / alturaTela) * 100);
         const styleQuadrado = "width: " + larguraQuadrado + "%; height: " + alturaQuadrado + "%;";
         tela.style.top = (-100 * ((tamanho - pos.Y) / projeto.resolucao.altura)) + "%";
@@ -1152,7 +1156,8 @@ function desenhoNoPreviewEIcone() {
             ctxTelaPreview.closePath();
         };
     }
-    const larguraMiniatura = arrayCamadas[camadaSelecionada].ctxMiniatura.canvas.width, alturaMiniatura = arrayCamadas[camadaSelecionada].ctxMiniatura.canvas.height;
+    const larguraMiniatura = arrayCamadas[camadaSelecionada].ctxMiniatura.canvas.width,
+        alturaMiniatura = arrayCamadas[camadaSelecionada].ctxMiniatura.canvas.height;
     arrayCamadas[camadaSelecionada].ctxMiniatura.clearRect(0, 0, larguraMiniatura, alturaMiniatura);
     arrayCamadas[camadaSelecionada].ctxMiniatura.globalAlpha = arrayCamadas[camadaSelecionada].opacidade;
     arrayCamadas[camadaSelecionada].ctxMiniatura.drawImage(arrayCamadas[camadaSelecionada].ctx.canvas, 0, 0, larguraMiniatura, alturaMiniatura);
@@ -1946,7 +1951,12 @@ function janelaSeletorDeCor(AcharCor) {
             corSalva.setAttribute("id", id);
             corSalva.setAttribute("class", "corSalva cursor");
             corSalva.setAttribute("style", cor);
-            const infoCorSalva = { id: arrayCoresSalvas.length, elemento: corSalva, cor: { R: corEscolhida.R, G: corEscolhida.G, B: corEscolhida.B }, selecionado: false }
+            const infoCorSalva = {
+                id: arrayCoresSalvas.length,
+                elemento: corSalva,
+                cor: { R: corEscolhida.R, G: corEscolhida.G, B: corEscolhida.B },
+                selecionado: false
+            }
             arrayCoresSalvas.push(infoCorSalva);
             coresSalvas.appendChild(corSalva);
             corSalva.appendChild(div);
