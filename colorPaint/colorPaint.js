@@ -1103,7 +1103,7 @@ function mudarAparenciaCursor() {
 // ==========================================================================================================================================================================================================================================
 
 function criarGrid(tela, tamanho, posicao, criar) {
-    const numDeQuadrados = (Math.floor((projeto.resolucao.largura / tamanho) + 2.07)) * (Math.floor((projeto.resolucao.altura / tamanho) + 2.07));
+    const numDeQuadrados = (Math.trunc((projeto.resolucao.largura / tamanho) + 2.099)) * (Math.trunc((projeto.resolucao.altura / tamanho) + 2.099));
     if (numDeQuadrados > 5700) {
         alert("Aumente o tamanho da grade!");
         return;
@@ -1118,9 +1118,11 @@ function criarGrid(tela, tamanho, posicao, criar) {
     }
     if (criar === true) {
         const pos = {
-            X: ((posicao.X / tamanho) - (Math.trunc(posicao.X / tamanho))) * tamanho,
-            Y: ((posicao.Y / tamanho) - (Math.trunc(posicao.Y / tamanho))) * tamanho
+            X: (((posicao.X / tamanho) - (Math.trunc(posicao.X / tamanho))) * tamanho),
+            Y: (((posicao.Y / tamanho) - (Math.trunc(posicao.Y / tamanho))) * tamanho)
         }
+        if (pos.X < 0) { pos.X = tamanho + pos.X };
+        if (pos.Y < 0) { pos.Y = tamanho + pos.Y };
         const larguraTela = (projeto.resolucao.largura + (tamanho * 2.1)),
             alturaTela = (projeto.resolucao.altura + (tamanho * 2.1));
         const larguraQuadrado = ((tamanho / larguraTela) * 100), alturaQuadrado = ((tamanho / alturaTela) * 100);
