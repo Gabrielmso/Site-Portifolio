@@ -765,7 +765,7 @@ function colorPaint() {
         ferramenta.dureza = porcentagem / 100;
     }
 
-    function configuraFerramenta(ctx, tamanho, cor, opacidade) {//Pegar totas as propriedades das ferramentas e atribui a camada "pintar".
+    function configuraFerramenta(ctx, tamanho, cor, opacidade) {//Pegar todas as propriedades das ferramentas e atribui a camada "pintar".
         const maximoBlur = tamanho / 6.2;
         let dureza = maximoBlur - (maximoBlur * ferramenta.dureza);
         if (tamanho < 100) {

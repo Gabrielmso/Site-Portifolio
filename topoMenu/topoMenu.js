@@ -89,7 +89,7 @@ function topoMenu() {
         }
         else {
             clickSocials = true;
-            socials.style.height = "150px";
+            socials.style.height = "200px";
             for (let i = 0; i < arraytracoseta.length; i++) {
                 let nomeclasseinicio = "iniciotracoseta" + i;
                 let nomeclassemuda = "movertracoseta" + i;

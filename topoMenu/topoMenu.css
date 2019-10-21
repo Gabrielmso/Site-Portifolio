@@ -112,19 +112,25 @@
 #logoinsta {
     background-image: url("../imagens/topoMenu/icones/instagramLogoWhite.svg");
     background-size: 35px;
-    background-position: 50% 45%;
+    background-position: 50%;
 }
 
 #logoyoutube {
     background-image: url("../imagens/topoMenu/icones/youtubeLogoWhite.svg");
     background-size: 41px;
-    background-position: 50%;
+    background-position: 50% 25%;
 }
 
 #logoGitHub{
     background-image: url("../imagens/topoMenu/icones/githubLogoWhite.svg");
     background-size: 36px;
     background-position: 50%;
+}
+
+#logoLinkedin{
+    background-image: url("../imagens/topoMenu/icones/linkedinLogo.svg");
+    background-size: 34px;
+    background-position: 50% 40%;
 }
 
 .iconeSociais{
@@ -135,7 +141,7 @@
     height: 50px;
 }
 
-#logoyoutube:hover, #logoGitHub:hover, #logoinsta:hover, #logoBlack:hover, #iconesetablack:hover, #iconemenublack:hover {
+.iconeSociais:hover, #logoBlack:hover, #iconesetablack:hover, #iconemenublack:hover {
     opacity: 1;
 }
 
