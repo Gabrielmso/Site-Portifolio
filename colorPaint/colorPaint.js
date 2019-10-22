@@ -1730,7 +1730,7 @@ function abrirProjeto() {
         else {
             const extencao = arquivo.name.split('.').pop().toLowerCase();
             if (extencao === "gm") {
-                reader.readAsText(arquivo);
+                reader.readAsText(arquivo, "ISO-8859-1");
             }
             else {
                 alert("Arquivo selecionado inválido!");
