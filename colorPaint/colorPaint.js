@@ -25,7 +25,7 @@ let camadaSelecionada = 0;//Armazena a posição do arrayTelasCamadas com a cama
 let ctxDesenho;//Armazena o contexto 2d do canvas "desenho" que receberá o "desenho completo".
 let corFundo;//Div de fundo que receberá a cor de fundo escolhida para o projeto.
 let ctxPintar;//Armazena o contexto 2d do canvas "pintar" onde ocorrerá os "eventos" de pintura.
-let projetoCriado = false;//Saber se existe projeto já criado.
+let projetoCriado = false;//Saber se um projeto foi criado.
 let txtCorEscolhida;//Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
 let txtResolucao;//Recebe a string da resolução que o usuário escolheu para o projeto para informar ao usuário.
 let txtPosicaoCursor;//Recebe a string com a posição do cursor no eixo X e Y sobre a "telasCanvas".
@@ -140,7 +140,7 @@ function colorPaint() {
 
     for (let i = 0; i < arrayPropriedadesFerramentas.length; i++) {
         arrayPropriedadesFerramentas[i].propriedade.addEventListener("mouseenter", function () {
-            if (pintando === false) { arrayPropriedadesFerramentas[i].barra.style.height = "36px"; }
+            if (pintando === false) { arrayPropriedadesFerramentas[i].barra.style.height = "36px"; };
         })
         arrayPropriedadesFerramentas[i].propriedade.addEventListener("mouseleave", function () {
             arrayPropriedadesFerramentas[i].barra.style.height = "0px";
@@ -466,10 +466,12 @@ function colorPaint() {
     });
 
     document.getElementById("bttZoomMais").addEventListener("click", function () {//Aumentar o zoom no projeto.
+        if (projetoCriado === false) { return; };
         zoomNoProjeto(true, true, 1.25);
     });
 
     document.getElementById("bttZoomMenos").addEventListener("click", function () {//Diminuir o zoom no projeto.
+        if (projetoCriado === false) { return; };
         if (telasCanvas.offsetWidth >= 25) {
             zoomNoProjeto(false, true, 1.25);
         }
@@ -620,14 +622,16 @@ function colorPaint() {
 
     window.addEventListener("resize", function () {
         ajustarContents();
-        tamanhoMoverScroll();
-        ajustarNaVisualizacaoTelasCanvas();
-        contentTelasMoverScroll(contentTelas.scrollTop, contentTelas.scrollLeft);
         menuPadrao();
-        setTimeout(function () {
-            ajustarContents();
-            menuPadrao();
-        }, 120);
+        if (projetoCriado === true) {
+            tamanhoMoverScroll();
+            ajustarNaVisualizacaoTelasCanvas();
+            contentTelasMoverScroll(contentTelas.scrollTop, contentTelas.scrollLeft);
+            setTimeout(function () {
+                ajustarContents();
+                menuPadrao();
+            }, 120);
+        };
     });
 
     window.addEventListener("scroll", function () {
