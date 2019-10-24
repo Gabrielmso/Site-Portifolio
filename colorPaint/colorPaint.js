@@ -529,6 +529,7 @@ function colorPaint() {
             mudarOpacidadeCamada = false;
         }
         moverScrollPreview = false;
+        moverScroll.style.cursor = "grab";
     });
 
     document.addEventListener("keydown", function (e) {//Criar teclas de atalho.
@@ -616,6 +617,7 @@ function colorPaint() {
     contentTelaPreview.addEventListener("mousedown", function (e) {
         if (!projetoCriado) { return };
         moverScrollPreview = true;
+        moverScroll.style.cursor = "grabbing";
         const mousePos = pegarPosicaoMouse(this, e);
         moverScrollNaTelaPreview(mousePos.X, mousePos.Y);
     });
