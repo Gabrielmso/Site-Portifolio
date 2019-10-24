@@ -169,9 +169,9 @@
                         </ul>
                     </li>
                 </ul>
-                <div id="bttCriarNovoProjeto" class="bttBarraSuperior noSelection cursor">
-                    <p>Criar novo projeto</p>
-                </div>
+                <button id="bttCriarNovoProjeto" class="bttColorPaint noSelection cursor">
+                    Criar novo projeto
+                </button>
             </header>
             <div id="contentTools" class="noSelection">
                 <aside id="barraLateralEsquerda">
@@ -228,7 +228,7 @@
                 </div>
                 <aside id="barraLateralDireita" class="noSelection">
                     <div id="janelaPreview" class="janelasBarraLateralDireita">
-                        <label class="tituloJanelas">Preview:</label>
+                        <label class="titulosBarraDireita">Preview:</label>
                         <div id="contentPreview">
                             <div id="contentTelaPreview">
                                 <canvas id="telaPreview">
@@ -240,7 +240,7 @@
                         </div>
                     </div>
                     <div id="janelaInfo" class="janelasBarraLateralDireita">
-                        <label class="tituloJanelas">Info:</label>
+                        <label class="titulosBarraDireita">Info:</label>
                         <div id="contentInfo">
                             <label>Posição do cursor: </label><input id="txtPosicaoCursor" type="text" readonly><br>
                             <label>Resolução: </label><input id="txtResolucao" type="text" readonly><br>
@@ -248,7 +248,7 @@
                         </div>
                     </div>
                     <div id="janelaCamadas" class="janelasBarraLateralDireita">
-                        <label class="tituloJanelas">Camadas:</label>
+                        <label class="titulosBarraDireita">Camadas:</label>
                         <div id="contentIconeCamadas">
                         </div>
                     </div>
@@ -262,9 +262,9 @@
             </div>
         </div>
         <!-- ================================== JANELA CRIAR PROJETO ============================ -->
-        <div id="contentJanelaCriarProjeto">
-            <div id="janelaCriarProjeto">
-                <div id="tituloJanelaCriarProjeto" class="noSelection">
+        <div id="contentJanelaCriarProjeto" class="contentJanelas">
+            <div class="janelas">
+                <div class="tituloJanela noSelection">
                     <p>Propriedades do projeto:</p>
                 </div>
                 <div id="contentPropriedadesProjeto">
@@ -295,21 +295,17 @@
                         </li>
                     </ul>
                 </div>
-                <div id="botoesCriarProjeto" class="noSelection">
-                    <div id="bttCriarprojeto" class="bttBarraSuperior cursor">
-                        <p>Criar projeto</p>
-                    </div>
-                    <div id="bttCancelaCriarprojetor" class="bttBarraSuperior cursor">
-                        <p>Cancelar</p>
-                    </div>
+                <div class="bttsJanela noSelection">
+                    <button id="bttCriarprojeto" class="bttColorPaint cursor">Criar projeto</button>
+                    <button id="bttCancelaCriarprojetor" class="bttColorPaint cursor">Cancelar</button>
                 </div>
             </div>
         </div>
         <!-- ================================= FIM JANELA CRIAR PROJETO =========================== -->
         <!-- ====================================== JANELA ATALHOS ================================ -->
-        <div id="contentJanelaAtalhos">
-            <div id="janelaAtalhos">
-                <div id="tituloJanelaAtalhos" class="noSelection">
+        <div id="contentJanelaAtalhos" class="contentJanelas">
+            <div class="janelas">
+                <div class="tituloJanela noSelection">
                     <p>Atalhos:</p>
                 </div>
                 <div id="contentAtalhos">
@@ -343,17 +339,15 @@
                         </li>
                     </ul>
                 </div>
-                <div id="botoesAtalhos" class="noSelection">
-                    <div id="bttOkAtalhos" class="bttBarraSuperior cursor">
-                        <p>Ok</p>
-                    </div>
+                <div class="bttsJanela noSelection">
+                    <button id="bttOkAtalhos" class="bttColorPaint cursor">Ok</button>
                 </div>
             </div>
         </div>
         <!-- ================================ JANELA PARA ADICIONAR GRID ========================== -->
         <div id="contentJanelaMenuGrid">
             <div id="janelaMenuGrid">
-                <div id="tituloJanelaGrid" class="noSelection">
+                <div class="tituloJanela noSelection">
                     <p>Propriedades da grade:</p>
                 </div>
                 <div id="contentPropriedadesGrid">
@@ -372,13 +366,11 @@
                         </li>
                     </ul>
                 </div>
-                <div id="botoesGrid" class="noSelection">
-                    <div id=bttOkGrid class="bttBarraSuperior bttGrid cursor">
-                        <p>Ok</p>
-                    </div>
-                    <div id=bttcancelarGrid class="bttBarraSuperior bttGrid cursor" title="Apaga a grade atual.">
-                        <p>Cancelar</p>
-                    </div>
+                <div class="bttsJanela noSelection">
+                    <button id=bttOkGrid class="bttColorPaint cursor">Ok</button>
+                    <button id=bttcancelarGrid class="bttColorPaint cursor"
+                        title="Apaga a grade atual.">Cancelar
+                    </button>
                 </div>
             </div>
         </div>
@@ -403,15 +395,9 @@
             <label class="noSelection">RGB:</label><input id="codRGB" type="text">
             <label class="noSelection">HEX:</label><input id="codHEX" type="text">
             <div id="bttsSelecionarCor">
-                <div id="bttOk" class="botoesNoSelecionarCor cursor noSelection">
-                    <p>Ok</p>
-                </div>
-                <div id="bttSalvarCor" class="botoesNoSelecionarCor cursor noSelection">
-                    <p>Salvar cor</p>
-                </div>
-                <div id="bttCancelar" class="botoesNoSelecionarCor cursor noSelection">
-                    <p>Cancelar</p>
-                </div>
+                <button id="bttOk" class="bttColorPaint cursor noSelection">Ok</button>
+                <button id="bttSalvarCor" class="bttColorPaint cursor noSelection">Salvar cor</button>
+                <button id="bttCancelar" class="bttColorPaint cursor noSelection">Cancelar</button>
             </div>
         </section>
         <!-- ================================FIM JANELA PARA SELECIONAR COR========================== -->

@@ -204,12 +204,12 @@ p {
     margin-left: 0px;
 }
 
-#menuColorPaint li ul li:hover{
+#menuColorPaint li ul li:hover {
     background-color: rgba(100, 68, 8, 0.85);
     color: rgb(213, 192, 107);
 }
 
-#menuColorPaint li ul li:hover div{
+#menuColorPaint li ul li:hover div {
     background-color: rgba(100, 68, 8, 0.85);
     color: rgb(213, 192, 107);
 }
@@ -219,10 +219,12 @@ p {
     color: rgb(0, 0, 0);
 }
 
-.bttBarraSuperior {
+.bttColorPaint {
     position: relative;
     float: right;
+    border: none;
     top: 5px;
+    min-width: 85px;
     margin-right: 5px;
     border-radius: 7px;
     background-color: rgb(58, 58, 58);
@@ -233,14 +235,11 @@ p {
     transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
     height: 25px;
     text-align: center;
-}
-
-.bttBarraSuperior p {
     line-height: 25px;
     font-size: 11px;
 }
 
-.bttBarraSuperior:hover {
+.bttColorPaint:hover {
     background-color: rgb(10, 10, 10);
     color: rgba(213, 192, 107, 0.65);
 }
@@ -697,7 +696,7 @@ p {
     margin-bottom: 15px;
 }
 
-.tituloJanelas {
+.titulosBarraDireita {
     position: absolute;
     z-index: 5;
     text-align: center;
@@ -734,44 +733,8 @@ p {
 
 /* =========================================== JANELA CRIAR PROJETO ==========================================  */
 
-#contentJanelaCriarProjeto {
-    position: absolute;
-    display: none;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    top: 0px;
-    left: 0px;
-    z-index: 10000001;
-    background-color: rgba(0, 0, 0, 0.44);
-}
-
-#janelaCriarProjeto {
-    position: relative;
-    overflow: hidden;
-    background-color: rgb(37, 37, 37);
-    width: 350px;
-    height: 290px;
-    border-radius: 7px;
-    padding: 10px;
-}
-
-#tituloJanelaCriarProjeto {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-bottom: 2px solid rgb(61, 61, 61);
-    height: 35px;
-    color: rgb(151, 151, 151);
-}
-
 #contentPropriedadesProjeto {
     position: relative;
-    width: 330px;
     height: 201px;
     display: flex;
     flex-direction: column;
@@ -810,53 +773,9 @@ p {
 
 #contentPropriedadesProjeto input[type=number] {
     width: 65px;
-} 
-
-#botoesCriarProjeto {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    width: 330px;
-    height: 35px;
 }
 
 /* ========================================= FIM JANELA CRIAR PROJETO ========================================  */
-
-#contentJanelaAtalhos {
-    position: absolute;
-    display: none;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    top: 0px;
-    left: 0px;
-    z-index: 10000001;
-    background-color: rgba(0, 0, 0, 0.44);
-}
-
-#janelaAtalhos {
-    position: relative;
-    overflow: hidden;
-    background-color: rgb(37, 37, 37);
-    width: 350px;
-    height: 360px;
-    border-radius: 7px;
-    padding: 10px;
-}
-
-#tituloJanelaAtalhos {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-bottom: 2px solid rgb(61, 61, 61);
-    height: 35px;
-    color: rgb(151, 151, 151);
-}
 
 #contentAtalhos {
     position: relative;
@@ -881,21 +800,9 @@ p {
     color: rgb(151, 151, 151);
 }
 
-#botoesAtalhos {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    width: 330px;
-    height: 35px;
-}
-
-#bttOkAtalhos {
-    width: 85px;
-}
 /* ==================================== JANELA PARA ADICIONAR GRID ================================= */
 
-#contentJanelaMenuGrid{
+#contentJanelaMenuGrid {
     position: absolute;
     display: none;
     top: 0px;
@@ -905,10 +812,10 @@ p {
     z-index: 10000001;
 }
 
-#janelaMenuGrid{
+#janelaMenuGrid {
     position: absolute;
     top: 54%;
-    left:50%;
+    left: 50%;
     transform: translate(-50%, -50%);
     width: 250px;
     height: 205px;
@@ -918,18 +825,7 @@ p {
     box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.45);
 }
 
-#tituloJanelaGrid{
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-bottom: 2px solid rgb(61, 61, 61);
-    height: 35px;
-    color: rgb(151, 151, 151);
-}
-
-#contentPropriedadesGrid{
+#contentPropriedadesGrid {
     position: relative;
     height: 115px;
     display: flex;
@@ -956,7 +852,7 @@ p {
     color: rgb(151, 151, 151);
 }
 
-#janelaMenuGrid input{
+#janelaMenuGrid input[type=number] {
     outline: none;
     border: none;
     width: 50px;
@@ -966,18 +862,6 @@ p {
     background-color: rgb(37, 37, 37);
     color: rgb(200, 200, 200);
     margin-left: 7px;
-}
-
-#botoesGrid {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    height: 35px;
-}
-
-.bttGrid{
-    width: 85px;
 }
 
 /* ============================================= Seletor de cores ============================================= */
@@ -1088,10 +972,14 @@ p {
 
 #bttsSelecionarCor {
     width: 530px;
-    height: 57px;
+    height: 35px;
+    position: absolute;
+    top: 335px;
     display: flex;
     flex-direction: row;
     justify-content: center;
+    align-items: center;
+    border-top: 2px solid rgb(61, 61, 61);
 }
 
 .cursorSeletor {
@@ -1101,30 +989,6 @@ p {
     height: 20px;
     border-radius: 50%;
     border: 1px solid rgb(0, 0, 0);
-}
-
-.botoesNoSelecionarCor {
-    display: inline-block;
-    width: 90px;
-    height: 25px;
-    margin-left: 10px;
-    margin-top: 21px;
-    text-transform: uppercase;
-    text-align: center;
-    border-radius: 7px;
-    color: rgb(173, 173, 173);
-    font-size: 11px;
-    transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
-    background-color: rgb(71, 71, 71);
-}
-
-.botoesNoSelecionarCor p {
-    line-height: 25px;
-}
-
-.botoesNoSelecionarCor:hover {
-    background-color: rgb(10, 10, 10);
-    color: rgba(213, 192, 107, 0.479);
 }
 
 /* ============================================= FIM Seletor de cores ============================================= */
@@ -1291,4 +1155,47 @@ p {
     left: 50%;
     transform: translate(-50%, -50%);
     border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.contentJanelas {
+    position: absolute;
+    display: none;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    z-index: 10000001;
+    background-color: rgba(0, 0, 0, 0.44);
+}
+
+.janelas {
+    position: relative;
+    overflow: hidden;
+    background-color: rgb(37, 37, 37);
+    width: 350px;
+    height: auto;
+    border-radius: 7px;
+    padding: 10px;
+}
+
+.tituloJanela {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 2px solid rgb(61, 61, 61);
+    height: 35px;
+    color: rgb(151, 151, 151);
+}
+
+.bttsJanela {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: 30px;
 }
