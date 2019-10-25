@@ -1820,62 +1820,135 @@ function janelaSeletorDeCor(AcharCor) {
     let corEscolhida = { R: 0, G: 0, B: 0 }; //Armazena a cor selecionada com o cursor "cursorGradiente";
     const coresSalvas = document.getElementById("coresSalvas"),
         janelaSelecionarCor = document.getElementById("janelaSelecionarCor"),
-        bttOk = document.getElementById("bttOk"),
-        bttSalvarCor = document.getElementById("bttSalvarCor"),
         bttRemoverCorSalva = document.getElementById("bttRemoverCorSalva"),
-        bttCancelar = document.getElementById("bttCancelar"),
         corSelecionada = document.getElementById("corSelecionada"),//div que receberá a cor selecionada.
         barraeEspectroCor = document.getElementById("barraeEspectroCor"),//Canvas que receberá o espectro de cores.
         cursorBarra = document.getElementById("cursorBarra"),//Cursor que fica na "barraeEspectroCor".
         gradienteCor = document.getElementById("gradienteCor"),//Canvas que receberá o gradiente de cores da cor seleciona pelo cursor que fica na "barraeEspectroCor".
+        cursorGradiente = document.getElementById("cursorGradiente"),//Cursor que fica na "gradienteCor".
         codRGB = document.getElementById("codRGB"),
         codHEX = document.getElementById("codHEX");
 
     const widthBarra = barraeEspectroCor.width, heightBarra = barraeEspectroCor.height,//Altura e largura do canvas "barraeEspectroCor" (Resolução).
-        widthGradiente = gradienteCor.width, heightGradiente = gradienteCor.height,//Altura e largura do canvas "gradienteCor" (Resolução).
-        cursorGradiente = document.getElementById("cursorGradiente");//Cursor que fica na "gradienteCor".
+        widthGradiente = gradienteCor.width, heightGradiente = gradienteCor.height;//Altura e largura do canvas "gradienteCor" (Resolução).
 
     const ctxBarra = barraeEspectroCor.getContext("2d"),
         ctxGradiente = gradienteCor.getContext("2d");
-    let rgbBarra = { R: 255, G: 0, B: 0 },
-        hsvBarra = { H: 0, S: 100, V: 100 };
+    let hsvBarra = { H: 0, S: 100, V: 100 };
     let corParaAchar = {};//Armazena a cor a ser encontrada no formato RGB que foi digitada no "codRGB".
     let clickBarra = false,//Saber se o click do mouse foi ou está pressionado em cima do "barraeEspectroCor".
         clickGradiente = false,//Saber se o click do mouse foi ou está pressionado em cima do "gradienteCor".
         clickMoverJanela = false;
-    let posMouseMoverJanela = {};
-    let posMouseSeletorCorX = 0, posMouseSeletorCorY = 0;//Armazena a posição do mouse na "janelaSelecionarCor";    
-    codRGB.value = "255, 0, 0";
-    codHEX.value = "#ff0000";
+    let posMouseMoverJanela = { X: 0, Y: 0 };//Armazena a posição do do mouse quando foi clicado para mover a janela.
+    let posMouseJanela = { X: 0, Y: 0 };//Armazena a posição do mouse na "janelaSelecionarCor";    
 
     this.procurarCor = function (color) {
         hsvBarra = rgbToHsv(color); //Converte a cor digitada de RGB para HSV.
-        rgbBarra = hsvToRgb(hsvBarra.H, 100, 100); //Converte a cor pura em RGB.
         encontrarCorDoCodigoNoGradiente(hsvBarra.S, hsvBarra.V);
     }
 
     preencheBarraEspectro();
     this.procurarCor(AcharCor);
 
-    janelaSelecionarCor.addEventListener("mousemove", pegarPosMouse);//Calcula a posição do mouse na "janelaSelecionarCor"
-    function pegarPosMouse(e) {
+    cursorBarra.addEventListener("mousedown", function () {
+        clickBarra = true;
+    });
+
+    barraeEspectroCor.addEventListener("mousedown", function () {
+        clickBarra = true;
+    });
+
+    cursorGradiente.addEventListener("mousedown", function () {
+        clickGradiente = true;
+    });
+
+    gradienteCor.addEventListener("mousedown", function () {
+        clickGradiente = true;
+    });
+
+    janelaSelecionarCor.addEventListener("mousedown", function (e) {
+        if (posMouseJanela.Y < 10 && clickBarra === false && clickGradiente === false ||
+            posMouseJanela.X < 10 || posMouseJanela.X > 540 && clickBarra === false && clickGradiente === false) {
+            clickMoverJanela = true;
+            posMouseMoverJanela = posMouseJanela;
+        }
+        moverCursores(e);
+    });
+
+    janelaSelecionarCor.addEventListener("mousemove", moverCursores);
+
+    function moverCursores(e) {//Calcula a posição do mouse na "janelaSelecionarCor"
         const posMouse = pegarPosicaoMouse(janelaSelecionarCor, e);
-        posMouseSeletorCorX = posMouse.X;
-        posMouseSeletorCorY = posMouse.Y;
+        posMouseJanela = posMouse;
         if (clickGradiente === true) {
-            moverCursor2();
+            moverCursor2(posMouseJanela.X, posMouseJanela.Y);
         }
         else if (clickBarra === true) {
-            moverCursor1();
+            if (posMouseJanela.X > 540) {
+                moverCursorBarra(540 - 10);
+            }
+            else if (posMouseJanela.X < 10) {
+                moverCursorBarra(0);
+            }
+            else {
+                moverCursorBarra(posMouseJanela.X - 10);
+            }
         }
     }
 
-    colorPaintContent.addEventListener("mousemove", function (e) {
-        if (clickMoverJanela === true && clickBarra === false && clickGradiente === false) {
-            const posMouse = pegarPosicaoMouse(colorPaintContent, e);
-            moverjanelaSelecionarCorNaPagina(posMouse.X, posMouse.Y);
+    function moverCursorBarra(x) {
+        cursorBarra.style.left = x + "px";
+        let H = ((x * 360) / barraeEspectroCor.offsetWidth), cor;
+        if (H === 360) { H = 0; }
+        hsvBarra = { H: H, S: 100, V: 100 };
+        cor = hsvToRgb(H, 100, 100);
+        cursorBarra.style.backgroundColor = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
+        preencheGradiente(cor);
+    }
+
+    function preencheGradiente(cor) {
+        ctxGradiente.clearRect(0, 0, widthGradiente, heightGradiente);
+        ctxGradiente.fillStyle = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
+        ctxGradiente.fillRect(0, 0, widthGradiente, heightGradiente);
+
+        const gradienteBranco = ctxBarra.createLinearGradient(0, 0, widthGradiente, 0);
+        gradienteBranco.addColorStop(0, "rgba(255, 255, 255, 1)");
+        gradienteBranco.addColorStop(1, "rgba(255, 255, 255, 0)");
+        ctxGradiente.fillStyle = gradienteBranco;
+        ctxGradiente.fillRect(0, 0, widthGradiente, heightGradiente);
+
+        const gradientePreto = ctxBarra.createLinearGradient(0, 0, 0, heightGradiente);
+        gradientePreto.addColorStop(0, "rgba(0, 0, 0, 0)");
+        gradientePreto.addColorStop(1, "rgba(0, 0, 0, 1)");
+        ctxGradiente.fillStyle = gradientePreto;
+        ctxGradiente.fillRect(0, 0, widthGradiente, heightGradiente);
+        ctxGradiente.closePath();
+        calcularCorPosiCursorGradiente();
+    }
+
+    function moverCursorGradiente(x, y) {
+        cursorGradiente.style.left = x + "px";
+        cursorGradiente.style.top = y + "px";
+        calcularCorPosiCursorGradiente();
+    }
+
+    function calcularCorPosiCursorGradiente() {
+        let S = ((cursorGradiente.offsetLeft + 10) * 100) / gradienteCor.offsetWidth;
+        let V = 100 - ((cursorGradiente.offsetTop + 10) * 100) / gradienteCor.offsetHeight;
+        if (S == 0) {
+            S = 0.02;
         }
-    });
+        if (V == 0) {
+            V = 0.02;
+        }
+        const cor = hsvToRgb(hsvBarra.H, S, V);
+        const stringCorRGB = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
+        cursorGradiente.style.backgroundColor = stringCorRGB;
+        corSelecionada.style.backgroundColor = stringCorRGB;
+        codHEX.value = rgbTohex(cor);
+        codRGB.value = cor.R + ", " + cor.G + ", " + cor.B;
+        corEscolhida = cor;
+    }
 
     codRGB.addEventListener("keyup", function (e) {
         let codCorAchar = this.value;
@@ -1905,45 +1978,13 @@ function janelaSeletorDeCor(AcharCor) {
         }
     });
 
-    janelaSelecionarCor.addEventListener("click", function () {
-        moverCursor1();
-        moverCursor2();
-    });
-
-    janelaSelecionarCor.addEventListener("mousedown", function () {
-        if (posMouseSeletorCorY < 10 && clickBarra === false && clickGradiente === false) {
-            clickMoverJanela = true;
-            posMouseMoverJanela = { X: posMouseSeletorCorX, Y: posMouseSeletorCorY };
-        }
-        else if (posMouseSeletorCorX < 10 || posMouseSeletorCorX > 540 && clickBarra === false && clickGradiente === false) {
-            clickMoverJanela = true;
-            posMouseMoverJanela = { X: posMouseSeletorCorX, Y: posMouseSeletorCorY };
-        }
-    });
-
-    cursorBarra.addEventListener("mousedown", function () {
-        clickBarra = true;
-    });
-
-    barraeEspectroCor.addEventListener("mousedown", function () {
-        clickBarra = true;
-    });
-
-    cursorGradiente.addEventListener("mousedown", function () {
-        clickGradiente = true;
-    });
-
-    gradienteCor.addEventListener("mousedown", function () {
-        clickGradiente = true;
-    });
-
     document.addEventListener("mouseup", function () {
         clickBarra = false;
         clickGradiente = false;
         clickMoverJanela = false;
     });
 
-    bttOk.addEventListener("click", function (e) {
+    document.getElementById("bttOkSelecionaCor").addEventListener("click", function (e) {
         if (corPrincipalOuSecundaria === 1) {
             corEscolhidaPrincipal = corEscolhida;
             corPrincipal.style.backgroundColor = "rgb(" + corEscolhida.R + ", " + corEscolhida.G + ", " + corEscolhida.B + ")";
@@ -1960,7 +2001,7 @@ function janelaSeletorDeCor(AcharCor) {
         }
     });
 
-    bttSalvarCor.addEventListener("click", function () {
+    document.getElementById("bttSalvarCor").addEventListener("click", function () {
         let corJaSalva = false;
         bttRemoverCorSalva.style.display = "block";
         for (let i = 0; i < arrayCoresSalvas.length; i++) {
@@ -2010,21 +2051,21 @@ function janelaSeletorDeCor(AcharCor) {
                 arrayCoresSalvas.selecionado = false;
                 arrayCoresSalvas[i].elemento.setAttribute("id", id);
                 arrayCoresSalvas[i].elemento.addEventListener("click", bttCorSalva);
-            };
+            }
             if (arrayCoresSalvas.length === 0) {
                 bttRemoverCorSalva.style.display = "none";
             }
         }
     });
 
-    bttCancelar.addEventListener("click", function () {
+    document.getElementById("bttCancelarSelecionaCor").addEventListener("click", function () {
         fecharJanelaSelecionarCor();
     });
 
     function bttCorSalva() {//O que ocorre quando clicamos numa cor salva.
+        const txtId = this.getAttribute("id");
+        const id = parseInt(txtId.substring(3, 7));
         if (janelaSelecionarCorVisivel === false) {
-            const txtId = this.getAttribute("id");
-            const id = parseInt(txtId.substring(3, 7));
             arrayCoresSalvas[id].selecionado = true;
             arrayCoresSalvas[id].elemento.style.border = "1px solid rgb(255, 255, 255)";
             corEscolhidaPrincipal = arrayCoresSalvas[id].cor;
@@ -2037,77 +2078,52 @@ function janelaSeletorDeCor(AcharCor) {
                 }
             }
         }
-    }
-
-    function moverCursor1() {
-        if (posMouseSeletorCorX <= 540 && posMouseSeletorCorX >= 10 && posMouseSeletorCorY <= 292 && posMouseSeletorCorY >= 272) {
-            moverCursorBarra(posMouseSeletorCorX - 10, true);
-        }
-        else if (clickBarra === true) {
-            if (posMouseSeletorCorX > 540 && posMouseSeletorCorY < 272) {
-                moverCursorBarra(540 - 10, true);
-            }
-            else if (posMouseSeletorCorX > 540 && posMouseSeletorCorY < 292) {
-                moverCursorBarra(540 - 10, true);
-            }
-            else if (posMouseSeletorCorX > 540 && posMouseSeletorCorY >= 292) {
-                moverCursorBarra(540 - 10, true);
-            }
-            else if (posMouseSeletorCorX <= 540 && posMouseSeletorCorX >= 10 && posMouseSeletorCorY >= 292) {
-                moverCursorBarra(posMouseSeletorCorX - 10, true);
-            }
-            else if (posMouseSeletorCorX < 10 && posMouseSeletorCorY >= 292) {
-                moverCursorBarra(10 - 10, true);
-            }
-            else if (posMouseSeletorCorX < 10 && posMouseSeletorCorY < 292 && posMouseSeletorCorY > 272) {
-                moverCursorBarra(10 - 10, true);
-            }
-            else if (posMouseSeletorCorX < 10 && posMouseSeletorCorY <= 272) {
-                moverCursorBarra(10 - 10, true);
-            }
-            else if (clickBarra === true && posMouseSeletorCorX <= 540 && posMouseSeletorCorX >= 10 && posMouseSeletorCorY <= 272) {
-                moverCursorBarra(posMouseSeletorCorX - 10, true);
-            }
+        else {
+            janelaSeleciona.procurarCor(arrayCoresSalvas[id].cor);
         }
     }
 
-    function moverCursor2() {
-        if (posMouseSeletorCorX <= 540 && posMouseSeletorCorX >= 110 && posMouseSeletorCorY <= 265 && posMouseSeletorCorY >= 10) {
-            moverCursorGradiente(posMouseSeletorCorX - 120, posMouseSeletorCorY - 20);
+    function moverCursor2(X, Y) {
+        if (X <= 540 && X >= 110 && Y <= 265 && Y >= 10) {
+            moverCursorGradiente(X - 120, Y - 20);
         }
-        else if (clickGradiente === true) {
-            if (posMouseSeletorCorX > 540 && posMouseSeletorCorY < 10) {
-                moverCursorGradiente(540 - 120, 10 - 20);
-            }
-            else if (posMouseSeletorCorX > 540 && posMouseSeletorCorY < 265) {
-                moverCursorGradiente(540 - 120, posMouseSeletorCorY - 20);
-            }
-            else if (posMouseSeletorCorX > 540 && posMouseSeletorCorY >= 265) {
-                moverCursorGradiente(540 - 120, 265 - 20);
-            }
-            else if (posMouseSeletorCorX <= 540 && posMouseSeletorCorX >= 110 && posMouseSeletorCorY >= 265) {
-                moverCursorGradiente(posMouseSeletorCorX - 120, 265 - 20);
-            }
-            else if (posMouseSeletorCorX < 110 && posMouseSeletorCorY >= 265) {
-                moverCursorGradiente(110 - 120, 265 - 20);
-            }
-            else if (posMouseSeletorCorX < 110 && posMouseSeletorCorY < 265 && posMouseSeletorCorY > 10) {
-                moverCursorGradiente(110 - 120, posMouseSeletorCorY - 20);
-            }
-            else if (posMouseSeletorCorX < 110 && posMouseSeletorCorY <= 10) {
-                moverCursorGradiente(110 - 120, 10 - 20);
-            }
-            else if (clickGradiente === true && posMouseSeletorCorX <= 540 && posMouseSeletorCorX >= 110 && posMouseSeletorCorY <= 10) {
-                moverCursorGradiente(posMouseSeletorCorX - 120, 10 - 20);
-            }
+        else if (X > 540 && Y < 10) {
+            moverCursorGradiente(540 - 120, 10 - 20);
+        }
+        else if (X > 540 && Y < 265) {
+            moverCursorGradiente(540 - 120, Y - 20);
+        }
+        else if (X > 540 && Y >= 265) {
+            moverCursorGradiente(540 - 120, 265 - 20);
+        }
+        else if (X <= 540 && X >= 110 && Y >= 265) {
+            moverCursorGradiente(X - 120, 265 - 20);
+        }
+        else if (X < 110 && Y >= 265) {
+            moverCursorGradiente(110 - 120, 265 - 20);
+        }
+        else if (X < 110 && Y < 265 && Y > 10) {
+            moverCursorGradiente(110 - 120, Y - 20);
+        }
+        else if (X < 110 && Y <= 10) {
+            moverCursorGradiente(110 - 120, 10 - 20);
+        }
+        else if (X <= 540 && X >= 110 && Y <= 10) {
+            moverCursorGradiente(X - 120, 10 - 20);
         }
     }
+
+    colorPaintContent.addEventListener("mousemove", function (e) {
+        if (clickMoverJanela === true && clickBarra === false && clickGradiente === false) {
+            const posMouse = pegarPosicaoMouse(colorPaintContent, e);
+            moverjanelaSelecionarCorNaPagina(posMouse.X, posMouse.Y);
+        }
+    });
 
     function moverjanelaSelecionarCorNaPagina(x, y) {
         const novaPosicaoXJanela = x - posMouseMoverJanela.X, novaPosicaoYJanela = y - posMouseMoverJanela.Y,
             limiteDireita = x + (janelaSelecionarCor.offsetWidth - posMouseMoverJanela.X), limiteEsquerda = x - (posMouseMoverJanela.X),
             limiteCima = y - (posMouseMoverJanela.Y), limiteBaixo = y + (janelaSelecionarCor.offsetHeight - posMouseMoverJanela.Y);
-
         if (limiteDireita < colorPaintContent.offsetWidth && limiteEsquerda > 0 && limiteCima > 50 && limiteBaixo < colorPaintContent.offsetHeight - 7) {
             janelaSelecionarCor.style.left = novaPosicaoXJanela + "px";
             janelaSelecionarCor.style.top = novaPosicaoYJanela + "px";
@@ -2152,64 +2168,11 @@ function janelaSeletorDeCor(AcharCor) {
         calcularPosiDaCorCursorBarra(hsvBarra.H);
     }
 
-    function moverCursorBarra(x, calcularCor) {
-        cursorBarra.style.left = x + "px";
-        if (calcularCor === true) {
-            calcularCorCursorBarra(x);
-        }
-        else {
-            preencheGradiente();
-            calcularCorPosiCursorGradiente();
-        }
-    }
-
-    function calcularCorCursorBarra(x) {
-        const H = ((x * 360) / barraeEspectroCor.offsetWidth);
-        let cor;
-        if (H === 360) {
-            cursorBarra.style.backgroundColor = "rgb( 255, 0, 0)";
-            rgbBarra = { R: 255, G: 0, B: 0 };
-            hsvBarra = { H: 0, S: 100, V: 100 };
-        } else {
-            hsvBarra = { H: H, S: 100, V: 100 };
-            cor = hsvToRgb(H, 100, 100);
-            cursorBarra.style.backgroundColor = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
-            rgbBarra = cor;
-        }
-        preencheGradiente();
-        calcularCorPosiCursorGradiente();
-    }
-
     function calcularPosiDaCorCursorBarra(h) {
         const posx = (barraeEspectroCor.offsetWidth / 360) * h;
         const cor = hsvToRgb(h, 100, 100);
         cursorBarra.style.backgroundColor = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
-        rgbBarra = cor;
-        moverCursorBarra(posx, false);
-    }
-
-    function moverCursorGradiente(x, y) {
-        cursorGradiente.style.left = x + "px";
-        cursorGradiente.style.top = y + "px";
-        calcularCorPosiCursorGradiente();
-    }
-
-    function calcularCorPosiCursorGradiente() {
-        let S = ((cursorGradiente.offsetLeft + 10) * 100) / gradienteCor.offsetWidth;
-        let V = 100 - ((cursorGradiente.offsetTop + 10) * 100) / gradienteCor.offsetHeight;
-        if (S == 0) {
-            S = 0.02;
-        }
-        if (V == 0) {
-            V = 0.02;
-        }
-        const cor = hsvToRgb(hsvBarra.H, S, V);
-        const stringCorRGB = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
-        cursorGradiente.style.backgroundColor = stringCorRGB;
-        corSelecionada.style.backgroundColor = stringCorRGB;
-        codHEX.value = rgbTohex(cor);
-        codRGB.value = cor.R + ", " + cor.G + ", " + cor.B;
-        corEscolhida = cor;
+        moverCursorBarra(posx);
     }
 
     function preencheBarraEspectro() {
@@ -2224,25 +2187,6 @@ function janelaSeletorDeCor(AcharCor) {
         gradiente.addColorStop(1, "rgb(255, 0, 0)");
         ctxBarra.fillStyle = gradiente;
         ctxBarra.fill();
-    }
-
-    function preencheGradiente() {
-        ctxGradiente.clearRect(0, 0, widthGradiente, heightGradiente);
-        ctxGradiente.fillStyle = "rgb(" + rgbBarra.R + ", " + rgbBarra.G + ", " + rgbBarra.B + ")";
-        ctxGradiente.fillRect(0, 0, widthGradiente, heightGradiente);
-
-        const gradienteBranco = ctxBarra.createLinearGradient(0, 0, widthGradiente, 0);
-        gradienteBranco.addColorStop(0, "rgba(255, 255, 255, 1)");
-        gradienteBranco.addColorStop(1, "rgba(255, 255, 255, 0)");
-        ctxGradiente.fillStyle = gradienteBranco;
-        ctxGradiente.fillRect(0, 0, widthGradiente, heightGradiente);
-
-        const gradientePreto = ctxBarra.createLinearGradient(0, 0, 0, heightGradiente);
-        gradientePreto.addColorStop(0, "rgba(0, 0, 0, 0)");
-        gradientePreto.addColorStop(1, "rgba(0, 0, 0, 1)");
-        ctxGradiente.fillStyle = gradientePreto;
-        ctxGradiente.fillRect(0, 0, widthGradiente, heightGradiente);
-        ctxGradiente.closePath();
     }
 }
 
