@@ -1847,6 +1847,8 @@ function janelaSeletorDeCor(AcharCor) {
         encontrarCorDoCodigoNoGradiente(hsvBarra.S, hsvBarra.V);
     }
 
+    let f = this;
+
     preencheBarraEspectro();
     this.procurarCor(AcharCor);
 
@@ -2079,7 +2081,7 @@ function janelaSeletorDeCor(AcharCor) {
             }
         }
         else {
-            janelaSeleciona.procurarCor(arrayCoresSalvas[id].cor);
+            f.procurarCor(arrayCoresSalvas[id].cor);
         }
     }
 

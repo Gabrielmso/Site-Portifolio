@@ -15,7 +15,7 @@ function particulas() {
       deslocay = 0,//Velocidade de deslocamento do eixo y de cada particula.
       guardarParticula = [];//Armazena as propriedades de cada particula, cada indice será uma particula, o número de indices é determinado pela "numParticulas".
 
-   let frameRate = 24,//Frames por segundo que a animação terá.
+   let frameRate = 23,//Frames por segundo que a animação terá.
       agora, //Tempo atual em milisegundos desde que a página foi carregada.
       antes = performance.now(),//Tempo em milisegundos em que o frame anterior foi desenhado.
       intervaloEntreFrames = 1000 / frameRate,//Intervalo em milisegundos que cada frame terá.
@@ -31,7 +31,7 @@ function particulas() {
       mudarTamanhoCanvas();
       relacaonumparticulas = larguraJanela * alturaJanela;
       guardarParticula = [];//"Exclui" as particulas anteriores para atualizar a quantidade da mesma caso a janela mude de tamanho.
-      numParticulas = Math.round(relacaonumparticulas / 25500);//Atualiza o número de particulas caso a janela mude de tamanho.
+      numParticulas = Math.round(relacaonumparticulas / 25555);//Atualiza o número de particulas caso a janela mude de tamanho.
       guardaParticulas();
    });
 
@@ -59,8 +59,8 @@ function particulas() {
          raioCirculo = valorAleatorio(3, 8);//Calcula um tamanho aleatório de raio para cada particula ter um tamanho diferente.
          posicaoX = valorAleatorio(raioCirculo, larguraJanela - raioCirculo);//Calcula uma posição aleatória no eixo x entre 0 mais o raio da particula e a largura total da janela menos o raio da particula para a mesma não passar as bordas da janela.
          posicaoY = valorAleatorio(raioCirculo, alturaJanela - raioCirculo);//Calcula uma posição aleatória no eixo y entre 0 mais o raio da particula e a altura total da janela menos o raio da particula para a mesma não passar as bordas da janela.
-         deslocaX = valorAleatorio(-0.9, 0.9);//Calcula uma velocidade aleatória de deslocamento da particula no eixo x entre -1 pixel (mover 1 pixel para a esquerda) e 1 pixel (mover 1 pixel para a direita).
-         deslocay = valorAleatorio(-0.9, 0.9);//Calcula uma velocidade aleatória de deslocamento da particula no eixo y entre -1 pixel (mover 1 pixel para cima) e 1 pixel (mover 1 pixel para baixo).
+         deslocaX = valorAleatorio(-0.7, 0.7);//Calcula uma velocidade aleatória de deslocamento da particula no eixo x entre -1 pixel (mover 1 pixel para a esquerda) e 1 pixel (mover 1 pixel para a direita).
+         deslocay = valorAleatorio(-0.7, 0.7);//Calcula uma velocidade aleatória de deslocamento da particula no eixo y entre -1 pixel (mover 1 pixel para cima) e 1 pixel (mover 1 pixel para baixo).
          guardarParticula[i] = (new criarParticula(posicaoX, posicaoY, deslocaX, deslocay, raioCirculo, i, raioCirculo / 2));//Executa a função para criar a particula e armazena toda a função em vetor para mudar as propriedades que constituem as particulas para realizar a animação de cada particula.
       }
    }
@@ -231,6 +231,35 @@ function particulas() {
       particulas.width = larguraJanela;
       particulas.height = alturaJanela;
    }
+
+   function desfocarParticulas() {
+      let tempoTransicao = valorAleatorio(1, 10);
+      let tempoEsperar = valorAleatorio(0.6, 10);
+      let desfoque = valorAleatorio(0.8, 5.5);
+      particulas.style.transition = "filter " + tempoTransicao + "s linear";
+      setTimeout(() => {
+         particulas.style.filter = "blur(" + desfoque + "px)";
+         setTimeout(() => {
+            focarParticulas();
+         }, (tempoTransicao * 1000) + (tempoEsperar * 1000));
+      }, 1);
+
+      function focarParticulas() {
+         tempoTransicao = valorAleatorio(1, 10);
+         tempoEsperar = valorAleatorio(0.6, 10);
+         particulas.style.transition = "filter " + tempoTransicao + "s linear";
+         setTimeout(() => {
+            particulas.style.filter = "blur(0px)";
+            setTimeout(() => {
+               desfocarParticulas();
+            }, (tempoTransicao * 1000) + (tempoEsperar * 1000));
+         }, 1);
+      }
+   }
+
+   setTimeout(()=>{
+      desfocarParticulas();
+   }, 4500);
 
    function valorAleatorio(numMinimo, numMaximo) {//Retorna um número float aleatório entre "numMinimo" e "numMaximo".
       return Math.random() * (numMaximo - numMinimo) + numMinimo;
