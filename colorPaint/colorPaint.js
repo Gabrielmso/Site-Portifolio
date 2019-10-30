@@ -83,7 +83,7 @@ function colorPaint() {
     telaPreview = document.getElementById("telaPreview");
     ctxTelaPreview = telaPreview.getContext("2d");
     moverScroll = document.getElementById("moverScroll");
-    janelaSeleciona = new janelaSeletorDeCor(corEscolhidaPrincipal);
+    janelaSeleciona = new janelaSeletorDeCor();
     let mudarTamanhoFerramenta = false;//Saber se o mouse está pressionado na "barraTamanho".
     let mudarOpacidadeFerramenta = false;//Saber se o mouse está pressionado na "barraOpacidade". 
     let mudarDurezaFerramenta = false;//Saber se o mouse está pressionado na "barraDureza". 
@@ -1683,7 +1683,7 @@ function salvarDesenho() {
 }
 
 function salvarProjeto() {
-    let dadosCamadas = [];
+    let dadosCamadas = [], coresSalvasProjeto = [];
     for (let i = 0; i < projeto.numeroCamadas; i++) {
         dadosCamadas[i] = {
             imgDataCamada: arrayCamadas[i].ctx.canvas.toDataURL("imagem/png"),
@@ -1691,11 +1691,15 @@ function salvarProjeto() {
             visivel: arrayCamadas[i].visivel,
         };
     }
+    for (let i = 0; i < arrayCoresSalvas.length; i++) {
+        coresSalvasProjeto[i] = arrayCoresSalvas[i].cor;
+    }
     const objProjeto = {
         nomeProjeto: projeto.nome,
         resolucaoDoProjeto: projeto.resolucao,
         corDeFundo: projeto.corFundo,
         numeroDeCamadas: projeto.numeroCamadas,
+        coresSalvas: coresSalvasProjeto,
         camadas: dadosCamadas
     }
 
@@ -1772,6 +1776,9 @@ function abrirProjeto() {
             }
         }
         cursorOpacidadeCamada.style.left = ((arrayCamadas[0].opacidade * 200) - 7) + "px";
+        for (let i = 0; i < objProjeto.coresSalvas.length; i++) {
+            janelaSeleciona.salvarCor(objProjeto.coresSalvas[i]);
+        }        
     }
     input.click();
 }
@@ -1816,7 +1823,7 @@ function criarOuAbrirProjeto() {
 }
 // ==========================================================================================================================================================================================================================================
 
-function janelaSeletorDeCor(AcharCor) {
+function janelaSeletorDeCor() {
     let corEscolhida = { R: 0, G: 0, B: 0 }; //Armazena a cor selecionada com o cursor "cursorGradiente";
     const coresSalvas = document.getElementById("coresSalvas"),
         janelaSelecionarCor = document.getElementById("janelaSelecionarCor"),
@@ -1842,15 +1849,62 @@ function janelaSeletorDeCor(AcharCor) {
     let posMouseMoverJanela = { X: 0, Y: 0 };//Armazena a posição do do mouse quando foi clicado para mover a janela.
     let posMouseJanela = { X: 0, Y: 0 };//Armazena a posição do mouse na "janelaSelecionarCor";    
 
+    const bttCorSalva = (e) => {//O que ocorre quando clicamos numa cor salva.
+        const txtId = e.target.getAttribute("id");
+        const id = parseInt(txtId.substring(3, 7));
+        if (janelaSelecionarCorVisivel === false) {
+            arrayCoresSalvas[id].selecionado = true;
+            arrayCoresSalvas[id].elemento.style.boxShadow = "0px 0px 4px rgb(255, 255, 255)";
+            corEscolhidaPrincipal = arrayCoresSalvas[id].cor;
+            corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+            txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+            for (let i = 0; i < arrayCoresSalvas.length; i++) {
+                if (i != id) {
+                    arrayCoresSalvas[i].selecionado = false;
+                    arrayCoresSalvas[i].elemento.style.boxShadow = "";
+                }
+            }
+        }
+        else {
+            this.procurarCor(arrayCoresSalvas[id].cor);
+        }
+    }
+
     this.procurarCor = function (color) {
         hsvBarra = rgbToHsv(color); //Converte a cor digitada de RGB para HSV.
         encontrarCorDoCodigoNoGradiente(hsvBarra.S, hsvBarra.V);
     }
 
-    let f = this;
+    this.salvarCor = function (corParaSalvar) {
+        let corJaSalva = false;
+        bttRemoverCorSalva.style.display = "block";
+        for (let i = 0; i < arrayCoresSalvas.length; i++) {
+            const cor = arrayCoresSalvas[i].cor;
+            if (cor.R === corParaSalvar.R && cor.G === corParaSalvar.G && cor.B === corParaSalvar.B) {
+                corJaSalva = true;
+                alert("Essa cor já está salva!");
+            }
+        }
+        if (corJaSalva === false) {
+            const cor = "background-color: rgb(" + corParaSalvar.R + ", " + corParaSalvar.G + ", " + corParaSalvar.B + ");";
+            const id = "cor" + (arrayCoresSalvas.length);
+            const corSalva = document.createElement("div");
+            corSalva.setAttribute("id", id);
+            corSalva.setAttribute("class", "corSalva cursor");
+            corSalva.setAttribute("style", cor);
+            const infoCorSalva = {
+                id: arrayCoresSalvas.length,
+                elemento: corSalva,
+                cor: { R: corParaSalvar.R, G: corParaSalvar.G, B: corParaSalvar.B },
+                selecionado: false
+            }
+            arrayCoresSalvas.push(infoCorSalva);
+            coresSalvas.appendChild(corSalva);
+            arrayCoresSalvas[arrayCoresSalvas.length - 1].elemento.addEventListener("click", bttCorSalva);
+        }
+    }
 
     preencheBarraEspectro();
-    this.procurarCor(AcharCor);
 
     cursorBarra.addEventListener("mousedown", function () {
         clickBarra = true;
@@ -1952,8 +2006,8 @@ function janelaSeletorDeCor(AcharCor) {
         corEscolhida = cor;
     }
 
-    codRGB.addEventListener("keyup", function (e) {
-        let codCorAchar = this.value;
+    codRGB.addEventListener("keyup", (e) => {
+        let codCorAchar = e.target.value;
         codCorAchar = codCorAchar.split(",") || codCorAchar.split(", ");
         for (let i = 0; i < codCorAchar.length; i++) {
             codCorAchar[i] = parseInt(codCorAchar[i]);
@@ -1961,13 +2015,13 @@ function janelaSeletorDeCor(AcharCor) {
         if (codCorAchar.length === 3) {
             if (codCorAchar[0] <= 255 && codCorAchar[1] <= 255 && codCorAchar[2] <= 255) {
                 corParaAchar = { R: codCorAchar[0], G: codCorAchar[1], B: codCorAchar[2] }
-                janelaSeleciona.procurarCor(corParaAchar);
+                this.procurarCor(corParaAchar);
             }
         }
     });
 
-    codHEX.addEventListener("keyup", function (e) {
-        let codCorHEX = this.value;
+    codHEX.addEventListener("keyup", (e) => {
+        let codCorHEX = e.target.value;
         if (codCorHEX.indexOf("#") === -1) {
             codCorHEX = "#" + codCorHEX;
         }
@@ -1975,7 +2029,8 @@ function janelaSeletorDeCor(AcharCor) {
         if (codCorAchar != null) {
             if (codCorAchar[0] <= 255 && codCorAchar[1] <= 255 && codCorAchar[2] <= 255) {
                 corParaAchar = { R: codCorAchar[0], G: codCorAchar[1], B: codCorAchar[2] };
-                janelaSeleciona.procurarCor(corParaAchar);
+                this.procurarCor(corParaAchar);
+                console.log(this);
             }
         }
     });
@@ -1986,7 +2041,7 @@ function janelaSeletorDeCor(AcharCor) {
         clickMoverJanela = false;
     });
 
-    document.getElementById("bttOkSelecionaCor").addEventListener("click", function (e) {
+    document.getElementById("bttOkSelecionaCor").addEventListener("click", function () {
         if (corPrincipalOuSecundaria === 1) {
             corEscolhidaPrincipal = corEscolhida;
             corPrincipal.style.backgroundColor = "rgb(" + corEscolhida.R + ", " + corEscolhida.G + ", " + corEscolhida.B + ")";
@@ -1999,39 +2054,12 @@ function janelaSeletorDeCor(AcharCor) {
         fecharJanelaSelecionarCor();
         for (let i = 0; i < arrayCoresSalvas.length; i++) {
             arrayCoresSalvas[i].selecionado = false;
-            arrayCoresSalvas[i].elemento.style.border = "none";
+            arrayCoresSalvas[i].elemento.style.boxShadow = "";
         }
     });
 
-    document.getElementById("bttSalvarCor").addEventListener("click", function () {
-        let corJaSalva = false;
-        bttRemoverCorSalva.style.display = "block";
-        for (let i = 0; i < arrayCoresSalvas.length; i++) {
-            const cor = arrayCoresSalvas[i].cor;
-            if (cor.R === corEscolhida.R && cor.G === corEscolhida.G && cor.B === corEscolhida.B) {
-                corJaSalva = true;
-                alert("Essa cor já está salva!");
-            }
-        }
-        if (corJaSalva === false) {
-            const cor = "background-color: rgb(" + corEscolhida.R + ", " + corEscolhida.G + ", " + corEscolhida.B + ");";
-            const id = "cor" + (arrayCoresSalvas.length);
-            const corSalva = document.createElement("div");
-            const div = document.createElement("div");
-            corSalva.setAttribute("id", id);
-            corSalva.setAttribute("class", "corSalva cursor");
-            corSalva.setAttribute("style", cor);
-            const infoCorSalva = {
-                id: arrayCoresSalvas.length,
-                elemento: corSalva,
-                cor: { R: corEscolhida.R, G: corEscolhida.G, B: corEscolhida.B },
-                selecionado: false
-            }
-            arrayCoresSalvas.push(infoCorSalva);
-            coresSalvas.appendChild(corSalva);
-            corSalva.appendChild(div);
-            arrayCoresSalvas[arrayCoresSalvas.length - 1].elemento.addEventListener("click", bttCorSalva);
-        }
+    document.getElementById("bttSalvarCor").addEventListener("click", () => {
+        this.salvarCor(corEscolhida);
     });
 
     bttRemoverCorSalva.addEventListener("click", function () {
@@ -2063,27 +2091,6 @@ function janelaSeletorDeCor(AcharCor) {
     document.getElementById("bttCancelarSelecionaCor").addEventListener("click", function () {
         fecharJanelaSelecionarCor();
     });
-
-    function bttCorSalva() {//O que ocorre quando clicamos numa cor salva.
-        const txtId = this.getAttribute("id");
-        const id = parseInt(txtId.substring(3, 7));
-        if (janelaSelecionarCorVisivel === false) {
-            arrayCoresSalvas[id].selecionado = true;
-            arrayCoresSalvas[id].elemento.style.border = "1px solid rgb(255, 255, 255)";
-            corEscolhidaPrincipal = arrayCoresSalvas[id].cor;
-            corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
-            txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
-            for (let i = 0; i < arrayCoresSalvas.length; i++) {
-                if (i != id) {
-                    arrayCoresSalvas[i].selecionado = false;
-                    arrayCoresSalvas[i].elemento.style.border = "none";
-                }
-            }
-        }
-        else {
-            f.procurarCor(arrayCoresSalvas[id].cor);
-        }
-    }
 
     function moverCursor2(X, Y) {
         if (X <= 540 && X >= 110 && Y <= 265 && Y >= 10) {
