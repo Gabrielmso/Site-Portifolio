@@ -1,6 +1,10 @@
 mudarMenu = false; //impede que o menu mude de estilo.
 const projeto = { nome: null, resolucao: { largura: 0, altura: 0, proporcao: 0 }, corFundo: null, numeroCamadas: 0 }; //Armazena as propriedades escolhidas ao criar o projeto.
 const ferramenta = { tamanho: 5, opacidade: 1, dureza: 1 };//Armazena as configurações do traço das ferramentas.
+const grid = {//Propriedades do grid e da visualização do projeto antes de criar o grid, e saber se está visível.
+    tela: null, tamanho: 80, posicao: { X: 0, Y: 0 }, visivel: false,
+    visualizacaoAnterior: { scrollX: 0, scrollY: 0, zoom: 0 }
+};
 let colorPaintContent;
 let janelaSelecionarCorVisivel = false;//Saber se a janela de seleção de cor está "aberta".
 let corPrincipal, corSecundaria, corPrincipalOuSecundaria;
@@ -55,10 +59,6 @@ function colorPaint() {
     const bttDesfazer = document.getElementById("bttDesfazer");
     const contentCentro = document.getElementById("contentCentro");
     const propriedadesFerramentas = document.getElementById("propriedadesFerramentas");
-    const grid = {//Propriedades do grid e da visualização do projeto antes de criar o grid, e saber se está visível.
-        tela: document.getElementById("grid"), tamanho: 80, posicao: { X: 0, Y: 0 }, visivel: false,
-        visualizacaoAnterior: { scrollX: 0, scrollY: 0, zoom: 0 }
-    };
     const posicaoMouse = { X: 0, Y: 0 };//Armazena a posição do mouse no tela canvas em relação a resolução do projeto.
     const arrayPropriedadesFerramentas = [
         { propriedade: document.getElementById("propriedadeTamanho"), barra: document.getElementById("contentBarraTamanho") },
@@ -83,6 +83,7 @@ function colorPaint() {
     telaPreview = document.getElementById("telaPreview");
     ctxTelaPreview = telaPreview.getContext("2d");
     moverScroll = document.getElementById("moverScroll");
+    grid.tela = document.getElementById("grid");
     janelaSeleciona = new janelaSeletorDeCor();
     let mudarTamanhoFerramenta = false;//Saber se o mouse está pressionado na "barraTamanho".
     let mudarOpacidadeFerramenta = false;//Saber se o mouse está pressionado na "barraOpacidade". 
@@ -178,10 +179,12 @@ function colorPaint() {
             grid.visualizacaoAnterior.scrollY = contentTelas.scrollTop;
             grid.visualizacaoAnterior.zoom = parseFloat(((txtPorcentagemZoom.value).replace("%", "")).replace(",", "."));
             contentJanelaMenuGrid.style.display = "block";
+            document.getElementById("txtTamanhoGrid").value = grid.tamanho;
+            document.getElementById("txtPosicaoVerticalGrid").value = grid.posicao.Y;
+            document.getElementById("txtPosicaoHorizontalGrid").value = grid.posicao.X;
             ajustarNaVisualizacaoTelasCanvas();
             if (grid.visivel === false) {
                 criarGrid(grid.tela, grid.tamanho, grid.posicao, true);
-                grid.visivel = true;
             }
         }
         else {
@@ -222,7 +225,6 @@ function colorPaint() {
         if (projetoCriado === true) {
             criarGrid(grid.tela, grid.tamanho, grid.posicao, false);
             contentJanelaMenuGrid.style.display = "none";
-            grid.visivel = false;
             ajustarVisualizacaoAntesGrid();
         }
     });
@@ -1164,7 +1166,7 @@ function criarGrid(tela, tamanho, posicao, criar) {
             tela.appendChild(quadrado);
         }
     }
-
+    grid.visivel = criar;
 }
 // ==========================================================================================================================================================================================================================================
 
@@ -1698,8 +1700,13 @@ function salvarProjeto() {
         nomeProjeto: projeto.nome,
         resolucaoDoProjeto: projeto.resolucao,
         corDeFundo: projeto.corFundo,
-        numeroDeCamadas: projeto.numeroCamadas,
         coresSalvas: coresSalvasProjeto,
+        grid: {
+            tamanho: grid.tamanho,
+            posicao: grid.posicao,
+            visivel: grid.visivel,
+        },
+        numeroDeCamadas: projeto.numeroCamadas,
         camadas: dadosCamadas
     }
 
@@ -1778,7 +1785,12 @@ function abrirProjeto() {
         cursorOpacidadeCamada.style.left = ((arrayCamadas[0].opacidade * 200) - 7) + "px";
         for (let i = 0; i < objProjeto.coresSalvas.length; i++) {
             janelaSeleciona.salvarCor(objProjeto.coresSalvas[i]);
-        }        
+        }
+        grid.tamanho = objProjeto.grid.tamanho;
+        grid.posicao = objProjeto.grid.posicao;
+        if (objProjeto.grid.visivel === true) {
+            criarGrid(grid.tela, grid.tamanho, grid.posicao, true);
+        }
     }
     input.click();
 }
@@ -1818,7 +1830,7 @@ function criarOuAbrirProjeto() {
                     }, 1200);
                 }, 350);
             }, 1550);
-        }, 150)
+        }, 150);
     }
 }
 // ==========================================================================================================================================================================================================================================
