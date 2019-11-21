@@ -1287,8 +1287,8 @@ function criarCamada(cor, resolucao) {
     iconTela.setAttribute("style", styleIconTela);
     iconTela.setAttribute("class", "iconTela");
     contentMiniIcon.appendChild(iconTela);
-    iconTela.width = iconTela.offsetWidth;
-    iconTela.height = iconTela.offsetHeight;
+    iconTela.width = iconTela.offsetWidth * 2;
+    iconTela.height = iconTela.offsetHeight * 2;
 
     const sobrePor = document.createElement("div");
     contentMiniIcon.appendChild(sobrePor);
@@ -1454,8 +1454,8 @@ function ajustarPreview(cor) {
     else {
         contentTelaPreview.style.backgroundImage = "url('/colorPaint/imagens/fundoTela/transparenteMiniatura.png')";
     }
-    telaPreview.width = contentTelaPreview.offsetWidth;
-    telaPreview.height = contentTelaPreview.offsetHeight;
+    telaPreview.width = contentTelaPreview.offsetWidth * 2;
+    telaPreview.height = contentTelaPreview.offsetHeight * 2;
 }
 // ==========================================================================================================================================================================================================================================
 
