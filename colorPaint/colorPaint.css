@@ -255,7 +255,6 @@ p {
     overflow: hidden;
     width: 100px;
     height: 100%;
-    max-height: 1440px;
     border-right: 4px solid rgb(37, 37, 37);
     background-color: rgb(51, 51, 51);
 }
@@ -560,7 +559,6 @@ p {
     width: 300px;
     height: 100%;
     padding: 10px;
-    max-height: 1440px;
     border-left: 4px solid rgb(37, 37, 37);
     background-color: rgb(51, 51, 51);
 }
