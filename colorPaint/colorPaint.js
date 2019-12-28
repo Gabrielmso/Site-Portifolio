@@ -92,6 +92,8 @@ function colorPaint() {
     let moverScrollPreview = false;//Saber se o mouse está pressionado na "contentTelaPreview".
     let pintando = false;//Saber se o mouse está pressionado na "contentTelas".
     let ctrlPressionado = false;//Saber se os Ctrl's estão pressionados.
+    let espacoPressionado = false;//Saber se o espaço está pressionados.
+    let infoMoverDesenhoEspaco = {};
     let clickCurva = false;//Saber o momento de curvar a linha feita com a ferramenta Curva.
     arrayFerramentas = [{ ferramenta: document.getElementById("pincel"), nome: "Pincel", id: 1 },//Armazena as ferramentas.
     { ferramenta: document.getElementById("borracha"), nome: "Borracha", id: 2 },
@@ -345,7 +347,11 @@ function colorPaint() {
 
     contentTelas.addEventListener("mousedown", function (e) {
         if (!projetoCriado) { return };
-        if (arrayCamadas[camadaSelecionada].visivel === true) {
+        if (espacoPressionado === true) {
+            telasCanvas.style.cursor = "grabbing";
+            infoMoverDesenhoEspaco = { coordenadaInicio: pegarPosicaoMouse(this, e), scroolTop: this.scrollTop, scrollLeft: this.scrollLeft };
+        }
+        else if (arrayCamadas[camadaSelecionada].visivel === true) {
             pintando = true;
             if (clickCurva === false && ferramentaSelecionada != 3) {
                 guardarAlteracoes();
@@ -465,6 +471,9 @@ function colorPaint() {
             const mousePos = pegarPosicaoMouse(contentTelaPreview, e);
             moverScrollNaTelaPreview(mousePos.X, mousePos.Y);
         }
+        else if (espacoPressionado === true) {
+            moverDesenhoComEspaco();
+        }
     });
 
     document.getElementById("bttZoomMais").addEventListener("click", function () {//Aumentar o zoom no projeto.
@@ -532,6 +541,9 @@ function colorPaint() {
         }
         moverScrollPreview = false;
         moverScroll.style.cursor = "grab";
+        if (espacoPressionado === true) {
+            telasCanvas.style.cursor = "grab";
+        }
     });
 
     document.addEventListener("keydown", function (e) {//Criar teclas de atalho.
@@ -579,6 +591,13 @@ function colorPaint() {
                     arrayFerramentas[2].ferramenta.click();
                 }
             }
+            if (e.code === "Space") {
+                e.preventDefault();
+                if (espacoPressionado === false) {
+                    espacoPressionado = true;
+                    telasCanvas.style.cursor = "grab";
+                }
+            }
         }
     });
 
@@ -591,6 +610,11 @@ function colorPaint() {
                 cursorComparaContaGotas.style.display = "none";
                 ferramentaAnterior = null;
             }
+        }
+        if (e.code === "Space") {
+            e.preventDefault();
+            espacoPressionado = false;
+            telasCanvas.style.cursor = "";
         }
     });
 
