@@ -15,8 +15,11 @@
     <link rel="stylesheet" href="colorPaint/colorPaint.css">
     <script src="topoMenu/topoMenu.js"></script>
     <script src="colorPaint/colorPaint.js"></script>
+    <script src="colorPaint/selectColorWindow.js"></script>
+    <script src="colorPaint/drawingTools.js"></script>
+    <script src="colorPaint/createProject.js"></script>
     <script>
-        window.onload = function () {
+        window.onload = () => {
             topoMenu();
             colorPaint();
         };
@@ -177,7 +180,7 @@
                 <aside id="barraLateralEsquerda">
                     <div id="ferramentas">
                         <div id="pincel" class="bttFerramentasEscolhida cursor" title="Ferramenta Pincel"></div>
-                        <div id="borracha" class="bttFerramentas cursor" title="Ferramenta Borracha"></div>                        
+                        <div id="borracha" class="bttFerramentas cursor" title="Ferramenta Borracha"></div>
                         <div id="linha" class="bttFerramentas cursor" title="Ferramenta Linha"></div>
                         <div id="curva" class="bttFerramentas cursor" title="Ferramenta Curva"></div>
                         <div id="retangulo" class="bttFerramentas cursor" title="Ferramenta Retângulo"></div>
@@ -368,8 +371,7 @@
                 </div>
                 <div class="bttsJanela noSelection">
                     <button id=bttOkGrid class="bttColorPaint cursor">Ok</button>
-                    <button id=bttcancelarGrid class="bttColorPaint cursor"
-                        title="Apaga a grade atual.">Cancelar
+                    <button id=bttcancelarGrid class="bttColorPaint cursor" title="Apaga a grade atual.">Cancelar
                     </button>
                 </div>
             </div>

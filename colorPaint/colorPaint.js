@@ -1,12 +1,11 @@
 mudarMenu = false; //impede que o menu mude de estilo.
 const projeto = { nome: null, resolucao: { largura: 0, altura: 0, proporcao: 0 }, corFundo: null, numeroCamadas: 0 }; //Armazena as propriedades escolhidas ao criar o projeto.
-const ferramenta = { tamanho: 5, opacidade: 1, dureza: 1 };//Armazena as configurações do traço das ferramentas.
+let Tools;
 const grid = {//Propriedades do grid e da visualização do projeto antes de criar o grid, e saber se está visível.
     tela: null, tamanho: 80, posicao: { X: 0, Y: 0 }, visivel: false,
     visualizacaoAnterior: { scrollX: 0, scrollY: 0, zoom: 0 }
 };
 let colorPaintContent;
-let janelaSelecionarCorVisivel = false;//Saber se a janela de seleção de cor está "aberta".
 let corPrincipal, corSecundaria, corPrincipalOuSecundaria;
 let corEscolhidaPrincipal = { R: 0, G: 0, B: 0 };//Armazena a cor escolhida do primeiro plano.
 let corEscolhidaSecudaria = { R: 255, G: 255, B: 255 };//Armazena a cor escolhida no segundo plano.
@@ -14,11 +13,11 @@ let arrayVoltarAlteracoes = [];//Armazena as 20 últimas alterações no desenho
 let arrayAvancarAlteracoes = [];//Armazena as alterações que foram "voltadas". Comando Ctrl + Y.
 let arrayCoresSalvas = [];//Armazena objetos cuja as propriedades possuem as informações sobre as cores salvas.
 let arrayCamadas = [];//Armazena objetos cuja as propriedades possuem as informações sobre as camadas, como os elementos canvas, icones, etc.
-let arrayFerramentas = [];//Armazena os elementos que selecionam as ferramentas.
+let arrayDrawingTools = [];//Armazena os elementos que selecionam as ferramentas.
 let cursorComparaContaGotas;//Div que aparece acompanhando o cursor quando a ferramenta for a conta-gotas.
 let comparaCoresContaGotas;//Div que fica dentro da "cursorComparaContaGotas" cuja a cor das bordas comparam as cores selecionadas.
-let ferramentaSelecionada = 1;//Saber qual ferramenta está selecionada.
-let ferramentaAnterior;//Armazena a ferramenta que estava selecionada antes de "abrir" a "janelaSelecionarCor".
+let selectedTool = 0;//Saber qual ferramenta está selecionada.
+let previousTool;//Armazena a ferramenta que estava selecionada antes de "abrir" a "janelaSelecionarCor".
 let contentTelas;//Elemento onde ficará a "tela" para desenhar.
 let telasCanvas;//Elemento onde ficarão os canvas "camadas".
 let contentTelaPreview;//Div que contém o "telaPreview" e o "moverScroll".
@@ -39,6 +38,7 @@ let MouseNoBttVer = false;//Saber se o mouse está sobre os botões que deixam a
 let coordenadaClick = [];//Armazena as coordenadas do cursor do mouse desde quando o mesmo é pressionado e movimentado enquanto pressionado.
 let cursorOpacidadeCamada;
 function colorPaint() {
+    Tools = drawingTools();
     const contentJanelaCriarProjeto = document.getElementById("contentJanelaCriarProjeto");
     const contentJanelaAtalhos = document.getElementById("contentJanelaAtalhos");
     const contentJanelaMenuGrid = document.getElementById("contentJanelaMenuGrid");
@@ -47,13 +47,6 @@ function colorPaint() {
     const barraLateralEsquerda = document.getElementById("barraLateralEsquerda");
     const barraLateralDireita = document.getElementById("barraLateralDireita");
     const corAtual = document.getElementById("corAtual");
-    const txtTamanhoFerramenta = document.getElementById("txtTamanhoFerramenta");
-    const barraOpacidade = document.getElementById("barraOpacidade");
-    const cursorOpacidade = document.getElementById("cursorOpacidade");
-    const barraTamanho = document.getElementById("barraTamanho");
-    const cursorTamanho = document.getElementById("cursorTamanho");
-    const barraDureza = document.getElementById("barraDureza");
-    const cursorDureza = document.getElementById("cursorDureza");
     const barraOpacidadeCamada = document.getElementById("barraOpacidadeCamada");
     const bttRefazer = document.getElementById("bttRefazer");
     const bttDesfazer = document.getElementById("bttDesfazer");
@@ -85,43 +78,40 @@ function colorPaint() {
     moverScroll = document.getElementById("moverScroll");
     grid.tela = document.getElementById("grid");
     janelaSeleciona = new janelaSeletorDeCor();
-    let mudarTamanhoFerramenta = false;//Saber se o mouse está pressionado na "barraTamanho".
-    let mudarOpacidadeFerramenta = false;//Saber se o mouse está pressionado na "barraOpacidade". 
-    let mudarDurezaFerramenta = false;//Saber se o mouse está pressionado na "barraDureza". 
     let mudarOpacidadeCamada = false;//Saber se o mouse está pressionado na "barraOpacidadeCamada". 
     let moverScrollPreview = false;//Saber se o mouse está pressionado na "contentTelaPreview".
     let pintando = false;//Saber se o mouse está pressionado na "contentTelas".
     let ctrlPressionado = false;//Saber se os Ctrl's estão pressionados.
     let espacoPressionado = false;//Saber se o espaço está pressionados.
-    let infoMoverDesenhoEspaco = {};
+    let moverDesenhoEspaco = { mover: false, coordenadaInicio: null, scroolTop: 0, scrollLeft: 0 };;
     let clickCurva = false;//Saber o momento de curvar a linha feita com a ferramenta Curva.
-    arrayFerramentas = [{ ferramenta: document.getElementById("pincel"), nome: "Pincel", id: 1 },//Armazena as ferramentas.
-    { ferramenta: document.getElementById("borracha"), nome: "Borracha", id: 2 },
-    { ferramenta: document.getElementById("contaGotas"), nome: "Conta-gotas", id: 3 },
-    { ferramenta: document.getElementById("linha"), nome: "Linha", id: 4 },
-    { ferramenta: document.getElementById("curva"), nome: "Curva", id: 5 },
-    { ferramenta: document.getElementById("retangulo"), nome: "Retângulo", id: 6 },
-    { ferramenta: document.getElementById("baldeDeTinta"), nome: "Balde de tinta", id: 7 },
-    { ferramenta: document.getElementById("elipse"), nome: "Elipse", id: 8 }];
-
-    menuPadrao();
+    arrayDrawingTools = [{ tool: document.getElementById("pincel"), name: "brush", id: 0 },//Armazena as tools.
+    { tool: document.getElementById("linha"), name: "line", id: 1 },
+    { tool: document.getElementById("retangulo"), name: "rectangle", id: 2 },
+    { tool: document.getElementById("elipse"), name: "ellipse", id: 3 },
+    { tool: document.getElementById("borracha"), name: "eraser", id: 4 },
+    { tool: document.getElementById("curva"), name: "curve", id: 5 },
+    { tool: document.getElementById("contaGotas"), name: "eyeDropper", id: 6 },
+    { tool: document.getElementById("baldeDeTinta"), name: "paintBucket", id: 7 }];
+		
+	menuPadrao();
     ajustarContents();
     criarOuAbrirProjeto();
     txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
 
-    for (let i = 0; i < arrayFerramentas.length; i++) {
-        arrayFerramentas[i].ferramenta.addEventListener("click", function () {
+    for (let i = 0; i < arrayDrawingTools.length; i++) {
+        arrayDrawingTools[i].tool.addEventListener("click", function () {
             if (janelaSelecionarCorVisivel === false) {
-                ferramentaSelecionada = arrayFerramentas[i].id;
+                selectedTool = arrayDrawingTools[i].id;
                 this.classList.remove("bttFerramentas");
                 this.classList.add("bttFerramentasEscolhida");
-                for (let e = 0; e < arrayFerramentas.length; e++) {
+                for (let e = 0; e < arrayDrawingTools.length; e++) {
                     if (e != i) {
-                        arrayFerramentas[e].ferramenta.classList.remove("bttFerramentasEscolhida");
-                        arrayFerramentas[e].ferramenta.classList.add("bttFerramentas");
+                        arrayDrawingTools[e].tool.classList.remove("bttFerramentasEscolhida");
+                        arrayDrawingTools[e].tool.classList.add("bttFerramentas");
                     }
                 }
-                if (ferramentaSelecionada === 3) {
+                if (selectedTool === 6) {
                     propriedadesFerramentas.style.display = "none";
                 }
                 else {
@@ -135,7 +125,7 @@ function colorPaint() {
         });
     }
 
-    arrayFerramentas[2].ferramenta.addEventListener("click", function () {//Criar o desenho completo para selecionar a cor.
+    arrayDrawingTools[6].tool.addEventListener("click", function () {//Criar o desenho completo para selecionar a cor.
         if (projetoCriado === true) {
             desenhoCompleto();
         };
@@ -268,8 +258,7 @@ function colorPaint() {
         else {
             corPrincipalOuSecundaria = 1;
             corAtual.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
-            abrirJanelaSelecionarCor();
-            janelaSeleciona.procurarCor(corEscolhidaPrincipal);
+            janelaSeleciona.abrir(corEscolhidaPrincipal);
         }
     });
 
@@ -280,14 +269,14 @@ function colorPaint() {
         else {
             corPrincipalOuSecundaria = 2;
             corAtual.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.R + ", " + corEscolhidaSecudaria.G + ", " + corEscolhidaSecudaria.B + ")";
-            abrirJanelaSelecionarCor();
-            janelaSeleciona.procurarCor(corEscolhidaSecudaria);
+            janelaSeleciona.abrir(corEscolhidaSecudaria);
         }
     });
 
     document.getElementById("bttCoresPrincipais").addEventListener("mousedown", function () {//Coloca preto na corPrincipalEcolhida e branco na corSecundariaEscolhida.
         if (janelaSelecionarCorVisivel === false) {
             corEscolhidaPrincipal = { R: 0, G: 0, B: 0 };
+            Tools.toolProperties.color = corEscolhidaPrincipal;
             corEscolhidaSecudaria = { R: 255, G: 255, B: 255 };
             corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
             corSecundaria.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.R + ", " + corEscolhidaSecudaria.G + ", " + corEscolhidaSecudaria.B + ")";
@@ -301,17 +290,19 @@ function colorPaint() {
             corSecundaria.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
             const cor = corEscolhidaPrincipal;
             corEscolhidaPrincipal = corEscolhidaSecudaria;
+            Tools.toolProperties.color = corEscolhidaPrincipal
             corEscolhidaSecudaria = cor;
             txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
         }
     });
 
     bttRefazer.addEventListener("click", function () {
-        avancarAlteracao();
+        if (pintando === false) { avancarAlteracao(); }
     });
 
     bttDesfazer.addEventListener("click", function () {
-        voltarAlteracao();
+        if (pintando === false) { voltarAlteracao(); }
+
     });
 
     telasCanvas.addEventListener("mousemove", function () {
@@ -322,100 +313,77 @@ function colorPaint() {
         txtPosicaoCursor.value = "";
     });
 
-    barraOpacidade.addEventListener("mousedown", function (e) {
-        if (clickCurva === true) { return };
-        mudarOpacidadeFerramenta = true;
-        calculaOpacidadeFerramenta(e);
-    })
+    Tools.toolOpacityBar.bar.addEventListener("mousedown", function (e) {
+        if (clickCurva === true) { return; }
+        Tools.toolOpacityBar.clicked = true;
+        Tools.changeToolOpacity(e);
+    });
 
-    barraTamanho.addEventListener("mousedown", function (e) {
-        if (clickCurva === true) { return };
-        mudarTamanhoFerramenta = true;
-        calculaTamanhoFerramenta(e);
-    })
+    Tools.toolSizeBar.bar.addEventListener("mousedown", function (e) {
+        if (clickCurva === true) { return; }
+        Tools.toolSizeBar.clicked = true;
+        Tools.changeToolSize(e);
+    });
 
-    barraDureza.addEventListener("mousedown", function (e) {
-        if (clickCurva === true) { return };
-        mudarDurezaFerramenta = true;
-        calculaDurezaFerramenta(e);
-    })
+    Tools.toolHardnessBar.bar.addEventListener("mousedown", function (e) {
+        if (clickCurva === true) { return; }
+        Tools.toolHardnessBar.clicked = true;
+        Tools.changeToolHardness(e);
+    });
 
     barraOpacidadeCamada.addEventListener("mousedown", function (e) {
         mudarOpacidadeCamada = true;
         calculaOpacidadeCamada(e);
-    })
+    });
 
     contentTelas.addEventListener("mousedown", function (e) {
-        if (!projetoCriado) { return };
+        if (projetoCriado === false) { return; }
         if (espacoPressionado === true) {
             telasCanvas.style.cursor = "grabbing";
-            infoMoverDesenhoEspaco = { coordenadaInicio: pegarPosicaoMouse(this, e), scroolTop: this.scrollTop, scrollLeft: this.scrollLeft };
+            moverDesenhoEspaco = { mover: true, coordenadaInicio: pegarPosicaoMouse(this, e), scroolTop: this.scrollTop, scrollLeft: this.scrollLeft };
         }
         else if (arrayCamadas[camadaSelecionada].visivel === true) {
             pintando = true;
-            if (clickCurva === false && ferramentaSelecionada != 3) {
+            if (clickCurva === false && selectedTool != 6) {//O Conta-gotas não altera o desenho. A alteração é contabilizada depois q a curva é feita.
                 guardarAlteracoes();
             }
+            Tools.applyToolChanges();
+            ctxPintar.beginPath();
             arrayCamadas[camadaSelecionada].ctx.globalCompositeOperation = "source-over";
-            configuraFerramenta(ctxPintar, ferramenta.tamanho, corEscolhidaPrincipal, ferramenta.opacidade);
-            if (ferramentaSelecionada === 1) {//Pincel.
-                coordenadaClick.push({ x: posicaoMouse.X, y: posicaoMouse.Y });
-                if (ferramenta.tamanho >= 2) {
-                    ctxPintar.lineJoin = ctxPintar.lineCap = "round";
+            if (selectedTool < 4) {
+                coordenadaClick[0] = { x: posicaoMouse.X, y: posicaoMouse.Y };
+                ctxPintar.lineJoin = ctxPintar.lineCap = "round";
+                Tools[arrayDrawingTools[selectedTool].name](posicaoMouse.X, posicaoMouse.Y);
+            }
+            else if (selectedTool === 4) {//Borracha. 
+                coordenadaClick[0] = { x: posicaoMouse.X, y: posicaoMouse.Y };
+                arrayCamadas[camadaSelecionada].ctx.globalCompositeOperation = "destination-out";
+                ctxPintar.strokeStyle = "rgba(255, 0, 0, " + Tools.toolProperties.opacity + ")";
+                Tools.brush(posicaoMouse.X, posicaoMouse.Y);
+            }
+            else if (selectedTool === 5) {//Curva;
+                ctxPintar.lineJoin = ctxPintar.lineCap = "round";
+                if (clickCurva === false) {
+                    coordenadaClick[0] = { x: posicaoMouse.X, y: posicaoMouse.Y };
+                    Tools.curve(posicaoMouse.X, posicaoMouse.Y, false);
                 }
                 else {
-                    ctxPintar.lineCap = "butt";
+                    Tools.curve(posicaoMouse.X, posicaoMouse.Y, true);
                 }
-                ctxPintar.beginPath();
-                ferramentaPincel(posicaoMouse.X, posicaoMouse.Y);
             }
-            else if (ferramentaSelecionada === 2) {//Borracha.                  
-                coordenadaClick.push({ x: posicaoMouse.X, y: posicaoMouse.Y });
-                arrayCamadas[camadaSelecionada].ctx.globalCompositeOperation = "destination-out";
-                ctxPintar.lineJoin = "round";
-                ctxPintar.lineCap = "square";
-                ctxPintar.strokeStyle = "rgba(255, 0, 0, " + ferramenta.opacidade + ")";
-                ctxPintar.beginPath();
-                ferramentaPincel(posicaoMouse.X, posicaoMouse.Y);
-            }
-            else if (ferramentaSelecionada === 3) {//Conta-gotas.
+            else if (selectedTool === 6) {//Conta-gotas.
                 cursorComparaContaGotas.style.display = "block";
                 const corAtual = "25px solid rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
                 comparaCoresContaGotas.style.borderLeft = corAtual;
                 comparaCoresContaGotas.style.borderBottom = corAtual;
                 const mousePos = pegarPosicaoMouse(janelaPrincipal, e);
-                ferramentaContaGotas(mousePos.X, mousePos.Y, posicaoMouse.X, posicaoMouse.Y, true);
+                Tools.eyeDropper(mousePos.X, mousePos.Y, posicaoMouse.X, posicaoMouse.Y, true);
             }
-            else if (ferramentaSelecionada === 4) {//Linha.
-                coordenadaClick[0] = { x: posicaoMouse.X, y: posicaoMouse.Y };
-                ctxPintar.lineJoin = ctxPintar.lineCap = "round";
-                ferramentaLinha(posicaoMouse.X, posicaoMouse.Y);
-            }
-            else if (ferramentaSelecionada === 5) {//Curva.
-                ctxPintar.lineJoin = ctxPintar.lineCap = "round";
-                if (clickCurva === false) {
-                    coordenadaClick[0] = { x: posicaoMouse.X, y: posicaoMouse.Y };
-                    ferramentaCurva(posicaoMouse.X, posicaoMouse.Y, false);
-                }
-                else {
-                    ferramentaCurva(posicaoMouse.X, posicaoMouse.Y, true);
-                }
-            }
-            else if (ferramentaSelecionada === 6) {//Retângulo.
-                coordenadaClick[0] = { x: posicaoMouse.X, y: posicaoMouse.Y };
-                ctxPintar.lineJoin = "miter";
-                ferramentaRetangulo(posicaoMouse.X, posicaoMouse.Y);
-            }
-            else if (ferramentaSelecionada === 7) {//Balde de tinta.
+            else if (selectedTool === 7) {//Balde de tinta.
                 if (posicaoMouse.X >= 0 && posicaoMouse.X <= projeto.resolucao.largura && posicaoMouse.Y >= 0 && posicaoMouse.Y <= projeto.resolucao.altura) {
-                    const cor = { r: corEscolhidaPrincipal.R, g: corEscolhidaPrincipal.G, b: corEscolhidaPrincipal.B, a: Math.round(ferramenta.opacidade * 255) };
-                    ferramentaBaldeDeTinta(posicaoMouse.X, posicaoMouse.Y, arrayCamadas[camadaSelecionada].ctx, cor);
+                    const cor = { r: corEscolhidaPrincipal.R, g: corEscolhidaPrincipal.G, b: corEscolhidaPrincipal.B, a: Math.round(Tools.toolProperties.opacity * 255) };
+                    Tools.paintBucket(posicaoMouse.X, posicaoMouse.Y, arrayCamadas[camadaSelecionada].ctx, cor);
                 }
-            }
-            else if (ferramentaSelecionada === 8) {//Elipse.
-                coordenadaClick[0] = { x: posicaoMouse.X, y: posicaoMouse.Y };
-                ctxPintar.lineJoin = "round";
-                ferramentaElipse(posicaoMouse.X, posicaoMouse.Y);
             }
         }
     });
@@ -425,44 +393,33 @@ function colorPaint() {
         posicaoMouse.X = (projeto.resolucao.largura / telasCanvas.offsetWidth) * mouse.X;
         posicaoMouse.Y = (projeto.resolucao.altura / telasCanvas.offsetHeight) * mouse.Y;
         if (pintando === true) {
-            if (ferramentaSelecionada === 1) {//Pincel.
-                ferramentaPincel(posicaoMouse.X, posicaoMouse.Y);
+            if (selectedTool < 4) {
+                Tools[arrayDrawingTools[selectedTool].name](posicaoMouse.X, posicaoMouse.Y);
             }
-            else if (ferramentaSelecionada === 2) {//Borracha.
-                ctxPintar.lineCap = "round";
-                ctxPintar.lineJoin = "round";
-                ferramentaPincel(posicaoMouse.X, posicaoMouse.Y);
+            else if (selectedTool === 4) {//Borracha. 
+                Tools.brush(posicaoMouse.X, posicaoMouse.Y);
             }
-            else if (ferramentaSelecionada === 3) {//Conta-gotas.
-                const mousePos = pegarPosicaoMouse(janelaPrincipal, e);
-                ferramentaContaGotas(mousePos.X, mousePos.Y, posicaoMouse.X, posicaoMouse.Y, true);
-            }
-            else if (ferramentaSelecionada === 4) {//Linha.
-                ferramentaLinha(posicaoMouse.X, posicaoMouse.Y);
-            }
-            else if (ferramentaSelecionada === 5) {//Curva.
+            else if (selectedTool === 5) {//Curva;
                 if (clickCurva === false) {
-                    ferramentaCurva(posicaoMouse.X, posicaoMouse.Y, false);
+                    Tools.curve(posicaoMouse.X, posicaoMouse.Y, false);
                 }
                 else {
-                    ferramentaCurva(posicaoMouse.X, posicaoMouse.Y, true);
+                    Tools.curve(posicaoMouse.X, posicaoMouse.Y, true);
                 }
             }
-            else if (ferramentaSelecionada === 6) {//Retângulo.
-                ferramentaRetangulo(posicaoMouse.X, posicaoMouse.Y);
-            }
-            else if (ferramentaSelecionada === 8) {//Elipse.
-                ferramentaElipse(posicaoMouse.X, posicaoMouse.Y);
+            else if (selectedTool === 6) {//Conta-gotas.
+                const mousePos = pegarPosicaoMouse(janelaPrincipal, e);
+                Tools.eyeDropper(mousePos.X, mousePos.Y, posicaoMouse.X, posicaoMouse.Y, true)
             }
         }
-        else if (mudarTamanhoFerramenta === true) {
-            calculaTamanhoFerramenta(e);
+        else if (Tools.toolSizeBar.clicked === true) {
+            Tools.changeToolSize(e);
         }
-        else if (mudarOpacidadeFerramenta === true) {
-            calculaOpacidadeFerramenta(e);
+        else if (Tools.toolOpacityBar.clicked === true) {
+            Tools.changeToolOpacity(e);
         }
-        else if (mudarDurezaFerramenta === true) {
-            calculaDurezaFerramenta(e);
+        else if (Tools.toolHardnessBar.clicked === true) {
+            Tools.changeToolHardness(e);
         }
         else if (mudarOpacidadeCamada === true) {
             calculaOpacidadeCamada(e);
@@ -471,8 +428,8 @@ function colorPaint() {
             const mousePos = pegarPosicaoMouse(contentTelaPreview, e);
             moverScrollNaTelaPreview(mousePos.X, mousePos.Y);
         }
-        else if (espacoPressionado === true) {
-            moverDesenhoComEspaco();
+        else if (espacoPressionado === true && moverDesenhoEspaco.mover === true) {
+            moverDesenhoComEspaco(moverDesenhoEspaco, pegarPosicaoMouse(contentTelas, e));
         }
     });
 
@@ -508,7 +465,7 @@ function colorPaint() {
     document.addEventListener("mouseup", function (e) {
         if (pintando === true) {
             pintando = false;
-            if (ferramentaSelecionada != 5) {
+            if (selectedTool != 5) {
                 coordenadaClick = [];
                 desenharNaCamada();
                 desenhoNoPreviewEIcone();
@@ -518,12 +475,12 @@ function colorPaint() {
                 desenharNaCamada();
                 desenhoNoPreviewEIcone();
             }
-            if (ferramentaSelecionada === 3) {//Conta-gotas.  
+            if (selectedTool === 6) {//Conta-gotas.  
                 const mousePos = pegarPosicaoMouse(janelaPrincipal, e);
-                ferramentaContaGotas(mousePos.X, mousePos.Y, posicaoMouse.X, posicaoMouse.Y, false);
+                Tools.eyeDropper(mousePos.X, mousePos.Y, posicaoMouse.X, posicaoMouse.Y, false)
                 cursorComparaContaGotas.style.display = "none";
             }
-            else if (ferramentaSelecionada === 5) {//Curva. 
+            else if (selectedTool === 5) {//Curva. 
                 if (clickCurva === false) {
                     clickCurva = true;
                 }
@@ -532,9 +489,9 @@ function colorPaint() {
                 }
             }
         }
-        mudarOpacidadeFerramenta = false;
-        mudarTamanhoFerramenta = false;
-        mudarDurezaFerramenta = false;
+        Tools.toolOpacityBar.clicked = false;
+        Tools.toolSizeBar.clicked = false;
+        Tools.toolHardnessBar.clicked = false;
         if (mudarOpacidadeCamada === true) {
             desenhoNoPreviewEIcone();
             mudarOpacidadeCamada = false;
@@ -542,36 +499,32 @@ function colorPaint() {
         moverScrollPreview = false;
         moverScroll.style.cursor = "grab";
         if (espacoPressionado === true) {
+            moverDesenhoEspaco.mover = false;
             telasCanvas.style.cursor = "grab";
         }
     });
 
     document.addEventListener("keydown", function (e) {//Criar teclas de atalho.
         if (projetoCriado === true) {
-            if (ctrlPressionado === true) {
+            if (ctrlPressionado === true && pintando === false) {
+                e.preventDefault();
                 if (e.code === "Digit0" || e.keyCode === 48) {
-                    e.preventDefault();
                     ajustarNaVisualizacaoTelasCanvas();
                 }
                 else if (e.code === "Digit1" || e.keyCode === 49) {
-                    e.preventDefault();
                     zoomNoProjeto("porcentagem", true, 100);
                 }
                 else if (e.code === "Minus" || e.keyCode === 189) {
-                    e.preventDefault();
                     zoomNoProjeto(false, true, 1.25);
                 }
                 else if (e.code === "Equal" || e.keyCode === 187) {
-                    e.preventDefault();
                     zoomNoProjeto(true, true, 1.25);
                 }
                 else if (e.code === "KeyZ" || e.keyCode === 90) {
-                    e.preventDefault();
                     clickCurva = false;
                     voltarAlteracao();
                 }
                 else if (e.code === "KeyY" || e.keyCode === 89) {
-                    e.preventDefault();
                     avancarAlteracao();
                 }
             }
@@ -586,12 +539,12 @@ function colorPaint() {
             if (e.code === "ControlRight" || e.code === "ControlLeft" || e.keyCode === 17) {
                 e.preventDefault();
                 ctrlPressionado = true;
-                if (ferramentaSelecionada === 1) {
-                    ferramentaAnterior = 1;
-                    arrayFerramentas[2].ferramenta.click();
+                if (selectedTool === 0) {
+                    previousTool = 0;
+                    arrayDrawingTools[6].tool.click();//Mudar para a ferramenta conta gotas.
                 }
             }
-            if (e.code === "Space") {
+            if (e.code === "Space" && pintando === false) {
                 e.preventDefault();
                 if (espacoPressionado === false) {
                     espacoPressionado = true;
@@ -605,15 +558,16 @@ function colorPaint() {
         if (e.code === "ControlRight" || e.code === "ControlLeft" || e.keyCode === 17) {
             e.preventDefault();
             ctrlPressionado = false;
-            if (ferramentaAnterior === 1 && ferramentaSelecionada === 3) {
-                arrayFerramentas[0].ferramenta.click();
+            if (previousTool === 0 && selectedTool === 6) {
+                arrayDrawingTools[0].tool.click();
                 cursorComparaContaGotas.style.display = "none";
-                ferramentaAnterior = null;
+                previousTool = null;
             }
         }
         if (e.code === "Space") {
             e.preventDefault();
             espacoPressionado = false;
+            moverDesenhoEspaco.mover = false;
             telasCanvas.style.cursor = "";
         }
     });
@@ -650,25 +604,25 @@ function colorPaint() {
 
     window.addEventListener("resize", function () {
         ajustarContents();
-        menuPadrao();
+		 menuPadrao();
         if (projetoCriado === true) {
             tamanhoMoverScroll();
             ajustarNaVisualizacaoTelasCanvas();
             contentTelasMoverScroll(contentTelas.scrollTop, contentTelas.scrollLeft);
             setTimeout(function () {
                 ajustarContents();
-                menuPadrao();
+				 menuPadrao();
             }, 120);
         };
     });
-
-    window.addEventListener("scroll", function () {
+    
+	window.addEventListener("scroll", function () {
         menuPadrao();
         setTimeout(function () {
             menuPadrao();
         }, 120);
     });
-
+	
     function calculaOpacidadeCamada(e) {
         const mouse = pegarPosicaoMouse(barraOpacidadeCamada, e);
         let porcentagem = Math.round((mouse.X * 100) / barraOpacidadeCamada.offsetWidth);
@@ -691,122 +645,47 @@ function colorPaint() {
         arrayCamadas[camadaSelecionada].camada.style.opacity = opacidade;
     }
 
-    function calculaTamanhoFerramenta(e) {
-        let mouse = pegarPosicaoMouse(barraTamanho, e);
-        mouse.X = Math.round(mouse.X);
-        if (mouse.X <= 0) {
-            mouse.X = 0.5;
-            cursorTamanho.style.left = "-7px";
-            txtTamanhoFerramenta.value = "0.5px";
-        }
-        else if (mouse.X >= 190) {
-            mouse.X = 190;
-            cursorTamanho.style.left = "183px";
-            txtTamanhoFerramenta.value = "190px";
-        }
-        else {
-            cursorTamanho.style.left = mouse.X - 7 + "px";
-            txtTamanhoFerramenta.value = mouse.X + "px";
-        }
-        ferramenta.tamanho = mouse.X;
-        mudarAparenciaCursor();
-    }
-
     function alterarTamanhoFerramenta(aumentar) {
-        if (aumentar === true) {
-            if (ferramenta.tamanho === 0.5) {
-                ferramenta.tamanho = 1;
-                cursorTamanho.style.left = 1 - 7 + "px";
-                txtTamanhoFerramenta.value = "1px";
+        if (aumentar === true) {//Aumenta o tamanho da ferramenta.
+            if (Tools.toolProperties.size === 0.5) {
+                Tools.toolProperties.size = 1;
+                Tools.toolSizeBar.cursor.style.left = 1 - 7 + "px";
+                Tools.toolSizeBar.txt.value = "1px";
             }
-            else if (ferramenta.tamanho < 15) {
-                ferramenta.tamanho = ferramenta.tamanho + 1;
-                txtTamanhoFerramenta.value = ferramenta.tamanho + "px";
-                cursorTamanho.style.left = ferramenta.tamanho - 7 + "px";
+            else if (Tools.toolProperties.size < 15) {
+                Tools.toolProperties.size = Tools.toolProperties.size + 1;
+                Tools.toolSizeBar.txt.value = Tools.toolProperties.size + "px";
+                Tools.toolSizeBar.cursor.style.left = Tools.toolProperties.size - 7 + "px";
             }
-            else if (ferramenta.tamanho >= 15 && ferramenta.tamanho <= 185) {
-                ferramenta.tamanho = ferramenta.tamanho + 5;
-                txtTamanhoFerramenta.value = ferramenta.tamanho + "px";
-                cursorTamanho.style.left = ferramenta.tamanho - 7 + "px";
+            else if (Tools.toolProperties.size >= 15 && Tools.toolProperties.size <= 185) {
+                Tools.toolProperties.size = Tools.toolProperties.size + 5;
+                Tools.toolSizeBar.txt.value = Tools.toolProperties.size + "px";
+                Tools.toolSizeBar.cursor.style.left = Tools.toolProperties.size - 7 + "px";
             }
-            else if (ferramenta.tamanho > 190) {
-                ferramenta.tamanho = 190;
-                txtTamanhoFerramenta.value = ferramenta.tamanho + "px";
-                cursorTamanho.style.left = ferramenta.tamanho - 7 + "px";
+            else if (Tools.toolProperties.size > 190) {
+                Tools.toolProperties.size = 190;
+                Tools.toolSizeBar.txt.value = Tools.toolProperties.size + "px";
+                Tools.toolSizeBar.cursor.style.left = Tools.toolProperties.size - 7 + "px";
             }
         }
-        else {
-            if (ferramenta.tamanho <= 190 && ferramenta.tamanho > 15) {
-                ferramenta.tamanho = ferramenta.tamanho - 5;
-                cursorTamanho.style.left = ferramenta.tamanho - 7 + "px";
-                txtTamanhoFerramenta.value = ferramenta.tamanho + "px";
+        else {//Diminui o tamanho da ferramenta.
+            if (Tools.toolProperties.size <= 190 && Tools.toolProperties.size > 15) {
+                Tools.toolProperties.size = Tools.toolProperties.size - 5;
+                Tools.toolSizeBar.cursor.style.left = Tools.toolProperties.size - 7 + "px";
+                Tools.toolSizeBar.txt.value = Tools.toolProperties.size + "px";
             }
-            else if (ferramenta.tamanho <= 15 && ferramenta.tamanho > 1) {
-                ferramenta.tamanho = ferramenta.tamanho - 1;
-                txtTamanhoFerramenta.value = ferramenta.tamanho + "px";
-                cursorTamanho.style.left = ferramenta.tamanho - 7 + "px";
+            else if (Tools.toolProperties.size <= 15 && Tools.toolProperties.size > 1) {
+                Tools.toolProperties.size = Tools.toolProperties.size - 1;
+                Tools.toolSizeBar.txt.value = Tools.toolProperties.size + "px";
+                Tools.toolSizeBar.cursor.style.left = Tools.toolProperties.size - 7 + "px";
             }
-            else if (ferramenta.tamanho === 1) {
-                ferramenta.tamanho = 0.5;
-                cursorTamanho.style.left = "-7px"
-                txtTamanhoFerramenta.value = "0.5px";
+            else if (Tools.toolProperties.size === 1) {
+                Tools.toolProperties.size = 0.5;
+                Tools.toolSizeBar.cursor.style.left = "-7px"
+                Tools.toolSizeBar.txt.value = "0.5px";
             }
         }
         mudarAparenciaCursor();
-    }
-
-    function calculaOpacidadeFerramenta(e) {
-        const txtOpacidadeFerramenta = document.getElementById("txtOpacidadeFerramenta");
-        const mouse = pegarPosicaoMouse(barraOpacidade, e);
-        let porcentagem = Math.round((mouse.X * 100) / barraOpacidade.offsetWidth);
-        if (mouse.X <= 1) {
-            porcentagem = 1;
-            cursorOpacidade.style.left = "-7px";
-            txtOpacidadeFerramenta.value = "1%";
-        }
-        else if (mouse.X >= 190) {
-            porcentagem = 100;
-            cursorOpacidade.style.left = "183px";
-            txtOpacidadeFerramenta.value = "100%";
-        }
-        else {
-            cursorOpacidade.style.left = mouse.X - 7 + "px";
-            txtOpacidadeFerramenta.value = porcentagem + "%";
-        }
-        ferramenta.opacidade = porcentagem / 100;
-    }
-
-    function calculaDurezaFerramenta(e) {
-        const txtDurezaFerramenta = document.getElementById("txtDurezaFerramenta");
-        const mouse = pegarPosicaoMouse(barraDureza, e);
-        let porcentagem = Math.round((mouse.X * 100) / barraDureza.offsetWidth);
-        if (mouse.X < 1) {
-            porcentagem = 0;
-            cursorDureza.style.left = "-7px";
-            txtDurezaFerramenta.value = "0%";
-        }
-        else if (mouse.X >= 190) {
-            porcentagem = 100;
-            cursorDureza.style.left = "183px";
-            txtDurezaFerramenta.value = "100%";
-        }
-        else {
-            cursorDureza.style.left = mouse.X - 7 + "px";
-            txtDurezaFerramenta.value = porcentagem + "%";
-        }
-        ferramenta.dureza = porcentagem / 100;
-    }
-
-    function configuraFerramenta(ctx, tamanho, cor, opacidade) {//Pegar todas as propriedades das ferramentas e atribui a camada "pintar".
-        const maximoBlur = tamanho / 6.2;
-        let dureza = maximoBlur - (maximoBlur * ferramenta.dureza);
-        if (tamanho < 100) {
-            const proporcao = ((100 - tamanho) / 180);
-            dureza += (dureza * proporcao);
-        }
-        ctx.filter = "blur(" + dureza + "px)";
-        ctx.lineWidth = (tamanho - dureza);
-        ctx.strokeStyle = "rgba(" + cor.R + ", " + cor.G + ", " + cor.B + ", " + opacidade + ")";
     }
 
     function ajustarVisualizacaoAntesGrid() {
@@ -816,8 +695,8 @@ function colorPaint() {
             contentTelas.scrollLeft = grid.visualizacaoAnterior.scrollX;
         }, 3);
     }
-
-    function menuPadrao() {
+	
+	function menuPadrao() {
         menu.classList.remove("iniciomenu");
         menu.classList.add("mudamenu");
         logoBlack.classList.remove("iniciologoBlack");
@@ -834,317 +713,32 @@ function colorPaint() {
 
     function ajustarContents() {
         contentTools.style.height = (janelaPrincipal.offsetHeight - 90) + "px";
-        contentCentro.style.width = contentTools.offsetWidth - barraLateralEsquerda.offsetWidth - barraLateralDireita.offsetWidth - 0.1 + "px";
+        contentCentro.style.width = contentTools.offsetWidth - barraLateralEsquerda.offsetWidth - barraLateralDireita.offsetWidth - 0.5 + "px";
         contentCentro.style.height = contentTools.style.height;
         contentTelas.style.height = (contentCentro.offsetHeight - 15) + "px";
         document.getElementById("janelaCamadas").style.height = (barraLateralEsquerda.offsetHeight - 336) + "px";
     }
-
-    function guardarAlteracoes() {
-        const objAlteracao = {
-            camadaAlterada: camadaSelecionada,
-            alteracao: arrayCamadas[camadaSelecionada].ctx.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura)
-        };
-        arrayVoltarAlteracoes.push(objAlteracao);
-        if (arrayVoltarAlteracoes.length > 20) {
-            arrayVoltarAlteracoes.shift();
-        }
-        if (arrayAvancarAlteracoes.length > 0 || arrayVoltarAlteracoes.length === 1) {
-            bttDesfazer.classList.add("bttHover");
-            bttDesfazer.classList.add("cursor");
-            bttDesfazer.style.opacity = "1";
-            bttRefazer.classList.remove("bttHover");
-            bttRefazer.classList.remove("cursor");
-            bttRefazer.style.opacity = "0.5";
-        }
-        arrayAvancarAlteracoes = [];
-    }
-
-    function voltarAlteracao() {
-        if (arrayVoltarAlteracoes.length > 0 && pintando === false) {
-            const ultimoIndice = arrayVoltarAlteracoes.length - 1,
-                camada = arrayVoltarAlteracoes[ultimoIndice].camadaAlterada,
-                imagemCamada = arrayVoltarAlteracoes[ultimoIndice].alteracao,
-                objAlteracao = { camadaAlterada: camada, visivel: arrayCamadas[camada].visivel, alteracao: arrayCamadas[camada].ctx.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura) };
-            if (camadaSelecionada != camada) {
-                clickIconeCamada.call(arrayCamadas[camada].icone);
-            }
-            if (arrayCamadas[camada].visivel === false) {
-                clickCamadaVisivel.call(arrayCamadas[camada].bttVer);
-                return;
-            }
-            arrayAvancarAlteracoes.push(objAlteracao);
-            arrayCamadas[camada].ctx.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
-            arrayCamadas[camada].ctx.putImageData(imagemCamada, 0, 0);
-            arrayVoltarAlteracoes.pop();
-            if (arrayVoltarAlteracoes.length === 0) {
-                bttDesfazer.classList.remove("bttHover");
-                bttDesfazer.classList.remove("cursor");
-                bttDesfazer.style.opacity = "0.5";
-            }
-            if (arrayAvancarAlteracoes.length === 1) {
-                bttRefazer.classList.add("bttHover");
-                bttRefazer.classList.add("cursor");
-                bttRefazer.style.opacity = "1";
-            }
-            desenhoNoPreviewEIcone();
-            desenhoCompleto();
-        }
-    }
-
-    function avancarAlteracao() {
-        if (arrayAvancarAlteracoes.length > 0 && pintando === false) {
-            const ultimoIndice = arrayAvancarAlteracoes.length - 1,
-                camada = arrayAvancarAlteracoes[ultimoIndice].camadaAlterada,
-                imagemCamada = arrayAvancarAlteracoes[ultimoIndice].alteracao,
-                objAlteracao = { camadaAlterada: camada, visivel: arrayCamadas[camada].visivel, alteracao: arrayCamadas[camada].ctx.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura) };
-            if (camadaSelecionada != camada) {
-                clickIconeCamada.call(arrayCamadas[camada].icone);
-            }
-            arrayVoltarAlteracoes.push(objAlteracao);
-            arrayCamadas[camada].ctx.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
-            arrayCamadas[camada].ctx.putImageData(imagemCamada, 0, 0);
-            arrayAvancarAlteracoes.pop();
-            if (arrayVoltarAlteracoes.length === 1) {
-                bttDesfazer.classList.add("bttHover");
-                bttDesfazer.classList.add("cursor");
-                bttDesfazer.style.opacity = "1";
-            }
-            if (arrayAvancarAlteracoes.length === 0) {
-                bttRefazer.classList.remove("bttHover");
-                bttRefazer.classList.remove("cursor");
-                bttRefazer.style.opacity = "0.5";
-            }
-            desenhoNoPreviewEIcone();
-            desenhoCompleto();
-        }
-    }
 }
+
+function moverDesenhoComEspaco(info, posicaoMouse) {
+    const newScrollLeft = info.scrollLeft + info.coordenadaInicio.X - posicaoMouse.X;
+    const newScrollTop = info.scroolTop + info.coordenadaInicio.Y - posicaoMouse.Y;
+    contentTelas.scrollLeft = newScrollLeft;
+    contentTelas.scrollTop = newScrollTop;
+}
+
 // ==========================================================================================================================================================================================================================================
 
-function ferramentaPincel(mouseX, mouseY) {
-    coordenadaClick.push({ x: mouseX, y: mouseY });
-    ctxPintar.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
-    let ponto1 = coordenadaClick[0], ponto2 = coordenadaClick[1];
-    ctxPintar.beginPath();
-    ctxPintar.moveTo(ponto1.x, ponto1.y);
-    for (let i = 0; i < coordenadaClick.length; i++) {
-        const midPoint = midPointBtw(ponto1, ponto2);
-        ctxPintar.quadraticCurveTo(ponto1.x, ponto1.y, midPoint.x, midPoint.y);
-        ponto1 = coordenadaClick[i];
-        ponto2 = coordenadaClick[i + 1];
-    }
-    ctxPintar.lineTo(ponto1.x, ponto1.y);
-    ctxPintar.stroke();
-
-    function midPointBtw(ponto1, ponto2) {
-        return {
-            x: ponto1.x + (ponto2.x - ponto1.x) / 2,
-            y: ponto1.y + (ponto2.y - ponto1.y) / 2
-        };
-    }
-}
-
-function ferramentaBaldeDeTinta(mouseX, mouseY, context, cor) {
-    const corSelecionada = cor,
-        camada = context.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura),
-        canvasEvent = ctxPintar.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
-
-    pintar(Math.round(mouseX), Math.round(mouseY));
-    function pintar(posX, posY) {
-        const pixelPos = (posY * projeto.resolucao.largura + posX) * 4,
-            r = camada.data[pixelPos],
-            g = camada.data[pixelPos + 1],
-            b = camada.data[pixelPos + 2],
-            a = camada.data[pixelPos + 3];
-        if (r === corSelecionada.r && g === corSelecionada.g && b === corSelecionada.b && a === 255) {
-            return;
-        }
-        preencher(posX, posY, r, g, b, a);
-    }
-
-    function preencher(posClickX, posClickY, R, G, B, A) {
-        let pixelsVerificados = [[posClickX, posClickY]];
-        while (pixelsVerificados.length > 0) {
-            const novaPosicao = pixelsVerificados.pop();
-            let x = novaPosicao[0], y = novaPosicao[1];
-            let posicaoPixel = (y * projeto.resolucao.largura + x) * 4;
-            while (y >= 0 && compararCorInicial(posicaoPixel, R, G, B, A)) {
-                y = y - 1;
-                posicaoPixel = posicaoPixel - projeto.resolucao.largura * 4;
-            }
-            pintarPixel(posicaoPixel, corSelecionada.r, corSelecionada.g, corSelecionada.b, corSelecionada.a);
-            posicaoPixel = posicaoPixel + projeto.resolucao.largura * 4;
-            y = y + 1;
-            let ladoEsquerdo = false, ladoDireito = false;
-            while (y <= projeto.resolucao.altura && compararCorInicial(posicaoPixel, R, G, B, A)) {
-                pintarPixel(posicaoPixel, corSelecionada.r, corSelecionada.g, corSelecionada.b, corSelecionada.a);
-                y = y + 1;
-                if (x > 0) {
-                    if (compararCorInicial(posicaoPixel - 4, R, G, B, A) === true) {
-                        if (ladoEsquerdo === false) {
-                            ladoEsquerdo = true;
-                            pixelsVerificados.push([x - 1, y]);
-                        }
-                    }
-                    else {
-                        pintarPixel(posicaoPixel - 4, corSelecionada.r, corSelecionada.g, corSelecionada.b, corSelecionada.a);
-                        if (ladoEsquerdo === true) {
-                            ladoEsquerdo = false;
-                        }
-                    }
-                }
-                if (x < projeto.resolucao.largura) {
-                    if (compararCorInicial(posicaoPixel + 4, R, G, B, A) === true) {
-                        if (ladoDireito === false) {
-                            ladoDireito = true;
-                            pixelsVerificados.push([x + 1, y]);
-                        }
-                    }
-                    else {
-                        pintarPixel(posicaoPixel + 4, corSelecionada.r, corSelecionada.g, corSelecionada.b, corSelecionada.a);
-                        if (ladoDireito === true) {
-                            ladoDireito = false;
-                        }
-                    }
-                }
-                posicaoPixel = posicaoPixel + projeto.resolucao.largura * 4;
-            }
-            pintarPixel(posicaoPixel, corSelecionada.r, corSelecionada.g, corSelecionada.b, corSelecionada.a);
-        }
-        ctxPintar.putImageData(canvasEvent, 0, 0);
-    }
-
-    function compararCorInicial(pixelPos, clickR, clickG, clickB, clickA) {
-        const r = camada.data[pixelPos],
-            g = camada.data[pixelPos + 1],
-            b = camada.data[pixelPos + 2],
-            a = camada.data[pixelPos + 3];
-
-        if (canvasEvent.data[pixelPos + 3] === 0) {
-            if (clickR === corSelecionada.r && clickG === corSelecionada.g && clickB === corSelecionada.b && clickA === 255) {
-                return false;
-            }
-            if (r === clickR && g === clickG && b === clickB && a === clickA) {
-                return true;
-            }
-            if (r === corSelecionada.r && g === corSelecionada.g && b === corSelecionada.b && a === corSelecionada.a) {
-                return false;
-            }
-        }
-        else {
-            return false;
-        }
-    }
-
-    function pintarPixel(pixelPos, R, G, B, A) {
-        canvasEvent.data[pixelPos] = R;
-        canvasEvent.data[pixelPos + 1] = G;
-        canvasEvent.data[pixelPos + 2] = B;
-        canvasEvent.data[pixelPos + 3] = A;
-
-        camada.data[pixelPos] = R;
-        camada.data[pixelPos + 1] = G;
-        camada.data[pixelPos + 2] = B;
-        camada.data[pixelPos + 3] = A;
-    }
-};
-
-function ferramentaLinha(mouseX, mouseY) {
-    coordenadaClick[1] = { x: mouseX, y: mouseY };
-    ctxPintar.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
-    const pontoInicial = coordenadaClick[0], pontoFinal = coordenadaClick[1];
-    ctxPintar.beginPath();
-    ctxPintar.moveTo(pontoInicial.x, pontoInicial.y);
-    ctxPintar.lineTo(pontoFinal.x, pontoFinal.y);
-    ctxPintar.stroke();
-}
-
-function ferramentaCurva(mouseX, mouseY, curvar) {
-    if (curvar === false) {
-        coordenadaClick[1] = { x: mouseX, y: mouseY };
-    }
-    ctxPintar.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
-    const pontoInicial = coordenadaClick[0], pontoFinal = coordenadaClick[1];
-    ctxPintar.beginPath();
-    ctxPintar.moveTo(pontoInicial.x, pontoInicial.y);
-    if (curvar === true) {
-        const pontoControle = coordenadaClick[2] = { x: mouseX, y: mouseY };
-        ctxPintar.quadraticCurveTo(pontoControle.x, pontoControle.y, pontoFinal.x, pontoFinal.y);
-    }
-    else {
-        ctxPintar.lineTo(pontoFinal.x, pontoFinal.y);
-    }
-    ctxPintar.stroke();
-}
-
-function ferramentaRetangulo(mouseX, mouseY) {
-    ctxPintar.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
-    const pontoInicial = coordenadaClick[0], pontoFinal = { x: mouseX, y: mouseY };
-    ctxPintar.beginPath();
-    ctxPintar.strokeRect(pontoInicial.x, pontoInicial.y, pontoFinal.x - pontoInicial.x, pontoFinal.y - pontoInicial.y);
-}
-
-function ferramentaElipse(mouseX, mouseY) {
-    ctxPintar.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
-    const pontoInicial = coordenadaClick[0], pontoFinal = { x: mouseX, y: mouseY };
-    const raioX = (pontoFinal.x - pontoInicial.x) / 2, raioY = (pontoFinal.y - pontoInicial.y) / 2;
-    const centroEixoX = pontoInicial.x + raioX, centroEixoY = pontoInicial.y + raioY;
-    const passoAngulo = 0.005;
-    let angulo = 0;
-    const voltaCompleta = Math.PI * 2 + passoAngulo;
-    ctxPintar.beginPath();
-    ctxPintar.moveTo(centroEixoX + raioX * Math.cos(angulo), centroEixoY + raioY * Math.sin(angulo));
-    for (; angulo < voltaCompleta; angulo += passoAngulo) {
-        ctxPintar.lineTo(centroEixoX + raioX * Math.cos(angulo), centroEixoY + raioY * Math.sin(angulo));
-    }
-    ctxPintar.stroke();
-}
-
-function ferramentaContaGotas(mouseX, mouseY, posTelaX, posTelaY, mouseMovendo) {
-    const X = mouseX - (cursorComparaContaGotas.offsetWidth / 2);
-    const Y = mouseY - (cursorComparaContaGotas.offsetHeight / 2);
-    cursorComparaContaGotas.style.left = X + "px";
-    cursorComparaContaGotas.style.top = Y + "px";
-    const pixel = ctxDesenho.getImageData(posTelaX, posTelaY, 1, 1).data;
-    if (mouseMovendo === true) {
-        if (pixel[3] === 0) {
-            const novaCor = "25px solid rgba(0, 0, 0, 0)";
-            comparaCoresContaGotas.style.borderRight = novaCor;
-            comparaCoresContaGotas.style.borderTop = novaCor;
-            return;
-        }
-        const novaCor = "25px solid rgb(" + pixel[0] + ", " + pixel[1] + ", " + pixel[2] + ")";
-        comparaCoresContaGotas.style.borderRight = novaCor;
-        comparaCoresContaGotas.style.borderTop = novaCor;
-    }
-    else {
-        if (pixel[3] === 0) {
-            alert("Nenhuma cor selecionada");
-            return;
-        }
-        if (janelaSelecionarCorVisivel === true) {
-            janelaSeleciona.procurarCor({ R: pixel[0], G: pixel[1], B: pixel[2] });
-        }
-        else {
-            corEscolhidaPrincipal = { R: pixel[0], G: pixel[1], B: pixel[2] };
-            const novaCor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
-            corPrincipal.style.backgroundColor = novaCor;
-            txtCorEscolhida.value = novaCor;
-        }
-    }
-}
-
 function mudarAparenciaCursor() {
-    if (ferramentaSelecionada === 3) {
+    if (selectedTool === 6) {
         contentTelas.style.cursor = "url('/colorPaint/imagens/cursor/cursorContaGotas.png') 0 20, pointer";
         return;
     };
-    if (ferramentaSelecionada === 7) {
+    if (selectedTool === 7) {
         contentTelas.style.cursor = "url('/colorPaint/imagens/cursor/cursorBaldeDeTinta.png') 0 0, pointer";
         return;
     };
-    const tamanho = ferramenta.tamanho * ((telasCanvas.offsetWidth) / projeto.resolucao.largura);
+    const tamanho = Tools.toolProperties.size * ((telasCanvas.offsetWidth) / projeto.resolucao.largura);
     if (tamanho < 20) {
         contentTelas.style.cursor = "url('/colorPaint/imagens/cursor/crossHair.png') 12.5 12.5, pointer";
     }
@@ -1233,175 +827,6 @@ function desenhoCompleto() {
             ctxDesenho.closePath();
         };
     }
-}
-// ==========================================================================================================================================================================================================================================
-
-function criarCamada(cor, resolucao) {
-    const num = arrayCamadas.length + 1;
-    // ============= CRIA O ICONE DA CAMADA ==================
-    const contentIconeCamadas = document.getElementById("contentIconeCamadas");
-    const idicone = "camadaIcone" + num;
-    const iconeCamada = document.createElement("div");
-    iconeCamada.setAttribute("id", idicone);
-    iconeCamada.setAttribute("class", "camadas");
-
-    if (num === 1) {
-        contentIconeCamadas.appendChild(iconeCamada);
-    }
-    else {
-        const idElAnterior = "camadaIcone" + (num - 1);
-        const elAnterior = document.getElementById(idElAnterior);
-        contentIconeCamadas.insertBefore(iconeCamada, elAnterior);
-    }
-    contentIconeCamadas.scrollTop = contentIconeCamadas.scrollHeight;
-
-    const bttVisivel = document.createElement("div");
-    const idBttVisivel = "visivel" + num;
-    bttVisivel.setAttribute("id", idBttVisivel);
-    bttVisivel.setAttribute("class", "iconVer cursor");
-    iconeCamada.appendChild(bttVisivel);
-
-    const info = document.createElement("label");
-    const idNome = "nomeCamada" + num;
-    const nomeCamada = document.createElement("span");
-    nomeCamada.setAttribute("id", idNome);
-    nomeCamada.innerHTML = "Camada " + num;
-    const br = document.createElement("br");
-    const txtOpacidade = document.createElement("span");
-    txtOpacidade.innerHTML = "Opacidade: ";
-    const idPocentagem = "porcent" + num;
-    const txtPorcentagem = document.createElement("input");
-    txtPorcentagem.setAttribute("type", "text");
-    txtPorcentagem.setAttribute("id", idPocentagem);
-    txtPorcentagem.setAttribute("readOnly", "true");
-    txtPorcentagem.setAttribute("class", "opacidadeCamada");
-    txtPorcentagem.setAttribute("value", "100%");
-
-    info.appendChild(nomeCamada);
-    info.appendChild(br);
-    info.appendChild(txtOpacidade);
-    info.appendChild(txtPorcentagem);
-    iconeCamada.appendChild(info);
-
-    const contentMiniIcon = document.createElement("div");
-    contentMiniIcon.setAttribute("class", "contentIcon");
-    iconeCamada.appendChild(contentMiniIcon);
-
-    const idIconTela = "iconTela" + num;
-    const iconTela = document.createElement("canvas");
-    iconTela.setAttribute("id", idIconTela);
-    let styleIconTela;
-
-    if (projeto.resolucao.proporcao >= 1) {
-        const iconAltura = Math.round(80 / projeto.resolucao.proporcao);
-        styleIconTela = "width: 80px; height: " + iconAltura + "px; ";
-    }
-    else {
-        const iconLargura = Math.round(80 * projeto.resolucao.proporcao);
-        styleIconTela = "width: " + iconLargura + "px; height: 80px; ";
-    }
-
-    if (cor != false) {
-        styleIconTela = styleIconTela + "background-color: " + cor;
-    }
-    else {
-        styleIconTela = styleIconTela + "background-image: url('/colorPaint/imagens/fundoTela/transparenteMiniatura.png')";
-    }
-
-    iconTela.setAttribute("style", styleIconTela);
-    iconTela.setAttribute("class", "iconTela");
-    contentMiniIcon.appendChild(iconTela);
-    iconTela.width = iconTela.offsetWidth * 2;
-    iconTela.height = iconTela.offsetHeight * 2;
-
-    const sobrePor = document.createElement("div");
-    contentMiniIcon.appendChild(sobrePor);
-
-    // ============== CRIA A CAMADA ================
-    const idCamada = "telaCamada" + num;
-    const camadaStyle = "z-index: " + (num * 2) + ";";
-    const elCamada = document.createElement("canvas");
-    elCamada.setAttribute("id", idCamada);
-    elCamada.setAttribute("class", "telaCanvas");
-    elCamada.setAttribute("style", camadaStyle);
-    elCamada.setAttribute("height", resolucao.altura);
-    elCamada.setAttribute("width", resolucao.largura);
-    telasCanvas.appendChild(elCamada);
-
-    if (document.getElementById(idicone) != null && document.getElementById(idBttVisivel) != null &&
-        document.getElementById(idNome) != null && document.getElementById(idPocentagem) != null &&
-        document.getElementById(idIconTela) != null && document.getElementById(idCamada) != null) {
-        const objCamada = {
-            nome: nomeCamada,
-            camada: elCamada,
-            ctx: elCamada.getContext("2d"),
-            icone: iconeCamada,
-            miniatura: iconTela,
-            ctxMiniatura: iconTela.getContext("2d"),
-            bttVer: bttVisivel,
-            porcentagemOpa: txtPorcentagem,
-            opacidade: 1,
-            visivel: true
-        };
-        arrayCamadas.push(objCamada);
-        arrayCamadas[num - 1].icone.addEventListener("click", clickIconeCamada);
-        arrayCamadas[num - 1].bttVer.addEventListener("mousedown", clickCamadaVisivel);
-        arrayCamadas[num - 1].bttVer.addEventListener("mouseenter", mouseSobre);
-        arrayCamadas[num - 1].bttVer.addEventListener("mouseleave", mouseFora);
-    }
-}
-// ==========================================================================================================================================================================================================================================
-
-function clickIconeCamada() {
-    if (MouseNoBttVer === false) {
-        const txtId = this.getAttribute("id"),
-            id = parseInt(txtId.substring(11, 15)),
-            indiceArrayCamadas = id - 1;
-        for (let i = 0; i < projeto.numeroCamadas; i++) {
-            if (i === indiceArrayCamadas) {
-                camadaSelecionada = i;
-                ctxPintar.canvas.style.zIndex = (id * 2) + 1;
-                this.classList.add("camadaSelecionada");
-                this.classList.remove("camadas");
-            }
-            else {
-                arrayCamadas[i].icone.classList.add("camadas");
-                arrayCamadas[i].icone.classList.remove("camadaSelecionada");
-            }
-        }
-        const opacidade = arrayCamadas[camadaSelecionada].opacidade,
-            posCursorOpacidadeCamada = (200 * opacidade) - 7;
-        cursorOpacidadeCamada.style.left = posCursorOpacidadeCamada + "px";
-    }
-}
-// ==========================================================================================================================================================================================================================================
-
-function clickCamadaVisivel() {
-    const txtId = this.getAttribute("id"),
-        id = parseInt(txtId.substring(7, 11)),
-        indiceArrayCamadas = id - 1,
-        visivel = arrayCamadas[indiceArrayCamadas].visivel;
-    if (visivel === true) {
-        arrayCamadas[indiceArrayCamadas].visivel = false;
-        arrayCamadas[indiceArrayCamadas].camada.style.display = "none";
-        this.classList.add("iconNaoVer");
-        this.classList.remove("iconVer");
-    }
-    else {
-        arrayCamadas[indiceArrayCamadas].visivel = true;
-        arrayCamadas[indiceArrayCamadas].camada.style.display = "block";
-        this.classList.add("iconVer");
-        this.classList.remove("iconNaoVer");
-    }
-    desenhoNoPreviewEIcone();
-}
-
-function mouseSobre() {
-    MouseNoBttVer = true;
-}
-
-function mouseFora() {
-    MouseNoBttVer = false;
 }
 // ==========================================================================================================================================================================================================================================
 
@@ -1595,93 +1020,83 @@ function contentTelasMoverScroll(scrollTop, scrollLeft) {//Mover o "moverScroll"
     moverScroll.style.left = (scrollLeft / mult2) + "px";
 }
 // ==========================================================================================================================================================================================================================================
-
-function criarProjeto(nome, resolucao, corPlanoDeFundo, numeroCamadas) {
-    projeto.nome = nome;
-    projeto.resolucao.altura = resolucao.altura;
-    projeto.resolucao.largura = resolucao.largura;
-    projeto.resolucao.proporcao = resolucao.largura / resolucao.altura;
-    projeto.numeroCamadas = numeroCamadas;
-    projeto.corFundo = corPlanoDeFundo;
-    let cor = false;
-    if (projeto.corFundo != false) {
-        cor = "rgb(" + projeto.corFundo.R + ", " + projeto.corFundo.G + ", " + projeto.corFundo.B + ")"
-        corFundo.style.backgroundColor = cor;
+function guardarAlteracoes() {
+    const objAlteracao = {
+        camadaAlterada: camadaSelecionada,
+        alteracao: arrayCamadas[camadaSelecionada].ctx.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura)
+    };
+    arrayVoltarAlteracoes.push(objAlteracao);
+    if (arrayVoltarAlteracoes.length > 20) {
+        arrayVoltarAlteracoes.shift();
     }
-    while (projeto.numeroCamadas > arrayCamadas.length) {
-        criarCamada(cor, projeto.resolucao);
+    if (arrayAvancarAlteracoes.length > 0 || arrayVoltarAlteracoes.length === 1) {
+        bttDesfazer.classList.add("bttHover");
+        bttDesfazer.classList.add("cursor");
+        bttDesfazer.style.opacity = "1";
+        bttRefazer.classList.remove("bttHover");
+        bttRefazer.classList.remove("cursor");
+        bttRefazer.style.opacity = "0.5";
     }
-    ajustarTelasCanvas();
-    ajustarPreview(cor);
-    clickIconeCamada.call(arrayCamadas[0].icone)
-    ctxDesenho.canvas.width = projeto.resolucao.largura;
-    ctxDesenho.canvas.height = projeto.resolucao.altura;
-    ctxPintar.canvas.width = projeto.resolucao.largura;
-    ctxPintar.canvas.height = projeto.resolucao.altura;
-    txtResolucao.value = projeto.resolucao.largura + ", " + projeto.resolucao.altura;
-    document.getElementById("nomeDoProjeto").innerText = projeto.nome;
-    document.getElementById("propriedadeOpacidadeCamada").style.display = "flex";
-    projetoCriado = true;
+    arrayAvancarAlteracoes = [];
 }
 
-function validarPropriedades() {
-    const arrayPropriedades = [document.getElementById("txtNomeProjeto"),
-    document.getElementById("txtLarguraProjeto"),
-    document.getElementById("txtAlturaProjeto"),
-    document.getElementById("corDeFundoProjeto"),
-    document.getElementById("numeroCamadasProjeto")];
-    for (let i = 0; i < arrayPropriedades.length; i++) {
-        const el = arrayPropriedades[i];
-        if (el.value === "") {
-            campoInvalido(el)
+function voltarAlteracao() {
+    if (arrayVoltarAlteracoes.length > 0) {
+        const ultimoIndice = arrayVoltarAlteracoes.length - 1,
+            camada = arrayVoltarAlteracoes[ultimoIndice].camadaAlterada,
+            imagemCamada = arrayVoltarAlteracoes[ultimoIndice].alteracao,
+            objAlteracao = { camadaAlterada: camada, visivel: arrayCamadas[camada].visivel, alteracao: arrayCamadas[camada].ctx.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura) };
+        if (camadaSelecionada != camada) {
+            clickIconeCamada.call(arrayCamadas[camada].icone);
+        }
+        if (arrayCamadas[camada].visivel === false) {
+            clickCamadaVisivel.call(arrayCamadas[camada].bttVer);
             return;
         }
-        else {
-            el.style.backgroundColor = "rgba(0, 0, 0, 0)"
+        arrayAvancarAlteracoes.push(objAlteracao);
+        arrayCamadas[camada].ctx.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
+        arrayCamadas[camada].ctx.putImageData(imagemCamada, 0, 0);
+        arrayVoltarAlteracoes.pop();
+        if (arrayVoltarAlteracoes.length === 0) {
+            bttDesfazer.classList.remove("bttHover");
+            bttDesfazer.classList.remove("cursor");
+            bttDesfazer.style.opacity = "0.5";
         }
+        if (arrayAvancarAlteracoes.length === 1) {
+            bttRefazer.classList.add("bttHover");
+            bttRefazer.classList.add("cursor");
+            bttRefazer.style.opacity = "1";
+        }
+        desenhoNoPreviewEIcone();
+        desenhoCompleto();
     }
-    let nomeProjeto = (arrayPropriedades[0].value).replace(/ /g, "-"),
-        larguraProjeto = parseInt(arrayPropriedades[1].value),
-        alturaProjeto = parseInt(arrayPropriedades[2].value),
-        valueCor = parseInt(arrayPropriedades[3].value),
-        numeroCamadas = parseInt(arrayPropriedades[4].value);
+}
 
-    if (larguraProjeto > 2560 || larguraProjeto < 1) {
-        campoInvalido(arrayPropriedades[1]);
-        return;
-    }
-    else if (alturaProjeto > 1440 || alturaProjeto < 1) {
-        campoInvalido(arrayPropriedades[2]);
-        return;
-    }
-    else if (valueCor > 4 || valueCor < 1) {
-        campoInvalido(arrayPropriedades[3]);
-        return;
-    }
-    else if (numeroCamadas > 5 || numeroCamadas < 1) {
-        campoInvalido(arrayPropriedades[4]);
-        return;
-    }
-    let cor;
-    if (valueCor === 1) {
-        cor = { R: 255, G: 255, B: 255 };
-    }
-    else if (valueCor === 2) {
-        cor = { R: 0, G: 0, B: 0 };
-    }
-    else if (valueCor === 3) {
-        cor = false;
-    }
-    else {
-        cor = corEscolhidaPrincipal;
-    }
-    for (let i = 0; i < arrayPropriedades.length; i++) {
-        arrayPropriedades[i].style.backgroundColor = "rgb(37, 37, 37)";
-    }
-    criarProjeto(nomeProjeto, { largura: larguraProjeto, altura: alturaProjeto }, cor, numeroCamadas);
-    function campoInvalido(campo) {
-        campo.focus();
-        campo.style.backgroundColor = "rgba(255, 0, 0, 0.25)";
+function avancarAlteracao() {
+    if (arrayAvancarAlteracoes.length > 0) {
+        const ultimoIndice = arrayAvancarAlteracoes.length - 1,
+            camada = arrayAvancarAlteracoes[ultimoIndice].camadaAlterada,
+            imagemCamada = arrayAvancarAlteracoes[ultimoIndice].alteracao,
+            objAlteracao = { camadaAlterada: camada, visivel: arrayCamadas[camada].visivel, alteracao: arrayCamadas[camada].ctx.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura) };
+        if (camadaSelecionada != camada) {
+            clickIconeCamada.call(arrayCamadas[camada].icone);
+        }
+        arrayVoltarAlteracoes.push(objAlteracao);
+        arrayCamadas[camada].ctx.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
+        arrayCamadas[camada].ctx.putImageData(imagemCamada, 0, 0);
+        arrayAvancarAlteracoes.pop();
+        if (arrayVoltarAlteracoes.length === 1) {
+            bttDesfazer.classList.add("bttHover");
+            bttDesfazer.classList.add("cursor");
+            bttDesfazer.style.opacity = "1";
+        }
+        if (arrayAvancarAlteracoes.length === 0) {
+            bttRefazer.classList.remove("bttHover");
+            bttRefazer.classList.remove("cursor");
+            bttRefazer.style.opacity = "0.5";
+        }
+        desenhoNoPreviewEIcone();
+        desenhoCompleto();
     }
 }
 
@@ -1857,396 +1272,6 @@ function criarOuAbrirProjeto() {
         }, 150);
     }
 }
-// ==========================================================================================================================================================================================================================================
-
-function janelaSeletorDeCor() {
-    let corEscolhida = { R: 0, G: 0, B: 0 }; //Armazena a cor selecionada com o cursor "cursorGradiente";
-    const coresSalvas = document.getElementById("coresSalvas"),
-        janelaSelecionarCor = document.getElementById("janelaSelecionarCor"),
-        bttRemoverCorSalva = document.getElementById("bttRemoverCorSalva"),
-        corSelecionada = document.getElementById("corSelecionada"),//div que receberá a cor selecionada.
-        barraeEspectroCor = document.getElementById("barraeEspectroCor"),//Canvas que receberá o espectro de cores.
-        cursorBarra = document.getElementById("cursorBarra"),//Cursor que fica na "barraeEspectroCor".
-        gradienteCor = document.getElementById("gradienteCor"),//Canvas que receberá o gradiente de cores da cor seleciona pelo cursor que fica na "barraeEspectroCor".
-        cursorGradiente = document.getElementById("cursorGradiente"),//Cursor que fica na "gradienteCor".
-        codRGB = document.getElementById("codRGB"),
-        codHEX = document.getElementById("codHEX");
-
-    const widthBarra = barraeEspectroCor.width, heightBarra = barraeEspectroCor.height,//Altura e largura do canvas "barraeEspectroCor" (Resolução).
-        widthGradiente = gradienteCor.width, heightGradiente = gradienteCor.height;//Altura e largura do canvas "gradienteCor" (Resolução).
-
-    const ctxBarra = barraeEspectroCor.getContext("2d"),
-        ctxGradiente = gradienteCor.getContext("2d");
-    let hsvBarra = { H: 0, S: 100, V: 100 };
-    let corParaAchar = {};//Armazena a cor a ser encontrada no formato RGB que foi digitada no "codRGB".
-    let clickBarra = false,//Saber se o click do mouse foi ou está pressionado em cima do "barraeEspectroCor".
-        clickGradiente = false,//Saber se o click do mouse foi ou está pressionado em cima do "gradienteCor".
-        clickMoverJanela = false;
-    let posMouseMoverJanela = { X: 0, Y: 0 };//Armazena a posição do do mouse quando foi clicado para mover a janela.
-    let posMouseJanela = { X: 0, Y: 0 };//Armazena a posição do mouse na "janelaSelecionarCor";    
-
-    const bttCorSalva = (e) => {//O que ocorre quando clicamos numa cor salva.
-        const txtId = e.target.getAttribute("id");
-        const id = parseInt(txtId.substring(3, 7));
-        if (janelaSelecionarCorVisivel === false) {
-            arrayCoresSalvas[id].selecionado = true;
-            arrayCoresSalvas[id].elemento.style.boxShadow = "0px 0px 4px rgb(255, 255, 255)";
-            corEscolhidaPrincipal = arrayCoresSalvas[id].cor;
-            corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
-            txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
-            for (let i = 0; i < arrayCoresSalvas.length; i++) {
-                if (i != id) {
-                    arrayCoresSalvas[i].selecionado = false;
-                    arrayCoresSalvas[i].elemento.style.boxShadow = "";
-                }
-            }
-        }
-        else {
-            this.procurarCor(arrayCoresSalvas[id].cor);
-        }
-    }
-
-    this.procurarCor = function (color) {
-        hsvBarra = rgbToHsv(color); //Converte a cor digitada de RGB para HSV.
-        encontrarCorDoCodigoNoGradiente(hsvBarra.S, hsvBarra.V);
-    }
-
-    this.salvarCor = function (corParaSalvar) {
-        let corJaSalva = false;
-        bttRemoverCorSalva.style.display = "block";
-        for (let i = 0; i < arrayCoresSalvas.length; i++) {
-            const cor = arrayCoresSalvas[i].cor;
-            if (cor.R === corParaSalvar.R && cor.G === corParaSalvar.G && cor.B === corParaSalvar.B) {
-                corJaSalva = true;
-                alert("Essa cor já está salva!");
-            }
-        }
-        if (corJaSalva === false) {
-            const cor = "background-color: rgb(" + corParaSalvar.R + ", " + corParaSalvar.G + ", " + corParaSalvar.B + ");";
-            const id = "cor" + (arrayCoresSalvas.length);
-            const corSalva = document.createElement("div");
-            corSalva.setAttribute("id", id);
-            corSalva.setAttribute("class", "corSalva cursor");
-            corSalva.setAttribute("style", cor);
-            const infoCorSalva = {
-                id: arrayCoresSalvas.length,
-                elemento: corSalva,
-                cor: { R: corParaSalvar.R, G: corParaSalvar.G, B: corParaSalvar.B },
-                selecionado: false
-            }
-            arrayCoresSalvas.push(infoCorSalva);
-            coresSalvas.appendChild(corSalva);
-            arrayCoresSalvas[arrayCoresSalvas.length - 1].elemento.addEventListener("click", bttCorSalva);
-        }
-    }
-
-    preencheBarraEspectro();
-
-    cursorBarra.addEventListener("mousedown", function () {
-        clickBarra = true;
-    });
-
-    barraeEspectroCor.addEventListener("mousedown", function () {
-        clickBarra = true;
-    });
-
-    cursorGradiente.addEventListener("mousedown", function () {
-        clickGradiente = true;
-    });
-
-    gradienteCor.addEventListener("mousedown", function () {
-        clickGradiente = true;
-    });
-
-    janelaSelecionarCor.addEventListener("mousedown", function (e) {
-        if (posMouseJanela.Y < 10 && clickBarra === false && clickGradiente === false ||
-            posMouseJanela.X < 10 || posMouseJanela.X > 540 && clickBarra === false && clickGradiente === false) {
-            clickMoverJanela = true;
-            posMouseMoverJanela = posMouseJanela;
-        }
-        moverCursores(e);
-    });
-
-    janelaSelecionarCor.addEventListener("mousemove", moverCursores);
-
-    function moverCursores(e) {//Calcula a posição do mouse na "janelaSelecionarCor"
-        const posMouse = pegarPosicaoMouse(janelaSelecionarCor, e);
-        posMouseJanela = posMouse;
-        if (clickGradiente === true) {
-            moverCursor2(posMouseJanela.X, posMouseJanela.Y);
-        }
-        else if (clickBarra === true) {
-            if (posMouseJanela.X > 540) {
-                moverCursorBarra(540 - 10);
-            }
-            else if (posMouseJanela.X < 10) {
-                moverCursorBarra(0);
-            }
-            else {
-                moverCursorBarra(posMouseJanela.X - 10);
-            }
-        }
-    }
-
-    function moverCursorBarra(x) {
-        cursorBarra.style.left = x + "px";
-        let H = ((x * 360) / barraeEspectroCor.offsetWidth), cor;
-        if (H === 360) { H = 0; }
-        hsvBarra = { H: H, S: 100, V: 100 };
-        cor = hsvToRgb(H, 100, 100);
-        cursorBarra.style.backgroundColor = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
-        preencheGradiente(cor);
-    }
-
-    function preencheGradiente(cor) {
-        ctxGradiente.clearRect(0, 0, widthGradiente, heightGradiente);
-        ctxGradiente.fillStyle = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
-        ctxGradiente.fillRect(0, 0, widthGradiente, heightGradiente);
-
-        const gradienteBranco = ctxBarra.createLinearGradient(0, 0, widthGradiente, 0);
-        gradienteBranco.addColorStop(0, "rgba(255, 255, 255, 1)");
-        gradienteBranco.addColorStop(1, "rgba(255, 255, 255, 0)");
-        ctxGradiente.fillStyle = gradienteBranco;
-        ctxGradiente.fillRect(0, 0, widthGradiente, heightGradiente);
-
-        const gradientePreto = ctxBarra.createLinearGradient(0, 0, 0, heightGradiente);
-        gradientePreto.addColorStop(0, "rgba(0, 0, 0, 0)");
-        gradientePreto.addColorStop(1, "rgba(0, 0, 0, 1)");
-        ctxGradiente.fillStyle = gradientePreto;
-        ctxGradiente.fillRect(0, 0, widthGradiente, heightGradiente);
-        ctxGradiente.closePath();
-        calcularCorPosiCursorGradiente();
-    }
-
-    function moverCursorGradiente(x, y) {
-        cursorGradiente.style.left = x + "px";
-        cursorGradiente.style.top = y + "px";
-        calcularCorPosiCursorGradiente();
-    }
-
-    function calcularCorPosiCursorGradiente() {
-        let S = ((cursorGradiente.offsetLeft + 10) * 100) / gradienteCor.offsetWidth;
-        let V = 100 - ((cursorGradiente.offsetTop + 10) * 100) / gradienteCor.offsetHeight;
-        if (S == 0) {
-            S = 0.02;
-        }
-        if (V == 0) {
-            V = 0.02;
-        }
-        const cor = hsvToRgb(hsvBarra.H, S, V);
-        const stringCorRGB = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
-        cursorGradiente.style.backgroundColor = stringCorRGB;
-        corSelecionada.style.backgroundColor = stringCorRGB;
-        codHEX.value = rgbTohex(cor);
-        codRGB.value = cor.R + ", " + cor.G + ", " + cor.B;
-        corEscolhida = cor;
-    }
-
-    codRGB.addEventListener("keyup", (e) => {
-        let codCorAchar = e.target.value;
-        codCorAchar = codCorAchar.split(",") || codCorAchar.split(", ");
-        for (let i = 0; i < codCorAchar.length; i++) {
-            codCorAchar[i] = parseInt(codCorAchar[i]);
-        }
-        if (codCorAchar.length === 3) {
-            if (codCorAchar[0] <= 255 && codCorAchar[1] <= 255 && codCorAchar[2] <= 255) {
-                corParaAchar = { R: codCorAchar[0], G: codCorAchar[1], B: codCorAchar[2] }
-                this.procurarCor(corParaAchar);
-            }
-        }
-    });
-
-    codHEX.addEventListener("keyup", (e) => {
-        let codCorHEX = e.target.value;
-        if (codCorHEX.indexOf("#") === -1) {
-            codCorHEX = "#" + codCorHEX;
-        }
-        let codCorAchar = hexToRgb(codCorHEX);
-        if (codCorAchar != null) {
-            if (codCorAchar[0] <= 255 && codCorAchar[1] <= 255 && codCorAchar[2] <= 255) {
-                corParaAchar = { R: codCorAchar[0], G: codCorAchar[1], B: codCorAchar[2] };
-                this.procurarCor(corParaAchar);
-                console.log(this);
-            }
-        }
-    });
-
-    document.addEventListener("mouseup", function () {
-        clickBarra = false;
-        clickGradiente = false;
-        clickMoverJanela = false;
-    });
-
-    document.getElementById("bttOkSelecionaCor").addEventListener("click", function () {
-        if (corPrincipalOuSecundaria === 1) {
-            corEscolhidaPrincipal = corEscolhida;
-            corPrincipal.style.backgroundColor = "rgb(" + corEscolhida.R + ", " + corEscolhida.G + ", " + corEscolhida.B + ")";
-        }
-        else if (corPrincipalOuSecundaria === 2) {
-            corEscolhidaSecudaria = corEscolhida;
-            corSecundaria.style.backgroundColor = "rgb(" + corEscolhida.R + ", " + corEscolhida.G + ", " + corEscolhida.B + ")";
-        }
-        txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
-        fecharJanelaSelecionarCor();
-        for (let i = 0; i < arrayCoresSalvas.length; i++) {
-            arrayCoresSalvas[i].selecionado = false;
-            arrayCoresSalvas[i].elemento.style.boxShadow = "";
-        }
-    });
-
-    document.getElementById("bttSalvarCor").addEventListener("click", () => {
-        this.salvarCor(corEscolhida);
-    });
-
-    bttRemoverCorSalva.addEventListener("click", function () {
-        if (janelaSelecionarCorVisivel === false) {
-            let novoArray = [];
-            for (let i = 0; i < arrayCoresSalvas.length; i++) {
-                arrayCoresSalvas[i].elemento.removeEventListener("click", bttCorSalva);
-                if (arrayCoresSalvas[i].selecionado === true) {
-                    coresSalvas.removeChild(arrayCoresSalvas[i].elemento);
-                }
-                else {
-                    novoArray.push(arrayCoresSalvas[i]);
-                }
-            }
-            arrayCoresSalvas = novoArray;
-            for (let i = 0; i < arrayCoresSalvas.length; i++) {
-                const id = "cor" + (i);
-                arrayCoresSalvas[i].id = i;
-                arrayCoresSalvas.selecionado = false;
-                arrayCoresSalvas[i].elemento.setAttribute("id", id);
-                arrayCoresSalvas[i].elemento.addEventListener("click", bttCorSalva);
-            }
-            if (arrayCoresSalvas.length === 0) {
-                bttRemoverCorSalva.style.display = "none";
-            }
-        }
-    });
-
-    document.getElementById("bttCancelarSelecionaCor").addEventListener("click", function () {
-        fecharJanelaSelecionarCor();
-    });
-
-    function moverCursor2(X, Y) {
-        if (X <= 540 && X >= 110 && Y <= 265 && Y >= 10) {
-            moverCursorGradiente(X - 120, Y - 20);
-        }
-        else if (X > 540 && Y < 10) {
-            moverCursorGradiente(540 - 120, 10 - 20);
-        }
-        else if (X > 540 && Y < 265) {
-            moverCursorGradiente(540 - 120, Y - 20);
-        }
-        else if (X > 540 && Y >= 265) {
-            moverCursorGradiente(540 - 120, 265 - 20);
-        }
-        else if (X <= 540 && X >= 110 && Y >= 265) {
-            moverCursorGradiente(X - 120, 265 - 20);
-        }
-        else if (X < 110 && Y >= 265) {
-            moverCursorGradiente(110 - 120, 265 - 20);
-        }
-        else if (X < 110 && Y < 265 && Y > 10) {
-            moverCursorGradiente(110 - 120, Y - 20);
-        }
-        else if (X < 110 && Y <= 10) {
-            moverCursorGradiente(110 - 120, 10 - 20);
-        }
-        else if (X <= 540 && X >= 110 && Y <= 10) {
-            moverCursorGradiente(X - 120, 10 - 20);
-        }
-    }
-
-    colorPaintContent.addEventListener("mousemove", function (e) {
-        if (clickMoverJanela === true && clickBarra === false && clickGradiente === false) {
-            const posMouse = pegarPosicaoMouse(colorPaintContent, e);
-            moverjanelaSelecionarCorNaPagina(posMouse.X, posMouse.Y);
-        }
-    });
-
-    function moverjanelaSelecionarCorNaPagina(x, y) {
-        const novaPosicaoXJanela = x - posMouseMoverJanela.X, novaPosicaoYJanela = y - posMouseMoverJanela.Y,
-            limiteDireita = x + (janelaSelecionarCor.offsetWidth - posMouseMoverJanela.X), limiteEsquerda = x - (posMouseMoverJanela.X),
-            limiteCima = y - (posMouseMoverJanela.Y), limiteBaixo = y + (janelaSelecionarCor.offsetHeight - posMouseMoverJanela.Y);
-        if (limiteDireita < colorPaintContent.offsetWidth && limiteEsquerda > 0 && limiteCima > 50 && limiteBaixo < colorPaintContent.offsetHeight - 7) {
-            janelaSelecionarCor.style.left = novaPosicaoXJanela + "px";
-            janelaSelecionarCor.style.top = novaPosicaoYJanela + "px";
-        }
-        else if (limiteDireita >= colorPaintContent.offsetWidth && limiteBaixo >= colorPaintContent.offsetHeight - 7) {
-            janelaSelecionarCor.style.left = (colorPaintContent.offsetWidth - janelaSelecionarCor.offsetWidth) + "px";
-            janelaSelecionarCor.style.top = (colorPaintContent.offsetHeight - janelaSelecionarCor.offsetHeight) - 7 + "px";
-        }
-        else if (limiteEsquerda <= 0 && limiteBaixo >= colorPaintContent.offsetHeight - 7) {
-            janelaSelecionarCor.style.left = "0px";
-            janelaSelecionarCor.style.top = (colorPaintContent.offsetHeight - janelaSelecionarCor.offsetHeight) - 7 + "px";
-        }
-        else if (limiteEsquerda <= 0 && limiteCima <= 50) {
-            janelaSelecionarCor.style.left = "0px";
-            janelaSelecionarCor.style.top = "50px";
-        }
-        else if (limiteDireita >= colorPaintContent.offsetWidth && limiteCima <= 50) {
-            janelaSelecionarCor.style.left = (colorPaintContent.offsetWidth - janelaSelecionarCor.offsetWidth) + "px";
-            janelaSelecionarCor.style.top = "50px";
-        }
-        else if (limiteDireita >= colorPaintContent.offsetWidth) {
-            janelaSelecionarCor.style.left = (colorPaintContent.offsetWidth - janelaSelecionarCor.offsetWidth) + "px";
-            janelaSelecionarCor.style.top = novaPosicaoYJanela + "px";
-        }
-        else if (limiteEsquerda <= 0) {
-            janelaSelecionarCor.style.left = "0px";
-            janelaSelecionarCor.style.top = novaPosicaoYJanela + "px";
-        }
-        else if (limiteCima <= 50) {
-            janelaSelecionarCor.style.left = novaPosicaoXJanela + "px";
-            janelaSelecionarCor.style.top = "50px";
-        }
-        else if (limiteBaixo >= colorPaintContent.offsetHeight - 7) {
-            janelaSelecionarCor.style.left = novaPosicaoXJanela + "px";
-            janelaSelecionarCor.style.top = (colorPaintContent.offsetHeight - janelaSelecionarCor.offsetHeight) - 7 + "px";
-        }
-    }
-
-    function encontrarCorDoCodigoNoGradiente(s, v) {
-        const posx = (gradienteCor.offsetWidth / 100) * s, posy = gradienteCor.offsetHeight - ((gradienteCor.offsetHeight / 100) * v);
-        moverCursorGradiente(posx - 10, posy - 10);
-        calcularPosiDaCorCursorBarra(hsvBarra.H);
-    }
-
-    function calcularPosiDaCorCursorBarra(h) {
-        const posx = (barraeEspectroCor.offsetWidth / 360) * h;
-        const cor = hsvToRgb(h, 100, 100);
-        cursorBarra.style.backgroundColor = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
-        moverCursorBarra(posx);
-    }
-
-    function preencheBarraEspectro() {
-        ctxBarra.rect(0, 0, widthBarra, heightBarra);
-        const gradiente = ctxBarra.createLinearGradient(0, 0, widthBarra, 0);
-        gradiente.addColorStop(0, "rgb(255, 0, 0)");
-        gradiente.addColorStop(0.16666666666666666667, "rgb(255, 255, 0)");
-        gradiente.addColorStop(0.33333333333333333334, "rgb(0, 255, 0)");
-        gradiente.addColorStop(0.50000000000000000001, "rgb(0, 255, 255)");
-        gradiente.addColorStop(0.66666666666666666668, "rgb(0, 0, 255)");
-        gradiente.addColorStop(0.83333333333333333335, "rgb(255, 0, 255)");
-        gradiente.addColorStop(1, "rgb(255, 0, 0)");
-        ctxBarra.fillStyle = gradiente;
-        ctxBarra.fill();
-    }
-}
-
-function abrirJanelaSelecionarCor() {
-    ferramentaAnterior = ferramentaSelecionada;
-    arrayFerramentas[2].ferramenta.click();//Mudar para a ferramenta Conta-gotas.
-    janelaSelecionarCor.style.display = "block";
-    janelaSelecionarCorVisivel = true;
-}
-
-function fecharJanelaSelecionarCor() {
-    janelaSelecionarCor.style.display = "none";
-    janelaSelecionarCorVisivel = false;
-    arrayFerramentas[ferramentaAnterior - 1].ferramenta.click();//Voltar para a ferramenta selecionada antes de abrir a "janelaSelecionarCor".
-}
 
 function pegarPosicaoMouse(elemento, e) {
     const pos = elemento.getBoundingClientRect();
@@ -2255,121 +1280,3 @@ function pegarPosicaoMouse(elemento, e) {
         Y: e.clientY - pos.top
     }
 }
-
-//================================================================================================================================
-function hexToRgb(hex) {
-    const resul = hex.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
-    if (resul) {
-        return resul.slice(1, 4).map(function (x) { return parseInt(x, 16); });
-    }
-    return null;
-}
-
-function rgbTohex(cor) {
-    const rgb = cor.B | (cor.G << 8) | (cor.R << 16);
-    return '#' + (0x1000000 + rgb).toString(16).slice(1)
-}
-
-function rgbToHsv(cor) {
-    let rabs, gabs, babs, rr, gg, bb, h, v, diff, diffc, percentRoundFn;
-    rabs = cor.R / 255;
-    gabs = cor.G / 255;
-    babs = cor.B / 255;
-    v = Math.max(rabs, gabs, babs),
-        diff = v - Math.min(rabs, gabs, babs);
-    diffc = c => (v - c) / 6 / diff + 1 / 2;
-    percentRoundFn = num => (num * 100) / 100;
-    if (diff == 0) {
-        h = s = 0;
-    } else {
-        s = diff / v;
-        rr = diffc(rabs);
-        gg = diffc(gabs);
-        bb = diffc(babs);
-        if (rabs === v) {
-            h = bb - gg;
-        } else if (gabs === v) {
-            h = (1 / 3) + rr - bb;
-        } else if (babs === v) {
-            h = (2 / 3) + gg - rr;
-        }
-        if (h < 0) {
-            h += 1;
-        } else if (h > 1) {
-            h -= 1;
-        }
-    }
-    return {
-        H: (h * 360),
-        S: percentRoundFn(s * 100),
-        V: percentRoundFn(v * 100)
-    };
-}
-
-function hsvToRgb(h, s, v) {
-    let r, g, b;
-    let i;
-    let f, p, q, t;
-    h = Math.max(0, Math.min(360, h));
-    s = Math.max(0, Math.min(100, s));
-    v = Math.max(0, Math.min(100, v));
-    s = s / 100;
-    v = v / 100;
-    if (s == 0) {
-        r = g = b = v;
-        return [
-            Math.round(r * 255),
-            Math.round(g * 255),
-            Math.round(b * 255)
-        ];
-    }
-    h /= 60;
-    i = Math.floor(h);
-    f = h - i;
-    p = v * (1 - s);
-    q = v * (1 - s * f);
-    t = v * (1 - s * (1 - f));
-    switch (i) {
-        case 0:
-            r = v;
-            g = t;
-            b = p;
-            break;
-        case 1:
-            r = q;
-            g = v;
-            b = p;
-            break;
-        case 2:
-            r = p;
-            g = v;
-            b = t;
-            break;
-        case 3:
-            r = p;
-            g = q;
-            b = v;
-            break;
-        case 4:
-            r = t;
-            g = p;
-            b = v;
-            break;
-        case 5:
-            r = v;
-            g = p;
-            b = q;
-    }
-    return {
-        R: Math.round(r * 255),
-        G: Math.round(g * 255),
-        B: Math.round(b * 255)
-    };
-}
-
-document.addEventListener("keydown", function (e) {
-    if (e.code === "F5" && projetoCriado === true) {
-        e.preventDefault();
-        return false;
-    }
-});
