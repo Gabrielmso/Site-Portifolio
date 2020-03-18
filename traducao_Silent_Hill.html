@@ -16,15 +16,12 @@
     <link rel="stylesheet" href="particulas/particulas.css">
     <link rel="stylesheet" href="topoMenu/topoMenu.css">
     <link rel="stylesheet" href="ContTraduSilent/traduSilent.css">
-    <script src="js/jquery.js"></script>
     <script src="particulas/particulas.js"></script>
     <script src="topoMenu/topoMenu.js"></script>
     <script src="ContTraduSilent/traduSilent.js"></script>
     <script>
         window.onload = function () {
-            particulas();
             topoMenu();
-            slideCarosel();
             traduSilent();
         };
     </script>
@@ -112,139 +109,139 @@
             </ul>
         </div>
     </nav>
-    <header id="fundo1">
-        <div id="fundo1blur" class="fundo">
-            <div id="espacoparticulas">
-                <canvas id="particulas"></canvas>
-            </div>
-            <div class="mycontainer">
-                <div class="content">
-                    <h1 id="titulo">Tradução Silent Hill (PS1)</h1>
-                    <div id="about">
-                        <div id="info">
-                            <h6>
-                                Tradução para o clássico Silent Hill (NTSC-U SLUS-007.07). O projeto teve início em
-                                fevereiro de 2017.
-                            </h6>
-                            <ul>
-                                <li> O menu principal e de seleção de dificuldade, alguns nomes de saves, e nomes de
-                                    poucos
-                                    itens no inventário não foram traduzidos, tanto por motivos estéticos (no caso do
-                                    menu
-                                    principal e de seleção de dificuldade), quanto por não ser possível, pois as
-                                    palavras quando traduzidas possuem mais caracteres (ficam muito grandes).
-                                    Com exceção disso, todo o jogo está em português, e traduzido da melhor forma que
-                                    foi
-                                    possível.
-                                </li>
-                                <li>
-                                    Caso encontre algum erro e queira contribuir com o projeto, clicando no botão
-                                    Download
-                                    você será redirecionado ao vídeo no Youtube onde, além de baixar a tradução no link
-                                    da
-                                    descrição, você pode comentar, dar sugestões, etc.
+    <div id="espacoparticulas" style="opacity: 0;">
+        <canvas id="particulas"></canvas>
+    </div>
+    <header id="sessao1" class="sessao">
+        <div id="fundo1" style="filter: blur(0px);" class="fundo"></div>
+        <div id="conteudoSlide1" class="mycontainer">
+            <div class="content">
+                <h1 id="titulo">Tradução Silent Hill (PS1)</h1>
+                <div id="about">
+                    <div id="info">
+                        <h6>
+                            Tradução para o clássico Silent Hill (NTSC-U SLUS-007.07). O projeto teve início em
+                            fevereiro de 2017.
+                        </h6>
+                        <ul>
+                            <li> O menu principal e de seleção de dificuldade, alguns nomes de saves, e nomes de
+                                poucos
+                                itens no inventário não foram traduzidos, tanto por motivos estéticos (no caso do
+                                menu
+                                principal e de seleção de dificuldade), quanto por não ser possível, pois as
+                                palavras quando traduzidas possuem mais caracteres (ficam muito grandes).
+                                Com exceção disso, todo o jogo está em português, e traduzido da melhor forma que
+                                foi
+                                possível.
+                            </li>
+                            <li>
+                                Caso encontre algum erro e queira contribuir com o projeto, clicando no botão
+                                Download
+                                você será redirecionado ao vídeo no Youtube onde, além de baixar a tradução no link
+                                da
+                                descrição, você pode comentar, dar sugestões, etc.
 
-                                </li>
-                            </ul>
-                        </div>
-                        <div id="traprogress">
-                            <h3 style="text-align: center">Progresso:</h3>
-                            <ul>
-                                <li>
-                                    (Versão 2.5) 26/11/2019 - Foi descoberto e corrigido um bug que acontecia quando o
-                                    jogo era rodado no PSP ou em algumas versões de emuladores.
-                                    Esta versão existe graças a contribuição de FULANO_93 que deu diversas sugestões e
-                                    encontrou vários erros na versão anterior.
-                                </li>
-                                <li>
-                                    (Versão 2.4) 13/10/2019 - Pequenas melhorias na edição da CG inicial e em
-                                    algumas imagens, correção de tradução, algumas falas melhoradas.
-                                </li>
-                                <li>
-                                    (Versão 2.3) 18/05/2019 - Apenas pequenos ajustes.
-                                </li>
-                                <li>
-                                    (Versão 2.2) 10/05/2019 - A frase "The fear of blood tends to creat fear for the
-                                    flesh"
-                                    da cg
-                                    inicial está traduzida, entre outros ajustes nas falas.
-                                </li>
-                                <li>
-                                    ATUALIZAÇÃO IMPORTANTE! (Versão 2.1) 04/05/2019 - Foi descoberto que a rom utilizada
-                                    para
-                                    traduzir o game possuía duas CG's (Vídeos) pós-créditos "corrompidas", por isso em
-                                    alguma(s)
-                                    parte(s) dessas CG's apareciam artefatos cinza e/ou verdes.
-                                    Após muitas tentativas, foi descoberta uma maneira de localizar as CG's dentro da
-                                    rom do
-                                    game, para poder compará-las com as de uma outra rom "não corrompida",
-                                    e assim corrigir manualmente todos os bytes "corrompidos" das CG's num editor
-                                    hexadecimal.
-                                </li>
-                                <li>
-                                    (Versão 2.0) 30/04/2019 - O instalador não para de responder agora.
-                                </li>
-                                <li>
-                                    (Versão 1.9) 17/02/2019 - Dois erros de acentuação corrigidos. Foi criado um
-                                    instalador
-                                    da tradução.
-                                </li>
-                                <li>
-                                    (Versão 1.8) 23/12/2018 - Corrigido erros de digitação.
-                                </li>
-                                <li>
-                                    (Versão 1.7) 18/12/2018 - A revisão foi completada. Foi traduzido os avisos de
-                                    ausência
-                                    de memory card e de memory card cheio que aparecem assim que o jogo é iniciado (caso
-                                    tais
-                                    condições sejam verdadeiras é claro).
-                                </li>
-                                <li>
-                                    (Versão 1.6) 12/12/2018 - 20% da tradução foi revisada, com respectivas correções, e
-                                    a
-                                    etiqueta da K. Gordon key, que pode ser visualizada no inventário foi traduzida.
-                                </li>
-                                <li>
-                                    (Versão 1.5) 01/12/2018 - O puzzle The Grim Reaper's list foi totalmente traduzido.
-                                </li>
-                                <li>
-                                    (Versão 1.4) 26/11/2018 - A nota e a foto encontrada na parede do Indian Runner
-                                    foram
-                                    traduzidas.
-                                </li>
-                                <li>
-                                    (Versão 1.3) 25/11/2018 - As notas feitas em folhas de caderno de desenho deixadas
-                                    pela
-                                    cidade foram traduzidas.
-                                </li>
-                                <li>
-                                    (Versão 1.2) 22/11/2018 - Todos os mapas foram traduzidos, e os nomes dos saves
-                                    foram
-                                    melhorados.
-                                </li>
-                                <li>
-                                    (Versão 1.1) 18/11/2018 - Foi feita pequenas correções em algumas falas, no texto
-                                    dos
-                                    puzzles na escola, ajustes no tempo das falas, etc...
-                                </li>
-                                <li>
-                                    (Versão 1.0) 16/11/2018 - Aqui o jogo todo está traduzido, as versões mais recentes
-                                    tem
-                                    correções e melhorias.
-                                </li>
-                            </ul>
-                        </div>
+                            </li>
+                        </ul>
                     </div>
-                    <div id="contentbttdownload">
-                        <div id="bttdownload" class="noSelection">
-                            <a href="https://youtu.be/fJWHY8WbQms" target="_blank">Download</a>
-                        </div>
+                    <div id="traprogress">
+                        <h3 style="text-align: center">Progresso:</h3>
+                        <ul>
+                            <li>
+                                (Versão 2.5) 26/11/2019 - Foi descoberto e corrigido um bug que acontecia quando o
+                                jogo era rodado no PSP ou em algumas versões de emuladores.
+                                Esta versão existe graças a contribuição de FULANO_93 que deu diversas sugestões e
+                                encontrou vários erros na versão anterior.
+                            </li>
+                            <li>
+                                (Versão 2.4) 13/10/2019 - Pequenas melhorias na edição da CG inicial e em
+                                algumas imagens, correção de tradução, algumas falas melhoradas.
+                            </li>
+                            <li>
+                                (Versão 2.3) 18/05/2019 - Apenas pequenos ajustes.
+                            </li>
+                            <li>
+                                (Versão 2.2) 10/05/2019 - A frase "The fear of blood tends to creat fear for the
+                                flesh"
+                                da cg
+                                inicial está traduzida, entre outros ajustes nas falas.
+                            </li>
+                            <li>
+                                ATUALIZAÇÃO IMPORTANTE! (Versão 2.1) 04/05/2019 - Foi descoberto que a rom utilizada
+                                para
+                                traduzir o game possuía duas CG's (Vídeos) pós-créditos "corrompidas", por isso em
+                                alguma(s)
+                                parte(s) dessas CG's apareciam artefatos cinza e/ou verdes.
+                                Após muitas tentativas, foi descoberta uma maneira de localizar as CG's dentro da
+                                rom do
+                                game, para poder compará-las com as de uma outra rom "não corrompida",
+                                e assim corrigir manualmente todos os bytes "corrompidos" das CG's num editor
+                                hexadecimal.
+                            </li>
+                            <li>
+                                (Versão 2.0) 30/04/2019 - O instalador não para de responder agora.
+                            </li>
+                            <li>
+                                (Versão 1.9) 17/02/2019 - Dois erros de acentuação corrigidos. Foi criado um
+                                instalador
+                                da tradução.
+                            </li>
+                            <li>
+                                (Versão 1.8) 23/12/2018 - Corrigido erros de digitação.
+                            </li>
+                            <li>
+                                (Versão 1.7) 18/12/2018 - A revisão foi completada. Foi traduzido os avisos de
+                                ausência
+                                de memory card e de memory card cheio que aparecem assim que o jogo é iniciado (caso
+                                tais
+                                condições sejam verdadeiras é claro).
+                            </li>
+                            <li>
+                                (Versão 1.6) 12/12/2018 - 20% da tradução foi revisada, com respectivas correções, e
+                                a
+                                etiqueta da K. Gordon key, que pode ser visualizada no inventário foi traduzida.
+                            </li>
+                            <li>
+                                (Versão 1.5) 01/12/2018 - O puzzle The Grim Reaper's list foi totalmente traduzido.
+                            </li>
+                            <li>
+                                (Versão 1.4) 26/11/2018 - A nota e a foto encontrada na parede do Indian Runner
+                                foram
+                                traduzidas.
+                            </li>
+                            <li>
+                                (Versão 1.3) 25/11/2018 - As notas feitas em folhas de caderno de desenho deixadas
+                                pela
+                                cidade foram traduzidas.
+                            </li>
+                            <li>
+                                (Versão 1.2) 22/11/2018 - Todos os mapas foram traduzidos, e os nomes dos saves
+                                foram
+                                melhorados.
+                            </li>
+                            <li>
+                                (Versão 1.1) 18/11/2018 - Foi feita pequenas correções em algumas falas, no texto
+                                dos
+                                puzzles na escola, ajustes no tempo das falas, etc...
+                            </li>
+                            <li>
+                                (Versão 1.0) 16/11/2018 - Aqui o jogo todo está traduzido, as versões mais recentes
+                                tem
+                                correções e melhorias.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div id="contentbttdownload">
+                    <div id="bttdownload" class="noSelection">
+                        <a href="https://youtu.be/fJWHY8WbQms" target="_blank">Download</a>
                     </div>
                 </div>
             </div>
         </div>
     </header>
-    <section id="fundo2blur" class="fundo">
+    <section id="sessao2" class="sessao">
+        <div id="fundo2" class="fundo"></div>
         <div class="mycontainer">
             <div class="content">
                 <h2>"Há imagens violentas e perturbadoras neste jogo"</h2>
@@ -282,12 +279,13 @@
             </div>
         </div>
     </section>
-    <section id="fundo3blur" class="fundo">
+    <section id="sessao3" class="sessao">
+        <div id="fundo3" class="fundo"></div>
         <div class="mycontainer">
             <div class="content">
                 <h2>"O medo de sangue tende a criar medo pela carne"</h2>
                 <img id="omedodesangue" class="comparar cursor noSelection" title="Clique para comparar."
-                    src="imagens/imgs_ContTraduSilent/miniaturas/Omedodesangue.jpg"
+                    src="imagens/imgs_ContTraduSilent/miniaturas/Omedodesangue1.jpg"
                     alt="O medo de sangue tende a criar medo pela carne.">
                 <div class="texto">
                     <p>
@@ -315,7 +313,8 @@
             </div>
         </div>
     </section>
-    <section id="fundo4blur">
+    <section id="sessao4" class="sessao">
+        <div id="fundo4" class="fundo"></div>
         <div class="mycontainer">
             <div class="content">
                 <h2>Mapa da "Antiga Silent Hill"</h2>
@@ -349,7 +348,8 @@
             </div>
         </div>
     </section>
-    <section id="fundo5blur" class="fundo">
+    <section id="sessao5" class="sessao">
+        <div id="fundo5" class="fundo"></div>
         <div class="mycontainer">
             <div class="content">
                 <h2>Folhas de caderno de desenho</h2>
@@ -391,7 +391,8 @@
             </div>
         </div>
     </section>
-    <section id="fundo6blur" class="fundo">
+    <section id="sessao6" class="sessao">
+        <div id="fundo6" class="fundo"></div>
         <div class="mycontainer">
             <div class="content">
                 <h2>"Chaves para o Eclipse"</h2>
@@ -434,7 +435,8 @@
             </div>
         </div>
     </section>
-    <section id="fundo7blur" class="fundo">
+    <section id="sessao7" class="sessao">
+        <div id="fundo7" class="fundo"></div>
         <div class="mycontainer">
             <div class="content">
                 <h2>Mapa da "Escola Primária de Midwich"</h2>
@@ -466,13 +468,13 @@
             <div class="tracofechar2"></div>
         </div>
         <div id="imgviolentasorig" class="cursor centraliza imgslides" title="Clique para comparar.">
-            <div id="imgviolentastrad" class="imgslides"></div>
+            <div id="imgviolentastrad" class="imgtrad"></div>
         </div>
     </div>
     <!-- Div para visualizar as imagens "There are violent and disturbing imagens in this game" da versão japonesa ou a limpa. -->
     <div id="fundoverjapelimp" class="fundocomparar">
         <div id="imgjap" class="cursor centraliza imgslides">
-            <div id="imglimp" class="imgslides"></div>
+            <div id="imglimp" class="imgtrad"></div>
         </div>
     </div>
     <!-- Div para comparar a edição feita na primeira CG do jogo  -->
@@ -489,7 +491,7 @@
             <div class="tracofechar2"></div>
         </div>
         <div id="imgoldsilenthill" class="cursor centraliza imgslides" title="Clique para comparar.">
-            <div id="imgantigasilenthill" class="imgslides"></div>
+            <div id="imgantigasilenthill" class="imgtrad"></div>
         </div>
     </div>
     <!-- Div para comparar as folhas de caderno de desenho feita na primeira CG do jogo  -->
@@ -501,10 +503,10 @@
         <div class="telaslide">
             <div class="slides cursor" title="Clique para comparar.">
                 <div id="imgtoschool" class="cursor imgslides" title="Clique para comparar.">
-                    <div id="imgparaescola" class="imgslides"></div>
+                    <div id="imgparaescola" class="imgtrad"></div>
                 </div>
                 <div id="imgdoghouse" class="cursor imgslides" title="Clique para comparar.">
-                    <div id="imgcasadecachorro" class="imgslides"></div>
+                    <div id="imgcasadecachorro" class="imgtrad"></div>
                 </div>
             </div>
         </div>
@@ -536,7 +538,7 @@
             <div class="tracofechar2"></div>
         </div>
         <div id="imgkeysforeclipse" class="cursor centraliza imgslides" title="Clique para comparar.">
-            <div id="imgchavesparaoeclipse" class="imgslides"></div>
+            <div id="imgchavesparaoeclipse" class="imgtrad"></div>
         </div>
     </div>
     <!-- Div para comparar as imagens dos mapas da escola. -->
@@ -548,16 +550,16 @@
         <div class="telaslide">
             <div class="slides cursor" title="Clique para comparar.">
                 <div id="imgschoolp" class="cursor imgslides" title="Clique para comparar.">
-                    <div id="imgescolap" class="imgslides"></div>
+                    <div id="imgescolap" class="imgtrad"></div>
                 </div>
                 <div id="imgschool1a" class="cursor imgslides" title="Clique para comparar.">
-                    <div id="imgescola1a" class="imgslides"></div>
+                    <div id="imgescola1a" class="imgtrad"></div>
                 </div>
                 <div id="imgschool2a" class="cursor imgslides" title="Clique para comparar.">
-                    <div id="imgescola2a" class="imgslides"></div>
+                    <div id="imgescola2a" class="imgtrad"></div>
                 </div>
                 <div id="imgschoolt" class="cursor imgslides" title="Clique para comparar.">
-                    <div id="imgescolat" class="imgslides"></div>
+                    <div id="imgescolat" class="imgtrad"></div>
                 </div>
             </div>
         </div>
@@ -593,7 +595,7 @@
             <div class="tracofechar2"></div>
         </div>
         <div id="imgkeykgordon" class="cursor centraliza imgslides" title="Clique para comparar.">
-            <div id="imgchavekgordon" class="imgslides"></div>
+            <div id="imgchavekgordon" class="imgtrad"></div>
         </div>
     </div>
 </body>

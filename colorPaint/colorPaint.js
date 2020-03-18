@@ -1,6 +1,7 @@
 mudarMenu = false; //impede que o menu mude de estilo.
 const projeto = { nome: null, resolucao: { largura: 0, altura: 0, proporcao: 0 }, corFundo: null, numeroCamadas: 0 }; //Armazena as propriedades escolhidas ao criar o projeto.
 let Tools;
+let undoRedoChange;
 const grid = {//Propriedades do grid e da visualização do projeto antes de criar o grid, e saber se está visível.
     tela: null, tamanho: 80, posicao: { X: 0, Y: 0 }, visivel: false,
     visualizacaoAnterior: { scrollX: 0, scrollY: 0, zoom: 0 }
@@ -39,6 +40,7 @@ let coordenadaClick = [];//Armazena as coordenadas do cursor do mouse desde quan
 let cursorOpacidadeCamada;
 function colorPaint() {
     Tools = drawingTools();
+    undoRedoChange = undoRedoChangeObject();
     const contentJanelaCriarProjeto = document.getElementById("contentJanelaCriarProjeto");
     const contentJanelaAtalhos = document.getElementById("contentJanelaAtalhos");
     const contentJanelaMenuGrid = document.getElementById("contentJanelaMenuGrid");

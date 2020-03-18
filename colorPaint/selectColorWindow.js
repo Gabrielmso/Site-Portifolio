@@ -210,7 +210,6 @@ function janelaSeletorDeCor() {
             if (codCorAchar[0] <= 255 && codCorAchar[1] <= 255 && codCorAchar[2] <= 255) {
                 corParaAchar = { R: codCorAchar[0], G: codCorAchar[1], B: codCorAchar[2] };
                 this.procurarCor(corParaAchar);
-                console.log(this);
             }
         }
     });

@@ -2,44 +2,41 @@ html, body {
     overflow: hidden;
     font-weight: 400;
     line-height: 1.5;
-}
-
-#fundo1 {
     width: 100%;
-    background-image: url("../imagens/imgs_ContTraduSilent/fundo/fundo1.jpg");
-    background-repeat: no-repeat;
-    background-size: 100%;
+    height: 100%;
 }
 
-#fundo1blur {
-    height: 100%;
-    background-image: url("../imagens/imgs_ContTraduSilent/fundo/fundo1blur.jpg");
+#conteudoSlide1 {
     opacity: 0;
     -webkit-transition: opacity 1.5s linear;
     transition: opacity 1.5s linear;
 }
 
-#fundo2blur {
+#fundo1 {
+    background-image: url("../imagens/imgs_ContTraduSilent/fundo/fundo1.jpg");
+}
+
+#fundo2 {
     background-image: url("../imagens/imgs_ContTraduSilent/fundo/fundo2blur.jpg");
 }
 
-#fundo3blur {
+#fundo3 {
     background-image: url("../imagens/imgs_ContTraduSilent/fundo/fundo3blur.jpg");
 }
 
-#fundo4blur {
+#fundo4 {
     background-image: url("../imagens/imgs_ContTraduSilent/fundo/fundo4blur.jpg");
 }
 
-#fundo5blur {
+#fundo5 {
     background-image: url("../imagens/imgs_ContTraduSilent/fundo/fundo5blur.jpg");
 }
 
-#fundo6blur {
+#fundo6 {
     background-image: url("../imagens/imgs_ContTraduSilent/fundo/fundo6blur.jpg");
 }
 
-#fundo7blur {
+#fundo7 {
     background-image: url("../imagens/imgs_ContTraduSilent/fundo/fundo7blur.jpg");
 }
 
@@ -47,8 +44,6 @@ h1 {
     font-size: 50px;
     text-align: center;
     font-family: "Fontetitulo1";
-    -webkit-transition: text-shadow 1.2s linear, ;
-    transition: text-shadow 1.2s linear;
     font-weight: normal;
 }
 
@@ -64,6 +59,11 @@ p span {
 
 p span:hover {
     color: #866c03;
+}
+
+#titulo {
+    -webkit-transition: text-shadow 1.4s ease-in-out, ;
+    transition: text-shadow 1.4s ease-in-out;
 }
 
 #about ul {
@@ -154,7 +154,9 @@ p span:hover {
     height: 60px;
     border-radius: 50%;
     position: fixed;
-    animation: bttdetalhes 2.4s infinite;
+    left: 50%;
+    transition: opacity 1.6s linear;
+    animation: bttdetalhes 2.5s infinite;
     z-index: 9999;
     display: none;
     opacity: 0;
@@ -233,7 +235,7 @@ p span:hover {
     position: fixed;
     bottom: 0;
     width: 100%;
-    height: 72px;
+    height: 68px;
     border-top: solid 2px rgba(255, 255, 255, 0.12);
     z-index: 9;
 }
@@ -254,7 +256,7 @@ p span:hover {
     border-radius: 50%;
     float: left;
     background-color: rgba(0, 0, 0, 0.42);
-    margin-top: 7px;
+    margin-top: 5px;
     margin-left: 7px;
     z-index: 10;
 }
@@ -265,7 +267,7 @@ p span:hover {
 }
 
 .imgicons {
-    height: 70px;
+    height: 66px;
     float: left;
     opacity: 0.7;
 }
@@ -277,7 +279,7 @@ p span:hover {
     border-radius: 50%;
     float: right;
     background-color: rgba(0, 0, 0, 0.42);
-    margin-top: 7px;
+    margin-top: 5px;
     margin-right: 7px;
     z-index: 11;
 }
@@ -287,14 +289,12 @@ p span:hover {
 }
 
 #imgviolentasorig {
-    width: 100%;
     background-image: url("../imagens/imgs_ContTraduSilent/imagens_originais/thereareviolent.jpg");
 }
 
 #imgviolentastrad {
     opacity: 0;
     background-image: url("../imagens/imgs_ContTraduSilent/imagens_traduzidas/haimagensviolentas.jpg");
-    width: 100%;
 }
 
 #imgjap {
@@ -304,38 +304,35 @@ p span:hover {
 #imglimp {
     opacity: 0;
     background-image: url("../imagens/imgs_ContTraduSilent/imagens_traduzidas/haimagensviolentaslimp.jpg");
-    width: 100%;
 }
 
 #gifcgintrovert {
     display: none;
-    background-image: url("../imagens/imgs_ContTraduSilent/miniaturas/gifcgintrovert.gif");
     width: 100%;
     height: 100%;
+    background-image: url("../imagens/imgs_ContTraduSilent/miniaturas/gifcgintrovert.gif");
     border: solid 1px rgba(133, 66, 14, 0.55);
+    image-rendering: pixelated;
     background-size: 100% 100%;
-    background-repeat: no-repeat;
 }
 
 #gifcgintrohori {
     display: none;
-    background-image: url("../imagens/imgs_ContTraduSilent/miniaturas/gifcgintrohori.gif");
     width: 100%;
     height: 100%;
+    background-image: url("../imagens/imgs_ContTraduSilent/miniaturas/gifcgintrohori.gif");
     border: solid 1px rgba(133, 66, 14, 0.55);
+    image-rendering: pixelated;
     background-size: 100% 100%;
-    background-repeat: no-repeat;
 }
 
 #imgoldsilenthill {
-    width: 100%;
     background-image: url("../imagens/imgs_ContTraduSilent/imagens_originais/mapOldSilentHill.jpg");
 }
 
 #imgantigasilenthill {
     opacity: 0;
     background-image: url("../imagens/imgs_ContTraduSilent/imagens_traduzidas/mapaAntigaSilentHill.jpg");
-    width: 100%;
 }
 
 #imgtoschool {
@@ -421,6 +418,7 @@ p span:hover {
 
 .fundocomparar {
     position: fixed;
+    opacity: 0;
     top: 0;
     width: 100%;
     height: 100%;
@@ -466,12 +464,22 @@ p span:hover {
 
 /*____________________________________________________________________________________________________*/
 
-.fundo {
+.sessao {
+    position: relative;
+    height: 100%;
     width: 100%;
-    overflow: auto;
-    background-repeat: no-repeat;
-    background-size: 100%;
-    opacity: 1;
+    overflow: hidden;
+}
+
+.fundo {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 0;
+    background-size: cover;
+    background-position: center;
+    filter: blur(3.3px);
+    transition: filter 2s linear;
 }
 
 .tracosetaleft1 {
@@ -544,10 +552,12 @@ p span:hover {
 .mycontainer {
     position: relative;
     width: 100%;
-    max-width: 1300px;
+    max-width: 1350px;
     margin-left: auto;
     margin-right: auto;
+    overflow: auto;
     height: 100%;
+    z-index: 2;
 }
 
 .content {
@@ -577,11 +587,16 @@ p span:hover {
 
 .imgslides {
     position: relative;
-    display: block;
+    background-size: 100% 100%;
+    image-rendering: pixelated;
+}
+
+.imgtrad {
+    width: 100%;
     height: 100%;
     background-size: 100% 100%;
-    background-repeat: no-repeat;
     transition: opacity 0.4s linear;
+    image-rendering: pixelated;
 }
 
 @media screen and (min-width: 1420px) {
@@ -745,12 +760,12 @@ p span:hover {
 
 @keyframes bttdetalhes {
     0% {
-        transform: translateY(-5px);
+        transform: translate(-50%, -7px);
     }
     50% {
-        transform: translateY(5px);
+        transform: translate(-50%, 7px);
     }
     100% {
-        transform: translateY(-5px);
+        transform: translate(-50%, -7px);
     }
 }

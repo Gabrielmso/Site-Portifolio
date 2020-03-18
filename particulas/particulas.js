@@ -15,7 +15,7 @@ function particulas() {
       deslocay = 0,//Velocidade de deslocamento do eixo y de cada particula.
       guardarParticula = [];//Armazena as propriedades de cada particula, cada indice será uma particula, o número de indices é determinado pela "numParticulas".
 
-   let frameRate = 23,//Frames por segundo que a animação terá.
+   let frameRate = 21,//Frames por segundo que a animação terá.
       agora, //Tempo atual em milisegundos desde que a página foi carregada.
       antes = performance.now(),//Tempo em milisegundos em que o frame anterior foi desenhado.
       intervaloEntreFrames = 1000 / frameRate,//Intervalo em milisegundos que cada frame terá.
@@ -56,11 +56,11 @@ function particulas() {
 
    function guardaParticulas() {
       for (let i = 0; i < numParticulas; i++) {
-         raioCirculo = valorAleatorio(3, 8);//Calcula um tamanho aleatório de raio para cada particula ter um tamanho diferente.
+         raioCirculo = valorAleatorio(2, 10);//Calcula um tamanho aleatório de raio para cada particula ter um tamanho diferente.
          posicaoX = valorAleatorio(raioCirculo, larguraJanela - raioCirculo);//Calcula uma posição aleatória no eixo x entre 0 mais o raio da particula e a largura total da janela menos o raio da particula para a mesma não passar as bordas da janela.
          posicaoY = valorAleatorio(raioCirculo, alturaJanela - raioCirculo);//Calcula uma posição aleatória no eixo y entre 0 mais o raio da particula e a altura total da janela menos o raio da particula para a mesma não passar as bordas da janela.
-         deslocaX = valorAleatorio(-0.7, 0.7);//Calcula uma velocidade aleatória de deslocamento da particula no eixo x entre -1 pixel (mover 1 pixel para a esquerda) e 1 pixel (mover 1 pixel para a direita).
-         deslocay = valorAleatorio(-0.7, 0.7);//Calcula uma velocidade aleatória de deslocamento da particula no eixo y entre -1 pixel (mover 1 pixel para cima) e 1 pixel (mover 1 pixel para baixo).
+         deslocaX = valorAleatorio(-0.6, 0.6);//Calcula uma velocidade aleatória de deslocamento da particula no eixo x entre -1 pixel (mover 1 pixel para a esquerda) e 1 pixel (mover 1 pixel para a direita).
+         deslocay = valorAleatorio(-0.6, 0.6);//Calcula uma velocidade aleatória de deslocamento da particula no eixo y entre -1 pixel (mover 1 pixel para cima) e 1 pixel (mover 1 pixel para baixo).
          guardarParticula[i] = (new criarParticula(posicaoX, posicaoY, deslocaX, deslocay, raioCirculo, i, raioCirculo / 2));//Executa a função para criar a particula e armazena toda a função em vetor para mudar as propriedades que constituem as particulas para realizar a animação de cada particula.
       }
    }
@@ -165,7 +165,7 @@ function particulas() {
 
    function desenhaLinha(posX, posY, posX2, posY2, opacidade, voltaLinha) {
       contexto.beginPath();
-      contexto.lineWidth = 0.65;
+      contexto.lineWidth = 0.9;
       contexto.moveTo(posX, posY);
       contexto.lineTo(posX2, posY2);
       if (voltaLinha === true) {
@@ -235,7 +235,7 @@ function particulas() {
    function desfocarParticulas() {
       let tempoTransicao = valorAleatorio(1, 10);
       let tempoEsperar = valorAleatorio(0.6, 10);
-      let desfoque = valorAleatorio(0.8, 5.5);
+      let desfoque = valorAleatorio(0.8, 4);
       particulas.style.transition = "filter " + tempoTransicao + "s linear";
       setTimeout(() => {
          particulas.style.filter = "blur(" + desfoque + "px)";

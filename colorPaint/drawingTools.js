@@ -206,9 +206,7 @@ function drawingTools() {
                     g = camada.data[pixelPos + 1],
                     b = camada.data[pixelPos + 2],
                     a = camada.data[pixelPos + 3];
-                if (r === corSelecionada.r && g === corSelecionada.g && b === corSelecionada.b && a === 255) {
-                    return;
-                }
+                if (r === corSelecionada.r && g === corSelecionada.g && b === corSelecionada.b && a === 255) { return; }
                 preencher(posX, posY, r, g, b, a);
             }
 
@@ -281,9 +279,7 @@ function drawingTools() {
                         return false;
                     }
                 }
-                else {
-                    return false;
-                }
+                else { return false; }
             }
 
             function pintarPixel(pixelPos, R, G, B, A) {
