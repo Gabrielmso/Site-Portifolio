@@ -97,6 +97,7 @@ p {
     background: rgba(0, 0, 0, 0);
     color: rgb(173, 173, 173);
     border: none;
+    font-family: "robotoRegular";
     text-align: center;
     font-size: 12px;
     outline: none;
@@ -228,8 +229,8 @@ p {
     background-color: rgb(58, 58, 58);
     color: rgb(165, 165, 165);
     text-transform: uppercase;
-    padding-left: 10px;
-    padding-right: 10px;
+    font-family: "robotoRegular";
+    padding: 0px 10px;
     transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
     height: 25px;
     text-align: center;
@@ -430,6 +431,7 @@ p {
     border-radius: 7px;
     background-color: rgb(80, 80, 80);
     text-transform: uppercase;
+    font-family: "robotoRegular";
     padding-left: 10px;
     padding-right: 10px;
     transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
@@ -536,6 +538,7 @@ p {
     color: rgb(131, 131, 131);
     border: none;
     border-right: 2px solid rgb(60, 60, 60);
+    font-family: "robotoRegular";
     text-align: center;
     font-size: 11px;
     line-height: 20px;
@@ -626,6 +629,7 @@ p {
     color: rgb(173, 173, 173);
     border: none;
     text-align: center;
+    font-family: "robotoRegular";
     font-size: 11px;
     outline: none;
     padding: 1px;
@@ -764,6 +768,7 @@ p {
     border: none;
     border-bottom: 2px solid rgb(121, 121, 121);
     font-size: 13.5px;
+    font-family: "robotoRegular";
     text-align: center;
     background-color: rgb(37, 37, 37);
     color: rgb(200, 200, 200);
@@ -856,6 +861,7 @@ p {
     border: none;
     width: 50px;
     border-bottom: 2px solid rgb(121, 121, 121);
+    font-family: "robotoRegular";
     font-size: 13.5px;
     text-align: center;
     background-color: rgb(37, 37, 37);
@@ -886,6 +892,7 @@ p {
     background: rgba(0, 0, 0, 0);
     color: rgb(173, 173, 173);
     border: none;
+    font-family: "robotoRegular";
     text-align: center;
     font-size: 14px;
     outline: none;
@@ -1144,6 +1151,7 @@ p {
     width: 38px;
     background-color: rgba(0, 0, 0, 0);
     outline: none;
+    font-family: "robotoRegular";
     border: none;
     font-weight: bold;
 }

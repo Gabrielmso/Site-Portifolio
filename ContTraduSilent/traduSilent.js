@@ -210,7 +210,7 @@ function traduSilent() {
             }, 600);
             setTimeout(() => {//Fazer o "bttdownload" aparecer.
                 document.getElementById("espacoparticulas").style.opacity = "1";
-                // particulas();
+                particulas();
                 bttdownload.style.opacity = "1";
                 bttverdetalhes.style.display = "block";
                 setTimeout(() => {//Fazer o "bttverdetalhes" aparecer.
