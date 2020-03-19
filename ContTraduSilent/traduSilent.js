@@ -130,16 +130,19 @@ function traduSilent() {
             if (comparacao.carrosel) {
                 for (let e = 0; e < comparacao.carrosel.icones.length; e++) {
                     comparacao.carrosel.icones[e].addEventListener("mousedown", () => {
+                        if (mudarCarrosel === false) { return; }
                         contSlideCarrosel = e;
                         mudarSlideCarrosel(e, i);
                     });
                 }
                 comparacao.carrosel.bttEsquerda.addEventListener("mousedown", () => {
+                    if (mudarCarrosel === false) { return; }
                     if (contSlideCarrosel === 0) { contSlideCarrosel = comparacao.carrosel.icones.length - 1; }
                     else { contSlideCarrosel--; }
                     mudarSlideCarrosel(contSlideCarrosel, i);
                 });
                 comparacao.carrosel.bttDireita.addEventListener("mousedown", () => {
+                    if (mudarCarrosel === false) { return; }
                     if (contSlideCarrosel === comparacao.carrosel.icones.length - 1) { contSlideCarrosel = 0; }
                     else { contSlideCarrosel++; }
                     mudarSlideCarrosel(contSlideCarrosel, i);
@@ -207,7 +210,7 @@ function traduSilent() {
             }, 600);
             setTimeout(() => {//Fazer o "bttdownload" aparecer.
                 document.getElementById("espacoparticulas").style.opacity = "1";
-                particulas();
+                // particulas();
                 bttdownload.style.opacity = "1";
                 bttverdetalhes.style.display = "block";
                 setTimeout(() => {//Fazer o "bttverdetalhes" aparecer.
@@ -310,7 +313,6 @@ function traduSilent() {
     }
 
     function mudarSlideCarrosel(numSlide, numSessao) {
-        if (mudarCarrosel === false) { return; }
         mudarCarrosel = false;
         const slides = sessao[numSessao].comparacao.carrosel.slides, icones = sessao[numSessao].comparacao.carrosel.icones,
             contentIcones = sessao[numSessao].comparacao.carrosel.contentIcons;
