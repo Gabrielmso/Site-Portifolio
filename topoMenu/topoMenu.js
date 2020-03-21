@@ -31,7 +31,6 @@ function topoMenu() {
     scrollposicao = document.body.scrollTop || document.documentElement.scrollTop;
 
     redimencionarjanela();
-
     telamenor651px();
 
     window.addEventListener("resize", function () {
@@ -52,32 +51,18 @@ function topoMenu() {
             iconesetablacknormal();
         }
         if (scrollposicao > 5 && mudarMenu === true) {
-            menu.classList.remove("iniciomenu");
-            menu.classList.add("mudamenu");
-            logoBlack.classList.remove("iniciologoBlack");
-            logoBlack.classList.add("mudalogoBlack");
-            iconesetablack.classList.remove("inicioiconeblack");
-            iconesetablack.classList.add("mudaiconeblack");
-            iconemenublack.classList.remove("inicioiconeblack");
-            iconemenublack.classList.add("mudaiconeblack");
-            for (let i = 0; i < arrayop.length; i++) {
-                arrayop[i].classList.remove("inicioopcoes");
-                arrayop[i].classList.add("mudaopcoes");
-            }
+            menu.classList.replace("iniciomenu", "mudamenu");
+            logoBlack.classList.replace("iniciologoBlack", "mudalogoBlack");
+            iconesetablack.classList.replace("inicioiconeblack", "mudaiconeblack");
+            iconemenublack.classList.replace("inicioiconeblack", "mudaiconeblack");
+            for (let i = 0; i < arrayop.length; i++) { arrayop[i].classList.replace("inicioopcoes", "mudaopcoes"); }
         }
         else {
-            menu.classList.remove("mudamenu");
-            menu.classList.add("iniciomenu");
-            logoBlack.classList.remove("mudalogoBlack");
-            logoBlack.classList.add("iniciologoBlack");
-            iconesetablack.classList.remove("mudaiconeblack");
-            iconesetablack.classList.add("inicioiconeblack");
-            iconemenublack.classList.remove("mudaiconeblack");
-            iconemenublack.classList.add("inicioiconeblack");
-            for (let i = 0; i < arrayop.length; i++) {
-                arrayop[i].classList.remove("mudaopcoes");
-                arrayop[i].classList.add("inicioopcoes");
-            }
+            menu.classList.replace("mudamenu", "iniciomenu");
+            logoBlack.classList.replace("mudalogoBlack", "iniciologoBlack");
+            iconesetablack.classList.replace("mudaiconeblack", "inicioiconeblack");
+            iconemenublack.classList.replace("mudaiconeblack", "inicioiconeblack");
+            for (let i = 0; i < arrayop.length; i++) { arrayop[i].classList.replace("mudaopcoes", "inicioopcoes"); }
         }
     }, 110, true));
 
@@ -93,8 +78,7 @@ function topoMenu() {
             for (let i = 0; i < arraytracoseta.length; i++) {
                 let nomeclasseinicio = "iniciotracoseta" + i;
                 let nomeclassemuda = "movertracoseta" + i;
-                arraytracoseta[i].classList.remove(nomeclasseinicio);
-                arraytracoseta[i].classList.add(nomeclassemuda);
+                arraytracoseta[i].classList.replace(nomeclasseinicio, nomeclassemuda);
             }
         }
     });
@@ -113,56 +97,42 @@ function topoMenu() {
         for (let i = 0; i < arraytracoseta.length; i++) {
             let nomeclasseinicio = "iniciotracoseta" + i;
             let nomeclassemuda = "movertracoseta" + i;
-            arraytracoseta[i].classList.remove(nomeclassemuda);
-            arraytracoseta[i].classList.add(nomeclasseinicio);
+            arraytracoseta[i].classList.replace(nomeclassemuda, nomeclasseinicio);
         }
     }
 
     function acaobotaomenu() {//Abrir o menu e fazer a "animação" do "iconemenublack".
         if (fundomenu.classList.contains("fechafundomenu") === true) {
-            fundomenu.classList.remove("fechafundomenu");
-            fundomenu.classList.add("abrefundomenu");
-            traco1.classList.remove("iniciotraco1");
-            traco1.classList.add("movertraco1");
+            fundomenu.classList.replace("fechafundomenu", "abrefundomenu")
+            traco1.classList.replace("iniciotraco1", "movertraco1");
             traco2.classList.add("movertraco2");
-            traco3.classList.remove("iniciotraco3");
-            traco3.classList.add("movertraco3");
-        }
+            traco3.classList.replace("iniciotraco3", "movertraco3");
+        } 
         else {
-            fundomenu.classList.remove("abrefundomenu");
-            fundomenu.classList.add("fechafundomenu");
-            traco1.classList.remove("movertraco1");
-            traco1.classList.add("iniciotraco1");
+            fundomenu.classList.replace("abrefundomenu", "fechafundomenu")
+            traco1.classList.replace("movertraco1", "iniciotraco1");
             traco2.classList.remove("movertraco2");
-            traco3.classList.remove("movertraco3");
-            traco3.classList.add("iniciotraco3");
-        };
+            traco3.classList.replace("movertraco3", "iniciotraco3");
+        }
     };
 
     function telamenor651px() {
         if (mudarMenu === true) {
             if (scrollposicao > 5) {
-                menu.classList.remove("iniciomenu");
-                menu.classList.add("mudamenu");
-                logoBlack.classList.remove("iniciologoBlack");
-                logoBlack.classList.add("mudalogoBlack");
+                menu.classList.replace("iniciomenu", "mudamenu");
+                logoBlack.classList.replace("iniciologoBlack", "mudalogoBlack");
             }
             else {
-                menu.classList.remove("mudamenu");
-                menu.classList.add("iniciomenu");
-                logoBlack.classList.remove("mudalogoBlack");
-                logoBlack.classList.add("iniciologoBlack");
+                menu.classList.replace("mudamenu", "iniciomenu");
+                logoBlack.classList.replace("mudalogoBlack", "iniciologoBlack");
             }
 
             if (window.innerWidth > 650) {
                 logoBlack.style.left = "0px";
-                fundomenu.classList.remove("abrefundomenu");
-                fundomenu.classList.add("fechafundomenu");
-                traco1.classList.remove("movertraco1");
-                traco1.classList.add("iniciotraco1");
+                fundomenu.classList.replace("abrefundomenu", "fechafundomenu")
+                traco1.classList.replace("movertraco1", "iniciotraco1");
                 traco2.classList.remove("movertraco2");
-                traco3.classList.remove("movertraco3");
-                traco3.classList.add("iniciotraco3");
+                traco3.classList.replace("movertraco3", "iniciotraco3");
             }
         }
     };
@@ -171,7 +141,6 @@ function topoMenu() {
         fundomenu.style.height = (window.innerHeight * 2) + "px";
     };
 };
-
 // function debounce(func, wait, immediate) {
 //     let timeout;
 //     return function () {
@@ -197,12 +166,10 @@ function throttle(func, wait, immediate) {
             func.apply(this, arguments)
             timeout = null
         }
-
         if (callNow) {
             initialCall = false
             next()
         }
-
         if (!timeout) {
             timeout = setTimeout(next, wait)
         }

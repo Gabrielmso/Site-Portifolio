@@ -38,7 +38,7 @@ function janelaSeletorDeCor() {
             arrayCoresSalvas[id].selecionado = true;
             arrayCoresSalvas[id].elemento.style.boxShadow = "0px 0px 4px rgb(255, 255, 255)";
             corEscolhidaPrincipal = arrayCoresSalvas[id].cor;
-            drawingTools.toolProperties.color = corEscolhidaPrincipal;
+            Tools.toolProperties.color = corEscolhidaPrincipal;
             corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
             txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
             for (let i = 0; i < arrayCoresSalvas.length; i++) {
@@ -48,7 +48,9 @@ function janelaSeletorDeCor() {
                 }
             }
         }
-        else { this.procurarCor(arrayCoresSalvas[id].cor); }
+        else {
+            this.procurarCor(arrayCoresSalvas[id].cor);
+        }
     }
 
     this.salvarCor = (corParaSalvar) => {
@@ -81,8 +83,8 @@ function janelaSeletorDeCor() {
     }
 
     this.abrir = (cor) => {
-        drawingTools.previousTool = drawingTools.selectedTool;
-        drawingTools.arrayTools[6].tool.click();//Mudar para a ferramenta Conta-gotas.
+        previousTool = selectedTool;
+        arrayDrawingTools[6].tool.click();//Mudar para a ferramenta Conta-gotas.
         janelaSelecionarCor.style.display = "block";
         janelaSelecionarCorVisivel = true;
         this.procurarCor(cor);
@@ -91,7 +93,7 @@ function janelaSeletorDeCor() {
     this.fechar = () => {
         janelaSelecionarCor.style.display = "none";
         janelaSelecionarCorVisivel = false;
-        drawingTools.arrayTools[drawingTools.previousTool].tool.click();//Voltar para a ferramenta selecionada antes de abrir a "janelaSelecionarCor".
+        arrayDrawingTools[previousTool].tool.click();//Voltar para a ferramenta selecionada antes de abrir a "janelaSelecionarCor".
     }
 
     preencheBarraEspectro();
@@ -118,11 +120,19 @@ function janelaSeletorDeCor() {
     function moverCursores(e) {//Calcula a posição do mouse na "janelaSelecionarCor"
         const posMouse = pegarPosicaoMouse(janelaSelecionarCor, e);
         posMouseJanela = posMouse;
-        if (clickGradiente === true) { moverCursor2(posMouseJanela.X, posMouseJanela.Y); }
+        if (clickGradiente === true) {
+            moverCursor2(posMouseJanela.X, posMouseJanela.Y);
+        }
         else if (clickBarra === true) {
-            if (posMouseJanela.X > 540) { moverCursorBarra(540 - 10); }
-            else if (posMouseJanela.X < 10) { moverCursorBarra(0); }
-            else { moverCursorBarra(posMouseJanela.X - 10); }
+            if (posMouseJanela.X > 540) {
+                moverCursorBarra(540 - 10);
+            }
+            else if (posMouseJanela.X < 10) {
+                moverCursorBarra(0);
+            }
+            else {
+                moverCursorBarra(posMouseJanela.X - 10);
+            }
         }
     }
 
@@ -179,7 +189,9 @@ function janelaSeletorDeCor() {
     codRGB.addEventListener("keyup", (e) => {
         let codCorAchar = e.target.value;
         codCorAchar = codCorAchar.split(",") || codCorAchar.split(", ");
-        for (let i = 0; i < codCorAchar.length; i++) { codCorAchar[i] = parseInt(codCorAchar[i]); }
+        for (let i = 0; i < codCorAchar.length; i++) {
+            codCorAchar[i] = parseInt(codCorAchar[i]);
+        }
         if (codCorAchar.length === 3) {
             if (codCorAchar[0] <= 255 && codCorAchar[1] <= 255 && codCorAchar[2] <= 255) {
                 corParaAchar = { R: codCorAchar[0], G: codCorAchar[1], B: codCorAchar[2] }
@@ -190,7 +202,9 @@ function janelaSeletorDeCor() {
 
     codHEX.addEventListener("keyup", (e) => {
         let codCorHEX = e.target.value;
-        if (codCorHEX.indexOf("#") === -1) { codCorHEX = "#" + codCorHEX; }
+        if (codCorHEX.indexOf("#") === -1) {
+            codCorHEX = "#" + codCorHEX;
+        }
         let codCorAchar = hexToRgb(codCorHEX);
         if (codCorAchar != null) {
             if (codCorAchar[0] <= 255 && codCorAchar[1] <= 255 && codCorAchar[2] <= 255) {
@@ -209,7 +223,7 @@ function janelaSeletorDeCor() {
     document.getElementById("bttOkSelecionaCor").addEventListener("click", () => {
         if (corPrincipalOuSecundaria === 1) {
             corEscolhidaPrincipal = corEscolhida;
-            drawingTools.toolProperties.color = corEscolhidaPrincipal
+            Tools.toolProperties.color = corEscolhidaPrincipal
             corPrincipal.style.backgroundColor = "rgb(" + corEscolhida.R + ", " + corEscolhida.G + ", " + corEscolhida.B + ")";
         }
         else if (corPrincipalOuSecundaria === 2) {
@@ -231,8 +245,12 @@ function janelaSeletorDeCor() {
             let novoArray = [];
             for (let i = 0; i < arrayCoresSalvas.length; i++) {
                 arrayCoresSalvas[i].elemento.removeEventListener("click", bttCorSalva);
-                if (arrayCoresSalvas[i].selecionado === true) { coresSalvas.removeChild(arrayCoresSalvas[i].elemento); }
-                else { novoArray.push(arrayCoresSalvas[i]); }
+                if (arrayCoresSalvas[i].selecionado === true) {
+                    coresSalvas.removeChild(arrayCoresSalvas[i].elemento);
+                }
+                else {
+                    novoArray.push(arrayCoresSalvas[i]);
+                }
             }
             arrayCoresSalvas = novoArray;
             for (let i = 0; i < arrayCoresSalvas.length; i++) {
@@ -242,22 +260,42 @@ function janelaSeletorDeCor() {
                 arrayCoresSalvas[i].elemento.setAttribute("id", id);
                 arrayCoresSalvas[i].elemento.addEventListener("click", bttCorSalva);
             }
-            if (arrayCoresSalvas.length === 0) { bttRemoverCorSalva.style.display = "none"; }
+            if (arrayCoresSalvas.length === 0) {
+                bttRemoverCorSalva.style.display = "none";
+            }
         }
     });
 
     document.getElementById("bttCancelarSelecionaCor").addEventListener("click", () => this.fechar());
 
     function moverCursor2(X, Y) {
-        if (X <= 540 && X >= 110 && Y <= 265 && Y >= 10) { moverCursorGradiente(X - 120, Y - 20); }
-        else if (X > 540 && Y < 10) { moverCursorGradiente(540 - 120, 10 - 20); }
-        else if (X > 540 && Y < 265) { moverCursorGradiente(540 - 120, Y - 20); }
-        else if (X > 540 && Y >= 265) { moverCursorGradiente(540 - 120, 265 - 20); }
-        else if (X <= 540 && X >= 110 && Y >= 265) { moverCursorGradiente(X - 120, 265 - 20); }
-        else if (X < 110 && Y >= 265) { moverCursorGradiente(110 - 120, 265 - 20); }
-        else if (X < 110 && Y < 265 && Y > 10) { moverCursorGradiente(110 - 120, Y - 20); }
-        else if (X < 110 && Y <= 10) { moverCursorGradiente(110 - 120, 10 - 20); }
-        else if (X <= 540 && X >= 110 && Y <= 10) { moverCursorGradiente(X - 120, 10 - 20); }
+        if (X <= 540 && X >= 110 && Y <= 265 && Y >= 10) {
+            moverCursorGradiente(X - 120, Y - 20);
+        }
+        else if (X > 540 && Y < 10) {
+            moverCursorGradiente(540 - 120, 10 - 20);
+        }
+        else if (X > 540 && Y < 265) {
+            moverCursorGradiente(540 - 120, Y - 20);
+        }
+        else if (X > 540 && Y >= 265) {
+            moverCursorGradiente(540 - 120, 265 - 20);
+        }
+        else if (X <= 540 && X >= 110 && Y >= 265) {
+            moverCursorGradiente(X - 120, 265 - 20);
+        }
+        else if (X < 110 && Y >= 265) {
+            moverCursorGradiente(110 - 120, 265 - 20);
+        }
+        else if (X < 110 && Y < 265 && Y > 10) {
+            moverCursorGradiente(110 - 120, Y - 20);
+        }
+        else if (X < 110 && Y <= 10) {
+            moverCursorGradiente(110 - 120, 10 - 20);
+        }
+        else if (X <= 540 && X >= 110 && Y <= 10) {
+            moverCursorGradiente(X - 120, 10 - 20);
+        }
     }
 
     colorPaintContent.addEventListener("mousemove", (e) => {
@@ -340,7 +378,9 @@ function janelaSeletorDeCor() {
 //================================================================================================================================
 function hexToRgb(hex) {
     const resul = hex.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
-    if (resul) { return resul.slice(1, 4).map(function (x) { return parseInt(x, 16); }); }
+    if (resul) {
+        return resul.slice(1, 4).map(function (x) { return parseInt(x, 16); });
+    }
     return null;
 }
 

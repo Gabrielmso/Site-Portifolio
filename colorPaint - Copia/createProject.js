@@ -156,7 +156,7 @@ function criarCamada(cor, resolucao) {
         styleIconTela = styleIconTela + "background-color: " + cor;
     }
     else {
-        styleIconTela = styleIconTela + "background-image: url('static/drawApp/imagens/fundoTela/transparenteMiniatura.png')";
+        styleIconTela = styleIconTela + "background-image: url('/colorPaint/imagens/fundoTela/transparenteMiniatura.png')";
     }
 
     iconTela.setAttribute("style", styleIconTela);
@@ -251,26 +251,4 @@ function mouseSobre() {
 
 function mouseFora() {
     MouseNoBttVer = false;
-}
-
-function ajustarPreview(cor) {
-    const proporcaoEspaco = 256 / 150;
-    if (projeto.resolucao.proporcao >= proporcaoEspaco) {
-        const novaAltura = (256 / projeto.resolucao.proporcao);
-        contentTelaPreview.style.width = "256px";
-        contentTelaPreview.style.height = novaAltura + "px";
-    }
-    else {
-        const novaLargura = (150 * projeto.resolucao.proporcao);
-        contentTelaPreview.style.width = novaLargura + "px";
-        contentTelaPreview.style.height = "150px";
-    }
-    if (cor != false) {
-        contentTelaPreview.style.backgroundColor = cor;
-    }
-    else {
-        contentTelaPreview.style.backgroundImage = "url('static/drawApp/imagens/fundoTela/transparenteMiniatura.png')";
-    }
-    telaPreview.width = contentTelaPreview.offsetWidth * 2;
-    telaPreview.height = contentTelaPreview.offsetHeight * 2;
 }

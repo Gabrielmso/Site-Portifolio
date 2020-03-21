@@ -1,18 +1,5 @@
-function drawingToolsObject() {
+function drawingTools() {
     return {
-        arrayTools: [
-            { tool: document.getElementById("pincel"), name: "brush", id: 0 },
-            { tool: document.getElementById("linha"), name: "line", id: 1 },
-            { tool: document.getElementById("retangulo"), name: "rectangle", id: 2 },
-            { tool: document.getElementById("elipse"), name: "ellipse", id: 3 },
-            { tool: document.getElementById("borracha"), name: "eraser", id: 4 },
-            { tool: document.getElementById("curva"), name: "curve", id: 5 },
-            { tool: document.getElementById("contaGotas"), name: "eyeDropper", id: 6 },
-            { tool: document.getElementById("baldeDeTinta"), name: "paintBucket", id: 7 }
-        ],
-        selectedTool: 0,
-        previousTool: null,
-        clickToCurve: false,
         toolProperties: {
             size: 5, opacity: 1, hardness: 1, color: { R: 0, G: 0, B: 0 }
         },
@@ -34,28 +21,6 @@ function drawingToolsObject() {
             txt: document.getElementById("txtDurezaFerramenta"),
             clicked: false
         },
-        selectDrawingTool(index) {
-            this.selectedTool = this.arrayTools[index].id;
-            this.arrayTools[index].tool.classList.remove("bttFerramentas");
-            this.arrayTools[index].tool.classList.add("bttFerramentasEscolhida");
-            for (let e = 0; e < this.arrayTools.length; e++) {
-                if (e != index) {
-                    this.arrayTools[e].tool.classList.remove("bttFerramentasEscolhida");
-                    this.arrayTools[e].tool.classList.add("bttFerramentas");
-                }
-            }
-            if (this.selectedTool === 6) {
-                document.getElementById("propriedadesFerramentas").style.display = "none";
-            }
-            else {
-                document.getElementById("propriedadesFerramentas").style.display = "block";
-            }
-            coordenadaClick.x = [];
-            coordenadaClick.y = [];
-            this.clickToCurve = false;
-            mudarAparenciaCursor(this.toolProperties.size);
-            ctxPintar.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
-        },
         changeToolSize(mouseEvent) {
             let mousePos = pegarPosicaoMouse(this.toolSizeBar.bar, mouseEvent);
             mousePos.X = Math.round(mousePos.X);
@@ -74,7 +39,7 @@ function drawingToolsObject() {
                 this.toolSizeBar.txt.value = mousePos.X + "px";
             }
             this.toolProperties.size = mousePos.X;
-            mudarAparenciaCursor(this.toolProperties.size);
+            mudarAparenciaCursor();
         },
         changeToolOpacity(mouseEvent) {
             const mousePos = pegarPosicaoMouse(this.toolOpacityBar.bar, mouseEvent);
@@ -127,18 +92,16 @@ function drawingToolsObject() {
             ctxPintar.strokeStyle = "rgba(" + color.R + ", " + color.G + ", " + color.B + ", " + this.toolProperties.opacity + ")";
         },
         brush(mouseX, mouseY) {
-            coordenadaClick.x.push(mouseX);
-            coordenadaClick.y.push(mouseY);
+            coordenadaClick.push({ x: mouseX, y: mouseY });
             ctxPintar.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
-            let ponto1 = { x: coordenadaClick.x[0], y: coordenadaClick.y[0] };
-            let ponto2 = { x: coordenadaClick.x[1], y: coordenadaClick.y[1] };
+            let ponto1 = coordenadaClick[0], ponto2 = coordenadaClick[1];
             ctxPintar.beginPath();
             ctxPintar.moveTo(ponto1.x, ponto1.y);
-            for (let i = 0; i < coordenadaClick.x.length; i++) {
+            for (let i = 0; i < coordenadaClick.length; i++) {
                 const midPoint = midPointBtw(ponto1, ponto2);
                 ctxPintar.quadraticCurveTo(ponto1.x, ponto1.y, midPoint.x, midPoint.y);
-                ponto1 = { x: coordenadaClick.x[i], y: coordenadaClick.y[i] };
-                ponto2 = { x: coordenadaClick.x[i + 1], y: coordenadaClick.y[i + 1] };
+                ponto1 = coordenadaClick[i];
+                ponto2 = coordenadaClick[i + 1];
             }
             ctxPintar.lineTo(ponto1.x, ponto1.y);
             ctxPintar.stroke();
@@ -151,31 +114,23 @@ function drawingToolsObject() {
             }
         },
         line(mouseX, mouseY) {
-            coordenadaClick.x[1] = mouseX;
-            coordenadaClick.y[1] = mouseY;
+            coordenadaClick[1] = { x: mouseX, y: mouseY };
             ctxPintar.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
-            const pontoInicial = { x: coordenadaClick.x[0], y: coordenadaClick.y[0] },
-                pontoFinal = { x: coordenadaClick.x[1], y: coordenadaClick.y[1] };
+            const pontoInicial = coordenadaClick[0], pontoFinal = coordenadaClick[1];
             ctxPintar.beginPath();
             ctxPintar.moveTo(pontoInicial.x, pontoInicial.y);
             ctxPintar.lineTo(pontoFinal.x, pontoFinal.y);
             ctxPintar.stroke();
         },
         rectangle(mouseX, mouseY) {
-            coordenadaClick.x[1] = mouseX;
-            coordenadaClick.y[1] = mouseY;
             ctxPintar.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
-            const pontoInicial = { x: coordenadaClick.x[0], y: coordenadaClick.y[0] },
-                pontoFinal = { x: coordenadaClick.x[1], y: coordenadaClick.y[1] };
+            const pontoInicial = coordenadaClick[0], pontoFinal = { x: mouseX, y: mouseY };
             ctxPintar.beginPath();
             ctxPintar.strokeRect(pontoInicial.x, pontoInicial.y, pontoFinal.x - pontoInicial.x, pontoFinal.y - pontoInicial.y);
         },
         ellipse(mouseX, mouseY) {
-            coordenadaClick.x[1] = mouseX;
-            coordenadaClick.y[1] = mouseY;
             ctxPintar.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
-            const pontoInicial = { x: coordenadaClick.x[0], y: coordenadaClick.y[0] },
-                pontoFinal = { x: coordenadaClick.x[1], y: coordenadaClick.y[1] };
+            const pontoInicial = coordenadaClick[0], pontoFinal = { x: mouseX, y: mouseY };
             const raioX = (pontoFinal.x - pontoInicial.x) / 2, raioY = (pontoFinal.y - pontoInicial.y) / 2;
             const centroEixoX = pontoInicial.x + raioX, centroEixoY = pontoInicial.y + raioY;
             const passoAngulo = 0.005;
@@ -190,18 +145,14 @@ function drawingToolsObject() {
         },
         curve(mouseX, mouseY, curvar) {
             if (curvar === false) {
-                coordenadaClick.x[1] = mouseX;
-                coordenadaClick.y[1] = mouseY;
+                coordenadaClick[1] = { x: mouseX, y: mouseY };
             }
             ctxPintar.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
-            const pontoInicial = { x: coordenadaClick.x[0], y: coordenadaClick.y[0] },
-                pontoFinal = { x: coordenadaClick.x[1], y: coordenadaClick.y[1] };
+            const pontoInicial = coordenadaClick[0], pontoFinal = coordenadaClick[1];
             ctxPintar.beginPath();
             ctxPintar.moveTo(pontoInicial.x, pontoInicial.y);
             if (curvar === true) {
-                coordenadaClick.x[2] = mouseX;
-                coordenadaClick.y[2] = mouseY;
-                const pontoControle = { x: coordenadaClick.x[2], y: coordenadaClick.y[2] };
+                const pontoControle = coordenadaClick[2] = { x: mouseX, y: mouseY };
                 ctxPintar.quadraticCurveTo(pontoControle.x, pontoControle.y, pontoFinal.x, pontoFinal.y);
             }
             else {
@@ -243,23 +194,22 @@ function drawingToolsObject() {
                 }
             }
         },
-        paintBucket(mouseX, mouseY, context, selectedColor) {
-            coordenadaClick.x[0] = Math.round(mouseX);
-            coordenadaClick.y[0] = Math.round(mouseY);
-            const camada = context.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura),
+        paintBucket(mouseX, mouseY, context, cor) {
+            const corSelecionada = cor,
+                camada = context.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura),
                 canvasEvent = ctxPintar.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
-            pintar(coordenadaClick.x[0], coordenadaClick.y[0]);
+
+            pintar(Math.round(mouseX), Math.round(mouseY));
             function pintar(posX, posY) {
                 const pixelPos = (posY * projeto.resolucao.largura + posX) * 4,
                     r = camada.data[pixelPos],
                     g = camada.data[pixelPos + 1],
                     b = camada.data[pixelPos + 2],
                     a = camada.data[pixelPos + 3];
-                if (r === selectedColor.R && g === selectedColor.G && b === selectedColor.B && a === 255) {
-                    return;
-                }
+                if (r === corSelecionada.r && g === corSelecionada.g && b === corSelecionada.b && a === 255) { return; }
                 preencher(posX, posY, r, g, b, a);
             }
+
             function preencher(posClickX, posClickY, R, G, B, A) {
                 let pixelsVerificados = [[posClickX, posClickY]];
                 while (pixelsVerificados.length > 0) {
@@ -270,12 +220,12 @@ function drawingToolsObject() {
                         y = y - 1;
                         posicaoPixel = posicaoPixel - projeto.resolucao.largura * 4;
                     }
-                    pintarPixel(posicaoPixel, selectedColor.R, selectedColor.G, selectedColor.B, selectedColor.A);
+                    pintarPixel(posicaoPixel, corSelecionada.r, corSelecionada.g, corSelecionada.b, corSelecionada.a);
                     posicaoPixel = posicaoPixel + projeto.resolucao.largura * 4;
                     y = y + 1;
                     let ladoEsquerdo = false, ladoDireito = false;
                     while (y <= projeto.resolucao.altura && compararCorInicial(posicaoPixel, R, G, B, A)) {
-                        pintarPixel(posicaoPixel, selectedColor.R, selectedColor.G, selectedColor.B, selectedColor.A);
+                        pintarPixel(posicaoPixel, corSelecionada.r, corSelecionada.g, corSelecionada.b, corSelecionada.a);
                         y = y + 1;
                         if (x > 0) {
                             if (compararCorInicial(posicaoPixel - 4, R, G, B, A) === true) {
@@ -285,7 +235,7 @@ function drawingToolsObject() {
                                 }
                             }
                             else {
-                                pintarPixel(posicaoPixel - 4, selectedColor.R, selectedColor.G, selectedColor.B, selectedColor.A);
+                                pintarPixel(posicaoPixel - 4, corSelecionada.r, corSelecionada.g, corSelecionada.b, corSelecionada.a);
                                 if (ladoEsquerdo === true) {
                                     ladoEsquerdo = false;
                                 }
@@ -299,7 +249,7 @@ function drawingToolsObject() {
                                 }
                             }
                             else {
-                                pintarPixel(posicaoPixel + 4, selectedColor.R, selectedColor.G, selectedColor.B, selectedColor.A);
+                                pintarPixel(posicaoPixel + 4, corSelecionada.r, corSelecionada.g, corSelecionada.b, corSelecionada.a);
                                 if (ladoDireito === true) {
                                     ladoDireito = false;
                                 }
@@ -307,10 +257,11 @@ function drawingToolsObject() {
                         }
                         posicaoPixel = posicaoPixel + projeto.resolucao.largura * 4;
                     }
-                    pintarPixel(posicaoPixel, selectedColor.R, selectedColor.G, selectedColor.B, selectedColor.A);
+                    pintarPixel(posicaoPixel, corSelecionada.r, corSelecionada.g, corSelecionada.b, corSelecionada.a);
                 }
                 ctxPintar.putImageData(canvasEvent, 0, 0);
             }
+
             function compararCorInicial(pixelPos, clickR, clickG, clickB, clickA) {
                 const r = camada.data[pixelPos],
                     g = camada.data[pixelPos + 1],
@@ -318,20 +269,19 @@ function drawingToolsObject() {
                     a = camada.data[pixelPos + 3];
 
                 if (canvasEvent.data[pixelPos + 3] === 0) {
-                    if (clickR === selectedColor.R && clickG === selectedColor.G && clickB === selectedColor.B && clickA === 255) {
+                    if (clickR === corSelecionada.r && clickG === corSelecionada.g && clickB === corSelecionada.b && clickA === 255) {
                         return false;
                     }
                     if (r === clickR && g === clickG && b === clickB && a === clickA) {
                         return true;
                     }
-                    if (r === selectedColor.R && g === selectedColor.G && b === selectedColor.B && a === selectedColor.A) {
+                    if (r === corSelecionada.r && g === corSelecionada.g && b === corSelecionada.b && a === corSelecionada.a) {
                         return false;
                     }
                 }
-                else {
-                    return false;
-                }
+                else { return false; }
             }
+
             function pintarPixel(pixelPos, R, G, B, A) {
                 canvasEvent.data[pixelPos] = R;
                 canvasEvent.data[pixelPos + 1] = G;
@@ -343,24 +293,6 @@ function drawingToolsObject() {
                 camada.data[pixelPos + 2] = B;
                 camada.data[pixelPos + 3] = A;
             }
-        }
-    }
-}
-
-function mudarAparenciaCursor(toolSize) {
-    if (drawingTools.selectedTool === 6) {
-        contentTelas.style.cursor = "url('colorPaint/imagens/cursor/cursorContaGotas.png') 0 20, pointer";
-        return;
-    };
-    if (drawingTools.selectedTool === 7) {
-        contentTelas.style.cursor = "url('colorPaint/imagens/cursor/cursorBaldeDeTinta.png') 0 0, pointer";
-        return;
-    };
-    const tamanho = toolSize * ((telasCanvas.offsetWidth) / projeto.resolucao.largura);
-    if (tamanho < 20) {
-        contentTelas.style.cursor = "url('colorPaint/imagens/cursor/crossHair.png') 12.5 12.5, pointer";
-    }
-    else {
-        contentTelas.style.cursor = "url('colorPaint/imagens/cursor/circle.png') 10 10, pointer";
+        },
     }
 }
