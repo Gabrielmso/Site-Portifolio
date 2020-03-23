@@ -14,7 +14,7 @@ function validarPropriedades() {
             el.style.backgroundColor = "rgba(0, 0, 0, 0)";
         }
     }
-    let nomeProjeto = (arrayPropriedades[0].value).replace(/ /g, "-"),
+    const nomeProjeto = (arrayPropriedades[0].value).replace(/ /g, "-"),
         larguraProjeto = parseInt(arrayPropriedades[1].value),
         alturaProjeto = parseInt(arrayPropriedades[2].value),
         valueCor = parseInt(arrayPropriedades[3].value),

@@ -402,7 +402,7 @@ function colorPaint() {
         else if (hotKeys.spacePressed === true && moverDesenhoEspaco.mover === true) {
             moverDesenhoComEspaco(moverDesenhoEspaco, pegarPosicaoMouse(contentTelas, e));
         }
-    }, 11));
+    }, 10));
 
     document.getElementById("bttZoomMais").addEventListener("click", function () {//Aumentar o zoom no projeto.
         if (projetoCriado === false) { return; };
@@ -479,7 +479,8 @@ function colorPaint() {
 
     document.addEventListener("keydown", function (e) {//Criar teclas de atalho.
         if (projetoCriado === false) { return; }
-        if (hotKeys.ctrlPressed === true && pintando === false) {//Teclas de atalho com o ctrl.
+        if (pintando === true) { e.preventDefault(); return; }
+        if (hotKeys.ctrlPressed === true) {//Teclas de atalho com o ctrl.
             const keyFunction = hotKeys.keyDown[e.code];
             if (keyFunction) {
                 e.preventDefault();
@@ -487,7 +488,7 @@ function colorPaint() {
                 keyFunction();
             }
         }
-        else if (pintando === false) {
+        else {
             if (e.code === "BracketRight") {//Aumentar o tamanho da ferramenta.
                 alterarTamanhoFerramenta(true);
             }
@@ -499,7 +500,7 @@ function colorPaint() {
             e.preventDefault();
             hotKeys.keyDownControl();
         }
-        if (e.code === "Space" && pintando === false) {
+        if (e.code === "Space") {
             e.preventDefault();
             hotKeys.keyDownSpace();
         }
@@ -521,10 +522,10 @@ function colorPaint() {
         if (hotKeys.ctrlPressed === true && projetoCriado === true) {
             e.preventDefault();
             if (e.deltaY < 0) {
-                zoomNoProjeto(true, false, 1.076, e);
+                zoomNoProjeto(true, false, 1.11, e);
             }
             else {
-                zoomNoProjeto(false, false, 1.076, e);
+                zoomNoProjeto(false, false, 1.11, e);
             }
             const posContentTelas = pegarPosicaoMouse(contentTelas, e);
             const proporcaoPosY = posicaoMouse.Y / projeto.resolucao.altura;
@@ -815,26 +816,15 @@ function zoomNoProjeto(zoom, centralizar, quanto) {
         telasCanvas.style.width = larguraAtual + "px";
         telasCanvas.style.height = alturaAtual + "px";
     }
-    if (larguraAtual >= (contentTelas.offsetWidth - 12)) {
-        telasCanvas.style.left = "6px";
-    }
-    else {
-        telasCanvas.style.left = (contentTelas.offsetWidth / 2) - (larguraAtual / 2) + "px";
-    }
-    if (alturaAtual >= (contentTelas.offsetHeight - 12)) {
-        telasCanvas.style.top = "6px";
-    }
-    else {
-        telasCanvas.style.top = (contentTelas.offsetHeight / 2) - (alturaAtual / 2) + "px";
-    }
+    if (larguraAtual >= (contentTelas.offsetWidth - 12)) { telasCanvas.style.left = "6px"; }
+    else { telasCanvas.style.left = (contentTelas.offsetWidth / 2) - (larguraAtual / 2) + "px"; }
+    if (alturaAtual >= (contentTelas.offsetHeight - 12)) { telasCanvas.style.top = "6px"; }
+    else { telasCanvas.style.top = (contentTelas.offsetHeight / 2) - (alturaAtual / 2) + "px"; }
     if (centralizar === true) {
         contentTelas.scrollTop = ((alturaAtual / 2) + 12) - (contentTelas.offsetHeight / 2);
         contentTelas.scrollLeft = ((larguraAtual / 2) + 12) - (contentTelas.offsetWidth / 2);
     }
-
-    let zoomTelasCanvas = ((larguraAtual * 100) / projeto.resolucao.largura).toFixed(2);
-    zoomTelasCanvas = zoomTelasCanvas.replace(".", ",");
-    txtPorcentagemZoom.value = zoomTelasCanvas + "%";
+    txtPorcentagemZoom.value = ((larguraAtual * 100) / projeto.resolucao.largura).toFixed(2).replace(".", ",") + "%";
     tamanhoMoverScroll();
     mudarAparenciaCursor(drawingTools.toolProperties.size);
 }
@@ -894,7 +884,7 @@ function moverScrollNaTelaPreview(mouseX, mouseY) {//Mover o "moverScroll" com o
 }
 
 function moverScrollContentTelas(topPos, leftPos) {//Mudar o valor dos Scroll's do contentTelas movendo o "moverScroll".
-    const mult = (contentTelas.scrollWidth) / (telaPreview.offsetWidth);
+    const mult = (contentTelas.scrollWidth) / (telaPreview.offsetWidth + 2);
     contentTelas.scrollTop = (topPos * mult);
     contentTelas.scrollLeft = (leftPos * mult);
 }

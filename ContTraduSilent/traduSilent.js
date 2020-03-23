@@ -96,6 +96,7 @@ function traduSilent() {
         else { traprogress.style.marginTop = "0px"; }
         ajustarElementos();
         ajustarimgscomparacao();
+        ajustarBlurFundo();
         mudarMenu();
     });
 
@@ -191,7 +192,7 @@ function traduSilent() {
 
     function carregamento() {//Faz os elementos do primeiro "slide" aparecerem e após isso permite trocar de slide.
         document.getElementById("conteudoSlide1").style.opacity = "1";
-        document.getElementById("fundo1").style.filter = "";
+        ajustarBlurFundo();
         info.style.display = "block";
         traprogress.style.display = "block";
         tmp = setInterval(brilhotitulo, 1500);
@@ -424,6 +425,16 @@ function traduSilent() {
         for (let i = 0; i < sessao.length; i++) {
             if (sessao[i].comparacao) { sessao[i].comparacao.abre.style.width = largura; }
         }
+    }
+
+    function ajustarBlurFundo() {
+        const fundos = document.getElementsByClassName("fundo");
+        let relacao;
+        if (larguraJanela > alturaJanela) { relacao = larguraJanela; }
+        else { relacao = alturaJanela; }
+        const pLargura = 1000 / relacao;
+        let numBlur = 3 / pLargura;
+        for (let i = 0; i < fundos.length; i++) { fundos[i].style.filter = "blur(" + numBlur + "px)"; }
     }
     ajustarimgscomparacao();
     setTimeout(carregamento, 850);
