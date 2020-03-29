@@ -834,57 +834,47 @@ function tamanhoMoverScroll() {//De acordo com o zoom que é dado muda o tamanho
     const tamanhoTelasCanvas = { X: telasCanvas.offsetWidth, Y: telasCanvas.offsetHeight },
         tamanhoContentTelas = { X: contentTelas.offsetWidth, Y: contentTelas.offsetHeight },
         tamanhoContentTelaPreview = { X: contentTelaPreview.offsetWidth, Y: contentTelaPreview.offsetHeight };
-
     if (tamanhoTelasCanvas.X <= (tamanhoContentTelas.X - 10) && tamanhoTelasCanvas.Y <= (tamanhoContentTelas.Y - 10)) {
         moverScroll.style.display = "none";
     }
     else if (tamanhoTelasCanvas.X > (tamanhoContentTelas.X - 10) && tamanhoTelasCanvas.Y > (tamanhoContentTelas.Y - 10)) {
-        const proporcaoTamanhoX = (tamanhoContentTelas.X - 12) / (tamanhoTelasCanvas.X + 12),
-            proporcaoTamanhoY = (tamanhoContentTelas.Y - 12) / (tamanhoTelasCanvas.Y + 12);
+        const proporcaoTamanhoX = (tamanhoContentTelas.X - 10) / (tamanhoTelasCanvas.X + 12),
+            proporcaoTamanhoY = (tamanhoContentTelas.Y - 10) / (tamanhoTelasCanvas.Y + 12);
         moverScroll.style.display = "block";
-        moverScroll.style.width = (tamanhoContentTelaPreview.X * proporcaoTamanhoX) + "px";
-        moverScroll.style.height = (tamanhoContentTelaPreview.Y * proporcaoTamanhoY) + "px";
+        moverScroll.style.width = Math.floor(tamanhoContentTelaPreview.X * proporcaoTamanhoX) + "px";
+        moverScroll.style.height = Math.floor(tamanhoContentTelaPreview.Y * proporcaoTamanhoY) + "px";
     }
     else if (tamanhoTelasCanvas.X > (tamanhoContentTelas.X - 10)) {
-        const proporcaoTamanhoX = (tamanhoContentTelas.X - 12) / (tamanhoTelasCanvas.X + 12);
+        const proporcaoTamanhoX = (tamanhoContentTelas.X - 10) / (tamanhoTelasCanvas.X + 12);
         moverScroll.style.display = "block";
-        moverScroll.style.width = (tamanhoContentTelaPreview.X * proporcaoTamanhoX) + "px";
+        moverScroll.style.width = Math.floor(tamanhoContentTelaPreview.X * proporcaoTamanhoX) + "px";
         moverScroll.style.height = tamanhoContentTelaPreview.Y + "px";
     }
     else if (tamanhoTelasCanvas.Y > (tamanhoContentTelas.Y - 10)) {
-        const proporcaoTamanhoY = (tamanhoContentTelas.Y - 12) / (tamanhoTelasCanvas.Y + 12);
+        const proporcaoTamanhoY = (tamanhoContentTelas.Y - 10) / (tamanhoTelasCanvas.Y + 12);
         moverScroll.style.display = "block";
         moverScroll.style.width = tamanhoContentTelaPreview.X + "px";
-        moverScroll.style.height = (tamanhoContentTelaPreview.Y * proporcaoTamanhoY) + "px";;
+        moverScroll.style.height = Math.floor(tamanhoContentTelaPreview.Y * proporcaoTamanhoY) + "px";;
     }
 }
 
 function moverScrollNaTelaPreview(mouseX, mouseY) {//Mover o "moverScroll" com o mouse.
-    const metadeLargura = (moverScroll.offsetWidth / 2), metadeAltura = (moverScroll.offsetHeight / 2);
-    if (mouseX <= metadeLargura) {
-        moverScroll.style.left = "0px";
-    }
+    const metadeLargura = moverScroll.offsetWidth / 2, metadeAltura = moverScroll.offsetHeight / 2;
+    if (mouseX <= metadeLargura) { moverScroll.style.left = "0px"; }
     else if (mouseX >= contentTelaPreview.offsetWidth - metadeLargura) {
         moverScroll.style.left = contentTelaPreview.offsetWidth - (metadeLargura * 2) + "px";
     }
-    else {
-        moverScroll.style.left = mouseX - metadeLargura + "px";
-    }
-
-    if (mouseY <= metadeAltura) {
-        moverScroll.style.top = "0px";
-    }
-    else if (mouseY >= contentTelaPreview.offsetHeight - metadeAltura) {
+    else { moverScroll.style.left = mouseX - (Math.floor(metadeLargura)) + "px"; }
+    if (mouseY <= metadeAltura) { moverScroll.style.top = "0px"; }
+    else if (mouseY >= contentTelaPreview.offsetHeight - (Math.floor(metadeAltura))) {
         moverScroll.style.top = contentTelaPreview.offsetHeight - (metadeAltura * 2) + "px";
     }
-    else {
-        moverScroll.style.top = mouseY - metadeAltura + "px";
-    }
+    else { moverScroll.style.top = mouseY - (Math.floor(metadeAltura)) + "px"; }
     moverScrollContentTelas(moverScroll.offsetTop, moverScroll.offsetLeft);
 }
 
 function moverScrollContentTelas(topPos, leftPos) {//Mudar o valor dos Scroll's do contentTelas movendo o "moverScroll".
-    const mult = (contentTelas.scrollWidth) / (telaPreview.offsetWidth + 2);
+    const mult = (contentTelas.scrollWidth) / (telaPreview.offsetWidth);
     contentTelas.scrollTop = (topPos * mult);
     contentTelas.scrollLeft = (leftPos * mult);
 }
