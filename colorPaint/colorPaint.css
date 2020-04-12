@@ -225,7 +225,7 @@ p {
     top: 5px;
     min-width: 85px;
     margin-right: 5px;
-    border-radius: 7px;
+    border-radius: 25px;
     background-color: rgb(58, 58, 58);
     color: rgb(165, 165, 165);
     text-transform: uppercase;
@@ -399,7 +399,7 @@ p {
 
 #coresSalvas {
     position: relative;
-    width: 80px;
+    width: 85px;
     height: auto;
     padding: 7px;
     max-height: 120px;
@@ -407,7 +407,8 @@ p {
     scrollbar-width: thin;
     background-color: rgb(37, 37, 37);
     border-radius: 7px;
-    left: 10px;
+    left: 50%;
+    transform: translateX(-50%);
     top: 10px;
     margin-bottom: 15px;
 }
@@ -415,10 +416,12 @@ p {
 #bttRemoverCorSalva {
     position: relative;
     display: none;
-    width: 75px;
-    height: 20px;
-    left: 12px;
-    border-radius: 7px;
+    width: 85px;
+    height: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-transform: uppercase;
+    border-radius: 25px;
     background-color: rgb(80, 80, 80);
     transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
 }
@@ -427,15 +430,16 @@ p {
     position: absolute;
     display: inline-block;
     bottom: 10px;
-    left: 12px;
-    border-radius: 7px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 25px;
     background-color: rgb(80, 80, 80);
     text-transform: uppercase;
     font-family: "robotoRegular";
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 0px 10px;
     transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
     height: 25px;
+    min-width: 85px;
     text-align: center;
 }
 
@@ -452,9 +456,10 @@ p {
 }
 
 #bttRemoverCorSalva p {
-    color: rgb(136, 136, 136);
+    color: rgb(156, 156, 156);
+    font-size: 12px;
     text-align: center;
-    line-height: 18px;
+    line-height: 25px;
 }
 
 #bttRemoverCorSalva:hover {
@@ -717,7 +722,7 @@ p {
     height: 20px;
     border-radius: 50%;
     border: 1px solid rgb(0, 0, 0);
-    margin-left: 7px;
+    margin-left: 9px;
 }
 
 .corSalva div {
@@ -784,12 +789,12 @@ p {
 #contentAtalhos {
     position: relative;
     width: 330px;
-    height: 271px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     border-bottom: 2px solid rgb(61, 61, 61);
+    padding: 9px 0px;
     margin-bottom: 4px;
 }
 
@@ -1194,6 +1199,7 @@ p {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    text-transform: uppercase;
     border-bottom: 2px solid rgb(61, 61, 61);
     height: 35px;
     color: rgb(151, 151, 151);

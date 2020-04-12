@@ -402,7 +402,7 @@ function colorPaint() {
         else if (hotKeys.spacePressed === true && moverDesenhoEspaco.mover === true) {
             moverDesenhoComEspaco(moverDesenhoEspaco, pegarPosicaoMouse(contentTelas, e));
         }
-    }, 10));
+    }, 8));
 
     document.getElementById("bttZoomMais").addEventListener("click", function () {//Aumentar o zoom no projeto.
         if (projetoCriado === false) { return; };
