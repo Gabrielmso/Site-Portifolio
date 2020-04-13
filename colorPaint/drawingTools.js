@@ -53,7 +53,7 @@ function drawingToolsObject() {
             coordenadaClick.x = [];
             coordenadaClick.y = [];
             this.clickToCurve = false;
-            mudarAparenciaCursor(this.toolProperties.size);
+            this.changeCursorTool();
             ctxPintar.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
         },
         changeToolSize(mouseEvent) {
@@ -74,7 +74,7 @@ function drawingToolsObject() {
                 this.toolSizeBar.txt.value = mousePos.X + "px";
             }
             this.toolProperties.size = mousePos.X;
-            mudarAparenciaCursor(this.toolProperties.size);
+            this.changeCursorTool();
         },
         changeToolOpacity(mouseEvent) {
             const mousePos = pegarPosicaoMouse(this.toolOpacityBar.bar, mouseEvent);
@@ -125,6 +125,19 @@ function drawingToolsObject() {
             ctxPintar.filter = "blur(" + dureza + "px)";
             ctxPintar.lineWidth = (this.toolProperties.size - dureza);
             ctxPintar.strokeStyle = "rgba(" + color.R + ", " + color.G + ", " + color.B + ", " + this.toolProperties.opacity + ")";
+        },
+        changeCursorTool() {
+            if (this.selectedTool === 6) {
+                contentTelas.style.cursor = "url('colorPaint/imagens/cursor/cursorContaGotas.png') 0 20, pointer";
+                return;
+            };
+            if (this.selectedTool === 7) {
+                contentTelas.style.cursor = "url('colorPaint/imagens/cursor/cursorBaldeDeTinta.png') 0 0, pointer";
+                return;
+            };
+            const tamanho = this.toolProperties.size * ((telasCanvas.offsetWidth) / projeto.resolucao.largura);
+            if (tamanho < 20) { contentTelas.style.cursor = "url('colorPaint/imagens/cursor/crossHair.png') 12.5 12.5, pointer"; }
+            else { contentTelas.style.cursor = "url('colorPaint/imagens/cursor/circle.png') 10 10, pointer"; }
         },
         brush(mouseX, mouseY) {
             coordenadaClick.x.push(mouseX);
@@ -344,23 +357,5 @@ function drawingToolsObject() {
                 camada.data[pixelPos + 3] = A;
             }
         }
-    }
-}
-
-function mudarAparenciaCursor(toolSize) {
-    if (drawingTools.selectedTool === 6) {
-        contentTelas.style.cursor = "url('colorPaint/imagens/cursor/cursorContaGotas.png') 0 20, pointer";
-        return;
-    };
-    if (drawingTools.selectedTool === 7) {
-        contentTelas.style.cursor = "url('colorPaint/imagens/cursor/cursorBaldeDeTinta.png') 0 0, pointer";
-        return;
-    };
-    const tamanho = toolSize * ((telasCanvas.offsetWidth) / projeto.resolucao.largura);
-    if (tamanho < 20) {
-        contentTelas.style.cursor = "url('colorPaint/imagens/cursor/crossHair.png') 12.5 12.5, pointer";
-    }
-    else {
-        contentTelas.style.cursor = "url('colorPaint/imagens/cursor/circle.png') 10 10, pointer";
     }
 }

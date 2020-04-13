@@ -3,7 +3,6 @@ const projeto = { nome: null, resolucao: { largura: 0, altura: 0, proporcao: 0 }
 const grid = {//Propriedades do grid e da visualização do projeto antes de criar o grid, e saber se está visível.
     tela: null, tamanho: 80, posicao: { X: 0, Y: 0 }, visivel: false, visualizacaoAnterior: { scrollX: 0, scrollY: 0, zoom: 0 }
 };
-let colorPaintContent;
 let corPrincipal, corSecundaria, corPrincipalOuSecundaria;
 let corEscolhidaPrincipal = { R: 0, G: 0, B: 0 };//Armazena a cor escolhida do primeiro plano.
 let corEscolhidaSecudaria = { R: 255, G: 255, B: 255 };//Armazena a cor escolhida no segundo plano.
@@ -51,7 +50,6 @@ function colorPaint() {
         { propriedade: document.getElementById("propriedadeTamanho"), barra: document.getElementById("contentBarraTamanho") },
         { propriedade: document.getElementById("propriedadeOpacidade"), barra: document.getElementById("contentBarraOpacidade") },
         { propriedade: document.getElementById("propriedadeDureza"), barra: document.getElementById("contentBarraDureza") }];
-    colorPaintContent = document.getElementById("colorPaintContent");
     cursorOpacidadeCamada = document.getElementById("cursorOpacidadeCamada");
     contentTelas = document.getElementById("contentTelas");
     telasCanvas = document.getElementById("telasCanvas");
@@ -518,7 +516,7 @@ function colorPaint() {
         }
     });
 
-    colorPaintContent.addEventListener("wheel", function (e) {//Zoom com o scroll do mouse.
+    document.getElementById("colorPaintContent").addEventListener("wheel", function (e) {//Zoom com o scroll do mouse.
         if (hotKeys.ctrlPressed === true && projetoCriado === true) {
             e.preventDefault();
             if (e.deltaY < 0) {
@@ -622,7 +620,7 @@ function colorPaint() {
                 drawingTools.toolSizeBar.txt.value = "0.5px";
             }
         }
-        mudarAparenciaCursor(drawingTools.toolProperties.size);
+        drawingTools.changeCursorTool();
     }
 
     function menuPadrao() {
@@ -635,10 +633,8 @@ function colorPaint() {
 
     function ajustarVisualizacaoAntesGrid() {
         zoomNoProjeto("porcentagem", false, grid.visualizacaoAnterior.zoom);
-        setTimeout(function () {
-            contentTelas.scrollTop = grid.visualizacaoAnterior.scrollY;
-            contentTelas.scrollLeft = grid.visualizacaoAnterior.scrollX;
-        }, 2);
+        contentTelas.scrollTop = grid.visualizacaoAnterior.scrollY;
+        contentTelas.scrollLeft = grid.visualizacaoAnterior.scrollX;
     }
 
     function ajustarContents() {
@@ -791,7 +787,7 @@ function ajustarNaVisualizacaoTelasCanvas() {
     zoomTelasCanvas = zoomTelasCanvas.replace(".", ",");
     txtPorcentagemZoom.value = zoomTelasCanvas + "%";
     tamanhoMoverScroll();
-    mudarAparenciaCursor(drawingTools.toolProperties.size);
+    drawingTools.changeCursorTool();
 }
 // ==========================================================================================================================================================================================================================================
 
@@ -826,7 +822,7 @@ function zoomNoProjeto(zoom, centralizar, quanto) {
     }
     txtPorcentagemZoom.value = ((larguraAtual * 100) / projeto.resolucao.largura).toFixed(2).replace(".", ",") + "%";
     tamanhoMoverScroll();
-    mudarAparenciaCursor(drawingTools.toolProperties.size);
+    drawingTools.changeCursorTool();
 }
 // ==========================================================================================================================================================================================================================================
 
