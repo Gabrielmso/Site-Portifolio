@@ -8,16 +8,13 @@ let corEscolhidaPrincipal = { R: 0, G: 0, B: 0 };//Armazena a cor escolhida do p
 let corEscolhidaSecudaria = { R: 255, G: 255, B: 255 };//Armazena a cor escolhida no segundo plano.
 let drawingTools;
 let undoRedoChange;
+let previewFunctions;
 let arrayCoresSalvas = [];//Armazena objetos cuja as propriedades possuem as informações sobre as cores salvas.
 let arrayCamadas = [];//Armazena objetos cuja as propriedades possuem as informações sobre as camadas, como os elementos canvas, icones, etc.
 let cursorComparaContaGotas;//Div que aparece acompanhando o cursor quando a ferramenta for a conta-gotas.
 let comparaCoresContaGotas;//Div que fica dentro da "cursorComparaContaGotas" cuja a cor das bordas comparam as cores selecionadas.
 let contentTelas;//Elemento onde ficará a "tela" para desenhar.
 let telasCanvas;//Elemento onde ficarão os canvas "camadas".
-let contentTelaPreview;//Div que contém o "telaPreview" e o "moverScroll".
-let telaPreview;//Armazena o canvas que será utilizado como preview do projeto.
-let ctxTelaPreview;//Armazena o contexto 2d do preview.
-let moverScroll;//Div que será usada para mover os scrolls do "contentTelas".
 let camadaSelecionada = 0;//Armazena a posição do arrayTelasCamadas com a camada selecionada.
 let ctxDesenho;//Armazena o contexto 2d do canvas "desenho" que receberá o "desenho completo".
 let corFundo;//Div de fundo que receberá a cor de fundo escolhida para o projeto.
@@ -34,6 +31,7 @@ let cursorOpacidadeCamada;
 function colorPaint() {
     drawingTools = drawingToolsObject();
     undoRedoChange = undoRedoChangeObject();
+    previewFunctions = previewFunctionsObject();
     const hotKeys = hotKeysObject();
     const contentJanelaCriarProjeto = document.getElementById("contentJanelaCriarProjeto");
     const contentJanelaAtalhos = document.getElementById("contentJanelaAtalhos");
@@ -64,14 +62,9 @@ function colorPaint() {
     txtPorcentagemZoom = document.getElementById("txtPorcentagemZoom");
     ctxPintar = document.getElementById("pintar").getContext("2d");
     ctxDesenho = document.getElementById("desenho").getContext("2d");
-    contentTelaPreview = document.getElementById("contentTelaPreview");
-    telaPreview = document.getElementById("telaPreview");
-    ctxTelaPreview = telaPreview.getContext("2d");
-    moverScroll = document.getElementById("moverScroll");
     grid.tela = document.getElementById("grid");
     janelaSeleciona = new janelaSeletorDeCor();
     let mudarOpacidadeCamada = false;//Saber se o mouse está pressionado na "barraOpacidadeCamada". 
-    let moverScrollPreview = false;//Saber se o mouse está pressionado na "contentTelaPreview".
     let pintando = false;//Saber se o mouse está pressionado na "contentTelas".
     let moverDesenhoEspaco = { mover: false, coordenadaInicio: null, scroolTop: 0, scrollLeft: 0 };
 
@@ -80,7 +73,7 @@ function colorPaint() {
     criarOuAbrirProjeto();
     txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
 
-    for (let i = 0; i < drawingTools.arrayTools.length; i++) {//
+    for (let i = 0; i < drawingTools.arrayTools.length; i++) {
         drawingTools.arrayTools[i].tool.addEventListener("click", function () {
             if (janelaSelecionarCorVisivel === false) {
                 drawingTools.selectDrawingTool(i);
@@ -105,9 +98,7 @@ function colorPaint() {
 
     document.getElementById("bttCriarNovoProjeto").addEventListener("click", function () {
         if (projetoCriado === false) {
-            if (janelaSelecionarCorVisivel === false) {
-                contentJanelaCriarProjeto.style.display = "flex";
-            }
+            if (janelaSelecionarCorVisivel === false) { contentJanelaCriarProjeto.style.display = "flex"; }
         }
         else {
             if (confirm("Todo o progresso não salvo será perdido, deseja continuar?") === true) {
@@ -393,10 +384,6 @@ function colorPaint() {
         else if (mudarOpacidadeCamada === true) {
             calculaOpacidadeCamada(e);
         }
-        else if (moverScrollPreview === true) {
-            const mousePos = pegarPosicaoMouse(contentTelaPreview, e);
-            moverScrollNaTelaPreview(mousePos.X, mousePos.Y);
-        }
         else if (hotKeys.spacePressed === true && moverDesenhoEspaco.mover === true) {
             moverDesenhoComEspaco(moverDesenhoEspaco, pegarPosicaoMouse(contentTelas, e));
         }
@@ -467,8 +454,6 @@ function colorPaint() {
             desenhoNoPreviewEIcone();
             mudarOpacidadeCamada = false;
         }
-        moverScrollPreview = false;
-        moverScroll.style.cursor = "grab";
         if (hotKeys.spacePressed === true) {
             moverDesenhoEspaco.mover = false;
             telasCanvas.style.cursor = "grab";
@@ -530,28 +515,18 @@ function colorPaint() {
             const proporcaoPosX = posicaoMouse.X / projeto.resolucao.largura;
             contentTelas.scrollTop = (contentTelas.scrollHeight * proporcaoPosY) - (posContentTelas.Y) - 5;
             contentTelas.scrollLeft = (contentTelas.scrollWidth * proporcaoPosX) - (posContentTelas.X) - 5;
-            contentTelasMoverScroll(contentTelas.scrollTop, contentTelas.scrollLeft);
         }
     });
 
-    contentTelas.addEventListener("scroll", function (e) {
-        contentTelasMoverScroll(contentTelas.scrollTop, contentTelas.scrollLeft);
-    });
-
-    contentTelaPreview.addEventListener("mousedown", function (e) {
-        if (!projetoCriado) { return };
-        moverScrollPreview = true;
-        moverScroll.style.cursor = "grabbing";
-        const mousePos = pegarPosicaoMouse(this, e);
-        moverScrollNaTelaPreview(mousePos.X, mousePos.Y);
-    });
+    contentTelas.addEventListener("scroll", (e) => previewFunctions.scrollContentTelas(e));
+    previewFunctions.contentTelaPreview.addEventListener("mousedown", (e) => previewFunctions.mouseDownPreview(e));
+    document.getElementById("janelaPreview").addEventListener("mouseup", (e) => previewFunctions.mouseUpPreview(e));
+    document.getElementById("janelaPreview").addEventListener("mousemove", (e) => previewFunctions.mouseMovePreview(e));
 
     window.addEventListener("resize", function () {
         ajustarContents();
         if (projetoCriado === true) {
-            tamanhoMoverScroll();
             ajustarNaVisualizacaoTelasCanvas();
-            contentTelasMoverScroll(contentTelas.scrollTop, contentTelas.scrollLeft);
             setTimeout(function () {
                 ajustarContents();
             }, 120);
@@ -700,6 +675,7 @@ function desenharNaCamada() {
 }
 
 function desenhoNoPreviewEIcone() {
+    const ctxTelaPreview = previewFunctions.ctxTelaPreview;
     ctxTelaPreview.clearRect(0, 0, ctxTelaPreview.canvas.width, ctxTelaPreview.canvas.height);
     for (let i = 0; i < projeto.numeroCamadas; i++) {
         if (arrayCamadas[i].visivel === true) {
@@ -786,7 +762,7 @@ function ajustarNaVisualizacaoTelasCanvas() {
     let zoomTelasCanvas = ((larguraTelasCanvas * 100) / projeto.resolucao.largura).toFixed(2);
     zoomTelasCanvas = zoomTelasCanvas.replace(".", ",");
     txtPorcentagemZoom.value = zoomTelasCanvas + "%";
-    tamanhoMoverScroll();
+    previewFunctions.changeMoverScrollSizeZoom();
     drawingTools.changeCursorTool();
 }
 // ==========================================================================================================================================================================================================================================
@@ -821,65 +797,8 @@ function zoomNoProjeto(zoom, centralizar, quanto) {
         contentTelas.scrollLeft = ((larguraAtual / 2) + 12) - (contentTelas.offsetWidth / 2);
     }
     txtPorcentagemZoom.value = ((larguraAtual * 100) / projeto.resolucao.largura).toFixed(2).replace(".", ",") + "%";
-    tamanhoMoverScroll();
+    previewFunctions.changeMoverScrollSizeZoom();
     drawingTools.changeCursorTool();
-}
-// ==========================================================================================================================================================================================================================================
-
-function tamanhoMoverScroll() {//De acordo com o zoom que é dado muda o tamanho do "moverScroll".
-    const tamanhoTelasCanvas = { X: telasCanvas.offsetWidth, Y: telasCanvas.offsetHeight },
-        tamanhoContentTelas = { X: contentTelas.offsetWidth, Y: contentTelas.offsetHeight },
-        tamanhoContentTelaPreview = { X: contentTelaPreview.offsetWidth, Y: contentTelaPreview.offsetHeight };
-    if (tamanhoTelasCanvas.X <= (tamanhoContentTelas.X - 10) && tamanhoTelasCanvas.Y <= (tamanhoContentTelas.Y - 10)) {
-        moverScroll.style.display = "none";
-    }
-    else if (tamanhoTelasCanvas.X > (tamanhoContentTelas.X - 10) && tamanhoTelasCanvas.Y > (tamanhoContentTelas.Y - 10)) {
-        const proporcaoTamanhoX = (tamanhoContentTelas.X - 10) / (tamanhoTelasCanvas.X + 12),
-            proporcaoTamanhoY = (tamanhoContentTelas.Y - 10) / (tamanhoTelasCanvas.Y + 12);
-        moverScroll.style.display = "block";
-        moverScroll.style.width = Math.floor(tamanhoContentTelaPreview.X * proporcaoTamanhoX) + "px";
-        moverScroll.style.height = Math.floor(tamanhoContentTelaPreview.Y * proporcaoTamanhoY) + "px";
-    }
-    else if (tamanhoTelasCanvas.X > (tamanhoContentTelas.X - 10)) {
-        const proporcaoTamanhoX = (tamanhoContentTelas.X - 10) / (tamanhoTelasCanvas.X + 12);
-        moverScroll.style.display = "block";
-        moverScroll.style.width = Math.floor(tamanhoContentTelaPreview.X * proporcaoTamanhoX) + "px";
-        moverScroll.style.height = tamanhoContentTelaPreview.Y + "px";
-    }
-    else if (tamanhoTelasCanvas.Y > (tamanhoContentTelas.Y - 10)) {
-        const proporcaoTamanhoY = (tamanhoContentTelas.Y - 10) / (tamanhoTelasCanvas.Y + 12);
-        moverScroll.style.display = "block";
-        moverScroll.style.width = tamanhoContentTelaPreview.X + "px";
-        moverScroll.style.height = Math.floor(tamanhoContentTelaPreview.Y * proporcaoTamanhoY) + "px";;
-    }
-}
-
-function moverScrollNaTelaPreview(mouseX, mouseY) {//Mover o "moverScroll" com o mouse.
-    const metadeLargura = moverScroll.offsetWidth / 2, metadeAltura = moverScroll.offsetHeight / 2;
-    if (mouseX <= metadeLargura) { moverScroll.style.left = "0px"; }
-    else if (mouseX >= contentTelaPreview.offsetWidth - metadeLargura) {
-        moverScroll.style.left = contentTelaPreview.offsetWidth - (metadeLargura * 2) + "px";
-    }
-    else { moverScroll.style.left = mouseX - (Math.floor(metadeLargura)) + "px"; }
-    if (mouseY <= metadeAltura) { moverScroll.style.top = "0px"; }
-    else if (mouseY >= contentTelaPreview.offsetHeight - (Math.floor(metadeAltura))) {
-        moverScroll.style.top = contentTelaPreview.offsetHeight - (metadeAltura * 2) + "px";
-    }
-    else { moverScroll.style.top = mouseY - (Math.floor(metadeAltura)) + "px"; }
-    moverScrollContentTelas(moverScroll.offsetTop, moverScroll.offsetLeft);
-}
-
-function moverScrollContentTelas(topPos, leftPos) {//Mudar o valor dos Scroll's do contentTelas movendo o "moverScroll".
-    const mult = (contentTelas.scrollWidth) / (telaPreview.offsetWidth);
-    contentTelas.scrollTop = (topPos * mult);
-    contentTelas.scrollLeft = (leftPos * mult);
-}
-
-function contentTelasMoverScroll(scrollTop, scrollLeft) {//Mover o "moverScroll" quando o valor dos Scroll's do contentTelas mudar.
-    const mult = (contentTelas.scrollHeight - 12) / (telaPreview.offsetHeight);
-    const mult2 = (contentTelas.scrollWidth - 12) / (telaPreview.offsetWidth);
-    moverScroll.style.top = (scrollTop / mult) + "px";
-    moverScroll.style.left = (scrollLeft / mult2) + "px";
 }
 // ==========================================================================================================================================================================================================================================
 
@@ -955,30 +874,20 @@ function abrirProjeto() {
         const arquivo = e.target.files[0];
         const reader = new FileReader();
         reader.onload = function () {
-            if (this.result === "") {
-                alert("Este arquivo não possui projeto salvo!");
-            }
-            else {
-                carregarProjeto(this.result);
-            }
+            if (this.result === "") { alert("Este arquivo não possui projeto salvo!"); }
+            else { carregarProjeto(this.result); }
         };
 
-        if (!arquivo) {
-            alert("Erro ao carregar projeto, tente novamente!");
-        }
+        if (!arquivo) { alert("Erro ao carregar projeto, tente novamente!"); }
         else {
             const extencao = arquivo.name.split('.').pop().toLowerCase();
-            if (extencao === "gm") {
-                reader.readAsText(arquivo, "ISO-8859-1");
-            }
-            else {
-                alert("Arquivo selecionado inválido!");
-            }
+            if (extencao === "gm") { reader.readAsText(arquivo, "ISO-8859-1"); }
+            else { alert("Arquivo selecionado inválido!"); }
         }
     }, false);
 
     function carregarProjeto(projetoJSON) {
-        const objProjeto = JSON.parse(projetoJSON);
+        const objProjeto = JSON.parse(projetoJSON), ctxTelaPreview = previewFunctions.ctxTelaPreview;
         arrayCamadas = [];
         arrayVoltarAlteracoes = [];
         arrayAvancarAlteracoes = [];
@@ -1029,9 +938,7 @@ function criarOuAbrirProjeto() {
         contentJanelaCriarProjeto.style.display = "flex";
         sessionStorage.setItem("criarNovoProjeto", "false");
     }
-    else {
-        carregamento();
-    }
+    else { carregamento(); }
     function carregamento() {
         const logoCarregamento = document.getElementById("logoCarregamento");
         logoCarregamento.style.transition = "opacity 1.5s linear";
@@ -1058,10 +965,7 @@ function criarOuAbrirProjeto() {
 
 function pegarPosicaoMouse(elemento, e) {
     const pos = elemento.getBoundingClientRect();
-    return {
-        X: e.clientX - pos.left,
-        Y: e.clientY - pos.top
-    }
+    return { X: e.clientX - pos.left, Y: e.clientY - pos.top }
 }
 
 function throttle(func, limit) {

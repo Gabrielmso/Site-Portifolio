@@ -254,7 +254,7 @@ function mouseFora() {
 }
 
 function ajustarPreview(cor) {
-    const proporcaoEspaco = 256 / 150;
+    const proporcaoEspaco = 256 / 150, contentTelaPreview = previewFunctions.contentTelaPreview;
     if (projeto.resolucao.proporcao >= proporcaoEspaco) {
         const novaAltura = (256 / projeto.resolucao.proporcao);
         contentTelaPreview.style.width = "256px";
@@ -271,6 +271,6 @@ function ajustarPreview(cor) {
     else {
         contentTelaPreview.style.backgroundImage = "url('static/drawApp/imagens/fundoTela/transparenteMiniatura.png')";
     }
-    telaPreview.width = contentTelaPreview.offsetWidth * 2;
-    telaPreview.height = contentTelaPreview.offsetHeight * 2;
+    previewFunctions.ctxTelaPreview.canvas.width = contentTelaPreview.offsetWidth * 2;
+    previewFunctions.ctxTelaPreview.canvas.height = contentTelaPreview.offsetHeight * 2;
 }
