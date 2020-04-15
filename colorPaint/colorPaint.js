@@ -6,6 +6,7 @@ const grid = {//Propriedades do grid e da visualização do projeto antes de cri
 let corPrincipal, corSecundaria, corPrincipalOuSecundaria;
 let corEscolhidaPrincipal = { R: 0, G: 0, B: 0 };//Armazena a cor escolhida do primeiro plano.
 let corEscolhidaSecudaria = { R: 255, G: 255, B: 255 };//Armazena a cor escolhida no segundo plano.
+let pintando = false;//Saber se o mouse está pressionado na "contentTelas".
 let drawingTools;
 let undoRedoChange;
 let previewFunctions;
@@ -44,10 +45,6 @@ function colorPaint() {
     const barraOpacidadeCamada = document.getElementById("barraOpacidadeCamada");
     const contentCentro = document.getElementById("contentCentro");
     const posicaoMouse = { X: 0, Y: 0 };//Armazena a posição do mouse no tela canvas em relação a resolução do projeto.
-    const arrayPropriedadesFerramentas = [
-        { propriedade: document.getElementById("propriedadeTamanho"), barra: document.getElementById("contentBarraTamanho") },
-        { propriedade: document.getElementById("propriedadeOpacidade"), barra: document.getElementById("contentBarraOpacidade") },
-        { propriedade: document.getElementById("propriedadeDureza"), barra: document.getElementById("contentBarraDureza") }];
     cursorOpacidadeCamada = document.getElementById("cursorOpacidadeCamada");
     contentTelas = document.getElementById("contentTelas");
     telasCanvas = document.getElementById("telasCanvas");
@@ -65,7 +62,6 @@ function colorPaint() {
     grid.tela = document.getElementById("grid");
     janelaSeleciona = new janelaSeletorDeCor();
     let mudarOpacidadeCamada = false;//Saber se o mouse está pressionado na "barraOpacidadeCamada". 
-    let pintando = false;//Saber se o mouse está pressionado na "contentTelas".
     let moverDesenhoEspaco = { mover: false, coordenadaInicio: null, scroolTop: 0, scrollLeft: 0 };
 
     menuPadrao();
@@ -73,29 +69,9 @@ function colorPaint() {
     criarOuAbrirProjeto();
     txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
 
-    for (let i = 0; i < drawingTools.arrayTools.length; i++) {
-        drawingTools.arrayTools[i].tool.addEventListener("click", function () {
-            if (janelaSelecionarCorVisivel === false) {
-                drawingTools.selectDrawingTool(i);
-            }
-        });
-    }
-
-    drawingTools.arrayTools[6].tool.addEventListener("click", function () {//Criar o desenho completo para selecionar a cor.
-        if (projetoCriado === true) {
-            desenhoCompleto();
-        };
-    });
-
-    for (let i = 0; i < arrayPropriedadesFerramentas.length; i++) {
-        arrayPropriedadesFerramentas[i].propriedade.addEventListener("mouseenter", function () {
-            if (pintando === false) { arrayPropriedadesFerramentas[i].barra.style.height = "36px"; };
-        })
-        arrayPropriedadesFerramentas[i].propriedade.addEventListener("mouseleave", function () {
-            arrayPropriedadesFerramentas[i].barra.style.height = "0px";
-        })
-    }
-
+    drawingTools.addEventsToElements();
+    previewFunctions.addEventsToElements();
+    
     document.getElementById("bttCriarNovoProjeto").addEventListener("click", function () {
         if (projetoCriado === false) {
             if (janelaSelecionarCorVisivel === false) { contentJanelaCriarProjeto.style.display = "flex"; }
@@ -265,24 +241,6 @@ function colorPaint() {
 
     telasCanvas.addEventListener("mouseleave", function () {
         txtPosicaoCursor.value = "";
-    });
-
-    drawingTools.toolOpacityBar.bar.addEventListener("mousedown", function (e) {
-        if (drawingTools.clickToCurve === true) { return; }
-        drawingTools.toolOpacityBar.clicked = true;
-        drawingTools.changeToolOpacity(e);
-    });
-
-    drawingTools.toolSizeBar.bar.addEventListener("mousedown", function (e) {
-        if (drawingTools.clickToCurve === true) { return; }
-        drawingTools.toolSizeBar.clicked = true;
-        drawingTools.changeToolSize(e);
-    });
-
-    drawingTools.toolHardnessBar.bar.addEventListener("mousedown", function (e) {
-        if (drawingTools.clickToCurve === true) { return; }
-        drawingTools.toolHardnessBar.clicked = true;
-        drawingTools.changeToolHardness(e);
     });
 
     barraOpacidadeCamada.addEventListener("mousedown", function (e) {
@@ -473,10 +431,10 @@ function colorPaint() {
         }
         else {
             if (e.code === "BracketRight") {//Aumentar o tamanho da ferramenta.
-                alterarTamanhoFerramenta(true);
+                drawingTools.changeToolSizeHotKey(true);
             }
             else if (e.code === "Backslash") {//Diminuir o tamanho da ferramenta.
-                alterarTamanhoFerramenta(false);
+                drawingTools.changeToolSizeHotKey(false);
             }
         }
         if (e.code === "ControlRight" || e.code === "ControlLeft" || e.keyCode === 17) {
@@ -518,11 +476,6 @@ function colorPaint() {
         }
     });
 
-    contentTelas.addEventListener("scroll", (e) => previewFunctions.scrollContentTelas(e));
-    previewFunctions.contentTelaPreview.addEventListener("mousedown", (e) => previewFunctions.mouseDownPreview(e));
-    document.getElementById("janelaPreview").addEventListener("mouseup", (e) => previewFunctions.mouseUpPreview(e));
-    document.getElementById("janelaPreview").addEventListener("mousemove", (e) => previewFunctions.mouseMovePreview(e));
-
     window.addEventListener("resize", function () {
         ajustarContents();
         if (projetoCriado === true) {
@@ -553,49 +506,6 @@ function colorPaint() {
         let opacidade = porcentagem / 100;
         arrayCamadas[camadaSelecionada].opacidade = opacidade;
         arrayCamadas[camadaSelecionada].camada.style.opacity = opacidade;
-    }
-
-    function alterarTamanhoFerramenta(aumentar) {
-        if (aumentar === true) {//Aumenta o tamanho da ferramenta.
-            if (drawingTools.toolProperties.size === 0.5) {
-                drawingTools.toolProperties.size = 1;
-                drawingTools.toolSizeBar.cursor.style.left = 1 - 7 + "px";
-                drawingTools.toolSizeBar.txt.value = "1px";
-            }
-            else if (drawingTools.toolProperties.size < 15) {
-                drawingTools.toolProperties.size = drawingTools.toolProperties.size + 1;
-                drawingTools.toolSizeBar.txt.value = drawingTools.toolProperties.size + "px";
-                drawingTools.toolSizeBar.cursor.style.left = drawingTools.toolProperties.size - 7 + "px";
-            }
-            else if (drawingTools.toolProperties.size >= 15 && drawingTools.toolProperties.size <= 185) {
-                drawingTools.toolProperties.size = drawingTools.toolProperties.size + 5;
-                drawingTools.toolSizeBar.txt.value = drawingTools.toolProperties.size + "px";
-                drawingTools.toolSizeBar.cursor.style.left = drawingTools.toolProperties.size - 7 + "px";
-            }
-            else if (drawingTools.toolProperties.size > 190) {
-                drawingTools.toolProperties.size = 190;
-                drawingTools.toolSizeBar.txt.value = drawingTools.toolProperties.size + "px";
-                drawingTools.toolSizeBar.cursor.style.left = drawingTools.toolProperties.size - 7 + "px";
-            }
-        }
-        else {//Diminui o tamanho da ferramenta.
-            if (drawingTools.toolProperties.size <= 190 && drawingTools.toolProperties.size > 15) {
-                drawingTools.toolProperties.size = drawingTools.toolProperties.size - 5;
-                drawingTools.toolSizeBar.cursor.style.left = drawingTools.toolProperties.size - 7 + "px";
-                drawingTools.toolSizeBar.txt.value = drawingTools.toolProperties.size + "px";
-            }
-            else if (drawingTools.toolProperties.size <= 15 && drawingTools.toolProperties.size > 1) {
-                drawingTools.toolProperties.size = drawingTools.toolProperties.size - 1;
-                drawingTools.toolSizeBar.txt.value = drawingTools.toolProperties.size + "px";
-                drawingTools.toolSizeBar.cursor.style.left = drawingTools.toolProperties.size - 7 + "px";
-            }
-            else if (drawingTools.toolProperties.size === 1) {
-                drawingTools.toolProperties.size = 0.5;
-                drawingTools.toolSizeBar.cursor.style.left = "-7px"
-                drawingTools.toolSizeBar.txt.value = "0.5px";
-            }
-        }
-        drawingTools.changeCursorTool();
     }
 
     function menuPadrao() {

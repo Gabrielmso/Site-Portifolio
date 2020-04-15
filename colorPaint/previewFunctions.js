@@ -4,6 +4,12 @@ function previewFunctionsObject() {
         ctxTelaPreview: document.getElementById("telaPreview").getContext("2d"),
         moverScroll: document.getElementById("moverScroll"),
         moverScrollPreview: false,//Saber se o mouse está pressionado na "contentTelaPreview".
+        addEventsToElements() {
+            contentTelas.addEventListener("scroll", (e) => this.scrollContentTelas(e));
+            this.contentTelaPreview.addEventListener("mousedown", (e) => this.mouseDownPreview(e));
+            document.getElementById("janelaPreview").addEventListener("mouseup", (e) => this.mouseUpPreview(e));
+            document.getElementById("janelaPreview").addEventListener("mousemove", (e) => this.mouseMovePreview(e));
+        },
         mouseDownPreview(e) {
             if (!projetoCriado) { return };
             this.moverScrollPreview = true;
