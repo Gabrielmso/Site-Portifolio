@@ -42,9 +42,6 @@ function drawingToolsObject() {
             if (projetoCriado === false || hotKeys.spacePressed === true) { return; }
             if (arrayCamadas[camadaSelecionada].visivel === true) {
                 this.painting = true;
-                if (this.clickToCurve === false && this.selectedTool != 6) {//O Conta-gotas não altera o desenho. A alteração é contabilizada depois q a curva é feita.
-                    undoRedoChange.saveChanges();
-                }
                 this.applyToolChanges();
                 ctxPintar.beginPath();
                 arrayCamadas[camadaSelecionada].ctx.globalCompositeOperation = "source-over";

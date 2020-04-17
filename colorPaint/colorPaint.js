@@ -515,6 +515,7 @@ function criarGrid(tela, tamanho, posicao, criar) {
 // ==========================================================================================================================================================================================================================================
 
 function desenharNaCamada() {
+    undoRedoChange.saveChanges();
     arrayCamadas[camadaSelecionada].ctx.drawImage(ctxPintar.canvas, 0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
     ctxPintar.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
 }
