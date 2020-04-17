@@ -7,12 +7,13 @@ function drawingToolsObject() {
             { tool: document.getElementById("elipse"), name: "ellipse", id: 3 },
             { tool: document.getElementById("borracha"), name: "eraser", id: 4 },
             { tool: document.getElementById("curva"), name: "curve", id: 5 },
-            { tool: document.getElementById("contaGotas"), name: "eyeDropper", id: 6 },
+            { tool: document.getElementById("contaGotas"), name: "eyeDropper", id: 6, cursor: { eyeDropper: document.getElementById("cursorComparaContaGotas"), compareColors: document.getElementById("comparaCoresContaGotas") } },
             { tool: document.getElementById("baldeDeTinta"), name: "paintBucket", id: 7 }
         ],
         selectedTool: 0,
         previousTool: null,
         clickToCurve: false,
+        painting: false,//Saber se o mouse está pressionado na "contentTelas".
         toolProperties: {
             elements: [{ property: document.getElementById("propriedadeTamanho"), contentBar: document.getElementById("contentBarraTamanho") },
             { property: document.getElementById("propriedadeOpacidade"), contentBar: document.getElementById("contentBarraOpacidade") },
@@ -37,14 +38,62 @@ function drawingToolsObject() {
             txt: document.getElementById("txtDurezaFerramenta"),
             clicked: false
         },
+        mouseDownEventDrawing(e) {
+            if (projetoCriado === false || hotKeys.spacePressed === true) { return; }
+            if (arrayCamadas[camadaSelecionada].visivel === true) {
+                this.painting = true;
+                if (this.clickToCurve === false && this.selectedTool != 6) {//O Conta-gotas não altera o desenho. A alteração é contabilizada depois q a curva é feita.
+                    undoRedoChange.saveChanges();
+                }
+                this.applyToolChanges();
+                ctxPintar.beginPath();
+                arrayCamadas[camadaSelecionada].ctx.globalCompositeOperation = "source-over";
+                if (this.selectedTool < 4) {
+                    coordenadaClick.x[0] = posicaoMouse.X;
+                    coordenadaClick.y[0] = posicaoMouse.Y;
+                    ctxPintar.lineJoin = ctxPintar.lineCap = "round";
+                    this[this.arrayTools[this.selectedTool].name](posicaoMouse.X, posicaoMouse.Y);
+                }
+                else if (this.selectedTool === 4) {//Borracha. 
+                    coordenadaClick.x[0] = posicaoMouse.X;
+                    coordenadaClick.y[0] = posicaoMouse.Y;
+                    arrayCamadas[camadaSelecionada].ctx.globalCompositeOperation = "destination-out";
+                    ctxPintar.strokeStyle = "rgba(255, 0, 0, " + this.toolProperties.opacity + ")";
+                    this.brush(posicaoMouse.X, posicaoMouse.Y);
+                }
+                else if (this.selectedTool === 5) {//Curva;
+                    ctxPintar.lineJoin = ctxPintar.lineCap = "round";
+                    if (this.clickToCurve === false) {
+                        coordenadaClick.x[0] = posicaoMouse.X;
+                        coordenadaClick.y[0] = posicaoMouse.Y;
+                    }
+                    this.curve(posicaoMouse.X, posicaoMouse.Y, this.clickToCurve);
+                }
+                else if (this.selectedTool === 6) {//Conta-gotas.
+                    this.arrayTools[this.selectedTool].cursor.eyeDropper.style.display = "block";
+                    const corAtual = "25px solid rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+                    this.arrayTools[this.selectedTool].cursor.compareColors.style.borderLeft = corAtual;
+                    this.arrayTools[this.selectedTool].cursor.compareColors.style.borderBottom = corAtual;
+                    const mousePos = pegarPosicaoMouse(janelaPrincipal, e);
+                    this.eyeDropper(mousePos.X, mousePos.Y, posicaoMouse.X, posicaoMouse.Y, true);
+                }
+                else if (this.selectedTool === 7) {//Balde de tinta.
+                    if (posicaoMouse.X >= 0 && posicaoMouse.X <= projeto.resolucao.largura && posicaoMouse.Y >= 0 && posicaoMouse.Y <= projeto.resolucao.altura) {
+                        const cor = { R: corEscolhidaPrincipal.R, G: corEscolhidaPrincipal.G, B: corEscolhidaPrincipal.B, A: Math.round(this.toolProperties.opacity * 255) };
+                        this.paintBucket(posicaoMouse.X, posicaoMouse.Y, arrayCamadas[camadaSelecionada].ctx, cor);
+                    }
+                }
+            }
+        },
         addEventsToElements() {
+            contentTelas.addEventListener("mousedown", (e) => this.mouseDownEventDrawing(e));
             this.toolOpacityBar.bar.addEventListener("mousedown", (e) => this.mouseDownToolOpacityBar(e));
             this.toolSizeBar.bar.addEventListener("mousedown", (e) => this.mouseDownToolSizeBar(e));
             this.toolHardnessBar.bar.addEventListener("mousedown", (e) => this.mouseDownToolHardnessBar(e));
             for (let i = 0; i < this.toolProperties.elements.length; i++) {
                 let el = this.toolProperties.elements[i];
                 el.property.addEventListener("mouseenter", () => {
-                    if (pintando === false) { el.contentBar.style.height = "36px"; }
+                    if (this.painting === false) { el.contentBar.style.height = "36px"; }
                 });
                 el.property.addEventListener("mouseleave", () => el.contentBar.style.height = "0px");
             }
@@ -54,7 +103,7 @@ function drawingToolsObject() {
                 });
             }
             this.arrayTools[6].tool.addEventListener("click", () => {//Criar o desenho completo para selecionar a cor.
-                if (projetoCriado === true) { desenhoCompleto(); };
+                desenhoCompleto();
             });
         },
         changeToolSizeHotKey(increase) {
@@ -292,21 +341,22 @@ function drawingToolsObject() {
             ctxPintar.stroke();
         },
         eyeDropper(mouseX, mouseY, posTelaX, posTelaY, mouseMovendo) {
-            const X = mouseX - (cursorComparaContaGotas.offsetWidth / 2);
-            const Y = mouseY - (cursorComparaContaGotas.offsetHeight / 2);
-            cursorComparaContaGotas.style.left = X + "px";
-            cursorComparaContaGotas.style.top = Y + "px";
+            const cursorEyeDropper = this.arrayTools[this.selectedTool].cursor.eyeDropper,
+                X = mouseX - (cursorEyeDropper.offsetWidth / 2), Y = mouseY - (cursorEyeDropper.offsetHeight / 2);
+            cursorEyeDropper.style.left = X + "px";
+            cursorEyeDropper.style.top = Y + "px";
             const pixel = ctxDesenho.getImageData(posTelaX, posTelaY, 1, 1).data;
             if (mouseMovendo === true) {
+                const compareColors = this.arrayTools[this.selectedTool].cursor.compareColors;
                 if (pixel[3] === 0) {
                     const novaCor = "25px solid rgba(0, 0, 0, 0)";
-                    comparaCoresContaGotas.style.borderRight = novaCor;
-                    comparaCoresContaGotas.style.borderTop = novaCor;
+                    compareColors.style.borderRight = novaCor;
+                    compareColors.style.borderTop = novaCor;
                     return;
                 }
                 const novaCor = "25px solid rgb(" + pixel[0] + ", " + pixel[1] + ", " + pixel[2] + ")";
-                comparaCoresContaGotas.style.borderRight = novaCor;
-                comparaCoresContaGotas.style.borderTop = novaCor;
+                compareColors.style.borderRight = novaCor;
+                compareColors.style.borderTop = novaCor;
             }
             else {
                 if (pixel[3] === 0) {

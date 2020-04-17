@@ -6,14 +6,13 @@ const grid = {//Propriedades do grid e da visualização do projeto antes de cri
 let corPrincipal, corSecundaria, corPrincipalOuSecundaria;
 let corEscolhidaPrincipal = { R: 0, G: 0, B: 0 };//Armazena a cor escolhida do primeiro plano.
 let corEscolhidaSecudaria = { R: 255, G: 255, B: 255 };//Armazena a cor escolhida no segundo plano.
-let pintando = false;//Saber se o mouse está pressionado na "contentTelas".
 let drawingTools;
 let undoRedoChange;
+let hotKeys;
 let previewFunctions;
 let arrayCoresSalvas = [];//Armazena objetos cuja as propriedades possuem as informações sobre as cores salvas.
 let arrayCamadas = [];//Armazena objetos cuja as propriedades possuem as informações sobre as camadas, como os elementos canvas, icones, etc.
-let cursorComparaContaGotas;//Div que aparece acompanhando o cursor quando a ferramenta for a conta-gotas.
-let comparaCoresContaGotas;//Div que fica dentro da "cursorComparaContaGotas" cuja a cor das bordas comparam as cores selecionadas.
+let janelaPrincipal;
 let contentTelas;//Elemento onde ficará a "tela" para desenhar.
 let telasCanvas;//Elemento onde ficarão os canvas "camadas".
 let camadaSelecionada = 0;//Armazena a posição do arrayTelasCamadas com a camada selecionada.
@@ -27,30 +26,28 @@ let txtPosicaoCursor;//Recebe a string com a posição do cursor no eixo X e Y s
 let txtPorcentagemZoom;//Recebe a string com a porcentagem de zoom no "telasCanvas".
 let janelaSeleciona;//Recebe toda a função "janelaSeletorDeCor".
 let MouseNoBttVer = false;//Saber se o mouse está sobre os botões que deixam as camadas invisíveis ou visíveis.
+const posicaoMouse = { X: 0, Y: 0 };//Armazena a posição do mouse no tela canvas em relação a resolução do projeto.
 const coordenadaClick = { x: [], y: [] };//Armazena as coordenadas do cursor do mouse desde quando o mesmo é pressionado e movimentado enquanto pressionado.
 let cursorOpacidadeCamada;
 function colorPaint() {
     drawingTools = drawingToolsObject();
     undoRedoChange = undoRedoChangeObject();
     previewFunctions = previewFunctionsObject();
-    const hotKeys = hotKeysObject();
+    hotKeys = hotKeysObject();
     const contentJanelaCriarProjeto = document.getElementById("contentJanelaCriarProjeto");
     const contentJanelaAtalhos = document.getElementById("contentJanelaAtalhos");
     const contentJanelaMenuGrid = document.getElementById("contentJanelaMenuGrid");
-    const janelaPrincipal = document.getElementById("janelaPrincipal");
     const contentTools = document.getElementById("contentTools");
     const barraLateralEsquerda = document.getElementById("barraLateralEsquerda");
     const barraLateralDireita = document.getElementById("barraLateralDireita");
     const corAtual = document.getElementById("corAtual");
     const barraOpacidadeCamada = document.getElementById("barraOpacidadeCamada");
     const contentCentro = document.getElementById("contentCentro");
-    const posicaoMouse = { X: 0, Y: 0 };//Armazena a posição do mouse no tela canvas em relação a resolução do projeto.
     cursorOpacidadeCamada = document.getElementById("cursorOpacidadeCamada");
+    janelaPrincipal = document.getElementById("janelaPrincipal");
     contentTelas = document.getElementById("contentTelas");
     telasCanvas = document.getElementById("telasCanvas");
     corFundo = document.getElementById("corFundo");
-    cursorComparaContaGotas = document.getElementById("cursorComparaContaGotas");
-    comparaCoresContaGotas = document.getElementById("comparaCoresContaGotas");
     corPrincipal = document.getElementById("corPrincipal");
     corSecundaria = document.getElementById("corSecundaria");
     txtCorEscolhida = document.getElementById("txtCorEscolhida");
@@ -71,7 +68,8 @@ function colorPaint() {
 
     drawingTools.addEventsToElements();
     previewFunctions.addEventsToElements();
-    
+    undoRedoChange.addEventsToElements();
+
     document.getElementById("bttCriarNovoProjeto").addEventListener("click", function () {
         if (projetoCriado === false) {
             if (janelaSelecionarCorVisivel === false) { contentJanelaCriarProjeto.style.display = "flex"; }
@@ -226,21 +224,15 @@ function colorPaint() {
         }
     });
 
-    undoRedoChange.buttons.redo.addEventListener("click", function () {
-        if (pintando === false) { undoRedoChange.redoChange(); }
-    });
+    telasCanvas.addEventListener("mousemove", () => txtPosicaoCursor.value = Math.round(posicaoMouse.X) + ", " + Math.round(posicaoMouse.Y));
 
-    undoRedoChange.buttons.undo.addEventListener("click", function () {
-        if (pintando === false) { undoRedoChange.undoChange(); }
+    telasCanvas.addEventListener("mouseleave", () => txtPosicaoCursor.value = "");
 
-    });
-
-    telasCanvas.addEventListener("mousemove", function () {
-        txtPosicaoCursor.value = Math.round(posicaoMouse.X) + ", " + Math.round(posicaoMouse.Y);
-    });
-
-    telasCanvas.addEventListener("mouseleave", function () {
-        txtPosicaoCursor.value = "";
+    telasCanvas.addEventListener("mousedown", (e) => {
+        if (hotKeys.spacePressed === true) {
+            telasCanvas.style.cursor = "grabbing";
+            moverDesenhoEspaco = { mover: true, coordenadaInicio: pegarPosicaoMouse(contentTelas, e), scroolTop: contentTelas.scrollTop, scrollLeft: contentTelas.scrollLeft };
+        }
     });
 
     barraOpacidadeCamada.addEventListener("mousedown", function (e) {
@@ -248,66 +240,19 @@ function colorPaint() {
         calculaOpacidadeCamada(e);
     });
 
-    contentTelas.addEventListener("mousedown", function (e) {
-        if (projetoCriado === false) { return; }
-        if (hotKeys.spacePressed === true) {
-            telasCanvas.style.cursor = "grabbing";
-            moverDesenhoEspaco = { mover: true, coordenadaInicio: pegarPosicaoMouse(this, e), scroolTop: this.scrollTop, scrollLeft: this.scrollLeft };
-        }
-        else if (arrayCamadas[camadaSelecionada].visivel === true) {
-            pintando = true;
-            if (drawingTools.clickToCurve === false && drawingTools.selectedTool != 6) {//O Conta-gotas não altera o desenho. A alteração é contabilizada depois q a curva é feita.
-                undoRedoChange.saveChanges();
-            }
-            drawingTools.applyToolChanges();
-            ctxPintar.beginPath();
-            arrayCamadas[camadaSelecionada].ctx.globalCompositeOperation = "source-over";
-            if (drawingTools.selectedTool < 4) {
-                coordenadaClick.x[0] = posicaoMouse.X;
-                coordenadaClick.y[0] = posicaoMouse.Y;
-                ctxPintar.lineJoin = ctxPintar.lineCap = "round";
-                drawingTools[drawingTools.arrayTools[drawingTools.selectedTool].name](posicaoMouse.X, posicaoMouse.Y);
-            }
-            else if (drawingTools.selectedTool === 4) {//Borracha. 
-                coordenadaClick.x[0] = posicaoMouse.X;
-                coordenadaClick.y[0] = posicaoMouse.Y;
-                arrayCamadas[camadaSelecionada].ctx.globalCompositeOperation = "destination-out";
-                ctxPintar.strokeStyle = "rgba(255, 0, 0, " + drawingTools.toolProperties.opacity + ")";
-                drawingTools.brush(posicaoMouse.X, posicaoMouse.Y);
-            }
-            else if (drawingTools.selectedTool === 5) {//Curva;
-                ctxPintar.lineJoin = ctxPintar.lineCap = "round";
-                if (drawingTools.clickToCurve === false) {
-                    coordenadaClick.x[0] = posicaoMouse.X;
-                    coordenadaClick.y[0] = posicaoMouse.Y;
-                    drawingTools.curve(posicaoMouse.X, posicaoMouse.Y, false);
-                }
-                else {
-                    drawingTools.curve(posicaoMouse.X, posicaoMouse.Y, true);
-                }
-            }
-            else if (drawingTools.selectedTool === 6) {//Conta-gotas.
-                cursorComparaContaGotas.style.display = "block";
-                const corAtual = "25px solid rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
-                comparaCoresContaGotas.style.borderLeft = corAtual;
-                comparaCoresContaGotas.style.borderBottom = corAtual;
-                const mousePos = pegarPosicaoMouse(janelaPrincipal, e);
-                drawingTools.eyeDropper(mousePos.X, mousePos.Y, posicaoMouse.X, posicaoMouse.Y, true);
-            }
-            else if (drawingTools.selectedTool === 7) {//Balde de tinta.
-                if (posicaoMouse.X >= 0 && posicaoMouse.X <= projeto.resolucao.largura && posicaoMouse.Y >= 0 && posicaoMouse.Y <= projeto.resolucao.altura) {
-                    const cor = { R: corEscolhidaPrincipal.R, G: corEscolhidaPrincipal.G, B: corEscolhidaPrincipal.B, A: Math.round(drawingTools.toolProperties.opacity * 255) };
-                    drawingTools.paintBucket(posicaoMouse.X, posicaoMouse.Y, arrayCamadas[camadaSelecionada].ctx, cor);
-                }
-            }
-        }
-    });
+    // contentTelas.addEventListener("mousedown", function (e) {
+    //     if (projetoCriado === false) { return; }
 
-    document.addEventListener("mousemove", throttle(function (e) {//Pegar a posição do mouse em relação ao "telaCanvas" e enquanto o mousse estiver pressionado executar a função referente a ferramenta escolhida.
+    // });
+
+    document.addEventListener("mousemove", (e) => {//Pegar a posição do mouse em relação ao "telaCanvas".
         const mouse = pegarPosicaoMouse(telasCanvas, e);
         posicaoMouse.X = parseFloat(((projeto.resolucao.largura / telasCanvas.offsetWidth) * mouse.X).toFixed(1));
         posicaoMouse.Y = parseFloat(((projeto.resolucao.altura / telasCanvas.offsetHeight) * mouse.Y).toFixed(1));
-        if (pintando === true) {
+    });
+
+    document.addEventListener("mousemove", throttle((e) => {// e enquanto o mousse estiver pressionado executar a função referente a ferramenta escolhida.
+        if (drawingTools.painting === true) {
             const ultimoIndice = coordenadaClick.x.length - 1;
             if (drawingTools.selectedTool < 4) {
                 if (coordenadaClick.x[ultimoIndice] === posicaoMouse.X && coordenadaClick.y[ultimoIndice] === posicaoMouse.Y) { return; }
@@ -318,12 +263,7 @@ function colorPaint() {
                 drawingTools.brush(posicaoMouse.X, posicaoMouse.Y);
             }
             else if (drawingTools.selectedTool === 5) {//Curva;
-                if (drawingTools.clickToCurve === false) {
-                    drawingTools.curve(posicaoMouse.X, posicaoMouse.Y, false);
-                }
-                else {
-                    drawingTools.curve(posicaoMouse.X, posicaoMouse.Y, true);
-                }
+                drawingTools.curve(posicaoMouse.X, posicaoMouse.Y, drawingTools.clickToCurve);
             }
             else if (drawingTools.selectedTool === 6) {//Conta-gotas.
                 const mousePos = pegarPosicaoMouse(janelaPrincipal, e);
@@ -342,10 +282,10 @@ function colorPaint() {
         else if (mudarOpacidadeCamada === true) {
             calculaOpacidadeCamada(e);
         }
-        else if (hotKeys.spacePressed === true && moverDesenhoEspaco.mover === true) {
+        else if (moverDesenhoEspaco.mover === true) {
             moverDesenhoComEspaco(moverDesenhoEspaco, pegarPosicaoMouse(contentTelas, e));
         }
-    }, 8));
+    }, 7));
 
     document.getElementById("bttZoomMais").addEventListener("click", function () {//Aumentar o zoom no projeto.
         if (projetoCriado === false) { return; };
@@ -377,8 +317,8 @@ function colorPaint() {
     });
 
     document.addEventListener("mouseup", function (e) {
-        if (pintando === true) {
-            pintando = false;
+        if (drawingTools.painting === true) {
+            drawingTools.painting = false;
             if (drawingTools.selectedTool != 5 && drawingTools.selectedTool != 6) {
                 coordenadaClick.x = [];
                 coordenadaClick.y = [];
@@ -394,15 +334,10 @@ function colorPaint() {
             if (drawingTools.selectedTool === 6) {//Conta-gotas.  
                 const mousePos = pegarPosicaoMouse(janelaPrincipal, e);
                 drawingTools.eyeDropper(mousePos.X, mousePos.Y, posicaoMouse.X, posicaoMouse.Y, false)
-                cursorComparaContaGotas.style.display = "none";
+                drawingTools.arrayTools[drawingTools.selectedTool].cursor.eyeDropper.style.display = "none";
             }
             else if (drawingTools.selectedTool === 5) {//Curva. 
-                if (drawingTools.clickToCurve === false) {
-                    drawingTools.clickToCurve = true;
-                }
-                else {
-                    drawingTools.clickToCurve = false;
-                }
+                drawingTools.clickToCurve = !(drawingTools.clickToCurve);
             }
         }
         drawingTools.toolOpacityBar.clicked = false;
@@ -420,7 +355,7 @@ function colorPaint() {
 
     document.addEventListener("keydown", function (e) {//Criar teclas de atalho.
         if (projetoCriado === false) { return; }
-        if (pintando === true) { e.preventDefault(); return; }
+        if (drawingTools.painting === true) { e.preventDefault(); return; }
         if (hotKeys.ctrlPressed === true) {//Teclas de atalho com o ctrl.
             const keyFunction = hotKeys.keyDown[e.code];
             if (keyFunction) {

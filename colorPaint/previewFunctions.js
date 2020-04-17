@@ -7,7 +7,7 @@ function previewFunctionsObject() {
         addEventsToElements() {
             contentTelas.addEventListener("scroll", (e) => this.scrollContentTelas(e));
             this.contentTelaPreview.addEventListener("mousedown", (e) => this.mouseDownPreview(e));
-            document.getElementById("janelaPreview").addEventListener("mouseup", (e) => this.mouseUpPreview(e));
+            document.addEventListener("mouseup", (e) => this.mouseUpPreview(e));
             document.getElementById("janelaPreview").addEventListener("mousemove", (e) => this.mouseMovePreview(e));
         },
         mouseDownPreview(e) {
@@ -38,21 +38,18 @@ function previewFunctionsObject() {
                 tamanhoContentTelaPreview = { X: previewFunctions.contentTelaPreview.offsetWidth, Y: previewFunctions.contentTelaPreview.offsetHeight };
             if (tamanhoTelasCanvas.X <= (tamanhoContentTelas.X - 10) && tamanhoTelasCanvas.Y <= (tamanhoContentTelas.Y - 10)) {
                 this.moverScroll.style.display = "none";
-            }
-            else if (tamanhoTelasCanvas.X > (tamanhoContentTelas.X - 10) && tamanhoTelasCanvas.Y > (tamanhoContentTelas.Y - 10)) {
+            } else if (tamanhoTelasCanvas.X > (tamanhoContentTelas.X - 10) && tamanhoTelasCanvas.Y > (tamanhoContentTelas.Y - 10)) {
                 const proporcaoTamanhoX = (tamanhoContentTelas.X - 10) / (tamanhoTelasCanvas.X + 12),
                     proporcaoTamanhoY = (tamanhoContentTelas.Y - 10) / (tamanhoTelasCanvas.Y + 12);
                 this.moverScroll.style.display = "block";
                 this.moverScroll.style.width = Math.floor(tamanhoContentTelaPreview.X * proporcaoTamanhoX) + "px";
                 this.moverScroll.style.height = Math.floor(tamanhoContentTelaPreview.Y * proporcaoTamanhoY) + "px";
-            }
-            else if (tamanhoTelasCanvas.X > (tamanhoContentTelas.X - 10)) {
+            } else if (tamanhoTelasCanvas.X > (tamanhoContentTelas.X - 10)) {
                 const proporcaoTamanhoX = (tamanhoContentTelas.X - 10) / (tamanhoTelasCanvas.X + 12);
                 this.moverScroll.style.display = "block";
                 this.moverScroll.style.width = Math.floor(tamanhoContentTelaPreview.X * proporcaoTamanhoX) + "px";
                 this.moverScroll.style.height = tamanhoContentTelaPreview.Y + "px";
-            }
-            else if (tamanhoTelasCanvas.Y > (tamanhoContentTelas.Y - 10)) {
+            } else if (tamanhoTelasCanvas.Y > (tamanhoContentTelas.Y - 10)) {
                 const proporcaoTamanhoY = (tamanhoContentTelas.Y - 10) / (tamanhoTelasCanvas.Y + 12);
                 this.moverScroll.style.display = "block";
                 this.moverScroll.style.width = tamanhoContentTelaPreview.X + "px";
@@ -65,13 +62,11 @@ function previewFunctionsObject() {
             if (mouseX <= metadeLargura) { this.moverScroll.style.left = "0px"; }
             else if (mouseX >= contentTelaPreview.offsetWidth - metadeLargura) {
                 this.moverScroll.style.left = contentTelaPreview.offsetWidth - (metadeLargura * 2) + "px";
-            }
-            else { this.moverScroll.style.left = mouseX - (Math.floor(metadeLargura)) + "px"; }
+            } else { this.moverScroll.style.left = mouseX - (Math.floor(metadeLargura)) + "px"; }
             if (mouseY <= metadeAltura) { this.moverScroll.style.top = "0px"; }
             else if (mouseY >= contentTelaPreview.offsetHeight - (Math.floor(metadeAltura))) {
                 this.moverScroll.style.top = contentTelaPreview.offsetHeight - (metadeAltura * 2) + "px";
-            }
-            else { this.moverScroll.style.top = mouseY - (Math.floor(metadeAltura)) + "px"; }
+            } else { this.moverScroll.style.top = mouseY - (Math.floor(metadeAltura)) + "px"; }
             this.changeScrollsContentTelas(this.moverScroll.offsetTop, this.moverScroll.offsetLeft);
         },
         changeScrollsContentTelas(topPos, leftPos) {//Mudar o valor dos Scroll's do contentTelas movendo o "moverScroll".

@@ -12,8 +12,8 @@ function hotKeysObject() {
         keyUpControl() {
             this.ctrlPressed = false;
             if (drawingTools.previousTool === 0 && drawingTools.selectedTool === 6) {
-                drawingTools.arrayTools[0].tool.click();//Volta para a ferramenta pincel.
-                cursorComparaContaGotas.style.display = "none";
+                drawingTools.arrayTools[drawingTools.selectedTool].cursor.eyeDropper.style.display = "none";
+                drawingTools.arrayTools[0].tool.click();//Volta para a ferramenta pincel.                
                 drawingTools.previousTool = null;
             }
         },
@@ -31,19 +31,19 @@ function hotKeysObject() {
             Digit0() {
                 ajustarNaVisualizacaoTelasCanvas();
             },
-            Digit1(){
+            Digit1() {
                 zoomNoProjeto("porcentagem", true, 100);
             },
-            Minus(){
+            Minus() {
                 zoomNoProjeto(false, true, 1.25);
             },
-            Equal(){
+            Equal() {
                 zoomNoProjeto(true, true, 1.25);
             },
-            KeyZ(){
+            KeyZ() {
                 undoRedoChange.undoChange();
             },
-            KeyY(){
+            KeyY() {
                 undoRedoChange.redoChange();;
             },
         },

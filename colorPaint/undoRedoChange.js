@@ -1,12 +1,14 @@
 function undoRedoChangeObject() {
     return {
         buttons: {
-            undo: document.getElementById("bttDesfazer"),
-            redo: document.getElementById("bttRefazer")
+            undo: document.getElementById("bttDesfazer"), redo: document.getElementById("bttRefazer")
         },
         changes: {
-            undone: [],
-            redone: []
+            undone: [], redone: []
+        },
+        addEventsToElements() {
+            this.buttons.redo.addEventListener("mousedown", () => this.redoChange());
+            this.buttons.undo.addEventListener("mousedown", () => this.undoChange());
         },
         saveChanges() {
             const objAlteracao = {
