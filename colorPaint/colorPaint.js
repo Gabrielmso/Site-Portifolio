@@ -26,8 +26,8 @@ let txtPosicaoCursor;//Recebe a string com a posição do cursor no eixo X e Y s
 let txtPorcentagemZoom;//Recebe a string com a porcentagem de zoom no "telasCanvas".
 let janelaSeleciona;//Recebe toda a função "janelaSeletorDeCor".
 let MouseNoBttVer = false;//Saber se o mouse está sobre os botões que deixam as camadas invisíveis ou visíveis.
-const posicaoMouse = { X: 0, Y: 0 };//Armazena a posição do mouse no tela canvas em relação a resolução do projeto.
-const coordenadaClick = { x: [], y: [] };//Armazena as coordenadas do cursor do mouse desde quando o mesmo é pressionado e movimentado enquanto pressionado.
+const posicaoMouse = { X: 0, Y: 0 };//Armazena a coordenada atual do mouse no tela canvas em relação a resolução do projeto.
+const coordenadaClick = { x: [], y: [] };//Armazena as coordenadas do mouse desde quando o mesmo é pressionado e movimentado enquanto pressionado.
 let cursorOpacidadeCamada;
 function colorPaint() {
     drawingTools = drawingToolsObject();
@@ -240,18 +240,13 @@ function colorPaint() {
         calculaOpacidadeCamada(e);
     });
 
-    // contentTelas.addEventListener("mousedown", function (e) {
-    //     if (projetoCriado === false) { return; }
-
-    // });
-
     document.addEventListener("mousemove", (e) => {//Pegar a posição do mouse em relação ao "telaCanvas".
         const mouse = pegarPosicaoMouse(telasCanvas, e);
         posicaoMouse.X = parseFloat(((projeto.resolucao.largura / telasCanvas.offsetWidth) * mouse.X).toFixed(1));
         posicaoMouse.Y = parseFloat(((projeto.resolucao.altura / telasCanvas.offsetHeight) * mouse.Y).toFixed(1));
     });
 
-    document.addEventListener("mousemove", throttle((e) => {// e enquanto o mousse estiver pressionado executar a função referente a ferramenta escolhida.
+    document.addEventListener("mousemove", (e) => {// e enquanto o mousse estiver pressionado executar a função referente a ferramenta escolhida.
         if (drawingTools.painting === true) {
             const ultimoIndice = coordenadaClick.x.length - 1;
             if (drawingTools.selectedTool < 4) {
@@ -285,7 +280,7 @@ function colorPaint() {
         else if (moverDesenhoEspaco.mover === true) {
             moverDesenhoComEspaco(moverDesenhoEspaco, pegarPosicaoMouse(contentTelas, e));
         }
-    }, 7));
+    });
 
     document.getElementById("bttZoomMais").addEventListener("click", function () {//Aumentar o zoom no projeto.
         if (projetoCriado === false) { return; };
@@ -319,38 +314,32 @@ function colorPaint() {
     document.addEventListener("mouseup", function (e) {
         if (drawingTools.painting === true) {
             drawingTools.painting = false;
-            if (drawingTools.selectedTool != 5 && drawingTools.selectedTool != 6) {
-                coordenadaClick.x = [];
-                coordenadaClick.y = [];
-                desenharNaCamada();
-                desenhoNoPreviewEIcone();
-            }
-            else if (coordenadaClick.x.length === 3) {
-                coordenadaClick.x = [];
-                coordenadaClick.y = [];
-                desenharNaCamada();
-                desenhoNoPreviewEIcone();
-            }
             if (drawingTools.selectedTool === 6) {//Conta-gotas.  
                 const mousePos = pegarPosicaoMouse(janelaPrincipal, e);
                 drawingTools.eyeDropper(mousePos.X, mousePos.Y, posicaoMouse.X, posicaoMouse.Y, false)
                 drawingTools.arrayTools[drawingTools.selectedTool].cursor.eyeDropper.style.display = "none";
+                return;
             }
             else if (drawingTools.selectedTool === 5) {//Curva. 
                 drawingTools.clickToCurve = !(drawingTools.clickToCurve);
+                if (coordenadaClick.x.length === 2) { return; }
             }
+            coordenadaClick.x = [];
+            coordenadaClick.y = [];
+            desenharNaCamada();
+            desenhoNoPreviewEIcone();
+        }
+        else if (mudarOpacidadeCamada === true) {
+            desenhoNoPreviewEIcone();
+            mudarOpacidadeCamada = false;
+        }
+        else if (hotKeys.spacePressed === true) {
+            moverDesenhoEspaco.mover = false;
+            telasCanvas.style.cursor = "grab";
         }
         drawingTools.toolOpacityBar.clicked = false;
         drawingTools.toolSizeBar.clicked = false;
         drawingTools.toolHardnessBar.clicked = false;
-        if (mudarOpacidadeCamada === true) {
-            desenhoNoPreviewEIcone();
-            mudarOpacidadeCamada = false;
-        }
-        if (hotKeys.spacePressed === true) {
-            moverDesenhoEspaco.mover = false;
-            telasCanvas.style.cursor = "grab";
-        }
     });
 
     document.addEventListener("keydown", function (e) {//Criar teclas de atalho.

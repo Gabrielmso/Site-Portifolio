@@ -376,7 +376,7 @@ function drawingToolsObject() {
             coordenadaClick.x[0] = Math.round(mouseX);
             coordenadaClick.y[0] = Math.round(mouseY);
             const camada = context.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura),
-                canvasEvent = ctxPintar.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
+                clearCanvas = creatClearCanvas(context.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura));
             pintar(coordenadaClick.x[0], coordenadaClick.y[0]);
             function pintar(posX, posY) {
                 const pixelPos = (posY * projeto.resolucao.largura + posX) * 4,
@@ -438,7 +438,7 @@ function drawingToolsObject() {
                     }
                     pintarPixel(posicaoPixel, selectedColor.R, selectedColor.G, selectedColor.B, selectedColor.A);
                 }
-                ctxPintar.putImageData(canvasEvent, 0, 0);
+                ctxPintar.putImageData(clearCanvas, 0, 0);
             }
             function compararCorInicial(pixelPos, clickR, clickG, clickB, clickA) {
                 const r = camada.data[pixelPos],
@@ -446,7 +446,7 @@ function drawingToolsObject() {
                     b = camada.data[pixelPos + 2],
                     a = camada.data[pixelPos + 3];
 
-                if (canvasEvent.data[pixelPos + 3] === 0) {
+                if (clearCanvas.data[pixelPos + 3] === 0) {
                     if (clickR === selectedColor.R && clickG === selectedColor.G && clickB === selectedColor.B && clickA === 255) {
                         return false;
                     }
@@ -462,15 +462,19 @@ function drawingToolsObject() {
                 }
             }
             function pintarPixel(pixelPos, R, G, B, A) {
-                canvasEvent.data[pixelPos] = R;
-                canvasEvent.data[pixelPos + 1] = G;
-                canvasEvent.data[pixelPos + 2] = B;
-                canvasEvent.data[pixelPos + 3] = A;
+                clearCanvas.data[pixelPos] = R;
+                clearCanvas.data[pixelPos + 1] = G;
+                clearCanvas.data[pixelPos + 2] = B;
+                clearCanvas.data[pixelPos + 3] = A;
 
                 camada.data[pixelPos] = R;
                 camada.data[pixelPos + 1] = G;
                 camada.data[pixelPos + 2] = B;
                 camada.data[pixelPos + 3] = A;
+            }
+            function creatClearCanvas(canvasdata) {
+                for (let i = 0; i < canvasdata.data.length; i++) { canvasdata.data[i] = 0; }
+                return canvasdata;
             }
         }
     }
