@@ -376,18 +376,13 @@ function drawingToolsObject() {
             coordenadaClick.x[0] = Math.round(mouseX);
             coordenadaClick.y[0] = Math.round(mouseY);
             const camada = context.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura),
-                clearCanvas = creatClearCanvas(context.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura));
+                clearCanvas = context.createImageData(projeto.resolucao.largura, projeto.resolucao.altura);
             pintar(coordenadaClick.x[0], coordenadaClick.y[0]);
             function pintar(posX, posY) {
-                const pixelPos = (posY * projeto.resolucao.largura + posX) * 4,
-                    r = camada.data[pixelPos],
-                    g = camada.data[pixelPos + 1],
-                    b = camada.data[pixelPos + 2],
-                    a = camada.data[pixelPos + 3];
-                if (r === selectedColor.R && g === selectedColor.G && b === selectedColor.B && a === 255) {
-                    return;
-                }
-                preencher(posX, posY, r, g, b, a);
+                const pixelPos = (posY * projeto.resolucao.largura + posX) * 4, R = camada.data[pixelPos],
+                    G = camada.data[pixelPos + 1], B = camada.data[pixelPos + 2], A = camada.data[pixelPos + 3];
+                if (R === selectedColor.R && G === selectedColor.G && B === selectedColor.B && A === 255) { return; }
+                preencher(posX, posY, R, G, B, A);
             }
             function preencher(posClickX, posClickY, R, G, B, A) {
                 let pixelsVerificados = [[posClickX, posClickY]];
@@ -441,25 +436,19 @@ function drawingToolsObject() {
                 ctxPintar.putImageData(clearCanvas, 0, 0);
             }
             function compararCorInicial(pixelPos, clickR, clickG, clickB, clickA) {
-                const r = camada.data[pixelPos],
-                    g = camada.data[pixelPos + 1],
-                    b = camada.data[pixelPos + 2],
+                const r = camada.data[pixelPos], g = camada.data[pixelPos + 1], b = camada.data[pixelPos + 2],
                     a = camada.data[pixelPos + 3];
 
                 if (clearCanvas.data[pixelPos + 3] === 0) {
                     if (clickR === selectedColor.R && clickG === selectedColor.G && clickB === selectedColor.B && clickA === 255) {
                         return false;
                     }
-                    if (r === clickR && g === clickG && b === clickB && a === clickA) {
-                        return true;
-                    }
+                    if (r === clickR && g === clickG && b === clickB && a === clickA) { return true; }
                     if (r === selectedColor.R && g === selectedColor.G && b === selectedColor.B && a === selectedColor.A) {
                         return false;
                     }
                 }
-                else {
-                    return false;
-                }
+                else { return false; }
             }
             function pintarPixel(pixelPos, R, G, B, A) {
                 clearCanvas.data[pixelPos] = R;
@@ -471,10 +460,6 @@ function drawingToolsObject() {
                 camada.data[pixelPos + 1] = G;
                 camada.data[pixelPos + 2] = B;
                 camada.data[pixelPos + 3] = A;
-            }
-            function creatClearCanvas(canvasdata) {
-                for (let i = 0; i < canvasdata.data.length; i++) { canvasdata.data[i] = 0; }
-                return canvasdata;
             }
         }
     }

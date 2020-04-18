@@ -246,7 +246,7 @@ function colorPaint() {
         posicaoMouse.Y = parseFloat(((projeto.resolucao.altura / telasCanvas.offsetHeight) * mouse.Y).toFixed(1));
     });
 
-    document.addEventListener("mousemove", (e) => {// e enquanto o mousse estiver pressionado executar a função referente a ferramenta escolhida.
+    document.addEventListener("mousemove", throttle((e) => {// e enquanto o mousse estiver pressionado executar a função referente a ferramenta escolhida.
         if (drawingTools.painting === true) {
             const ultimoIndice = coordenadaClick.x.length - 1;
             if (drawingTools.selectedTool < 4) {
@@ -265,22 +265,12 @@ function colorPaint() {
                 drawingTools.eyeDropper(mousePos.X, mousePos.Y, posicaoMouse.X, posicaoMouse.Y, true)
             }
         }
-        else if (drawingTools.toolSizeBar.clicked === true) {
-            drawingTools.changeToolSize(e);
-        }
-        else if (drawingTools.toolOpacityBar.clicked === true) {
-            drawingTools.changeToolOpacity(e);
-        }
-        else if (drawingTools.toolHardnessBar.clicked === true) {
-            drawingTools.changeToolHardness(e);
-        }
-        else if (mudarOpacidadeCamada === true) {
-            calculaOpacidadeCamada(e);
-        }
-        else if (moverDesenhoEspaco.mover === true) {
-            moverDesenhoComEspaco(moverDesenhoEspaco, pegarPosicaoMouse(contentTelas, e));
-        }
-    });
+        else if (drawingTools.toolSizeBar.clicked === true) { drawingTools.changeToolSize(e); }
+        else if (drawingTools.toolOpacityBar.clicked === true) { drawingTools.changeToolOpacity(e); }
+        else if (drawingTools.toolHardnessBar.clicked === true) { drawingTools.changeToolHardness(e); }
+        else if (mudarOpacidadeCamada === true) { calculaOpacidadeCamada(e); }
+        else if (moverDesenhoEspaco.mover === true) { moverDesenhoComEspaco(moverDesenhoEspaco, pegarPosicaoMouse(contentTelas, e)); }
+    }, 7));
 
     document.getElementById("bttZoomMais").addEventListener("click", function () {//Aumentar o zoom no projeto.
         if (projetoCriado === false) { return; };
