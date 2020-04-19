@@ -477,7 +477,7 @@ p {
     width: 100%;
     overflow: auto;
     scrollbar-width: thin;
-    cursor: url("../colorPaint/imagens/cursor/circle.png") 10 10, pointer;
+    cursor: url("../colorPaint/imagens/cursor/crossHair.png") 12.5 12.5, pointer;
 }
 
 #telasCanvas {
@@ -1050,6 +1050,28 @@ p {
     height: 100%;
     border-radius: 50%;
     transform: rotate(45deg);
+}
+
+#cursorFerramenta{
+    display: none;
+    position: absolute;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    z-index: 1001;
+    top: 100px;
+    left: 100px;
+    border: 1px solid black;
+    background: url("../colorPaint/imagens/cursor/centerCrossHair.png") center no-repeat;
+    cursor: none;
+}
+
+#cursorFerramenta div{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 1px solid white;
 }
 
 .camadas {

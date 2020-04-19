@@ -7,12 +7,10 @@ function validarPropriedades() {
     for (let i = 0; i < arrayPropriedades.length; i++) {
         const el = arrayPropriedades[i];
         if (el.value === "") {
-            campoInvalido(el)
+            campoInvalido(el);
             return;
         }
-        else {
-            el.style.backgroundColor = "rgba(0, 0, 0, 0)";
-        }
+        else { el.style.backgroundColor = "rgba(0, 0, 0, 0)"; }
     }
     const nomeProjeto = (arrayPropriedades[0].value).replace(/ /g, "-"),
         larguraProjeto = parseInt(arrayPropriedades[1].value),
@@ -37,21 +35,11 @@ function validarPropriedades() {
         return;
     }
     let cor;
-    if (valueCor === 1) {
-        cor = { R: 255, G: 255, B: 255 };
-    }
-    else if (valueCor === 2) {
-        cor = { R: 0, G: 0, B: 0 };
-    }
-    else if (valueCor === 3) {
-        cor = false;
-    }
-    else {
-        cor = corEscolhidaPrincipal;
-    }
-    for (let i = 0; i < arrayPropriedades.length; i++) {
-        arrayPropriedades[i].style.backgroundColor = "rgb(37, 37, 37)";
-    }
+    if (valueCor === 1) { cor = { R: 255, G: 255, B: 255 }; }
+    else if (valueCor === 2) { cor = { R: 0, G: 0, B: 0 }; }
+    else if (valueCor === 3) { cor = false; }
+    else { cor = corEscolhidaPrincipal; }
+    for (let i = 0; i < arrayPropriedades.length; i++) { arrayPropriedades[i].style.backgroundColor = "rgb(37, 37, 37)"; }
     criarProjeto(nomeProjeto, { largura: larguraProjeto, altura: alturaProjeto }, cor, numeroCamadas);
     function campoInvalido(campo) {
         campo.focus();
@@ -71,9 +59,7 @@ function criarProjeto(nome, resolucao, corPlanoDeFundo, numeroCamadas) {
         cor = "rgb(" + projeto.corFundo.R + ", " + projeto.corFundo.G + ", " + projeto.corFundo.B + ")"
         corFundo.style.backgroundColor = cor;
     }
-    while (projeto.numeroCamadas > arrayCamadas.length) {
-        criarCamada(cor, projeto.resolucao);
-    }
+    while (projeto.numeroCamadas > arrayCamadas.length) { criarCamada(cor, projeto.resolucao); }
     ajustarTelasCanvas();
     ajustarPreview(cor);
     clickIconeCamada.call(arrayCamadas[0].icone);
@@ -96,9 +82,7 @@ function criarCamada(cor, resolucao) {
     iconeCamada.setAttribute("id", idicone);
     iconeCamada.setAttribute("class", "camadas");
 
-    if (num === 1) {
-        contentIconeCamadas.appendChild(iconeCamada);
-    }
+    if (num === 1) { contentIconeCamadas.appendChild(iconeCamada); }
     else {
         const idElAnterior = "camadaIcone" + (num - 1);
         const elAnterior = document.getElementById(idElAnterior);
@@ -152,12 +136,8 @@ function criarCamada(cor, resolucao) {
         styleIconTela = "width: " + iconLargura + "px; height: 80px; ";
     }
 
-    if (cor != false) {
-        styleIconTela = styleIconTela + "background-color: " + cor;
-    }
-    else {
-        styleIconTela = styleIconTela + "background-image: url('static/drawApp/imagens/fundoTela/transparenteMiniatura.png')";
-    }
+    if (cor != false) { styleIconTela = styleIconTela + "background-color: " + cor; }
+    else { styleIconTela = styleIconTela + "background-image: url('static/drawApp/imagens/fundoTela/transparenteMiniatura.png')"; }
 
     iconTela.setAttribute("style", styleIconTela);
     iconTela.setAttribute("class", "iconTela");
@@ -266,9 +246,7 @@ function ajustarPreview(cor) {
         contentTelaPreview.style.height = "150px";
     }
     if (cor != false) { contentTelaPreview.style.backgroundColor = cor; }
-    else {
-        contentTelaPreview.style.backgroundImage = "url('static/drawApp/imagens/fundoTela/transparenteMiniatura.png')";
-    }
+    else { contentTelaPreview.style.backgroundImage = "url('static/drawApp/imagens/fundoTela/transparenteMiniatura.png')"; }
     previewFunctions.ctxTelaPreview.canvas.width = contentTelaPreview.offsetWidth * 2;
     previewFunctions.ctxTelaPreview.canvas.height = contentTelaPreview.offsetHeight * 2;
 }

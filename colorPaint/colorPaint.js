@@ -236,17 +236,13 @@ function colorPaint() {
 
     document.getElementById("bttZoomMenos").addEventListener("click", function () {//Diminuir o zoom no projeto.
         if (projetoCriado === false) { return; };
-        if (telasCanvas.offsetWidth >= 25) {
-            zoomNoProjeto(false, true, 1.25);
-        }
+        if (telasCanvas.offsetWidth >= 25) { zoomNoProjeto(false, true, 1.25); }
     });
 
     txtPorcentagemZoom.addEventListener("keyup", function (e) {
         if (e.code === "Enter" || e.keyCode === 13) {
             const valor = parseFloat(((this.value).replace("%", "")).replace(",", "."));
-            if (isNaN(valor) === false && valor >= 1) {
-                zoomNoProjeto("porcentagem", true, valor);
-            }
+            if (isNaN(valor) === false && valor >= 1) { zoomNoProjeto("porcentagem", true, valor); }
         }
     });
 
@@ -313,12 +309,8 @@ function colorPaint() {
     document.getElementById("colorPaintContent").addEventListener("wheel", function (e) {//Zoom com o scroll do mouse.
         if (hotKeys.ctrlPressed === true && projetoCriado === true) {
             e.preventDefault();
-            if (e.deltaY < 0) {
-                zoomNoProjeto(true, false, 1.11, e);
-            }
-            else {
-                zoomNoProjeto(false, false, 1.11, e);
-            }
+            if (e.deltaY < 0) { zoomNoProjeto(true, false, 1.11, e); }
+            else { zoomNoProjeto(false, false, 1.11, e); }
             const posContentTelas = pegarPosicaoMouse(contentTelas, e);
             const proporcaoPosY = drawingTools.mousePosition.y / projeto.resolucao.altura;
             const proporcaoPosX = drawingTools.mousePosition.x / projeto.resolucao.largura;
