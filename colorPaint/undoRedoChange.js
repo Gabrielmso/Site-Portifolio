@@ -1,11 +1,7 @@
 function undoRedoChangeObject() {
     return {
-        buttons: {
-            undo: document.getElementById("bttDesfazer"), redo: document.getElementById("bttRefazer")
-        },
-        changes: {
-            undone: [], redone: []
-        },
+        buttons: { undo: document.getElementById("bttDesfazer"), redo: document.getElementById("bttRefazer") },
+        changes: { undone: [], redone: [] },
         addEventsToElements() {
             this.buttons.redo.addEventListener("mousedown", () => this.redoChange());
             this.buttons.undo.addEventListener("mousedown", () => this.undoChange());
@@ -61,7 +57,6 @@ function undoRedoChangeObject() {
                 desenhoNoPreviewEIcone();
                 desenhoCompleto();
             }
-
         },
         redoChange() {
             if (this.changes.redone.length > 0) {

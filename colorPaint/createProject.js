@@ -265,9 +265,7 @@ function ajustarPreview(cor) {
         contentTelaPreview.style.width = novaLargura + "px";
         contentTelaPreview.style.height = "150px";
     }
-    if (cor != false) {
-        contentTelaPreview.style.backgroundColor = cor;
-    }
+    if (cor != false) { contentTelaPreview.style.backgroundColor = cor; }
     else {
         contentTelaPreview.style.backgroundImage = "url('static/drawApp/imagens/fundoTela/transparenteMiniatura.png')";
     }

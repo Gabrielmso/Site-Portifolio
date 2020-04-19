@@ -22,8 +22,8 @@ function janelaSeletorDeCor() {
         clickBarra = false,//Saber se o click do mouse foi ou está pressionado em cima do "barraeEspectroCor".
         clickGradiente = false,//Saber se o click do mouse foi ou está pressionado em cima do "gradienteCor".
         clickMoverJanela = false,
-        posMouseMoverJanela = { X: 0, Y: 0 },//Armazena a posição do do mouse quando foi clicado para mover a janela.
-        posMouseJanela = { X: 0, Y: 0 };//Armazena a posição do mouse na "janelaSelecionarCor";    
+        posMouseMoverJanela = { x: 0, y: 0 },//Armazena a posição do do mouse quando foi clicado para mover a janela.
+        posMouseJanela = { x: 0, y: 0 };//Armazena a posição do mouse na "janelaSelecionarCor";    
 
 
     this.procurarCor = (color) => {
@@ -105,8 +105,8 @@ function janelaSeletorDeCor() {
     gradienteCor.addEventListener("mousedown", () => clickGradiente = true);
 
     janelaSelecionarCor.addEventListener("mousedown", (e) => {
-        if (posMouseJanela.Y < 10 && clickBarra === false && clickGradiente === false ||
-            posMouseJanela.X < 10 || posMouseJanela.X > 540 && clickBarra === false && clickGradiente === false) {
+        if (posMouseJanela.y < 10 && clickBarra === false && clickGradiente === false ||
+            posMouseJanela.x < 10 || posMouseJanela.x > 540 && clickBarra === false && clickGradiente === false) {
             clickMoverJanela = true;
             posMouseMoverJanela = posMouseJanela;
         }
@@ -118,11 +118,11 @@ function janelaSeletorDeCor() {
     function moverCursores(e) {//Calcula a posição do mouse na "janelaSelecionarCor"
         const posMouse = pegarPosicaoMouse(janelaSelecionarCor, e);
         posMouseJanela = posMouse;
-        if (clickGradiente === true) { moverCursor2(posMouseJanela.X, posMouseJanela.Y); }
+        if (clickGradiente === true) { moverCursor2(posMouseJanela.x, posMouseJanela.y); }
         else if (clickBarra === true) {
-            if (posMouseJanela.X > 540) { moverCursorBarra(540 - 10); }
-            else if (posMouseJanela.X < 10) { moverCursorBarra(0); }
-            else { moverCursorBarra(posMouseJanela.X - 10); }
+            if (posMouseJanela.x > 540) { moverCursorBarra(540 - 10); }
+            else if (posMouseJanela.x < 10) { moverCursorBarra(0); }
+            else { moverCursorBarra(posMouseJanela.x - 10); }
         }
     }
 
@@ -263,14 +263,14 @@ function janelaSeletorDeCor() {
     colorPaintContent.addEventListener("mousemove", (e) => {
         if (clickMoverJanela === true && clickBarra === false && clickGradiente === false) {
             const posMouse = pegarPosicaoMouse(colorPaintContent, e);
-            moverjanelaSelecionarCorNaPagina(posMouse.X, posMouse.Y);
+            moverjanelaSelecionarCorNaPagina(posMouse.x, posMouse.y);
         }
     });
 
     function moverjanelaSelecionarCorNaPagina(x, y) {
-        const novaPosicaoXJanela = x - posMouseMoverJanela.X, novaPosicaoYJanela = y - posMouseMoverJanela.Y,
-            limiteDireita = x + (janelaSelecionarCor.offsetWidth - posMouseMoverJanela.X), limiteEsquerda = x - (posMouseMoverJanela.X),
-            limiteCima = y - (posMouseMoverJanela.Y), limiteBaixo = y + (janelaSelecionarCor.offsetHeight - posMouseMoverJanela.Y);
+        const novaPosicaoXJanela = x - posMouseMoverJanela.x, novaPosicaoYJanela = y - posMouseMoverJanela.y,
+            limiteDireita = x + (janelaSelecionarCor.offsetWidth - posMouseMoverJanela.x), limiteEsquerda = x - (posMouseMoverJanela.x),
+            limiteCima = y - (posMouseMoverJanela.y), limiteBaixo = y + (janelaSelecionarCor.offsetHeight - posMouseMoverJanela.y);
         if (limiteDireita < colorPaintContent.offsetWidth && limiteEsquerda > 0 && limiteCima > 50 && limiteBaixo < colorPaintContent.offsetHeight - 7) {
             janelaSelecionarCor.style.left = novaPosicaoXJanela + "px";
             janelaSelecionarCor.style.top = novaPosicaoYJanela + "px";
