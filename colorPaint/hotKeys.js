@@ -21,11 +21,13 @@ function hotKeysObject() {
             if (this.spacePressed === false) {
                 this.spacePressed = true;
                 telasCanvas.style.cursor = "grab";
+                drawingTools.cursorTool.cursor.style.display = "none";
             }
         },
         keyUpSpace() {
             this.spacePressed = false;
             telasCanvas.style.cursor = "";
+            if (drawingTools.cursorTool.show) { drawingTools.cursorTool.cursor.style.display = "block"; }
         },
         keyDown: {
             Digit0() {

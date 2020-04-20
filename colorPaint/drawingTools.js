@@ -69,13 +69,13 @@ function drawingToolsObject() {
                 this.cursorTool.changeCursorPosition(posX, posY);
                 this.mousePosition.x = parseFloat(((projeto.resolucao.largura / telasCanvas.offsetWidth) * (mouse.x - telaPosition.left - document.body.scrollLeft)).toFixed(1));
                 this.mousePosition.y = parseFloat(((projeto.resolucao.altura / telasCanvas.offsetHeight) * (mouse.y - telaPosition.top - document.body.scrollTop)).toFixed(1));
-                if (this.painting === false) {
+                if (!this.painting) {
                     const contentPosition = contentTelas.getBoundingClientRect();
                     if (mouse.x < contentPosition.left || mouse.x > contentPosition.left + contentPosition.width ||
                         mouse.y < contentPosition.top || mouse.y > contentPosition.top + contentPosition.height) {
                         this.cursorTool.cursor.style.display = "none";
                     }
-                    else { this.cursorTool.cursor.style.display = "block"; }
+                    else if (!hotKeys.spacePressed) { this.cursorTool.cursor.style.display = "block"; }
                 }
             } else {
                 const mouse = pegarPosicaoMouse(telasCanvas, e)
@@ -357,8 +357,7 @@ function drawingToolsObject() {
                 this.cursorTool.halfSize = tamanho / 2;
                 this.cursorTool.cursor.style.width = tamanho + "px";
                 this.cursorTool.cursor.style.height = tamanho + "px";
-                this.cursorTool.changeCursorPosition(this.cursorTool.cursor.offsetLeft + (halfSizePrevious - this.cursorTool.halfSize), this.cursorTool.cursor.offsetTop - this.cursorTool.halfSize + halfSizePrevious);
-                contentTelas.style.cursor = "none";
+                this.cursorTool.changeCursorPosition(this.cursorTool.cursor.offsetLeft + Math.floor(halfSizePrevious - this.cursorTool.halfSize), this.cursorTool.cursor.offsetTop + Math.floor(halfSizePrevious - this.cursorTool.halfSize));
             }
         },
         brush(mouseX, mouseY) {
