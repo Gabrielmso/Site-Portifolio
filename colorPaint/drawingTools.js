@@ -30,6 +30,10 @@ function drawingToolsObject() {
             removeCursor() {
                 this.show = false;
                 this.cursor.style.display = "none";
+            },
+            wheel(e) {
+                if (!hotKeys.shiftPressed) { contentTelas.scrollTop = contentTelas.scrollTop + e.deltaY; }
+                else{ contentTelas.scrollLeft = contentTelas.scrollLeft + e.deltaY; }
             }
         },
         selectedTool: 0,
@@ -89,6 +93,7 @@ function drawingToolsObject() {
             document.addEventListener("mousemove", (e) => this.getCursorPosition(e));
             document.addEventListener("mousemove", throttle((e) => this.mouseMoveEventDrawing(e), 8));
             document.addEventListener("mouseup", (e) => this.mouseUpEventDrawing(e));
+            this.cursorTool.cursor.addEventListener("wheel", (e) => this.cursorTool.wheel(e));
             this.toolOpacityBar.bar.addEventListener("mousedown", (e) => this.mouseDownToolOpacityBar(e));
             this.toolSizeBar.bar.addEventListener("mousedown", (e) => this.mouseDownToolSizeBar(e));
             this.toolHardnessBar.bar.addEventListener("mousedown", (e) => this.mouseDownToolHardnessBar(e));

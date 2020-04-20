@@ -67,6 +67,7 @@ function colorPaint() {
     drawingTools.addEventsToElements();
     previewFunctions.addEventsToElements();
     undoRedoChange.addEventsToElements();
+    hotKeys.addEventsToElements();
 
     document.getElementById("bttCriarNovoProjeto").addEventListener("click", function () {
         if (projetoCriado === false) {
@@ -262,47 +263,6 @@ function colorPaint() {
         else if (hotKeys.spacePressed === true) {
             moverDesenhoEspaco.mover = false;
             telasCanvas.style.cursor = "grab";
-        }
-    });
-
-    document.addEventListener("keydown", function (e) {//Criar teclas de atalho.
-        if (projetoCriado === false) { return; }
-        if (drawingTools.painting === true) { e.preventDefault(); return; }
-        if (hotKeys.ctrlPressed === true) {//Teclas de atalho com o ctrl.
-            const keyFunction = hotKeys.keyDown[e.code];
-            if (keyFunction) {
-                e.preventDefault();
-                drawingTools.clickToCurve = false;
-                keyFunction();
-            }
-        }
-        else {
-            if (e.code === "BracketRight") {//Aumentar o tamanho da ferramenta.
-                drawingTools.changeToolSizeHotKey(true);
-            }
-            else if (e.code === "Backslash") {//Diminuir o tamanho da ferramenta.
-                drawingTools.changeToolSizeHotKey(false);
-            }
-        }
-        if (e.code === "ControlRight" || e.code === "ControlLeft" || e.keyCode === 17) {
-            e.preventDefault();
-            hotKeys.keyDownControl();
-        }
-        if (e.code === "Space") {
-            e.preventDefault();
-            hotKeys.keyDownSpace();
-        }
-    });
-
-    document.addEventListener("keyup", function (e) {
-        if (e.code === "ControlRight" || e.code === "ControlLeft" || e.keyCode === 17) {
-            e.preventDefault();
-            hotKeys.keyUpControl();
-        }
-        if (e.code === "Space") {
-            e.preventDefault();
-            moverDesenhoEspaco.mover = false;
-            hotKeys.keyUpSpace();
         }
     });
 

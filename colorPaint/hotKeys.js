@@ -2,6 +2,58 @@ function hotKeysObject() {
     return {
         ctrlPressed: false,
         spacePressed: false,
+        shiftPressed: false,
+        addEventsToElements() {
+            document.addEventListener("keydown", (e) => this.keyDownEvent(e));
+            document.addEventListener("keyup", (e) => this.keyUpEvent(e));
+        },
+        keyDownEvent(e) {
+            if (projetoCriado === false) { return; }
+            if (drawingTools.painting === true) { e.preventDefault(); return; }
+            if (this.ctrlPressed === true) {//Teclas de atalho com o ctrl.
+                const keyFunction = this.keyDown[e.code];
+                if (keyFunction) {
+                    e.preventDefault();
+                    drawingTools.clickToCurve = false;
+                    keyFunction();
+                }
+            }
+            else {
+                if (e.code === "BracketRight") {//Aumentar o tamanho da ferramenta.
+                    drawingTools.changeToolSizeHotKey(true);
+                }
+                else if (e.code === "Backslash") {//Diminuir o tamanho da ferramenta.
+                    drawingTools.changeToolSizeHotKey(false);
+                }
+            }
+            if (e.code === "ControlRight" || e.code === "ControlLeft" || e.keyCode === 17) {
+                e.preventDefault();
+                this.keyDownControl();
+            }
+            if (e.code === "Space") {
+                e.preventDefault();
+                this.keyDownSpace();
+            }
+            if (e.code === "ShiftLeft") {
+                e.preventDefault();
+                this.shiftPressed = true;
+            }
+        },
+        keyUpEvent(e) {
+            if (e.code === "ControlRight" || e.code === "ControlLeft" || e.keyCode === 17) {
+                e.preventDefault();
+                this.keyUpControl();
+            }
+            if (e.code === "Space") {
+                e.preventDefault();
+                moverDesenhoEspaco.mover = false;
+                this.keyUpSpace();
+            }
+            if (e.code === "ShiftLeft") {
+                e.preventDefault();
+                this.shiftPressed = false;
+            }
+        },
         keyDownControl() {
             this.ctrlPressed = true;
             if (drawingTools.selectedTool === 0) {
