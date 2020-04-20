@@ -352,12 +352,13 @@ function drawingToolsObject() {
                 this.cursorTool.removeCursor();
                 contentTelas.style.cursor = "url('colorPaint/imagens/cursor/crossHair.png') 12.5 12.5, pointer";
             } else {
-                const halfSizePrevious = this.cursorTool.halfSize;
+                const previousPosition = { x: Math.round(this.cursorTool.cursor.offsetLeft + this.cursorTool.halfSize), y: Math.round(this.cursorTool.cursor.offsetTop + this.cursorTool.halfSize) };
                 this.cursorTool.showCursor();
                 this.cursorTool.halfSize = tamanho / 2;
                 this.cursorTool.cursor.style.width = tamanho + "px";
                 this.cursorTool.cursor.style.height = tamanho + "px";
-                this.cursorTool.changeCursorPosition(this.cursorTool.cursor.offsetLeft + Math.floor(halfSizePrevious - this.cursorTool.halfSize), this.cursorTool.cursor.offsetTop + Math.floor(halfSizePrevious - this.cursorTool.halfSize));
+                this.cursorTool.changeCursorPosition(Math.round(previousPosition.x - this.cursorTool.halfSize), Math.round(previousPosition.y - this.cursorTool.halfSize));
+                contentTelas.style.cursor = "none";
             }
         },
         brush(mouseX, mouseY) {
