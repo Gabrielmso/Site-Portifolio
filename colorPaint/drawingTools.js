@@ -32,8 +32,15 @@ function drawingToolsObject() {
                 this.cursor.style.display = "none";
             },
             wheel(e) {
-                if (!hotKeys.shiftPressed) { contentTelas.scrollTop = contentTelas.scrollTop + e.deltaY; }
-                else{ contentTelas.scrollLeft = contentTelas.scrollLeft + e.deltaY; }
+                const velocid = 19;
+                if (!hotKeys.shiftPressed) {
+                    if (e.deltaY < 0) { contentTelas.scrollTop -= contentTelas.scrollHeight / velocid; }
+                    else { contentTelas.scrollTop += contentTelas.scrollHeight / velocid; }
+                }
+                else {
+                    if (e.deltaY < 0) { contentTelas.scrollLeft -= contentTelas.scrollWidth / velocid; }
+                    else { contentTelas.scrollLeft += contentTelas.scrollWidth / velocid; }
+                }
             }
         },
         selectedTool: 0,
@@ -117,11 +124,11 @@ function drawingToolsObject() {
                 this.painting = true;
                 this.applyToolChanges();
                 ctxPintar.beginPath();
+                ctxPintar.lineJoin = ctxPintar.lineCap = "round";
                 arrayCamadas[camadaSelecionada].ctx.globalCompositeOperation = "source-over";
                 if (this.selectedTool < 4) {
                     this.strokeCoordinates.x[0] = this.mousePosition.x;
                     this.strokeCoordinates.y[0] = this.mousePosition.y;
-                    ctxPintar.lineJoin = ctxPintar.lineCap = "round";
                     this[this.arrayTools[this.selectedTool].name](this.mousePosition.x, this.mousePosition.y);
                 }
                 else if (this.selectedTool === 4) {//Borracha. 
@@ -132,7 +139,6 @@ function drawingToolsObject() {
                     this.brush(this.mousePosition.x, this.mousePosition.y);
                 }
                 else if (this.selectedTool === 5) {//Curva;
-                    ctxPintar.lineJoin = ctxPintar.lineCap = "round";
                     if (this.clickToCurve === false) {
                         this.strokeCoordinates.x[0] = this.mousePosition.x;
                         this.strokeCoordinates.y[0] = this.mousePosition.y;
@@ -153,6 +159,7 @@ function drawingToolsObject() {
                         this.paintBucket(this.mousePosition.x, this.mousePosition.y, arrayCamadas[camadaSelecionada].ctx, cor);
                     }
                 }
+                if (this.cursorTool.show) { janelaPrincipal.style.cursor = "none"; }
             }
         },
         mouseUpEventDrawing(e) {
@@ -172,6 +179,7 @@ function drawingToolsObject() {
                 this.strokeCoordinates.y = [];
                 desenharNaCamada();
                 desenhoNoPreviewEIcone();
+                janelaPrincipal.style.cursor = "";
             }
             this.toolOpacityBar.clicked = false;
             this.toolSizeBar.clicked = false;
@@ -201,42 +209,6 @@ function drawingToolsObject() {
             else if (this.toolSizeBar.clicked) { this.changeToolSize(e); }
             else if (this.toolOpacityBar.clicked) { this.changeToolOpacity(e); }
             else if (this.toolHardnessBar.clicked) { this.changeToolHardness(e); }
-        },
-        changeToolSizeHotKey(increase) {
-            if (increase === true) {//Aumenta o tamanho da ferramenta.
-                if (this.toolProperties.size === 0.5) {
-                    this.toolProperties.size = 1;
-                    this.toolSizeBar.cursor.style.left = 1 - 7 + "px";
-                    this.toolSizeBar.txt.value = "1px";
-                } else if (this.toolProperties.size < 15) {
-                    this.toolProperties.size = this.toolProperties.size + 1;
-                    this.toolSizeBar.txt.value = this.toolProperties.size + "px";
-                    this.toolSizeBar.cursor.style.left = this.toolProperties.size - 7 + "px";
-                } else if (this.toolProperties.size >= 15 && this.toolProperties.size <= 245) {
-                    this.toolProperties.size = this.toolProperties.size + 5;
-                    this.toolSizeBar.txt.value = this.toolProperties.size + "px";
-                    this.toolSizeBar.cursor.style.left = this.toolProperties.size - 7 + "px";
-                } else if (this.toolProperties.size > 245) {
-                    this.toolProperties.size = 250;
-                    this.toolSizeBar.txt.value = this.toolProperties.size + "px";
-                    this.toolSizeBar.cursor.style.left = this.toolProperties.size - 7 + "px";
-                }
-            } else {//Diminui o tamanho da ferramenta.
-                if (this.toolProperties.size <= 250 && this.toolProperties.size > 15) {
-                    this.toolProperties.size = this.toolProperties.size - 5;
-                    this.toolSizeBar.cursor.style.left = this.toolProperties.size - 7 + "px";
-                    this.toolSizeBar.txt.value = this.toolProperties.size + "px";
-                } else if (this.toolProperties.size <= 15 && this.toolProperties.size > 1) {
-                    this.toolProperties.size = this.toolProperties.size - 1;
-                    this.toolSizeBar.txt.value = this.toolProperties.size + "px";
-                    this.toolSizeBar.cursor.style.left = this.toolProperties.size - 7 + "px";
-                } else if (this.toolProperties.size === 1) {
-                    this.toolProperties.size = 0.5;
-                    this.toolSizeBar.cursor.style.left = "-7px"
-                    this.toolSizeBar.txt.value = "0.5px";
-                }
-            }
-            this.changeCursorTool();
         },
         mouseDownToolSizeBar(e) {
             if (this.clickToCurve === true) { return; }
@@ -353,7 +325,7 @@ function drawingToolsObject() {
                 return;
             };
             const tamanho = this.toolProperties.size * ((telasCanvas.offsetWidth) / projeto.resolucao.largura);
-            if (tamanho < 20) {
+            if (tamanho < 15) {
                 this.cursorTool.removeCursor();
                 contentTelas.style.cursor = "url('colorPaint/imagens/cursor/crossHair.png') 12.5 12.5, pointer";
             } else {
@@ -364,6 +336,8 @@ function drawingToolsObject() {
                 this.cursorTool.cursor.style.height = tamanho + "px";
                 this.cursorTool.changeCursorPosition(Math.round(previousPosition.x - this.cursorTool.halfSize), Math.round(previousPosition.y - this.cursorTool.halfSize));
                 contentTelas.style.cursor = "none";
+                if (tamanho > 249) { this.cursorTool.cursor.style.backgroundImage = ""; }
+                else { this.cursorTool.cursor.style.backgroundImage = "none"; }
             }
         },
         brush(mouseX, mouseY) {

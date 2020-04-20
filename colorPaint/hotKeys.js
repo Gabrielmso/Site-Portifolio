@@ -3,14 +3,18 @@ function hotKeysObject() {
         ctrlPressed: false,
         spacePressed: false,
         shiftPressed: false,
+        infoMoveDrawWithSpace: { move: false, startCoordinate: null, scroolTop: null, scrollLeft: null },
         addEventsToElements() {
             document.addEventListener("keydown", (e) => this.keyDownEvent(e));
             document.addEventListener("keyup", (e) => this.keyUpEvent(e));
+            document.addEventListener("mouseup", (e) => this.mouseUpMoveDraw(e));
+            telasCanvas.addEventListener("mousedown", (e) => this.mouseDownMoveDraw(e));
+            document.addEventListener("mousemove", (e) => this.mouseMoveMoveDraw(e));
         },
         keyDownEvent(e) {
             if (projetoCriado === false) { return; }
-            if (drawingTools.painting === true) { e.preventDefault(); return; }
-            if (this.ctrlPressed === true) {//Teclas de atalho com o ctrl.
+            if (drawingTools.painting) { e.preventDefault(); return; }
+            if (this.ctrlPressed) {//Teclas de atalho com o ctrl.
                 const keyFunction = this.keyDown[e.code];
                 if (keyFunction) {
                     e.preventDefault();
@@ -20,10 +24,10 @@ function hotKeysObject() {
             }
             else {
                 if (e.code === "BracketRight") {//Aumentar o tamanho da ferramenta.
-                    drawingTools.changeToolSizeHotKey(true);
+                    this.changeToolSizeHotKey(true);
                 }
                 else if (e.code === "Backslash") {//Diminuir o tamanho da ferramenta.
-                    drawingTools.changeToolSizeHotKey(false);
+                    this.changeToolSizeHotKey(false);
                 }
             }
             if (e.code === "ControlRight" || e.code === "ControlLeft" || e.keyCode === 17) {
@@ -46,7 +50,7 @@ function hotKeysObject() {
             }
             if (e.code === "Space") {
                 e.preventDefault();
-                moverDesenhoEspaco.mover = false;
+                this.infoMoveDrawWithSpace = { move: false, startCoordinate: null, scroolTop: null, scrollLeft: null };
                 this.keyUpSpace();
             }
             if (e.code === "ShiftLeft") {
@@ -80,6 +84,63 @@ function hotKeysObject() {
             this.spacePressed = false;
             telasCanvas.style.cursor = "";
             if (drawingTools.cursorTool.show) { drawingTools.cursorTool.cursor.style.display = "block"; }
+        },
+        moveDrawWithSpace(mousePosition) {
+            const newScrollLeft = this.infoMoveDrawWithSpace.scrollLeft + this.infoMoveDrawWithSpace.startCoordinate.x - mousePosition.x;
+            const newScrollTop = this.infoMoveDrawWithSpace.scroolTop + this.infoMoveDrawWithSpace.startCoordinate.y - mousePosition.y;
+            contentTelas.scrollLeft = newScrollLeft;
+            contentTelas.scrollTop = newScrollTop;
+        },
+        mouseDownMoveDraw(e) {
+            if (this.spacePressed) {
+                this.infoMoveDrawWithSpace = { move: true, startCoordinate: pegarPosicaoMouse(contentTelas, e), scroolTop: contentTelas.scrollTop, scrollLeft: contentTelas.scrollLeft };
+                telasCanvas.style.cursor = "grabbing";
+            }
+        },
+        mouseMoveMoveDraw(e) {
+            if (this.infoMoveDrawWithSpace.move) { this.moveDrawWithSpace(pegarPosicaoMouse(contentTelas, e)); }
+        },
+        mouseUpMoveDraw(e) {
+            if (this.spacePressed) {
+                this.infoMoveDrawWithSpace = { move: false, startCoordinate: null, scroolTop: null, scrollLeft: null };
+                telasCanvas.style.cursor = "grab";
+            }
+        },
+        changeToolSizeHotKey(increase) {
+            if (increase === true) {//Aumenta o tamanho da ferramenta.
+                if (drawingTools.toolProperties.size === 0.5) {
+                    drawingTools.toolProperties.size = 1;
+                    drawingTools.toolSizeBar.cursor.style.left = 1 - 7 + "px";
+                    drawingTools.toolSizeBar.txt.value = "1px";
+                } else if (drawingTools.toolProperties.size < 15) {
+                    drawingTools.toolProperties.size = drawingTools.toolProperties.size + 1;
+                    drawingTools.toolSizeBar.txt.value = drawingTools.toolProperties.size + "px";
+                    drawingTools.toolSizeBar.cursor.style.left = drawingTools.toolProperties.size - 7 + "px";
+                } else if (drawingTools.toolProperties.size >= 15 && drawingTools.toolProperties.size <= 245) {
+                    drawingTools.toolProperties.size = drawingTools.toolProperties.size + 5;
+                    drawingTools.toolSizeBar.txt.value = drawingTools.toolProperties.size + "px";
+                    drawingTools.toolSizeBar.cursor.style.left = drawingTools.toolProperties.size - 7 + "px";
+                } else if (drawingTools.toolProperties.size > 245) {
+                    drawingTools.toolProperties.size = 250;
+                    drawingTools.toolSizeBar.txt.value = drawingTools.toolProperties.size + "px";
+                    drawingTools.toolSizeBar.cursor.style.left = drawingTools.toolProperties.size - 7 + "px";
+                }
+            } else {//Diminui o tamanho da ferramenta.
+                if (drawingTools.toolProperties.size <= 250 && drawingTools.toolProperties.size > 15) {
+                    drawingTools.toolProperties.size = drawingTools.toolProperties.size - 5;
+                    drawingTools.toolSizeBar.cursor.style.left = drawingTools.toolProperties.size - 7 + "px";
+                    drawingTools.toolSizeBar.txt.value = drawingTools.toolProperties.size + "px";
+                } else if (drawingTools.toolProperties.size <= 15 && drawingTools.toolProperties.size > 1) {
+                    drawingTools.toolProperties.size = drawingTools.toolProperties.size - 1;
+                    drawingTools.toolSizeBar.txt.value = drawingTools.toolProperties.size + "px";
+                    drawingTools.toolSizeBar.cursor.style.left = drawingTools.toolProperties.size - 7 + "px";
+                } else if (drawingTools.toolProperties.size === 1) {
+                    drawingTools.toolProperties.size = 0.5;
+                    drawingTools.toolSizeBar.cursor.style.left = "-7px"
+                    drawingTools.toolSizeBar.txt.value = "0.5px";
+                }
+            }
+            drawingTools.changeCursorTool();
         },
         keyDown: {
             Digit0() {

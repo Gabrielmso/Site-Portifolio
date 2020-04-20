@@ -57,7 +57,6 @@ function colorPaint() {
     grid.tela = document.getElementById("grid");
     janelaSeleciona = new janelaSeletorDeCor();
     let mudarOpacidadeCamada = false;//Saber se o mouse está pressionado na "barraOpacidadeCamada". 
-    let moverDesenhoEspaco = { mover: false, coordenadaInicio: null, scroolTop: 0, scrollLeft: 0 };
 
     menuPadrao();
     ajustarContents();
@@ -213,13 +212,6 @@ function colorPaint() {
 
     telasCanvas.addEventListener("mouseleave", () => txtPosicaoCursor.value = "");
 
-    telasCanvas.addEventListener("mousedown", (e) => {
-        if (hotKeys.spacePressed === true) {
-            telasCanvas.style.cursor = "grabbing";
-            moverDesenhoEspaco = { mover: true, coordenadaInicio: pegarPosicaoMouse(contentTelas, e), scroolTop: contentTelas.scrollTop, scrollLeft: contentTelas.scrollLeft };
-        }
-    });
-
     barraOpacidadeCamada.addEventListener("mousedown", function (e) {
         mudarOpacidadeCamada = true;
         calculaOpacidadeCamada(e);
@@ -227,7 +219,6 @@ function colorPaint() {
 
     document.addEventListener("mousemove", (e) => {
         if (mudarOpacidadeCamada === true) { calculaOpacidadeCamada(e); }
-        else if (moverDesenhoEspaco.mover === true) { moverDesenhoComEspaco(moverDesenhoEspaco, pegarPosicaoMouse(contentTelas, e)); }
     });
 
     document.getElementById("bttZoomMais").addEventListener("click", function () {//Aumentar o zoom no projeto.
@@ -247,22 +238,13 @@ function colorPaint() {
         }
     });
 
-    document.getElementById("bttAtalhos").addEventListener("click", function () {
-        contentJanelaAtalhos.style.display = "flex";
-    });
-
-    document.getElementById("bttOkAtalhos").addEventListener("click", function () {
-        contentJanelaAtalhos.style.display = "none";
-    });
+    document.getElementById("bttAtalhos").addEventListener("click", () => contentJanelaAtalhos.style.display = "flex");
+    document.getElementById("bttOkAtalhos").addEventListener("click", () => contentJanelaAtalhos.style.display = "none");
 
     document.addEventListener("mouseup", function (e) {
         if (mudarOpacidadeCamada === true) {
             desenhoNoPreviewEIcone();
             mudarOpacidadeCamada = false;
-        }
-        else if (hotKeys.spacePressed === true) {
-            moverDesenhoEspaco.mover = false;
-            telasCanvas.style.cursor = "grab";
         }
     });
 
@@ -332,13 +314,6 @@ function colorPaint() {
         contentTelas.style.height = (contentCentro.offsetHeight - 15) + "px";
         document.getElementById("janelaCamadas").style.height = (barraLateralEsquerda.offsetHeight - 336) + "px";
     }
-}
-
-function moverDesenhoComEspaco(info, mousePosition) {
-    const newScrollLeft = info.scrollLeft + info.coordenadaInicio.x - mousePosition.x;
-    const newScrollTop = info.scroolTop + info.coordenadaInicio.y - mousePosition.y;
-    contentTelas.scrollLeft = newScrollLeft;
-    contentTelas.scrollTop = newScrollTop;
 }
 // ==========================================================================================================================================================================================================================================
 
