@@ -359,7 +359,7 @@ function desenhoNoPreviewEIcone() {
         alturaMiniatura = arrayCamadas[camadaSelecionada].ctxMiniatura.canvas.height;
     ctxCamadaPreview.clearRect(0, 0, ctxCamadaPreview.canvas.width, ctxCamadaPreview.canvas.height);
     arrayCamadas[camadaSelecionada].ctxMiniatura.clearRect(0, 0, larguraMiniatura, alturaMiniatura);
-    if (!arrayCamadas[indiceArrayCamadas].visivel) { return; }
+    if (!arrayCamadas[camadaSelecionada].visivel) { return; }
     ctxCamadaPreview.globalAlpha = arrayCamadas[camadaSelecionada].opacidade;
     ctxCamadaPreview.drawImage(arrayCamadas[camadaSelecionada].ctx.canvas, 0, 0, ctxCamadaPreview.canvas.width, ctxCamadaPreview.canvas.height);
     arrayCamadas[camadaSelecionada].ctxMiniatura.globalAlpha = arrayCamadas[camadaSelecionada].opacidade;
