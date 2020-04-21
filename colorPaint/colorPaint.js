@@ -362,7 +362,6 @@ function desenhoNoPreviewEIcone() {
     if (!arrayCamadas[camadaSelecionada].visivel) { return; }
     ctxCamadaPreview.globalAlpha = arrayCamadas[camadaSelecionada].opacidade;
     ctxCamadaPreview.drawImage(arrayCamadas[camadaSelecionada].ctx.canvas, 0, 0, ctxCamadaPreview.canvas.width, ctxCamadaPreview.canvas.height);
-    arrayCamadas[camadaSelecionada].ctxMiniatura.globalAlpha = arrayCamadas[camadaSelecionada].opacidade;
     arrayCamadas[camadaSelecionada].ctxMiniatura.drawImage(ctxCamadaPreview.canvas, 0, 0, larguraMiniatura, alturaMiniatura);
 }
 
