@@ -46,9 +46,10 @@ function drawingToolsObject() {
         selectedTool: 0,
         previousTool: null,
         clickToCurve: false,
+        txtPositionCursor: document.getElementById("txtPosicaoCursor"),
         mousePosition: { x: 0, y: 0 },//Armazena as coordenadas atuais do mouse em relação a resolução do projeto.
         strokeCoordinates: { x: [], y: [] },//Armazena as coordenadas do uso das ferramentas.
-        painting: false,//Saber se o mouse está pressionado na "contentTelas".
+        painting: false,//Saber se o mouse está pressionado na "contentTelas".        
         toolProperties: {
             elements: [{ property: document.getElementById("propriedadeTamanho"), contentBar: document.getElementById("contentBarraTamanho") },
             { property: document.getElementById("propriedadeOpacidade"), contentBar: document.getElementById("contentBarraOpacidade") },
@@ -80,11 +81,13 @@ function drawingToolsObject() {
                 this.cursorTool.changeCursorPosition(posX, posY);
                 this.mousePosition.x = parseFloat(((projeto.resolucao.largura / telasCanvas.offsetWidth) * (mouse.x - telaPosition.left - document.body.scrollLeft)).toFixed(1));
                 this.mousePosition.y = parseFloat(((projeto.resolucao.altura / telasCanvas.offsetHeight) * (mouse.y - telaPosition.top - document.body.scrollTop)).toFixed(1));
+                this.txtPositionCursor.value = Math.floor(this.mousePosition.x + 1) + ", " + Math.floor(this.mousePosition.y + 1);
                 if (!this.painting) {
                     const contentPosition = contentTelas.getBoundingClientRect();
                     if (mouse.x < contentPosition.left || mouse.x > contentPosition.left + contentPosition.width ||
                         mouse.y < contentPosition.top || mouse.y > contentPosition.top + contentPosition.height) {
                         this.cursorTool.cursor.style.display = "none";
+                        this.txtPositionCursor.value = "";
                     }
                     else if (!hotKeys.spacePressed) { this.cursorTool.cursor.style.display = "block"; }
                 }
@@ -96,8 +99,9 @@ function drawingToolsObject() {
         },
         addEventsToElements() {
             contentTelas.addEventListener("mousedown", (e) => this.mouseDownEventDrawing(e));
+            contentTelas.addEventListener("mousemove", () => this.txtPositionCursor.value = Math.floor(this.mousePosition.x + 1) + ", " + Math.floor(this.mousePosition.y + 1));
+            contentTelas.addEventListener("mouseleave", () => { if (!this.cursorTool.show) { this.txtPositionCursor.value = "" } });
             this.cursorTool.cursor.addEventListener("mousedown", (e) => this.mouseDownEventDrawing(e));
-            document.addEventListener("mousemove", (e) => this.getCursorPosition(e));
             document.addEventListener("mousemove", throttle((e) => this.mouseMoveEventDrawing(e), 8));
             document.addEventListener("mouseup", (e) => this.mouseUpEventDrawing(e));
             this.cursorTool.cursor.addEventListener("wheel", (e) => this.cursorTool.wheel(e));
@@ -186,6 +190,7 @@ function drawingToolsObject() {
             this.toolHardnessBar.clicked = false;
         },
         mouseMoveEventDrawing(e) {
+            this.getCursorPosition(e);
             if (this.painting) {
                 const lastIndex = this.strokeCoordinates.x.length - 1;
                 if (this.selectedTool < 4) {

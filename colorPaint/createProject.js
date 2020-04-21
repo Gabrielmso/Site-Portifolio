@@ -59,7 +59,7 @@ function criarProjeto(nome, resolucao, corPlanoDeFundo, numeroCamadas) {
         cor = "rgb(" + projeto.corFundo.R + ", " + projeto.corFundo.G + ", " + projeto.corFundo.B + ")"
         corFundo.style.backgroundColor = cor;
     }
-    while (projeto.numeroCamadas > arrayCamadas.length) { criarCamada(cor, projeto.resolucao); }
+    while (projeto.numeroCamadas > arrayCamadas.length) { criarElementos(cor, projeto.resolucao); }
     ajustarTelasCanvas();
     ajustarPreview(cor);
     clickIconeCamada.call(arrayCamadas[0].icone);
@@ -73,7 +73,7 @@ function criarProjeto(nome, resolucao, corPlanoDeFundo, numeroCamadas) {
     projetoCriado = true;
 }
 
-function criarCamada(cor, resolucao) {
+function criarElementos(cor, resolucao) {
     const num = arrayCamadas.length + 1;
     // ============= CRIA O ICONE DA CAMADA ==================
     const contentIconeCamadas = document.getElementById("contentIconeCamadas");

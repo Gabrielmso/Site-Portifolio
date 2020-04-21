@@ -22,7 +22,6 @@ let ctxPintar;//Armazena o contexto 2d do canvas "pintar" onde ocorrerá os "eve
 let projetoCriado = false;//Saber se um projeto foi criado.
 let txtCorEscolhida;//Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
 let txtResolucao;//Recebe a string da resolução que o usuário escolheu para o projeto para informar ao usuário.
-let txtPosicaoCursor;//Recebe a string com a posição do cursor no eixo X e Y sobre a "telasCanvas".
 let txtPorcentagemZoom;//Recebe a string com a porcentagem de zoom no "telasCanvas".
 let janelaSeleciona;//Recebe toda a função "janelaSeletorDeCor".
 let MouseNoBttVer = false;//Saber se o mouse está sobre os botões que deixam as camadas invisíveis ou visíveis.
@@ -50,7 +49,6 @@ function colorPaint() {
     corSecundaria = document.getElementById("corSecundaria");
     txtCorEscolhida = document.getElementById("txtCorEscolhida");
     txtResolucao = document.getElementById("txtResolucao");
-    txtPosicaoCursor = document.getElementById("txtPosicaoCursor");
     txtPorcentagemZoom = document.getElementById("txtPorcentagemZoom");
     ctxPintar = document.getElementById("pintar").getContext("2d");
     ctxDesenho = document.getElementById("desenho").getContext("2d");
@@ -207,10 +205,6 @@ function colorPaint() {
             txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
         }
     });
-
-    telasCanvas.addEventListener("mousemove", () => txtPosicaoCursor.value = Math.floor(drawingTools.mousePosition.x + 1) + ", " + Math.floor(drawingTools.mousePosition.y + 1));
-
-    telasCanvas.addEventListener("mouseleave", () => txtPosicaoCursor.value = "");
 
     barraOpacidadeCamada.addEventListener("mousedown", function (e) {
         mudarOpacidadeCamada = true;
