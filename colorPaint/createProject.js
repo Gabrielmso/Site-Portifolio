@@ -228,13 +228,13 @@ function clickCamadaVisivel() {
         visivel = arrayCamadas[indiceArrayCamadas].visivel;
     if (visivel === true) {
         arrayCamadas[indiceArrayCamadas].visivel = false;
-        arrayCamadas[indiceArrayCamadas].camada.style.display = "none";
+        arrayCamadas[indiceArrayCamadas].ctx.canvas.style.display = "none";
         this.classList.add("iconNaoVer");
         this.classList.remove("iconVer");
     }
     else {
         arrayCamadas[indiceArrayCamadas].visivel = true;
-        arrayCamadas[indiceArrayCamadas].camada.style.display = "block";
+        arrayCamadas[indiceArrayCamadas].ctx.canvas.style.display = "block";
         this.classList.add("iconVer");
         this.classList.remove("iconNaoVer");
     }
