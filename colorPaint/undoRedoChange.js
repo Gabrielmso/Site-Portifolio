@@ -9,7 +9,7 @@ function undoRedoChangeObject() {
         saveChanges(layer) {
             const objAlteracao = {
                 camadaAlterada: camadaSelecionada,
-                alteracao: layer.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura)
+                alteracao: layer.getImageData(0, 0, project.properties.resolution.width, project.properties.resolution.height)
             };
             this.changes.undone.push(objAlteracao);
             if (this.changes.undone.length > 20) {
@@ -30,17 +30,17 @@ function undoRedoChangeObject() {
                 const ultimoIndice = this.changes.undone.length - 1,
                     camada = this.changes.undone[ultimoIndice].camadaAlterada,
                     imagemCamada = this.changes.undone[ultimoIndice].alteracao,
-                    objAlteracao = { camadaAlterada: camada, visivel: arrayCamadas[camada].visivel, alteracao: arrayCamadas[camada].ctx.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura) };
-                if (camadaSelecionada != camada) { clickIconeCamada.call(arrayCamadas[camada].icone); }
-                if (arrayCamadas[camada].visivel === false) {
-                    clickCamadaVisivel.call(arrayCamadas[camada].bttVer);
+                    objAlteracao = { camadaAlterada: camada, visivel: project.arrayLayers[camada].visivel, alteracao: project.arrayLayers[camada].ctx.getImageData(0, 0, project.properties.resolution.width, project.properties.resolution.height) };
+                if (camadaSelecionada != camada) { clickIconeCamada.call(project.arrayLayers[camada].icone); }
+                if (project.arrayLayers[camada].visivel === false) {
+                    clickCamadaVisivel.call(project.arrayLayers[camada].bttVer);
                     return;
                 }
                 this.changes.redone.push(objAlteracao);
                 drawingTools.clickToCurve = false;
-                ctxPintar.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
-                arrayCamadas[camada].ctx.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
-                arrayCamadas[camada].ctx.putImageData(imagemCamada, 0, 0);
+                project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
+                project.arrayLayers[camada].ctx.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
+                project.arrayLayers[camada].ctx.putImageData(imagemCamada, 0, 0);
                 this.changes.undone.pop();
                 if (this.changes.undone.length === 0) {
                     this.buttons.undo.classList.remove("bttHover");
@@ -52,7 +52,7 @@ function undoRedoChangeObject() {
                     this.buttons.redo.classList.add("cursor");
                     this.buttons.redo.style.opacity = "1";
                 }
-                desenhoNoPreviewEIcone(arrayCamadas[camada]);
+                desenhoNoPreviewEIcone(project.arrayLayers[camada]);
                 desenhoCompleto();
             }
         },
@@ -61,11 +61,11 @@ function undoRedoChangeObject() {
                 const ultimoIndice = this.changes.redone.length - 1,
                     camada = this.changes.redone[ultimoIndice].camadaAlterada,
                     imagemCamada = this.changes.redone[ultimoIndice].alteracao,
-                    objAlteracao = { camadaAlterada: camada, visivel: arrayCamadas[camada].visivel, alteracao: arrayCamadas[camada].ctx.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura) };
-                if (camadaSelecionada != camada) { clickIconeCamada.call(arrayCamadas[camada].icone); }
+                    objAlteracao = { camadaAlterada: camada, visivel: project.arrayLayers[camada].visivel, alteracao: project.arrayLayers[camada].ctx.getImageData(0, 0, project.properties.resolution.width, project.properties.resolution.height) };
+                if (camadaSelecionada != camada) { clickIconeCamada.call(project.arrayLayers[camada].icone); }
                 this.changes.undone.push(objAlteracao);
-                arrayCamadas[camada].ctx.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
-                arrayCamadas[camada].ctx.putImageData(imagemCamada, 0, 0);
+                project.arrayLayers[camada].ctx.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
+                project.arrayLayers[camada].ctx.putImageData(imagemCamada, 0, 0);
                 this.changes.redone.pop();
                 if (this.changes.undone.length === 1) {
                     this.buttons.undo.classList.add("bttHover");
@@ -77,7 +77,7 @@ function undoRedoChangeObject() {
                     this.buttons.redo.classList.remove("cursor");
                     this.buttons.redo.style.opacity = "0.5";
                 }
-                desenhoNoPreviewEIcone(arrayCamadas[camada]);
+                desenhoNoPreviewEIcone(project.arrayLayers[camada]);
                 desenhoCompleto();
             }
         }

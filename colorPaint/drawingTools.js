@@ -79,8 +79,8 @@ function drawingToolsObject() {
                 const telaPosition = telasCanvas.getBoundingClientRect(), mouse = pegarPosicaoMouse(janelaPrincipal, e),
                     posX = mouse.x - this.cursorTool.halfSize, posY = mouse.y - this.cursorTool.halfSize;
                 this.cursorTool.changeCursorPosition(posX, posY);
-                this.mousePosition.x = parseFloat(((projeto.resolucao.largura / telasCanvas.offsetWidth) * (mouse.x - telaPosition.left - document.body.scrollLeft)).toFixed(1));
-                this.mousePosition.y = parseFloat(((projeto.resolucao.altura / telasCanvas.offsetHeight) * (mouse.y - telaPosition.top - document.body.scrollTop)).toFixed(1));
+                this.mousePosition.x = parseFloat(((project.properties.resolution.width / telasCanvas.offsetWidth) * (mouse.x - telaPosition.left - document.body.scrollLeft)).toFixed(1));
+                this.mousePosition.y = parseFloat(((project.properties.resolution.height / telasCanvas.offsetHeight) * (mouse.y - telaPosition.top - document.body.scrollTop)).toFixed(1));
                 this.txtPositionCursor.value = Math.floor(this.mousePosition.x + 1) + ", " + Math.floor(this.mousePosition.y + 1);
                 if (!this.painting) {
                     const contentPosition = contentTelas.getBoundingClientRect();
@@ -93,8 +93,8 @@ function drawingToolsObject() {
                 }
             } else {
                 const mouse = pegarPosicaoMouse(telasCanvas, e)
-                this.mousePosition.x = parseFloat(((projeto.resolucao.largura / telasCanvas.offsetWidth) * mouse.x).toFixed(1));
-                this.mousePosition.y = parseFloat(((projeto.resolucao.altura / telasCanvas.offsetHeight) * mouse.y).toFixed(1));
+                this.mousePosition.x = parseFloat(((project.properties.resolution.width / telasCanvas.offsetWidth) * mouse.x).toFixed(1));
+                this.mousePosition.y = parseFloat(((project.properties.resolution.height / telasCanvas.offsetHeight) * mouse.y).toFixed(1));
             }
         },
         addEventsToElements() {
@@ -123,13 +123,13 @@ function drawingToolsObject() {
             this.arrayTools[6].tool.addEventListener("click", () => desenhoCompleto());
         },
         mouseDownEventDrawing(e) {
-            if (projetoCriado === false || hotKeys.spacePressed === true) { return; }
-            if (arrayCamadas[camadaSelecionada].visivel === true) {
+            if (!projetoCriado|| hotKeys.spacePressed) { return; }
+            if (project.arrayLayers[camadaSelecionada].visible) {
                 this.painting = true;
                 this.applyToolChanges();
-                ctxPintar.beginPath();
-                ctxPintar.lineJoin = ctxPintar.lineCap = "round";
-                arrayCamadas[camadaSelecionada].ctx.globalCompositeOperation = "source-over";
+                project.eventLayer.beginPath();
+                project.eventLayer.lineJoin = project.eventLayer.lineCap = "round";
+                project.arrayLayers[camadaSelecionada].ctx.globalCompositeOperation = "source-over";
                 if (this.selectedTool < 4) {
                     this.strokeCoordinates.x[0] = this.mousePosition.x;
                     this.strokeCoordinates.y[0] = this.mousePosition.y;
@@ -138,8 +138,8 @@ function drawingToolsObject() {
                 else if (this.selectedTool === 4) {//Borracha. 
                     this.strokeCoordinates.x[0] = this.mousePosition.x;
                     this.strokeCoordinates.y[0] = this.mousePosition.y;
-                    arrayCamadas[camadaSelecionada].ctx.globalCompositeOperation = "destination-out";
-                    ctxPintar.strokeStyle = "rgba(255, 0, 0, " + this.toolProperties.opacity + ")";
+                    project.arrayLayers[camadaSelecionada].ctx.globalCompositeOperation = "destination-out";
+                    project.eventLayer.strokeStyle = "rgba(255, 0, 0, " + this.toolProperties.opacity + ")";
                     this.brush(this.mousePosition.x, this.mousePosition.y);
                 }
                 else if (this.selectedTool === 5) {//Curva;
@@ -158,9 +158,9 @@ function drawingToolsObject() {
                     this.eyeDropper(mousePos.x, mousePos.y, this.mousePosition.x, this.mousePosition.y, true);
                 }
                 else if (this.selectedTool === 7) {//Balde de tinta.
-                    if (this.mousePosition.x >= 0 && this.mousePosition.x <= projeto.resolucao.largura && this.mousePosition.y >= 0 && this.mousePosition.y <= projeto.resolucao.altura) {
+                    if (this.mousePosition.x >= 0 && this.mousePosition.x <= project.properties.resolution.width && this.mousePosition.y >= 0 && this.mousePosition.y <= project.properties.resolution.height) {
                         const cor = { R: corEscolhidaPrincipal.R, G: corEscolhidaPrincipal.G, B: corEscolhidaPrincipal.B, A: Math.round(this.toolProperties.opacity * 255) };
-                        this.paintBucket(this.mousePosition.x, this.mousePosition.y, arrayCamadas[camadaSelecionada].ctx, cor);
+                        this.paintBucket(this.mousePosition.x, this.mousePosition.y, project.arrayLayers[camadaSelecionada].ctx, cor);
                     }
                 }
                 if (this.cursorTool.show) { janelaPrincipal.style.cursor = "none"; }
@@ -181,8 +181,8 @@ function drawingToolsObject() {
                 }
                 this.strokeCoordinates.x = [];
                 this.strokeCoordinates.y = [];
-                desenharNaCamada(arrayCamadas[camadaSelecionada]);
-                desenhoNoPreviewEIcone(arrayCamadas[camadaSelecionada]);
+                desenharNaCamada(project.arrayLayers[camadaSelecionada]);
+                desenhoNoPreviewEIcone(project.arrayLayers[camadaSelecionada]);
                 janelaPrincipal.style.cursor = "";
             }
             this.toolOpacityBar.clicked = false;
@@ -246,7 +246,7 @@ function drawingToolsObject() {
             this.strokeCoordinates.y = [];
             this.clickToCurve = false;
             this.changeCursorTool();
-            ctxPintar.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
+            project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
         },
         changeToolSize(e) {
             let mousePos = pegarPosicaoMouse(this.toolSizeBar.bar, e), width = this.toolSizeBar.bar.offsetWidth;
@@ -314,9 +314,9 @@ function drawingToolsObject() {
                 const proporcao = ((100 - this.toolProperties.size) / 180);
                 dureza += (dureza * proporcao);
             }
-            ctxPintar.filter = "blur(" + dureza + "px)";
-            ctxPintar.lineWidth = (this.toolProperties.size - dureza);
-            ctxPintar.strokeStyle = "rgba(" + color.R + ", " + color.G + ", " + color.B + ", " + this.toolProperties.opacity + ")";
+            project.eventLayer.filter = "blur(" + dureza + "px)";
+            project.eventLayer.lineWidth = (this.toolProperties.size - dureza);
+            project.eventLayer.strokeStyle = "rgba(" + color.R + ", " + color.G + ", " + color.B + ", " + this.toolProperties.opacity + ")";
         },
         changeCursorTool() {
             if (this.selectedTool === 6) {
@@ -329,7 +329,7 @@ function drawingToolsObject() {
                 contentTelas.style.cursor = "url('colorPaint/imagens/cursor/cursorBaldeDeTinta.png') 0 0, pointer";
                 return;
             };
-            const tamanho = this.toolProperties.size * ((telasCanvas.offsetWidth) / projeto.resolucao.largura);
+            const tamanho = this.toolProperties.size * ((telasCanvas.offsetWidth) / project.properties.resolution.width);
             if (tamanho < 15) {
                 this.cursorTool.removeCursor();
                 contentTelas.style.cursor = "url('colorPaint/imagens/cursor/crossHair.png') 12.5 12.5, pointer";
@@ -348,19 +348,19 @@ function drawingToolsObject() {
         brush(mouseX, mouseY) {
             this.strokeCoordinates.x.push(mouseX);
             this.strokeCoordinates.y.push(mouseY);
-            ctxPintar.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
+            project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
             let ponto1 = { x: this.strokeCoordinates.x[0], y: this.strokeCoordinates.y[0] };
             let ponto2 = { x: this.strokeCoordinates.x[1], y: this.strokeCoordinates.y[1] };
-            ctxPintar.beginPath();
-            ctxPintar.moveTo(ponto1.x, ponto1.y);
+            project.eventLayer.beginPath();
+            project.eventLayer.moveTo(ponto1.x, ponto1.y);
             for (let i = 0; i < this.strokeCoordinates.x.length; i++) {
                 const midPoint = midPointBtw(ponto1, ponto2);
-                ctxPintar.quadraticCurveTo(ponto1.x, ponto1.y, midPoint.x, midPoint.y);
+                project.eventLayer.quadraticCurveTo(ponto1.x, ponto1.y, midPoint.x, midPoint.y);
                 ponto1 = { x: this.strokeCoordinates.x[i], y: this.strokeCoordinates.y[i] };
                 ponto2 = { x: this.strokeCoordinates.x[i + 1], y: this.strokeCoordinates.y[i + 1] };
             }
-            ctxPintar.lineTo(ponto1.x, ponto1.y);
-            ctxPintar.stroke();
+            project.eventLayer.lineTo(ponto1.x, ponto1.y);
+            project.eventLayer.stroke();
             function midPointBtw(ponto1, ponto2) {
                 return { x: ponto1.x + (ponto2.x - ponto1.x) / 2, y: ponto1.y + (ponto2.y - ponto1.y) / 2 };
             }
@@ -368,27 +368,27 @@ function drawingToolsObject() {
         line(mouseX, mouseY) {
             this.strokeCoordinates.x[1] = mouseX;
             this.strokeCoordinates.y[1] = mouseY;
-            ctxPintar.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
+            project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
             const pontoInicial = { x: this.strokeCoordinates.x[0], y: this.strokeCoordinates.y[0] },
                 pontoFinal = { x: this.strokeCoordinates.x[1], y: this.strokeCoordinates.y[1] };
-            ctxPintar.beginPath();
-            ctxPintar.moveTo(pontoInicial.x, pontoInicial.y);
-            ctxPintar.lineTo(pontoFinal.x, pontoFinal.y);
-            ctxPintar.stroke();
+            project.eventLayer.beginPath();
+            project.eventLayer.moveTo(pontoInicial.x, pontoInicial.y);
+            project.eventLayer.lineTo(pontoFinal.x, pontoFinal.y);
+            project.eventLayer.stroke();
         },
         rectangle(mouseX, mouseY) {
             this.strokeCoordinates.x[1] = mouseX;
             this.strokeCoordinates.y[1] = mouseY;
-            ctxPintar.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
+            project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
             const pontoInicial = { x: this.strokeCoordinates.x[0], y: this.strokeCoordinates.y[0] },
                 pontoFinal = { x: this.strokeCoordinates.x[1], y: this.strokeCoordinates.y[1] };
-            ctxPintar.beginPath();
-            ctxPintar.strokeRect(pontoInicial.x, pontoInicial.y, pontoFinal.x - pontoInicial.x, pontoFinal.y - pontoInicial.y);
+            project.eventLayer.beginPath();
+            project.eventLayer.strokeRect(pontoInicial.x, pontoInicial.y, pontoFinal.x - pontoInicial.x, pontoFinal.y - pontoInicial.y);
         },
         ellipse(mouseX, mouseY) {
             this.strokeCoordinates.x[1] = mouseX;
             this.strokeCoordinates.y[1] = mouseY;
-            ctxPintar.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
+            project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
             const pontoInicial = { x: this.strokeCoordinates.x[0], y: this.strokeCoordinates.y[0] },
                 pontoFinal = { x: this.strokeCoordinates.x[1], y: this.strokeCoordinates.y[1] };
             const raioX = (pontoFinal.x - pontoInicial.x) / 2, raioY = (pontoFinal.y - pontoInicial.y) / 2;
@@ -396,40 +396,40 @@ function drawingToolsObject() {
             const passoAngulo = 0.005;
             let angulo = 0;
             const voltaCompleta = Math.PI * 2 + passoAngulo;
-            ctxPintar.beginPath();
-            ctxPintar.moveTo(centroEixoX + raioX * Math.cos(angulo), centroEixoY + raioY * Math.sin(angulo));
+            project.eventLayer.beginPath();
+            project.eventLayer.moveTo(centroEixoX + raioX * Math.cos(angulo), centroEixoY + raioY * Math.sin(angulo));
             for (; angulo < voltaCompleta; angulo += passoAngulo) {
-                ctxPintar.lineTo(centroEixoX + raioX * Math.cos(angulo), centroEixoY + raioY * Math.sin(angulo));
+                project.eventLayer.lineTo(centroEixoX + raioX * Math.cos(angulo), centroEixoY + raioY * Math.sin(angulo));
             }
-            ctxPintar.stroke();
+            project.eventLayer.stroke();
         },
         curve(mouseX, mouseY, curvar) {
             if (curvar === false) {
                 this.strokeCoordinates.x[1] = mouseX;
                 this.strokeCoordinates.y[1] = mouseY;
             }
-            ctxPintar.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
+            project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
             const pontoInicial = { x: this.strokeCoordinates.x[0], y: this.strokeCoordinates.y[0] },
                 pontoFinal = { x: this.strokeCoordinates.x[1], y: this.strokeCoordinates.y[1] };
-            ctxPintar.beginPath();
-            ctxPintar.moveTo(pontoInicial.x, pontoInicial.y);
+            project.eventLayer.beginPath();
+            project.eventLayer.moveTo(pontoInicial.x, pontoInicial.y);
             if (curvar === true) {
                 this.strokeCoordinates.x[2] = mouseX;
                 this.strokeCoordinates.y[2] = mouseY;
                 const pontoControle = { x: this.strokeCoordinates.x[2], y: this.strokeCoordinates.y[2] };
-                ctxPintar.quadraticCurveTo(pontoControle.x, pontoControle.y, pontoFinal.x, pontoFinal.y);
+                project.eventLayer.quadraticCurveTo(pontoControle.x, pontoControle.y, pontoFinal.x, pontoFinal.y);
             }
             else {
-                ctxPintar.lineTo(pontoFinal.x, pontoFinal.y);
+                project.eventLayer.lineTo(pontoFinal.x, pontoFinal.y);
             }
-            ctxPintar.stroke();
+            project.eventLayer.stroke();
         },
         eyeDropper(mouseX, mouseY, posTelaX, posTelaY, mouseMovendo) {
             const cursorEyeDropper = this.arrayTools[this.selectedTool].cursor.eyeDropper,
                 X = mouseX - (cursorEyeDropper.offsetWidth / 2), Y = mouseY - (cursorEyeDropper.offsetHeight / 2);
             cursorEyeDropper.style.left = X + "px";
             cursorEyeDropper.style.top = Y + "px";
-            const pixel = ctxDesenho.getImageData(posTelaX, posTelaY, 1, 1).data;
+            const pixel = project.drawComplete.getImageData(posTelaX, posTelaY, 1, 1).data;
             if (mouseMovendo === true) {
                 const compareColors = this.arrayTools[this.selectedTool].cursor.compareColors;
                 if (pixel[3] === 0) {
@@ -462,11 +462,11 @@ function drawingToolsObject() {
         paintBucket(mouseX, mouseY, context, selectedColor) {
             this.strokeCoordinates.x[0] = Math.round(mouseX);
             this.strokeCoordinates.y[0] = Math.round(mouseY);
-            const camada = context.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura),
-                clearCanvas = context.createImageData(projeto.resolucao.largura, projeto.resolucao.altura);
+            const camada = context.getImageData(0, 0, project.properties.resolution.width, project.properties.resolution.height),
+                clearCanvas = context.createImageData(project.properties.resolution.width, project.properties.resolution.height);
             pintar(this.strokeCoordinates.x[0], this.strokeCoordinates.y[0]);
             function pintar(posX, posY) {
-                const pixelPos = (posY * projeto.resolucao.largura + posX) * 4, R = camada.data[pixelPos],
+                const pixelPos = (posY * project.properties.resolution.width + posX) * 4, R = camada.data[pixelPos],
                     G = camada.data[pixelPos + 1], B = camada.data[pixelPos + 2], A = camada.data[pixelPos + 3];
                 if (R === selectedColor.R && G === selectedColor.G && B === selectedColor.B && A === 255) { return; }
                 preencher(posX, posY, R, G, B, A);
@@ -476,16 +476,16 @@ function drawingToolsObject() {
                 while (pixelsVerificados.length > 0) {
                     const novaPosicao = pixelsVerificados.pop();
                     let x = novaPosicao[0], y = novaPosicao[1];
-                    let posicaoPixel = (y * projeto.resolucao.largura + x) * 4;
+                    let posicaoPixel = (y * project.properties.resolution.width + x) * 4;
                     while (y >= 0 && compararCorInicial(posicaoPixel, R, G, B, A)) {
                         y = y - 1;
-                        posicaoPixel = posicaoPixel - projeto.resolucao.largura * 4;
+                        posicaoPixel = posicaoPixel - project.properties.resolution.width * 4;
                     }
                     pintarPixel(posicaoPixel, selectedColor.R, selectedColor.G, selectedColor.B, selectedColor.A);
-                    posicaoPixel = posicaoPixel + projeto.resolucao.largura * 4;
+                    posicaoPixel = posicaoPixel + project.properties.resolution.width * 4;
                     y = y + 1;
                     let ladoEsquerdo = false, ladoDireito = false;
-                    while (y < projeto.resolucao.altura - 1 && compararCorInicial(posicaoPixel, R, G, B, A)) {
+                    while (y < project.properties.resolution.height - 1 && compararCorInicial(posicaoPixel, R, G, B, A)) {
                         pintarPixel(posicaoPixel, selectedColor.R, selectedColor.G, selectedColor.B, selectedColor.A);
                         y = y + 1;
                         if (x > 0) {
@@ -502,7 +502,7 @@ function drawingToolsObject() {
                                 }
                             }
                         }
-                        if (x < projeto.resolucao.largura - 1) {
+                        if (x < project.properties.resolution.width - 1) {
                             if (compararCorInicial(posicaoPixel + 4, R, G, B, A) === true) {
                                 if (ladoDireito === false) {
                                     ladoDireito = true;
@@ -514,11 +514,11 @@ function drawingToolsObject() {
                                 if (ladoDireito === true) { ladoDireito = false; }
                             }
                         }
-                        posicaoPixel = posicaoPixel + projeto.resolucao.largura * 4;
+                        posicaoPixel = posicaoPixel + project.properties.resolution.width * 4;
                     }
                     pintarPixel(posicaoPixel, selectedColor.R, selectedColor.G, selectedColor.B, selectedColor.A);
                 }
-                ctxPintar.putImageData(clearCanvas, 0, 0);
+                project.eventLayer.putImageData(clearCanvas, 0, 0);
             }
             function compararCorInicial(pixelPos, clickR, clickG, clickB, clickA) {
                 const r = camada.data[pixelPos], g = camada.data[pixelPos + 1], b = camada.data[pixelPos + 2],
