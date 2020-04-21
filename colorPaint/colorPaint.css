@@ -484,8 +484,6 @@ p {
     position: relative;
     display: inline-block;
     overflow: hidden;
-    background-image: url("../colorPaint/imagens/fundoTela/transparente.png");
-    background-color: rgb(255, 255, 255);
     margin-right: 10px;
 }
 
@@ -592,15 +590,25 @@ p {
 }
 
 #telaPreview {
-    position: relative;
+    z-index: -1;
+}
+
+#fundoPreview {
+    z-index: 0;
+}
+
+.preview{
+    position: absolute;
     width: 100%;
     height: 100%;
+    top: 0;
+    left: 0;
 }
 
 #moverScroll {
     position: absolute;
     display: none;
-    z-index: 2;
+    z-index: 20;
     top: 0;
     left: 0;
     border: 1px solid rgb(0, 0, 0);

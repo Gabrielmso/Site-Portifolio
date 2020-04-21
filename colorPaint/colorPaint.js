@@ -17,11 +17,9 @@ let contentTelas;//Elemento onde ficará a "tela" para desenhar.
 let telasCanvas;//Elemento onde ficarão os canvas "camadas".
 let camadaSelecionada = 0;//Armazena a posição do arrayTelasCamadas com a camada selecionada.
 let ctxDesenho;//Armazena o contexto 2d do canvas "desenho" que receberá o "desenho completo".
-let corFundo;//Div de fundo que receberá a cor de fundo escolhida para o projeto.
 let ctxPintar;//Armazena o contexto 2d do canvas "pintar" onde ocorrerá os "eventos" de pintura.
 let projetoCriado = false;//Saber se um projeto foi criado.
 let txtCorEscolhida;//Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
-let txtResolucao;//Recebe a string da resolução que o usuário escolheu para o projeto para informar ao usuário.
 let txtPorcentagemZoom;//Recebe a string com a porcentagem de zoom no "telasCanvas".
 let janelaSeleciona;//Recebe toda a função "janelaSeletorDeCor".
 let MouseNoBttVer = false;//Saber se o mouse está sobre os botões que deixam as camadas invisíveis ou visíveis.
@@ -44,11 +42,9 @@ function colorPaint() {
     janelaPrincipal = document.getElementById("janelaPrincipal");
     contentTelas = document.getElementById("contentTelas");
     telasCanvas = document.getElementById("telasCanvas");
-    corFundo = document.getElementById("corFundo");
     corPrincipal = document.getElementById("corPrincipal");
     corSecundaria = document.getElementById("corSecundaria");
     txtCorEscolhida = document.getElementById("txtCorEscolhida");
-    txtResolucao = document.getElementById("txtResolucao");
     txtPorcentagemZoom = document.getElementById("txtPorcentagemZoom");
     ctxPintar = document.getElementById("pintar").getContext("2d");
     ctxDesenho = document.getElementById("desenho").getContext("2d");
@@ -284,7 +280,7 @@ function colorPaint() {
         }
         let opacidade = porcentagem / 100;
         arrayCamadas[camadaSelecionada].opacidade = opacidade;
-        arrayCamadas[camadaSelecionada].camada.style.opacity = opacidade;
+        arrayCamadas[camadaSelecionada].ctx.canvas.style.opacity = opacidade;
     }
 
     function menuPadrao() {
@@ -358,22 +354,15 @@ function desenharNaCamada() {
 }
 
 function desenhoNoPreviewEIcone() {
-    const ctxTelaPreview = previewFunctions.ctxTelaPreview;
-    ctxTelaPreview.clearRect(0, 0, ctxTelaPreview.canvas.width, ctxTelaPreview.canvas.height);
-    for (let i = 0; i < projeto.numeroCamadas; i++) {
-        if (arrayCamadas[i].visivel === true) {
-            const opacidadeCamada = arrayCamadas[i].opacidade;
-            ctxTelaPreview.beginPath();
-            ctxTelaPreview.globalAlpha = opacidadeCamada;
-            ctxTelaPreview.drawImage(arrayCamadas[i].ctx.canvas, 0, 0, ctxTelaPreview.canvas.width, ctxTelaPreview.canvas.height);
-            ctxTelaPreview.closePath();
-        };
-    }
+    const ctxCamadaPreview = arrayCamadas[camadaSelecionada].ctxCamadaPreview;
+    ctxCamadaPreview.clearRect(0, 0, ctxCamadaPreview.canvas.width, ctxCamadaPreview.canvas.height);
+    ctxCamadaPreview.globalAlpha = arrayCamadas[camadaSelecionada].opacidade;
+    ctxCamadaPreview.drawImage(arrayCamadas[camadaSelecionada].ctx.canvas, 0, 0, ctxCamadaPreview.canvas.width, ctxCamadaPreview.canvas.height);
     const larguraMiniatura = arrayCamadas[camadaSelecionada].ctxMiniatura.canvas.width,
         alturaMiniatura = arrayCamadas[camadaSelecionada].ctxMiniatura.canvas.height;
     arrayCamadas[camadaSelecionada].ctxMiniatura.clearRect(0, 0, larguraMiniatura, alturaMiniatura);
     arrayCamadas[camadaSelecionada].ctxMiniatura.globalAlpha = arrayCamadas[camadaSelecionada].opacidade;
-    arrayCamadas[camadaSelecionada].ctxMiniatura.drawImage(arrayCamadas[camadaSelecionada].ctx.canvas, 0, 0, larguraMiniatura, alturaMiniatura);
+    arrayCamadas[camadaSelecionada].ctxMiniatura.drawImage(ctxCamadaPreview.canvas, 0, 0, larguraMiniatura, alturaMiniatura);
 }
 
 function desenhoCompleto() {
@@ -549,7 +538,7 @@ function abrirProjeto() {
     }, false);
 
     function carregarProjeto(projetoJSON) {
-        const objProjeto = JSON.parse(projetoJSON), ctxTelaPreview = previewFunctions.ctxTelaPreview;
+        const objProjeto = JSON.parse(projetoJSON);
         arrayCamadas = [];
         arrayVoltarAlteracoes = [];
         arrayAvancarAlteracoes = [];
@@ -558,18 +547,17 @@ function abrirProjeto() {
             const opacidade = objProjeto.camadas[i].opacidade;
             arrayCamadas[i].porcentagemOpa.value = Math.round(opacidade * 100) + "%";
             arrayCamadas[i].opacidade = opacidade;
-            arrayCamadas[i].camada.style.opacity = opacidade;
+            arrayCamadas[i].ctx.canvas.style.opacity = opacidade;
             const imgData = new Image();
             imgData.src = objProjeto.camadas[i].imgDataCamada;
             imgData.onload = function () {
                 arrayCamadas[i].ctx.drawImage(imgData, 0, 0);
                 const opacidadeCamada = arrayCamadas[i].opacidade;
                 const larguraMiniatura = arrayCamadas[i].ctxMiniatura.canvas.width, alturaMiniatura = arrayCamadas[i].ctxMiniatura.canvas.height;
-                arrayCamadas[i].ctxMiniatura.clearRect(0, 0, larguraMiniatura, alturaMiniatura);
                 arrayCamadas[i].ctxMiniatura.globalAlpha = opacidadeCamada;
                 arrayCamadas[i].ctxMiniatura.drawImage(arrayCamadas[i].ctx.canvas, 0, 0, larguraMiniatura, alturaMiniatura);
-                ctxTelaPreview.globalAlpha = opacidadeCamada;
-                ctxTelaPreview.drawImage(arrayCamadas[i].ctx.canvas, 0, 0, ctxTelaPreview.canvas.width, ctxTelaPreview.canvas.height);
+                arrayCamadas[i].ctxCamadaPreview.globalAlpha = opacidadeCamada;
+                arrayCamadas[i].ctxCamadaPreview.drawImage(arrayCamadas[i].ctx.canvas, 0, 0, arrayCamadas[i].ctxCamadaPreview.canvas.width, arrayCamadas[i].ctxCamadaPreview.canvas.height);
                 if (objProjeto.camadas[i].visivel === false) {
                     clickCamadaVisivel.call(arrayCamadas[i].bttVer);
                 };

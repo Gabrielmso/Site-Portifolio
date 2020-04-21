@@ -48,6 +48,8 @@ function validarPropriedades() {
 }
 
 function criarProjeto(nome, resolucao, corPlanoDeFundo, numeroCamadas) {
+    const corFundo = document.getElementById("corFundo"), fundoPreview = document.getElementById("fundoPreview"),
+        txtResolucao = document.getElementById("txtResolucao");
     projeto.nome = nome;
     projeto.resolucao.altura = resolucao.altura;
     projeto.resolucao.largura = resolucao.largura;
@@ -58,18 +60,22 @@ function criarProjeto(nome, resolucao, corPlanoDeFundo, numeroCamadas) {
     if (projeto.corFundo != false) {
         cor = "rgb(" + projeto.corFundo.R + ", " + projeto.corFundo.G + ", " + projeto.corFundo.B + ")"
         corFundo.style.backgroundColor = cor;
+        fundoPreview.style.backgroundColor = cor;
+    } else {
+        corFundo.style.backgroundImage = "url('colorPaint/imagens/fundoTela/transparente.png')";
+        fundoPreview.style.backgroundImage = "url('colorPaint/imagens/fundoTela/transparenteMiniatura.png')";
     }
-    while (projeto.numeroCamadas > arrayCamadas.length) { criarElementos(cor, projeto.resolucao); }
     ajustarTelasCanvas();
-    ajustarPreview(cor);
-    clickIconeCamada.call(arrayCamadas[0].icone);
+    ajustarPreview();
     ctxDesenho.canvas.width = projeto.resolucao.largura;
     ctxDesenho.canvas.height = projeto.resolucao.altura;
     ctxPintar.canvas.width = projeto.resolucao.largura;
     ctxPintar.canvas.height = projeto.resolucao.altura;
     txtResolucao.value = projeto.resolucao.largura + ", " + projeto.resolucao.altura;
+    while (projeto.numeroCamadas > arrayCamadas.length) { criarElementos(cor, projeto.resolucao); }
     document.getElementById("nomeDoProjeto").innerText = projeto.nome;
     document.getElementById("propriedadeOpacidadeCamada").style.display = "flex";
+    clickIconeCamada.call(arrayCamadas[0].icone);
     projetoCriado = true;
 }
 
@@ -137,13 +143,13 @@ function criarElementos(cor, resolucao) {
     }
 
     if (cor != false) { styleIconTela = styleIconTela + "background-color: " + cor; }
-    else { styleIconTela = styleIconTela + "background-image: url('static/drawApp/imagens/fundoTela/transparenteMiniatura.png')"; }
+    else { styleIconTela = styleIconTela + "background-image: url('colorPaint/imagens/fundoTela/transparenteMiniatura.png')"; }
 
     iconTela.setAttribute("style", styleIconTela);
     iconTela.setAttribute("class", "iconTela");
     contentMiniIcon.appendChild(iconTela);
-    iconTela.width = iconTela.offsetWidth * 2;
-    iconTela.height = iconTela.offsetHeight * 2;
+    iconTela.width = Math.round(iconTela.offsetWidth * 1.6);
+    iconTela.height = Math.round(iconTela.offsetHeight * 1.6);
 
     const sobrePor = document.createElement("div");
     contentMiniIcon.appendChild(sobrePor);
@@ -159,15 +165,25 @@ function criarElementos(cor, resolucao) {
     elCamada.setAttribute("width", resolucao.largura);
     telasCanvas.appendChild(elCamada);
 
+    // ============== CRIA O PREVIEW DA CAMADA ================
+    const idPreviewCamada = "camadaPreview" + num;
+    const elPreviewCamada = document.createElement("canvas");
+    elPreviewCamada.setAttribute("id", idPreviewCamada);
+    elPreviewCamada.setAttribute("class", "preview");
+    elPreviewCamada.setAttribute("style", camadaStyle);
+    elPreviewCamada.setAttribute("height", Math.round(previewFunctions.contentTelaPreview.offsetHeight * 1.5));
+    elPreviewCamada.setAttribute("width", Math.round(previewFunctions.contentTelaPreview.offsetWidth * 1.5));
+    previewFunctions.contentTelaPreview.appendChild(elPreviewCamada);
+
     if (document.getElementById(idicone) != null && document.getElementById(idBttVisivel) != null &&
         document.getElementById(idNome) != null && document.getElementById(idPocentagem) != null &&
-        document.getElementById(idIconTela) != null && document.getElementById(idCamada) != null) {
+        document.getElementById(idIconTela) != null && document.getElementById(idCamada) != null &&
+        document.getElementById(idPreviewCamada) != null) {
         const objCamada = {
             nome: nomeCamada,
-            camada: elCamada,
             ctx: elCamada.getContext("2d"),
             icone: iconeCamada,
-            miniatura: iconTela,
+            ctxCamadaPreview: elPreviewCamada.getContext("2d"),
             ctxMiniatura: iconTela.getContext("2d"),
             bttVer: bttVisivel,
             porcentagemOpa: txtPorcentagem,
@@ -233,7 +249,7 @@ function mouseFora() {
     MouseNoBttVer = false;
 }
 
-function ajustarPreview(cor) {
+function ajustarPreview() {
     const proporcaoEspaco = 256 / 150, contentTelaPreview = previewFunctions.contentTelaPreview;
     if (projeto.resolucao.proporcao >= proporcaoEspaco) {
         const novaAltura = (256 / projeto.resolucao.proporcao);
@@ -245,8 +261,6 @@ function ajustarPreview(cor) {
         contentTelaPreview.style.width = novaLargura + "px";
         contentTelaPreview.style.height = "150px";
     }
-    if (cor != false) { contentTelaPreview.style.backgroundColor = cor; }
-    else { contentTelaPreview.style.backgroundImage = "url('static/drawApp/imagens/fundoTela/transparenteMiniatura.png')"; }
-    previewFunctions.ctxTelaPreview.canvas.width = contentTelaPreview.offsetWidth * 2;
-    previewFunctions.ctxTelaPreview.canvas.height = contentTelaPreview.offsetHeight * 2;
+    previewFunctions.ctxTelaPreview.canvas.width = Math.round(contentTelaPreview.offsetWidth * 1.5);
+    previewFunctions.ctxTelaPreview.canvas.height = Math.round(contentTelaPreview.offsetHeight * 1.5);
 }
