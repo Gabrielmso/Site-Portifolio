@@ -233,7 +233,7 @@ function colorPaint() {
 
     document.addEventListener("mouseup", function (e) {
         if (mudarOpacidadeCamada === true) {
-            desenhoNoPreviewEIcone();
+            desenhoNoPreviewEIcone(arrayCamadas[camadaSelecionada]);
             mudarOpacidadeCamada = false;
         }
     });
@@ -347,22 +347,21 @@ function criarGrid(tela, tamanho, posicao, criar) {
 }
 // ==========================================================================================================================================================================================================================================
 
-function desenharNaCamada() {
-    undoRedoChange.saveChanges();
-    arrayCamadas[camadaSelecionada].ctx.drawImage(ctxPintar.canvas, 0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
+function desenharNaCamada(layer) {
+    undoRedoChange.saveChanges(layer.ctx);
+    layer.ctx.drawImage(ctxPintar.canvas, 0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
     ctxPintar.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
 }
 
-function desenhoNoPreviewEIcone() {
-    const ctxCamadaPreview = arrayCamadas[camadaSelecionada].ctxCamadaPreview;
-    const larguraMiniatura = arrayCamadas[camadaSelecionada].ctxMiniatura.canvas.width,
-        alturaMiniatura = arrayCamadas[camadaSelecionada].ctxMiniatura.canvas.height;
-    ctxCamadaPreview.clearRect(0, 0, ctxCamadaPreview.canvas.width, ctxCamadaPreview.canvas.height);
-    arrayCamadas[camadaSelecionada].ctxMiniatura.clearRect(0, 0, larguraMiniatura, alturaMiniatura);
-    if (!arrayCamadas[camadaSelecionada].visivel) { return; }
-    ctxCamadaPreview.globalAlpha = arrayCamadas[camadaSelecionada].opacidade;
-    ctxCamadaPreview.drawImage(arrayCamadas[camadaSelecionada].ctx.canvas, 0, 0, ctxCamadaPreview.canvas.width, ctxCamadaPreview.canvas.height);
-    arrayCamadas[camadaSelecionada].ctxMiniatura.drawImage(ctxCamadaPreview.canvas, 0, 0, larguraMiniatura, alturaMiniatura);
+function desenhoNoPreviewEIcone(layer) {
+    const camadaPreview = layer.ctxCamadaPreview,
+        miniatura = layer.ctxMiniatura;
+    camadaPreview.clearRect(0, 0, camadaPreview.canvas.width, camadaPreview.canvas.height);
+    miniatura.clearRect(0, 0, miniatura.canvas.width, miniatura.canvas.height);
+    if (!layer.visivel) { return; }
+    camadaPreview.globalAlpha = layer.opacidade;
+    camadaPreview.drawImage(layer.ctx.canvas, 0, 0, camadaPreview.canvas.width, camadaPreview.canvas.height);
+    miniatura.drawImage(camadaPreview.canvas, 0, 0, miniatura.canvas.width, miniatura.canvas.height);
 }
 
 function desenhoCompleto() {

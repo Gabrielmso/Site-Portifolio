@@ -32,7 +32,7 @@ function drawingToolsObject() {
                 this.cursor.style.display = "none";
             },
             wheel(e) {
-                const velocid = 19;
+                const velocid = 20;
                 if (!hotKeys.shiftPressed) {
                     if (e.deltaY < 0) { contentTelas.scrollTop -= contentTelas.scrollHeight / velocid; }
                     else { contentTelas.scrollTop += contentTelas.scrollHeight / velocid; }
@@ -181,8 +181,8 @@ function drawingToolsObject() {
                 }
                 this.strokeCoordinates.x = [];
                 this.strokeCoordinates.y = [];
-                desenharNaCamada();
-                desenhoNoPreviewEIcone();
+                desenharNaCamada(arrayCamadas[camadaSelecionada]);
+                desenhoNoPreviewEIcone(arrayCamadas[camadaSelecionada]);
                 janelaPrincipal.style.cursor = "";
             }
             this.toolOpacityBar.clicked = false;

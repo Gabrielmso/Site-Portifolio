@@ -27,8 +27,8 @@ function previewFunctionsObject() {
             this.mouseMoveMoverScroll(mousePos.x, mousePos.y);
         },
         scrollContentTelas() {
-            const mult = (contentTelas.scrollHeight - 12) / (this.ctxTelaPreview.canvas.offsetHeight);
-            const mult2 = (contentTelas.scrollWidth - 12) / (this.ctxTelaPreview.canvas.offsetWidth);
+            const mult = (contentTelas.scrollHeight - 12) / (this.contentTelaPreview.offsetHeight);
+            const mult2 = (contentTelas.scrollWidth - 12) / (this.contentTelaPreview.offsetWidth);
             moverScroll.style.top = (contentTelas.scrollTop / mult) + "px";
             moverScroll.style.left = (contentTelas.scrollLeft / mult2) + "px";
         },
@@ -70,7 +70,7 @@ function previewFunctionsObject() {
             this.changeScrollsContentTelas(this.moverScroll.offsetTop, this.moverScroll.offsetLeft);
         },
         changeScrollsContentTelas(topPos, leftPos) {//Mudar o valor dos Scroll's do contentTelas movendo o "moverScroll".
-            const mult = (contentTelas.scrollWidth) / (this.ctxTelaPreview.canvas.offsetWidth);
+            const mult = (contentTelas.scrollWidth) / (this.contentTelaPreview.offsetWidth);
             contentTelas.scrollTop = (topPos * mult);
             contentTelas.scrollLeft = (leftPos * mult);
         }

@@ -6,10 +6,10 @@ function undoRedoChangeObject() {
             this.buttons.redo.addEventListener("mousedown", () => this.redoChange());
             this.buttons.undo.addEventListener("mousedown", () => this.undoChange());
         },
-        saveChanges() {
+        saveChanges(layer) {
             const objAlteracao = {
                 camadaAlterada: camadaSelecionada,
-                alteracao: arrayCamadas[camadaSelecionada].ctx.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura)
+                alteracao: layer.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura)
             };
             this.changes.undone.push(objAlteracao);
             if (this.changes.undone.length > 20) {
@@ -31,9 +31,7 @@ function undoRedoChangeObject() {
                     camada = this.changes.undone[ultimoIndice].camadaAlterada,
                     imagemCamada = this.changes.undone[ultimoIndice].alteracao,
                     objAlteracao = { camadaAlterada: camada, visivel: arrayCamadas[camada].visivel, alteracao: arrayCamadas[camada].ctx.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura) };
-                if (camadaSelecionada != camada) {
-                    clickIconeCamada.call(arrayCamadas[camada].icone);
-                }
+                if (camadaSelecionada != camada) { clickIconeCamada.call(arrayCamadas[camada].icone); }
                 if (arrayCamadas[camada].visivel === false) {
                     clickCamadaVisivel.call(arrayCamadas[camada].bttVer);
                     return;
@@ -54,7 +52,7 @@ function undoRedoChangeObject() {
                     this.buttons.redo.classList.add("cursor");
                     this.buttons.redo.style.opacity = "1";
                 }
-                desenhoNoPreviewEIcone();
+                desenhoNoPreviewEIcone(arrayCamadas[camada]);
                 desenhoCompleto();
             }
         },
@@ -64,9 +62,7 @@ function undoRedoChangeObject() {
                     camada = this.changes.redone[ultimoIndice].camadaAlterada,
                     imagemCamada = this.changes.redone[ultimoIndice].alteracao,
                     objAlteracao = { camadaAlterada: camada, visivel: arrayCamadas[camada].visivel, alteracao: arrayCamadas[camada].ctx.getImageData(0, 0, projeto.resolucao.largura, projeto.resolucao.altura) };
-                if (camadaSelecionada != camada) {
-                    clickIconeCamada.call(arrayCamadas[camada].icone);
-                }
+                if (camadaSelecionada != camada) { clickIconeCamada.call(arrayCamadas[camada].icone); }
                 this.changes.undone.push(objAlteracao);
                 arrayCamadas[camada].ctx.clearRect(0, 0, projeto.resolucao.largura, projeto.resolucao.altura);
                 arrayCamadas[camada].ctx.putImageData(imagemCamada, 0, 0);
@@ -81,7 +77,7 @@ function undoRedoChangeObject() {
                     this.buttons.redo.classList.remove("cursor");
                     this.buttons.redo.style.opacity = "0.5";
                 }
-                desenhoNoPreviewEIcone();
+                desenhoNoPreviewEIcone(arrayCamadas[camada]);
                 desenhoCompleto();
             }
         }

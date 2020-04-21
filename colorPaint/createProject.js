@@ -171,8 +171,8 @@ function criarElementos(cor, resolucao) {
     elPreviewCamada.setAttribute("id", idPreviewCamada);
     elPreviewCamada.setAttribute("class", "preview");
     elPreviewCamada.setAttribute("style", camadaStyle);
-    elPreviewCamada.setAttribute("height", Math.round(previewFunctions.contentTelaPreview.offsetHeight * 1.5));
-    elPreviewCamada.setAttribute("width", Math.round(previewFunctions.contentTelaPreview.offsetWidth * 1.5));
+    elPreviewCamada.setAttribute("height", Math.round(previewFunctions.ctxTelaPreview.canvas.height));
+    elPreviewCamada.setAttribute("width", Math.round(previewFunctions.ctxTelaPreview.canvas.width));
     previewFunctions.contentTelaPreview.appendChild(elPreviewCamada);
 
     if (document.getElementById(idicone) != null && document.getElementById(idBttVisivel) != null &&
@@ -224,21 +224,17 @@ function clickIconeCamada() {
 function clickCamadaVisivel() {
     const txtId = this.getAttribute("id"),
         id = parseInt(txtId.substring(7, 11)),
-        indiceArrayCamadas = id - 1,
-        visivel = arrayCamadas[indiceArrayCamadas].visivel;
-    if (visivel === true) {
-        arrayCamadas[indiceArrayCamadas].visivel = false;
+        indiceArrayCamadas = id - 1;
+    if (arrayCamadas[indiceArrayCamadas].visivel) {
         arrayCamadas[indiceArrayCamadas].ctx.canvas.style.display = "none";
-        this.classList.add("iconNaoVer");
-        this.classList.remove("iconVer");
+        this.classList.replace("iconVer", "iconNaoVer");
     }
     else {
-        arrayCamadas[indiceArrayCamadas].visivel = true;
         arrayCamadas[indiceArrayCamadas].ctx.canvas.style.display = "block";
-        this.classList.add("iconVer");
-        this.classList.remove("iconNaoVer");
+        this.classList.replace("iconNaoVer", "iconVer");
     }
-    desenhoNoPreviewEIcone();
+    arrayCamadas[indiceArrayCamadas].visivel = !arrayCamadas[indiceArrayCamadas].visivel;
+    desenhoNoPreviewEIcone(arrayCamadas[indiceArrayCamadas]);
 }
 
 function mouseSobre() {
