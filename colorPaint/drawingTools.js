@@ -32,14 +32,14 @@ function drawingToolsObject() {
                 this.cursor.style.display = "none";
             },
             wheel(e) {
-                const velocid = 20;
+                const velocid = 7;
                 if (!hotKeys.shiftPressed) {
-                    if (e.deltaY < 0) { contentTelas.scrollTop -= contentTelas.scrollHeight / velocid; }
-                    else { contentTelas.scrollTop += contentTelas.scrollHeight / velocid; }
+                    if (e.deltaY < 0) { contentTelas.scrollTop -= contentTelas.offsetHeight / velocid; }
+                    else { contentTelas.scrollTop += contentTelas.offsetHeight / velocid; }
                 }
                 else {
-                    if (e.deltaY < 0) { contentTelas.scrollLeft -= contentTelas.scrollWidth / velocid; }
-                    else { contentTelas.scrollLeft += contentTelas.scrollWidth / velocid; }
+                    if (e.deltaY < 0) { contentTelas.scrollLeft -= contentTelas.offsetWidth / velocid; }
+                    else { contentTelas.scrollLeft += contentTelas.offsetWidth / velocid; }
                 }
             }
         },

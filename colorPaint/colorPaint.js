@@ -15,8 +15,6 @@ let projetoCriado = false;//Saber se um projeto foi criado.
 let txtCorEscolhida;//Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
 let txtPorcentagemZoom;//Recebe a string com a porcentagem de zoom no "telasCanvas".
 let janelaSeleciona;//Recebe toda a função "janelaSeletorDeCor".
-let MouseNoBttVer = false;//Saber se o mouse está sobre os botões que deixam as camadas invisíveis ou visíveis.
-let cursorOpacidadeCamada;
 function colorPaint() {
     drawingTools = drawingToolsObject();
     project = projectObject();
@@ -30,9 +28,7 @@ function colorPaint() {
     const barraLateralEsquerda = document.getElementById("barraLateralEsquerda");
     const barraLateralDireita = document.getElementById("barraLateralDireita");
     const corAtual = document.getElementById("corAtual");
-    const barraOpacidadeCamada = document.getElementById("barraOpacidadeCamada");
     const contentCentro = document.getElementById("contentCentro");
-    cursorOpacidadeCamada = document.getElementById("cursorOpacidadeCamada");
     janelaPrincipal = document.getElementById("janelaPrincipal");
     contentTelas = document.getElementById("contentTelas");
     telasCanvas = document.getElementById("telasCanvas");
@@ -42,13 +38,13 @@ function colorPaint() {
     txtPorcentagemZoom = document.getElementById("txtPorcentagemZoom");
     grid.tela = document.getElementById("grid");
     janelaSeleciona = new janelaSeletorDeCor();
-    let mudarOpacidadeCamada = false;//Saber se o mouse está pressionado na "barraOpacidadeCamada". 
 
     menuPadrao();
     ajustarContents();
     criarOuAbrirProjeto();
     txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
 
+    project.addEventsToElements();
     drawingTools.addEventsToElements();
     previewFunctions.addEventsToElements();
     undoRedoChange.addEventsToElements();
@@ -193,16 +189,7 @@ function colorPaint() {
             txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
         }
     });
-
-    barraOpacidadeCamada.addEventListener("mousedown", function (e) {
-        mudarOpacidadeCamada = true;
-        calculaOpacidadeCamada(e);
-    });
-
-    document.addEventListener("mousemove", (e) => {
-        if (mudarOpacidadeCamada === true) { calculaOpacidadeCamada(e); }
-    });
-
+    
     document.getElementById("bttZoomMais").addEventListener("click", function () {//Aumentar o zoom no projeto.
         if (projetoCriado === false) { return; };
         zoomNoProjeto(true, true, 1.25);
@@ -222,13 +209,6 @@ function colorPaint() {
 
     document.getElementById("bttAtalhos").addEventListener("click", () => contentJanelaAtalhos.style.display = "flex");
     document.getElementById("bttOkAtalhos").addEventListener("click", () => contentJanelaAtalhos.style.display = "none");
-
-    document.addEventListener("mouseup", function (e) {
-        if (mudarOpacidadeCamada === true) {
-            desenhoNoPreviewEIcone(project.arrayLayers[camadaSelecionada]);
-            mudarOpacidadeCamada = false;
-        }
-    });
 
     document.getElementById("colorPaintContent").addEventListener("wheel", function (e) {//Zoom com o scroll do mouse.
         if (hotKeys.ctrlPressed === true && projetoCriado === true) {
@@ -252,28 +232,6 @@ function colorPaint() {
             }, 120);
         };
     });
-
-    function calculaOpacidadeCamada(e) {
-        const mouse = pegarPosicaoMouse(barraOpacidadeCamada, e);
-        let porcentagem = Math.round((mouse.x * 100) / barraOpacidadeCamada.offsetWidth);
-        if (mouse.x <= 1) {
-            porcentagem = 1;
-            cursorOpacidadeCamada.style.left = "-7px";
-            project.arrayLayers[camadaSelecionada].txtOpacity.value = "1%";
-        }
-        else if (mouse.x >= 200) {
-            porcentagem = 100;
-            cursorOpacidadeCamada.style.left = "193px";
-            project.arrayLayers[camadaSelecionada].txtOpacity.value = "100%";
-        }
-        else {
-            cursorOpacidadeCamada.style.left = mouse.x - 7 + "px";
-            project.arrayLayers[camadaSelecionada].txtOpacity.value = porcentagem + "%";
-        }
-        let opacidade = porcentagem / 100;
-        project.arrayLayers[camadaSelecionada].opacity = opacidade;
-        project.arrayLayers[camadaSelecionada].ctx.canvas.style.opacity = opacidade;
-    }
 
     function menuPadrao() {
         menu.classList.replace("iniciomenu", "mudamenu");
@@ -416,21 +374,17 @@ function zoomNoProjeto(zoom, centralizar, quanto) {
     if (zoom === "porcentagem") {
         larguraAtual = project.properties.resolution.width * (quanto / 100);
         alturaAtual = (larguraAtual / project.properties.resolution.proportion);
-        telasCanvas.style.width = larguraAtual + "px";
-        telasCanvas.style.height = alturaAtual + "px";
     }
     else if (zoom === true) {
         larguraAtual = (larguraAnterior * quanto);
         alturaAtual = (larguraAtual / project.properties.resolution.proportion);
-        telasCanvas.style.width = larguraAtual + "px";
-        telasCanvas.style.height = alturaAtual + "px";
     }
     else if (zoom === false) {
         larguraAtual = (larguraAnterior / quanto);
         alturaAtual = (larguraAtual / project.properties.resolution.proportion);
-        telasCanvas.style.width = larguraAtual + "px";
-        telasCanvas.style.height = alturaAtual + "px";
     }
+    telasCanvas.style.width = larguraAtual + "px";
+    telasCanvas.style.height = alturaAtual + "px";
     if (larguraAtual >= (contentTelas.offsetWidth - 12)) { telasCanvas.style.left = "6px"; }
     else { telasCanvas.style.left = (contentTelas.offsetWidth / 2) - (larguraAtual / 2) + "px"; }
     if (alturaAtual >= (contentTelas.offsetHeight - 12)) { telasCanvas.style.top = "6px"; }
@@ -454,11 +408,8 @@ function salvarDesenho() {
     salvarImagem.setAttribute("href", url);
     salvarImagem.click();
     function dataURLtoBlob(dataURI) {
-        const BASE64_MARKER = ";base64,";
-        const base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
-        const base64 = dataURI.substring(base64Index);
-        const raw = window.atob(base64);
-        const rawLength = raw.length;
+        const BASE64_MARKER = ";base64,", base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length,
+            base64 = dataURI.substring(base64Index), raw = window.atob(base64), rawLength = raw.length;
         let array = new Uint8Array(rawLength);
         for (i = 0; i < rawLength; i++) { array[i] = raw.charCodeAt(i); }
         const blob = new Blob([array], { type: "image/png" });
@@ -548,15 +499,10 @@ function abrirProjeto() {
                 project.arrayLayers[i].miniature.drawImage(project.arrayLayers[i].ctx.canvas, 0, 0, larguraMiniatura, alturaMiniatura);
                 project.arrayLayers[i].previewLayer.globalAlpha = opacidadeCamada;
                 project.arrayLayers[i].previewLayer.drawImage(project.arrayLayers[i].ctx.canvas, 0, 0, project.arrayLayers[i].previewLayer.canvas.width, project.arrayLayers[i].previewLayer.canvas.height);
-                if (objProjeto.camadas[i].visivel === false) {
-                    clickCamadaVisivel.call(project.arrayLayers[i].bttLook);
-                };
+                if (!objProjeto.camadas[i].visivel) { project.clickBttLook(i); };
             }
         }
-        cursorOpacidadeCamada.style.left = ((project.arrayLayers[0].opacity * 200) - 7) + "px";
-        for (let i = 0; i < objProjeto.coresSalvas.length; i++) {
-            janelaSeleciona.salvarCor(objProjeto.coresSalvas[i]);
-        }
+        for (let i = 0; i < objProjeto.coresSalvas.length; i++) { janelaSeleciona.salvarCor(objProjeto.coresSalvas[i]); }
         grid.tamanho = objProjeto.grid.tamanho;
         grid.posicao = objProjeto.grid.posicao;
         if (objProjeto.grid.visivel === true) { criarGrid(grid.tela, grid.tamanho, grid.posicao, true); }

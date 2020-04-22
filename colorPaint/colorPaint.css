@@ -664,13 +664,13 @@ p {
     scrollbar-width: thin;
 }
 
-#propriedadeOpacidadeCamada {
+#contentBarraOpacidadeCamada {
     display: none;
     flex-direction: row;
     align-items: center;
     float: left;
-    height: 10px;
-    width: 325px;
+    height: 40px;
+    width: 278px;
 }
 
 .propriedadesCamada label {

@@ -23,7 +23,7 @@ function previewFunctionsObject() {
         },
         mouseMovePreview(e) {
             if (this.moverScrollPreview === false) { return; }
-            const mousePos = pegarPosicaoMouse(previewFunctions.contentTelaPreview, e);
+            const mousePos = pegarPosicaoMouse(this.contentTelaPreview, e);
             this.mouseMoveMoverScroll(mousePos.x, mousePos.y);
         },
         scrollContentTelas() {
@@ -32,10 +32,24 @@ function previewFunctionsObject() {
             moverScroll.style.top = (contentTelas.scrollTop / mult) + "px";
             moverScroll.style.left = (contentTelas.scrollLeft / mult2) + "px";
         },
+        adjustPreview(proportion) {
+            const proporcaoEspaco = 256 / 150, contentTelaPreview = this.contentTelaPreview;
+            if (proportion >= proporcaoEspaco) {
+                const novaAltura = (256 / proportion);
+                contentTelaPreview.style.width = "256px";
+                contentTelaPreview.style.height = novaAltura + "px";
+            } else {
+                const novaLargura = (150 * proportion);
+                contentTelaPreview.style.width = novaLargura + "px";
+                contentTelaPreview.style.height = "150px";
+            }
+            this.ctxTelaPreview.canvas.width = Math.round(contentTelaPreview.offsetWidth * 1.5);
+            this.ctxTelaPreview.canvas.height = Math.round(contentTelaPreview.offsetHeight * 1.5);
+        },
         changeMoverScrollSizeZoom() {//De acordo com o zoom que é dado muda o tamanho do "moverScroll".
             const tamanhoTelasCanvas = { x: telasCanvas.offsetWidth, y: telasCanvas.offsetHeight },
                 tamanhoContentTelas = { x: contentTelas.offsetWidth, y: contentTelas.offsetHeight },
-                tamanhoContentTelaPreview = { x: previewFunctions.contentTelaPreview.offsetWidth, y: previewFunctions.contentTelaPreview.offsetHeight };
+                tamanhoContentTelaPreview = { x: this.contentTelaPreview.offsetWidth, y: this.contentTelaPreview.offsetHeight };
             if (tamanhoTelasCanvas.x <= (tamanhoContentTelas.x - 10) && tamanhoTelasCanvas.y <= (tamanhoContentTelas.y - 10)) {
                 this.moverScroll.style.display = "none";
             } else if (tamanhoTelasCanvas.x > (tamanhoContentTelas.x - 10) && tamanhoTelasCanvas.y > (tamanhoContentTelas.y - 10)) {
@@ -58,7 +72,7 @@ function previewFunctionsObject() {
         },
         mouseMoveMoverScroll(mouseX, mouseY) {//Mover o "moverScroll" com o mouse.
             const metadeLargura = this.moverScroll.offsetWidth / 2, metadeAltura = this.moverScroll.offsetHeight / 2,
-                contentTelaPreview = previewFunctions.contentTelaPreview;
+                contentTelaPreview = this.contentTelaPreview;
             if (mouseX <= metadeLargura) { this.moverScroll.style.left = "0px"; }
             else if (mouseX >= contentTelaPreview.offsetWidth - metadeLargura) {
                 this.moverScroll.style.left = contentTelaPreview.offsetWidth - (metadeLargura * 2) + "px";

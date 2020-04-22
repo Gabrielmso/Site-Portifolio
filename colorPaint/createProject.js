@@ -6,10 +6,50 @@ function projectObject() {
             background: null,
             numberLayers: 0
         },
+        layerOpacityBar: {
+            content: document.getElementById("contentBarraOpacidadeCamada"),
+            bar: document.getElementById("barraOpacidadeCamada"),
+            cursor: document.getElementById("cursorOpacidadeCamada"),
+            mousedown: false,
+        },
         drawComplete: document.getElementById("desenho").getContext("2d"),
         eventLayer: document.getElementById("pintar").getContext("2d"),
         arrayLayers: [],
         cursorInBttLook: false,
+        addEventsToElements() {
+            this.layerOpacityBar.content.addEventListener("mousemove", (e) => this.changeOpacityLayer(e));
+            this.layerOpacityBar.content.addEventListener("mouseleave", (e) => this.applyOpacityLayer());
+            this.layerOpacityBar.bar.addEventListener("mousedown", (e) => {
+                this.layerOpacityBar.mousedown = true;
+                this.changeOpacityLayer(e);
+            });
+            this.layerOpacityBar.content.addEventListener("mouseup", (e) => this.applyOpacityLayer());
+        },
+        applyOpacityLayer() {
+            if (!this.layerOpacityBar.mousedown) { return; }
+            this.layerOpacityBar.mousedown = false;
+            desenhoNoPreviewEIcone(this.arrayLayers[camadaSelecionada]);
+        },
+        changeOpacityLayer(e) {
+            if (!this.layerOpacityBar.mousedown) { return; }
+            const mouse = pegarPosicaoMouse(this.layerOpacityBar.bar, e);
+            let porcentagem = Math.round((mouse.x * 100) / this.layerOpacityBar.bar.offsetWidth);
+            if (mouse.x <= 1) {
+                porcentagem = 1;
+                cursorOpacidadeCamada.style.left = "-7px";
+                this.arrayLayers[camadaSelecionada].txtOpacity.value = "1%";
+            } else if (mouse.x >= 200) {
+                porcentagem = 100;
+                cursorOpacidadeCamada.style.left = "193px";
+                this.arrayLayers[camadaSelecionada].txtOpacity.value = "100%";
+            } else {
+                cursorOpacidadeCamada.style.left = mouse.x - 7 + "px";
+                this.arrayLayers[camadaSelecionada].txtOpacity.value = porcentagem + "%";
+            }
+            let opacidade = porcentagem / 100;
+            this.arrayLayers[camadaSelecionada].opacity = opacidade;
+            this.arrayLayers[camadaSelecionada].ctx.canvas.style.opacity = opacidade;
+        },
         validateProperties() {
             const arrayProperties = [document.getElementById("txtNomeProjeto"),
             document.getElementById("txtLarguraProjeto"),
@@ -21,8 +61,7 @@ function projectObject() {
                 if (el.value === "") {
                     campoInvalido(el);
                     return;
-                }
-                else { el.style.backgroundColor = "rgba(0, 0, 0, 0)"; }
+                } else { el.style.backgroundColor = "rgba(0, 0, 0, 0)"; }
             }
             const nomeProjeto = (arrayProperties[0].value).replace(/ /g, "-"),
                 larguraProjeto = parseInt(arrayProperties[1].value),
@@ -33,16 +72,13 @@ function projectObject() {
             if (larguraProjeto > 2560 || larguraProjeto < 1) {
                 campoInvalido(arrayProperties[1]);
                 return;
-            }
-            else if (alturaProjeto > 1440 || alturaProjeto < 1) {
+            } else if (alturaProjeto > 1440 || alturaProjeto < 1) {
                 campoInvalido(arrayProperties[2]);
                 return;
-            }
-            else if (valueCor > 4 || valueCor < 1) {
+            } else if (valueCor > 4 || valueCor < 1) {
                 campoInvalido(arrayProperties[3]);
                 return;
-            }
-            else if (numeroCamadas > 5 || numeroCamadas < 1) {
+            } else if (numeroCamadas > 5 || numeroCamadas < 1) {
                 campoInvalido(arrayProperties[4]);
                 return;
             }
@@ -75,7 +111,7 @@ function projectObject() {
                 fundoPreview.style.backgroundImage = "url('colorPaint/imagens/fundoTela/transparenteMiniatura.png')";
             }
             ajustarTelasCanvas();
-            this.ajustarPreview();
+            previewFunctions.adjustPreview(this.properties.resolution.proportion);
             this.drawComplete.canvas.width = this.properties.resolution.width;
             this.drawComplete.canvas.height = this.properties.resolution.height;
             this.eventLayer.canvas.width = this.properties.resolution.width;
@@ -83,9 +119,9 @@ function projectObject() {
             txtResolucao.value = this.properties.resolution.width + ", " + this.properties.resolution.height;
             while (this.properties.numberLayers > this.arrayLayers.length) { this.createElements(color); }
             document.getElementById("nomeDoProjeto").innerText = this.properties.name;
-            document.getElementById("propriedadeOpacidadeCamada").style.display = "flex";
-            this.clickIconLayer(0);
+            this.layerOpacityBar.content.style.display = "flex";
             projetoCriado = true;
+            setTimeout(() => this.clickIconLayer(0), 5);
         },
         createElements(color) {
             const num = this.arrayLayers.length + 1;
@@ -144,8 +180,7 @@ function projectObject() {
             if (this.properties.resolution.proportion >= 1) {
                 const iconAltura = Math.round(80 / this.properties.resolution.proportion);
                 styleIconTela = "width: 80px; height: " + iconAltura + "px; ";
-            }
-            else {
+            } else {
                 const iconLargura = Math.round(80 * this.properties.resolution.proportion);
                 styleIconTela = "width: " + iconLargura + "px; height: 80px; ";
             }
@@ -210,8 +245,7 @@ function projectObject() {
                 this.arrayLayers[num].ctx.canvas.style.display = "none";
                 this.arrayLayers[num].previewLayer.canvas.style.display = "none";
                 this.arrayLayers[num].bttLook.classList.replace("iconVer", "iconNaoVer");
-            }
-            else {
+            } else {
                 this.arrayLayers[num].ctx.canvas.style.display = "block";
                 this.arrayLayers[num].previewLayer.canvas.style.display = "block";
                 this.arrayLayers[num].bttLook.classList.replace("iconNaoVer", "iconVer");
@@ -233,20 +267,5 @@ function projectObject() {
                 cursorOpacidadeCamada.style.left = (200 * opacidade) - 7 + "px";
             }
         },
-        ajustarPreview() {
-            const proporcaoEspaco = 256 / 150, contentTelaPreview = previewFunctions.contentTelaPreview;
-            if (this.properties.resolution.proportion >= proporcaoEspaco) {
-                const novaAltura = (256 / this.properties.resolution.proportion);
-                contentTelaPreview.style.width = "256px";
-                contentTelaPreview.style.height = novaAltura + "px";
-            }
-            else {
-                const novaLargura = (150 * this.properties.resolution.proportion);
-                contentTelaPreview.style.width = novaLargura + "px";
-                contentTelaPreview.style.height = "150px";
-            }
-            previewFunctions.ctxTelaPreview.canvas.width = Math.round(contentTelaPreview.offsetWidth * 1.5);
-            previewFunctions.ctxTelaPreview.canvas.height = Math.round(contentTelaPreview.offsetHeight * 1.5);
-        }
     }
 }
