@@ -18,12 +18,29 @@ function projectObject() {
         cursorInBttLook: false,
         addEventsToElements() {
             this.layerOpacityBar.content.addEventListener("mousemove", (e) => this.changeOpacityLayer(e));
-            this.layerOpacityBar.content.addEventListener("mouseleave", (e) => this.applyOpacityLayer());
             this.layerOpacityBar.bar.addEventListener("mousedown", (e) => {
                 this.layerOpacityBar.mousedown = true;
                 this.changeOpacityLayer(e);
             });
-            this.layerOpacityBar.content.addEventListener("mouseup", (e) => this.applyOpacityLayer());
+            this.layerOpacityBar.content.addEventListener("mouseup", () => this.applyOpacityLayer());
+            this.layerOpacityBar.content.addEventListener("mouseleave", () => this.applyOpacityLayer());
+
+            document.getElementById("bttSalvarDesenho").addEventListener("mousedown", () => {
+                if (projetoCriado) { this.saveImage(); }
+                else { alert("Nenhum projeto criado!"); }
+            });
+            document.getElementById("bttSalvarProjeto").addEventListener("mousedown", () => {
+                if (projetoCriado) { this.saveProject(); }
+                else { alert("Nenhum projeto criado!"); }
+            });
+            document.getElementById("bttAbrirProjeto").addEventListener("mousedown", () => {
+                if (projetoCriado) {
+                    if (confirm("Todo o progresso não salvo será perdido, deseja continuar?")) {
+                        sessionStorage.setItem("abrirProjetoSalvo", "true");
+                        window.location.reload();
+                    }
+                } else { this.openProject(); }
+            });
         },
         applyOpacityLayer() {
             if (!this.layerOpacityBar.mousedown) { return; }
@@ -267,5 +284,97 @@ function projectObject() {
                 cursorOpacidadeCamada.style.left = (200 * opacidade) - 7 + "px";
             }
         },
+        saveImage() {
+            desenhoCompleto();
+            const blob = dataURLtoBlob(this.drawComplete.canvas.toDataURL("image/png"));
+            const url = URL.createObjectURL(blob);
+            const salvarImagem = document.createElement("a");
+            salvarImagem.setAttribute("download", this.properties.name + ".png");
+            salvarImagem.setAttribute("href", url);
+            salvarImagem.click();
+            function dataURLtoBlob(dataURI) {
+                const BASE64_MARKER = ";base64,", base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length,
+                    base64 = dataURI.substring(base64Index), raw = window.atob(base64), rawLength = raw.length;
+                let array = new Uint8Array(rawLength);
+                for (i = 0; i < rawLength; i++) { array[i] = raw.charCodeAt(i); }
+                const blob = new Blob([array], { type: "image/png" });
+                return blob;
+            }
+        },
+        saveProject() {
+            let dadosCamadas = [], coresSalvasProjeto = [];
+            for (let i = 0; i < this.properties.numberLayers; i++) {
+                dadosCamadas[i] = {
+                    imgDataCamada: this.arrayLayers[i].ctx.canvas.toDataURL("imagem/png"),
+                    opacidade: this.arrayLayers[i].opacity,
+                    visivel: this.arrayLayers[i].visible,
+                };
+            }
+            for (let i = 0; i < arrayCoresSalvas.length; i++) { coresSalvasProjeto[i] = arrayCoresSalvas[i].cor; }
+            const objProjeto = {
+                nomeProjeto: this.properties.name,
+                resolucaoDoProjeto: this.properties.resolution,
+                corDeFundo: this.properties.background,
+                coresSalvas: coresSalvasProjeto,
+                grid: { tamanho: grid.tamanho, posicao: grid.posicao, visivel: grid.visivel, },
+                numeroDeCamadas: this.properties.numberLayers,
+                camadas: dadosCamadas
+            }
+            const data = encode(JSON.stringify(objProjeto));
+            const blob = new Blob([data], { type: "application/octet-stream;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", this.properties.name + ".gm");
+            link.click();
+            function encode(s) {
+                let out = [];
+                for (let i = 0; i < s.length; i++) { out[i] = s.charCodeAt(i); }
+                return new Uint8Array(out);
+            }
+        },
+        openProject() {
+            const input = document.createElement("input");
+            input.setAttribute("type", "file");
+            input.addEventListener("change", (e) => {
+                const arquivo = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = () => {
+                    if (reader.result === "") { alert("Este arquivo não possui projeto salvo!"); }
+                    else { this.loadProject(reader.result); }
+                };
+                if (!arquivo) { alert("Erro ao carregar projeto, tente novamente!"); }
+                else {
+                    const extencao = arquivo.name.split('.').pop().toLowerCase();
+                    if (extencao === "gm") { reader.readAsText(arquivo, "ISO-8859-1"); }
+                    else { alert("Arquivo selecionado inválido!"); }
+                }
+            }, false);
+            input.click();
+        },
+        loadProject(projetoJSON) {
+            const objProjeto = JSON.parse(projetoJSON);
+            this.create(objProjeto.nomeProjeto, objProjeto.resolucaoDoProjeto, objProjeto.corDeFundo, objProjeto.numeroDeCamadas);
+            for (let i = 0; i < this.properties.numberLayers; i++) {
+                const opacidade = objProjeto.camadas[i].opacidade;
+                this.arrayLayers[i].txtOpacity.value = Math.round(opacidade * 100) + "%";
+                this.arrayLayers[i].opacity = opacidade;
+                this.arrayLayers[i].ctx.canvas.style.opacity = opacidade;
+                const imgData = new Image();
+                imgData.src = objProjeto.camadas[i].imgDataCamada;
+                imgData.onload = () => {
+                    this.arrayLayers[i].ctx.drawImage(imgData, 0, 0);
+                    const larguraMiniatura = this.arrayLayers[i].miniature.canvas.width, alturaMiniatura = this.arrayLayers[i].miniature.canvas.height;
+                    this.arrayLayers[i].previewLayer.globalAlpha = this.arrayLayers[i].opacity;
+                    this.arrayLayers[i].previewLayer.drawImage(this.arrayLayers[i].ctx.canvas, 0, 0, this.arrayLayers[i].previewLayer.canvas.width, this.arrayLayers[i].previewLayer.canvas.height);
+                    this.arrayLayers[i].miniature.drawImage(this.arrayLayers[i].previewLayer.canvas, 0, 0, larguraMiniatura, alturaMiniatura);
+                    if (!objProjeto.camadas[i].visivel) { this.clickBttLook(i); };
+                }
+            }
+            for (let i = 0; i < objProjeto.coresSalvas.length; i++) { janelaSeleciona.salvarCor(objProjeto.coresSalvas[i]); }
+            grid.tamanho = objProjeto.grid.tamanho;
+            grid.posicao = objProjeto.grid.posicao;
+            if (objProjeto.grid.visivel === true) { criarGrid(grid.tela, grid.tamanho, grid.posicao, true); }
+        }
     }
 }

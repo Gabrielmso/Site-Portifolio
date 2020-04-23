@@ -32,8 +32,8 @@ function undoRedoChangeObject() {
                     imagemCamada = this.changes.undone[ultimoIndice].alteracao,
                     objAlteracao = { camadaAlterada: camada, visivel: project.arrayLayers[camada].visivel, alteracao: project.arrayLayers[camada].ctx.getImageData(0, 0, project.properties.resolution.width, project.properties.resolution.height) };
                 if (camadaSelecionada != camada) { project.clickIconLayer(camada); }
-                if (project.arrayLayers[camada].visivel === false) {
-                    clickCamadaVisivel.call(project.arrayLayers[camada].bttVer);
+                if (!project.arrayLayers[camada].visible) {
+                    project.clickBttLook(camada);
                     return;
                 }
                 this.changes.redone.push(objAlteracao);

@@ -19,7 +19,7 @@
     <script src="colorPaint/drawingTools.js"></script>
     <script src="colorPaint/previewFunctions.js"></script>
     <script src="colorPaint/hotKeys.js"></script>
-    <script src="colorPaint/createProject.js"></script>
+    <script src="colorPaint/project.js"></script>
     <script src="colorPaint/undoRedoChange.js"></script>
     <script>
         window.onload = () => {
@@ -162,12 +162,10 @@
                         <ul>
                             <li id="bttSalvarDesenho" title="Salva o desenho em um arquivo no formato PNG.">
                                 <label class="cursor">Salvar</label>
-                                <a id="salvarImagem"></a>
                             </li>
                             <li id="bttSalvarProjeto"
                                 title="Salva as propriedades do projeto, o conteúdo das camadas, em um arquivo no formato GM.">
                                 <label class="cursor">Salvar projeto</label>
-                                <a id="salvarProjeto" target="_blank"></a>
                             </li>
                             <li id="bttAbrirProjeto" title="Carrega um projeto salvo.">
                                 <label class="cursor">Abrir projeto</label>

@@ -125,26 +125,6 @@ function colorPaint() {
         }
     });
 
-    document.getElementById("bttSalvarDesenho").addEventListener("click", function () {
-        if (projetoCriado === true) { salvarDesenho(); }
-        else { alert("Nenhum projeto criado!"); }
-    });
-
-    document.getElementById("bttSalvarProjeto").addEventListener("click", function () {
-        if (projetoCriado === true) { salvarProjeto(); }
-        else { alert("Nenhum projeto criado!"); }
-    });
-
-    document.getElementById("bttAbrirProjeto").addEventListener("click", function () {
-        if (projetoCriado === true) {
-            if (confirm("Todo o progresso não salvo será perdido, deseja continuar?") === true) {
-                sessionStorage.setItem("abrirProjetoSalvo", "true");
-                window.location.reload();
-            }
-        }
-        else { abrirProjeto(); }
-    });
-
     corPrincipal.addEventListener("click", function () {
         if (janelaSelecionarCorVisivel === true) {
             janelaSeleciona.procurarCor(corEscolhidaPrincipal);
@@ -189,7 +169,7 @@ function colorPaint() {
             txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
         }
     });
-    
+
     document.getElementById("bttZoomMais").addEventListener("click", function () {//Aumentar o zoom no projeto.
         if (projetoCriado === false) { return; };
         zoomNoProjeto(true, true, 1.25);
@@ -399,122 +379,11 @@ function zoomNoProjeto(zoom, centralizar, quanto) {
 }
 // ==========================================================================================================================================================================================================================================
 
-function salvarDesenho() {
-    desenhoCompleto();
-    const blob = dataURLtoBlob(project.drawComplete.canvas.toDataURL("imagem/png"));
-    const url = URL.createObjectURL(blob);
-    const salvarImagem = document.getElementById("salvarImagem");
-    salvarImagem.setAttribute("download", project.properties.name + ".png");
-    salvarImagem.setAttribute("href", url);
-    salvarImagem.click();
-    function dataURLtoBlob(dataURI) {
-        const BASE64_MARKER = ";base64,", base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length,
-            base64 = dataURI.substring(base64Index), raw = window.atob(base64), rawLength = raw.length;
-        let array = new Uint8Array(rawLength);
-        for (i = 0; i < rawLength; i++) { array[i] = raw.charCodeAt(i); }
-        const blob = new Blob([array], { type: "image/png" });
-        return blob;
-    }
-}
-
-function salvarProjeto() {
-    let dadosCamadas = [], coresSalvasProjeto = [];
-    for (let i = 0; i < project.properties.numberLayers; i++) {
-        dadosCamadas[i] = {
-            imgDataCamada: project.arrayLayers[i].ctx.canvas.toDataURL("imagem/png"),
-            opacidade: project.arrayLayers[i].opacity,
-            visivel: project.arrayLayers[i].visible,
-        };
-    }
-    for (let i = 0; i < arrayCoresSalvas.length; i++) {
-        coresSalvasProjeto[i] = arrayCoresSalvas[i].cor;
-    }
-    const objProjeto = {
-        nomeProjeto: project.properties.name,
-        resolucaoDoProjeto: project.properties.resolution,
-        corDeFundo: project.properties.background,
-        coresSalvas: coresSalvasProjeto,
-        grid: {
-            tamanho: grid.tamanho,
-            posicao: grid.posicao,
-            visivel: grid.visivel,
-        },
-        numeroDeCamadas: project.properties.numberLayers,
-        camadas: dadosCamadas
-    }
-
-    const data = encode(JSON.stringify(objProjeto));
-    const blob = new Blob([data], { type: "application/octet-stream;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.getElementById("salvarProjeto");
-    link.setAttribute("href", url);
-    link.setAttribute("download", project.properties.name + ".gm");
-    link.click();
-    function encode(s) {
-        let out = [];
-        for (let i = 0; i < s.length; i++) {
-            out[i] = s.charCodeAt(i);
-        }
-        return new Uint8Array(out);
-    }
-}
-
-function abrirProjeto() {
-    const input = document.createElement("input");
-    input.setAttribute("type", "file");
-    input.addEventListener("change", function (e) {
-        const arquivo = e.target.files[0];
-        const reader = new FileReader();
-        reader.onload = function () {
-            if (this.result === "") { alert("Este arquivo não possui project.properties salvo!"); }
-            else { carregarProjeto(this.result); }
-        };
-
-        if (!arquivo) { alert("Erro ao carregar project.properties, tente novamente!"); }
-        else {
-            const extencao = arquivo.name.split('.').pop().toLowerCase();
-            if (extencao === "gm") { reader.readAsText(arquivo, "ISO-8859-1"); }
-            else { alert("Arquivo selecionado inválido!"); }
-        }
-    }, false);
-
-    function carregarProjeto(projetoJSON) {
-        const objProjeto = JSON.parse(projetoJSON);
-        project.arrayLayers = [];
-        arrayVoltarAlteracoes = [];
-        arrayAvancarAlteracoes = [];
-        project.create(objProjeto.nomeProjeto, objProjeto.resolucaoDoProjeto, objProjeto.corDeFundo, objProjeto.numeroDeCamadas);
-        for (let i = 0; i < project.properties.numberLayers; i++) {
-            const opacidade = objProjeto.camadas[i].opacidade;
-            project.arrayLayers[i].txtOpacity.value = Math.round(opacidade * 100) + "%";
-            project.arrayLayers[i].opacity = opacidade;
-            project.arrayLayers[i].ctx.canvas.style.opacity = opacidade;
-            const imgData = new Image();
-            imgData.src = objProjeto.camadas[i].imgDataCamada;
-            imgData.onload = function () {
-                project.arrayLayers[i].ctx.drawImage(imgData, 0, 0);
-                const opacidadeCamada = project.arrayLayers[i].opacity;
-                const larguraMiniatura = project.arrayLayers[i].miniature.canvas.width, alturaMiniatura = project.arrayLayers[i].miniature.canvas.height;
-                project.arrayLayers[i].miniature.globalAlpha = opacidadeCamada;
-                project.arrayLayers[i].miniature.drawImage(project.arrayLayers[i].ctx.canvas, 0, 0, larguraMiniatura, alturaMiniatura);
-                project.arrayLayers[i].previewLayer.globalAlpha = opacidadeCamada;
-                project.arrayLayers[i].previewLayer.drawImage(project.arrayLayers[i].ctx.canvas, 0, 0, project.arrayLayers[i].previewLayer.canvas.width, project.arrayLayers[i].previewLayer.canvas.height);
-                if (!objProjeto.camadas[i].visivel) { project.clickBttLook(i); };
-            }
-        }
-        for (let i = 0; i < objProjeto.coresSalvas.length; i++) { janelaSeleciona.salvarCor(objProjeto.coresSalvas[i]); }
-        grid.tamanho = objProjeto.grid.tamanho;
-        grid.posicao = objProjeto.grid.posicao;
-        if (objProjeto.grid.visivel === true) { criarGrid(grid.tela, grid.tamanho, grid.posicao, true); }
-    }
-    input.click();
-}
-
 function criarOuAbrirProjeto() {
     const carregar = document.getElementById("carregamento");
     if (sessionStorage.getItem("abrirProjetoSalvo") === "true") {
         document.body.removeChild(carregar);
-        abrirProjeto();
+        project.openProject();
         sessionStorage.setItem("abrirProjetoSalvo", "false");
     }
     else if (sessionStorage.getItem("criarNovoProjeto") === "true") {
