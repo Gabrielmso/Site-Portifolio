@@ -8,7 +8,7 @@ function undoRedoChangeObject() {
         },
         saveChanges(layer) {
             const objAlteracao = {
-                camadaAlterada: camadaSelecionada,
+                camadaAlterada: project.selectedLayer,
                 alteracao: layer.getImageData(0, 0, project.properties.resolution.width, project.properties.resolution.height)
             };
             this.changes.undone.push(objAlteracao);
@@ -31,7 +31,7 @@ function undoRedoChangeObject() {
                     camada = this.changes.undone[ultimoIndice].camadaAlterada,
                     imagemCamada = this.changes.undone[ultimoIndice].alteracao,
                     objAlteracao = { camadaAlterada: camada, visivel: project.arrayLayers[camada].visivel, alteracao: project.arrayLayers[camada].ctx.getImageData(0, 0, project.properties.resolution.width, project.properties.resolution.height) };
-                if (camadaSelecionada != camada) { project.clickIconLayer(camada); }
+                if (project.selectedLayer != camada) { project.clickIconLayer(camada); }
                 if (!project.arrayLayers[camada].visible) {
                     project.clickBttLook(camada);
                     return;
@@ -62,7 +62,7 @@ function undoRedoChangeObject() {
                     camada = this.changes.redone[ultimoIndice].camadaAlterada,
                     imagemCamada = this.changes.redone[ultimoIndice].alteracao,
                     objAlteracao = { camadaAlterada: camada, visivel: project.arrayLayers[camada].visivel, alteracao: project.arrayLayers[camada].ctx.getImageData(0, 0, project.properties.resolution.width, project.properties.resolution.height) };
-                if (camadaSelecionada != camada) { clickIconeCamada.call(project.arrayLayers[camada].icone); }
+                if (project.selectedLayer != camada) { clickIconeCamada.call(project.arrayLayers[camada].icone); }
                 this.changes.undone.push(objAlteracao);
                 project.arrayLayers[camada].ctx.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
                 project.arrayLayers[camada].ctx.putImageData(imagemCamada, 0, 0);

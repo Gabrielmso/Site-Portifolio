@@ -1,7 +1,7 @@
 let janelaSelecionarCorVisivel = false;//Saber se a janela de seleção de cor está "aberta".
 
 function janelaSeletorDeCor() {
-    let corEscolhida = { R: 0, G: 0, B: 0 }; //Armazena a cor selecionada com o cursor "cursorGradiente";
+    let corEscolhida = { r: 0, g: 0, b: 0 }; //Armazena a cor selecionada com o cursor "cursorGradiente";
     const coresSalvas = document.getElementById("coresSalvas"),
         janelaSelecionarCor = document.getElementById("janelaSelecionarCor"),
         bttRemoverCorSalva = document.getElementById("bttRemoverCorSalva"),
@@ -17,7 +17,7 @@ function janelaSeletorDeCor() {
         ctxBarra = barraeEspectroCor.getContext("2d"),
         ctxGradiente = gradienteCor.getContext("2d");
 
-    let hsvBarra = { H: 0, S: 100, V: 100 },
+    let hsvBarra = { h: 0, s: 100, v: 100 },
         corParaAchar = {},//Armazena a cor a ser encontrada no formato RGB que foi digitada no "codRGB".
         clickBarra = false,//Saber se o click do mouse foi ou está pressionado em cima do "barraeEspectroCor".
         clickGradiente = false,//Saber se o click do mouse foi ou está pressionado em cima do "gradienteCor".
@@ -28,7 +28,7 @@ function janelaSeletorDeCor() {
 
     this.procurarCor = (color) => {
         hsvBarra = rgbToHsv(color); //Converte a cor digitada de RGB para HSV.
-        encontrarCorDoCodigoNoGradiente(hsvBarra.S, hsvBarra.V);
+        encontrarCorDoCodigoNoGradiente(hsvBarra.s, hsvBarra.v);
     }
 
     const bttCorSalva = (e) => {//O que ocorre quando clicamos numa cor salva.
@@ -39,8 +39,8 @@ function janelaSeletorDeCor() {
             arrayCoresSalvas[id].elemento.style.boxShadow = "0px 0px 4px rgb(255, 255, 255)";
             corEscolhidaPrincipal = arrayCoresSalvas[id].cor;
             drawingTools.toolProperties.color = corEscolhidaPrincipal;
-            corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
-            txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+            corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.r + ", " + corEscolhidaPrincipal.g + ", " + corEscolhidaPrincipal.b + ")";
+            txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.r + ", " + corEscolhidaPrincipal.g + ", " + corEscolhidaPrincipal.g + ")";
             for (let i = 0; i < arrayCoresSalvas.length; i++) {
                 if (i != id) {
                     arrayCoresSalvas[i].selecionado = false;
@@ -56,13 +56,13 @@ function janelaSeletorDeCor() {
         bttRemoverCorSalva.style.display = "block";
         for (let i = 0; i < arrayCoresSalvas.length; i++) {
             const cor = arrayCoresSalvas[i].cor;
-            if (cor.R === corParaSalvar.R && cor.G === corParaSalvar.G && cor.B === corParaSalvar.B) {
+            if (cor.r === corParaSalvar.r && cor.g === corParaSalvar.g && cor.b === corParaSalvar.b) {
                 corJaSalva = true;
                 alert("Essa cor já está salva!");
             }
         }
         if (corJaSalva === false) {
-            const cor = "background-color: rgb(" + corParaSalvar.R + ", " + corParaSalvar.G + ", " + corParaSalvar.B + ");";
+            const cor = "background-color: rgb(" + corParaSalvar.r + ", " + corParaSalvar.g + ", " + corParaSalvar.b + ");";
             const id = "cor" + (arrayCoresSalvas.length);
             const corSalva = document.createElement("div");
             corSalva.setAttribute("id", id);
@@ -71,7 +71,7 @@ function janelaSeletorDeCor() {
             const infoCorSalva = {
                 id: arrayCoresSalvas.length,
                 elemento: corSalva,
-                cor: { R: corParaSalvar.R, G: corParaSalvar.G, B: corParaSalvar.B },
+                cor: { r: corParaSalvar.r, g: corParaSalvar.r, b: corParaSalvar.b },
                 selecionado: false
             }
             arrayCoresSalvas.push(infoCorSalva);
@@ -130,15 +130,15 @@ function janelaSeletorDeCor() {
         cursorBarra.style.left = x + "px";
         let H = ((x * 360) / barraeEspectroCor.offsetWidth), cor;
         if (H === 360) { H = 0; }
-        hsvBarra = { H: H, S: 100, V: 100 };
+        hsvBarra = { h: H, s: 100, v: 100 };
         cor = hsvToRgb(H, 100, 100);
-        cursorBarra.style.backgroundColor = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
+        cursorBarra.style.backgroundColor = "rgb(" + cor.r + ", " + cor.g + ", " + cor.b + ")";
         preencheGradiente(cor);
     }
 
     function preencheGradiente(cor) {
         ctxGradiente.clearRect(0, 0, widthGradiente, heightGradiente);
-        ctxGradiente.fillStyle = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
+        ctxGradiente.fillStyle = "rgb(" + cor.r + ", " + cor.g + ", " + cor.b + ")";
         ctxGradiente.fillRect(0, 0, widthGradiente, heightGradiente);
 
         const gradienteBranco = ctxBarra.createLinearGradient(0, 0, widthGradiente, 0);
@@ -167,12 +167,12 @@ function janelaSeletorDeCor() {
         let V = 100 - ((cursorGradiente.offsetTop + 10) * 100) / gradienteCor.offsetHeight;
         if (S == 0) { S = 0.02; }
         if (V == 0) { V = 0.02; }
-        const cor = hsvToRgb(hsvBarra.H, S, V);
-        const stringCorRGB = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
+        const cor = hsvToRgb(hsvBarra.h, S, V);
+        const stringCorRGB = "rgb(" + cor.r + ", " + cor.g + ", " + cor.b + ")";
         cursorGradiente.style.backgroundColor = stringCorRGB;
         corSelecionada.style.backgroundColor = stringCorRGB;
         codHEX.value = rgbTohex(cor);
-        codRGB.value = cor.R + ", " + cor.G + ", " + cor.B;
+        codRGB.value = cor.r + ", " + cor.g + ", " + cor.b;
         corEscolhida = cor;
     }
 
@@ -182,7 +182,7 @@ function janelaSeletorDeCor() {
         for (let i = 0; i < codCorAchar.length; i++) { codCorAchar[i] = parseInt(codCorAchar[i]); }
         if (codCorAchar.length === 3) {
             if (codCorAchar[0] <= 255 && codCorAchar[1] <= 255 && codCorAchar[2] <= 255) {
-                corParaAchar = { R: codCorAchar[0], G: codCorAchar[1], B: codCorAchar[2] }
+                corParaAchar = { r: codCorAchar[0], g: codCorAchar[1], b: codCorAchar[2] }
                 this.procurarCor(corParaAchar);
             }
         }
@@ -194,7 +194,7 @@ function janelaSeletorDeCor() {
         let codCorAchar = hexToRgb(codCorHEX);
         if (codCorAchar != null) {
             if (codCorAchar[0] <= 255 && codCorAchar[1] <= 255 && codCorAchar[2] <= 255) {
-                corParaAchar = { R: codCorAchar[0], G: codCorAchar[1], B: codCorAchar[2] };
+                corParaAchar = { r: codCorAchar[0], g: codCorAchar[1], b: codCorAchar[2] };
                 this.procurarCor(corParaAchar);
             }
         }
@@ -210,13 +210,13 @@ function janelaSeletorDeCor() {
         if (corPrincipalOuSecundaria === 1) {
             corEscolhidaPrincipal = corEscolhida;
             drawingTools.toolProperties.color = corEscolhidaPrincipal
-            corPrincipal.style.backgroundColor = "rgb(" + corEscolhida.R + ", " + corEscolhida.G + ", " + corEscolhida.B + ")";
+            corPrincipal.style.backgroundColor = "rgb(" + corEscolhida.r + ", " + corEscolhida.g + ", " + corEscolhida.b + ")";
         }
         else if (corPrincipalOuSecundaria === 2) {
             corEscolhidaSecudaria = corEscolhida;
-            corSecundaria.style.backgroundColor = "rgb(" + corEscolhida.R + ", " + corEscolhida.G + ", " + corEscolhida.B + ")";
+            corSecundaria.style.backgroundColor = "rgb(" + corEscolhida.r + ", " + corEscolhida.g + ", " + corEscolhida.b + ")";
         }
-        txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+        txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.r + ", " + corEscolhidaPrincipal.g + ", " + corEscolhidaPrincipal.b + ")";
         this.fechar();
         for (let i = 0; i < arrayCoresSalvas.length; i++) {
             arrayCoresSalvas[i].selecionado = false;
@@ -312,13 +312,13 @@ function janelaSeletorDeCor() {
     function encontrarCorDoCodigoNoGradiente(s, v) {
         const posx = (gradienteCor.offsetWidth / 100) * s, posy = gradienteCor.offsetHeight - ((gradienteCor.offsetHeight / 100) * v);
         moverCursorGradiente(posx - 10, posy - 10);
-        calcularPosiDaCorCursorBarra(hsvBarra.H);
+        calcularPosiDaCorCursorBarra(hsvBarra.h);
     }
 
     function calcularPosiDaCorCursorBarra(h) {
         const posx = (barraeEspectroCor.offsetWidth / 360) * h;
         const cor = hsvToRgb(h, 100, 100);
-        cursorBarra.style.backgroundColor = "rgb(" + cor.R + ", " + cor.G + ", " + cor.B + ")";
+        cursorBarra.style.backgroundColor = "rgb(" + cor.r + ", " + cor.g + ", " + cor.b + ")";
         moverCursorBarra(posx);
     }
 
@@ -345,15 +345,15 @@ function hexToRgb(hex) {
 }
 
 function rgbTohex(cor) {
-    const rgb = cor.B | (cor.G << 8) | (cor.R << 16);
+    const rgb = cor.b | (cor.g << 8) | (cor.r << 16);
     return '#' + (0x1000000 + rgb).toString(16).slice(1)
 }
 
 function rgbToHsv(cor) {
     let rabs, gabs, babs, rr, gg, bb, h, v, diff, diffc, percentRoundFn;
-    rabs = cor.R / 255;
-    gabs = cor.G / 255;
-    babs = cor.B / 255;
+    rabs = cor.r / 255;
+    gabs = cor.g / 255;
+    babs = cor.b / 255;
     v = Math.max(rabs, gabs, babs),
         diff = v - Math.min(rabs, gabs, babs);
     diffc = c => (v - c) / 6 / diff + 1 / 2;
@@ -379,9 +379,9 @@ function rgbToHsv(cor) {
         }
     }
     return {
-        H: (h * 360),
-        S: percentRoundFn(s * 100),
-        V: percentRoundFn(v * 100)
+        h: (h * 360),
+        s: percentRoundFn(s * 100),
+        v: percentRoundFn(v * 100)
     };
 }
 
@@ -440,14 +440,14 @@ function hsvToRgb(h, s, v) {
             b = q;
     }
     return {
-        R: Math.round(r * 255),
-        G: Math.round(g * 255),
-        B: Math.round(b * 255)
+        r: Math.round(r * 255),
+        g: Math.round(g * 255),
+        b: Math.round(b * 255)
     };
 }
 
 document.addEventListener("keydown", function (e) {
-    if (e.code === "F5" && projetoCriado === true) {
+    if (e.code === "F5" && project.created) {
         e.preventDefault();
         return false;
     }

@@ -54,7 +54,7 @@ function drawingToolsObject() {
             elements: [{ property: document.getElementById("propriedadeTamanho"), contentBar: document.getElementById("contentBarraTamanho") },
             { property: document.getElementById("propriedadeOpacidade"), contentBar: document.getElementById("contentBarraOpacidade") },
             { property: document.getElementById("propriedadeDureza"), contentBar: document.getElementById("contentBarraDureza") }],
-            size: 5, opacity: 1, hardness: 1, color: { R: 0, G: 0, B: 0 }
+            size: 5, opacity: 1, hardness: 1, color: { r: 0, g: 0, b: 0 }
         },
         toolSizeBar: {
             bar: document.getElementById("barraTamanho"),
@@ -120,16 +120,15 @@ function drawingToolsObject() {
                     if (janelaSelecionarCorVisivel === false) { this.selectDrawingTool(i); }
                 });
             }
-            this.arrayTools[6].tool.addEventListener("click", () => desenhoCompleto());
         },
         mouseDownEventDrawing(e) {
-            if (!projetoCriado|| hotKeys.spacePressed) { return; }
-            if (project.arrayLayers[camadaSelecionada].visible) {
+            if (!project.created || hotKeys.spacePressed) { return; }
+            if (project.arrayLayers[project.selectedLayer].visible) {
                 this.painting = true;
                 this.applyToolChanges();
                 project.eventLayer.beginPath();
                 project.eventLayer.lineJoin = project.eventLayer.lineCap = "round";
-                project.arrayLayers[camadaSelecionada].ctx.globalCompositeOperation = "source-over";
+                project.arrayLayers[project.selectedLayer].ctx.globalCompositeOperation = "source-over";
                 if (this.selectedTool < 4) {
                     this.strokeCoordinates.x[0] = this.mousePosition.x;
                     this.strokeCoordinates.y[0] = this.mousePosition.y;
@@ -138,7 +137,7 @@ function drawingToolsObject() {
                 else if (this.selectedTool === 4) {//Borracha. 
                     this.strokeCoordinates.x[0] = this.mousePosition.x;
                     this.strokeCoordinates.y[0] = this.mousePosition.y;
-                    project.arrayLayers[camadaSelecionada].ctx.globalCompositeOperation = "destination-out";
+                    project.arrayLayers[project.selectedLayer].ctx.globalCompositeOperation = "destination-out";
                     project.eventLayer.strokeStyle = "rgba(255, 0, 0, " + this.toolProperties.opacity + ")";
                     this.brush(this.mousePosition.x, this.mousePosition.y);
                 }
@@ -160,7 +159,7 @@ function drawingToolsObject() {
                 else if (this.selectedTool === 7) {//Balde de tinta.
                     if (this.mousePosition.x >= 0 && this.mousePosition.x <= project.properties.resolution.width && this.mousePosition.y >= 0 && this.mousePosition.y <= project.properties.resolution.height) {
                         const cor = { R: corEscolhidaPrincipal.R, G: corEscolhidaPrincipal.G, B: corEscolhidaPrincipal.B, A: Math.round(this.toolProperties.opacity * 255) };
-                        this.paintBucket(this.mousePosition.x, this.mousePosition.y, project.arrayLayers[camadaSelecionada].ctx, cor);
+                        this.paintBucket(this.mousePosition.x, this.mousePosition.y, project.arrayLayers[project.selectedLayer].ctx, cor);
                     }
                 }
                 if (this.cursorTool.show) { janelaPrincipal.style.cursor = "none"; }
@@ -181,8 +180,8 @@ function drawingToolsObject() {
                 }
                 this.strokeCoordinates.x = [];
                 this.strokeCoordinates.y = [];
-                desenharNaCamada(project.arrayLayers[camadaSelecionada]);
-                desenhoNoPreviewEIcone(project.arrayLayers[camadaSelecionada]);
+                desenharNaCamada(project.arrayLayers[project.selectedLayer]);
+                desenhoNoPreviewEIcone(project.arrayLayers[project.selectedLayer]);
                 janelaPrincipal.style.cursor = "";
             }
             this.toolOpacityBar.clicked = false;
@@ -231,6 +230,7 @@ function drawingToolsObject() {
             this.changeToolHardness(e);
         },
         selectDrawingTool(index) {
+            project.createDrawComplete();
             this.selectedTool = this.arrayTools[index].id;
             this.arrayTools[index].tool.classList.remove("bttFerramentas");
             this.arrayTools[index].tool.classList.add("bttFerramentasEscolhida");
@@ -316,7 +316,7 @@ function drawingToolsObject() {
             }
             project.eventLayer.filter = "blur(" + dureza + "px)";
             project.eventLayer.lineWidth = (this.toolProperties.size - dureza);
-            project.eventLayer.strokeStyle = "rgba(" + color.R + ", " + color.G + ", " + color.B + ", " + this.toolProperties.opacity + ")";
+            project.eventLayer.strokeStyle = "rgba(" + color.r + ", " + color.g + ", " + color.b + ", " + this.toolProperties.opacity + ")";
         },
         changeCursorTool() {
             if (this.selectedTool === 6) {

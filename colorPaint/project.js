@@ -6,16 +6,18 @@ function projectObject() {
             background: null,
             numberLayers: 0
         },
+        created: false,//Saber se um projeto foi criado.
+        drawComplete: document.getElementById("desenho").getContext("2d"),
+        eventLayer: document.getElementById("pintar").getContext("2d"),
+        selectedLayer: 0,
+        arrayLayers: [],
+        cursorInBttLook: false,
         layerOpacityBar: {
             content: document.getElementById("contentBarraOpacidadeCamada"),
             bar: document.getElementById("barraOpacidadeCamada"),
             cursor: document.getElementById("cursorOpacidadeCamada"),
             mousedown: false,
         },
-        drawComplete: document.getElementById("desenho").getContext("2d"),
-        eventLayer: document.getElementById("pintar").getContext("2d"),
-        arrayLayers: [],
-        cursorInBttLook: false,
         addEventsToElements() {
             this.layerOpacityBar.content.addEventListener("mousemove", (e) => this.changeOpacityLayer(e));
             this.layerOpacityBar.bar.addEventListener("mousedown", (e) => {
@@ -26,15 +28,15 @@ function projectObject() {
             this.layerOpacityBar.content.addEventListener("mouseleave", () => this.applyOpacityLayer());
 
             document.getElementById("bttSalvarDesenho").addEventListener("mousedown", () => {
-                if (projetoCriado) { this.saveImage(); }
+                if (this.created) { this.saveDraw(); }
                 else { alert("Nenhum projeto criado!"); }
             });
             document.getElementById("bttSalvarProjeto").addEventListener("mousedown", () => {
-                if (projetoCriado) { this.saveProject(); }
+                if (this.created) { this.saveProject(); }
                 else { alert("Nenhum projeto criado!"); }
             });
             document.getElementById("bttAbrirProjeto").addEventListener("mousedown", () => {
-                if (projetoCriado) {
+                if (this.created) {
                     if (confirm("Todo o progresso não salvo será perdido, deseja continuar?")) {
                         sessionStorage.setItem("abrirProjetoSalvo", "true");
                         window.location.reload();
@@ -45,7 +47,7 @@ function projectObject() {
         applyOpacityLayer() {
             if (!this.layerOpacityBar.mousedown) { return; }
             this.layerOpacityBar.mousedown = false;
-            desenhoNoPreviewEIcone(this.arrayLayers[camadaSelecionada]);
+            desenhoNoPreviewEIcone(this.arrayLayers[this.selectedLayer]);
         },
         changeOpacityLayer(e) {
             if (!this.layerOpacityBar.mousedown) { return; }
@@ -54,18 +56,18 @@ function projectObject() {
             if (mouse.x <= 1) {
                 porcentagem = 1;
                 cursorOpacidadeCamada.style.left = "-7px";
-                this.arrayLayers[camadaSelecionada].txtOpacity.value = "1%";
+                this.arrayLayers[this.selectedLayer].txtOpacity.value = "1%";
             } else if (mouse.x >= 200) {
                 porcentagem = 100;
                 cursorOpacidadeCamada.style.left = "193px";
-                this.arrayLayers[camadaSelecionada].txtOpacity.value = "100%";
+                this.arrayLayers[this.selectedLayer].txtOpacity.value = "100%";
             } else {
                 cursorOpacidadeCamada.style.left = mouse.x - 7 + "px";
-                this.arrayLayers[camadaSelecionada].txtOpacity.value = porcentagem + "%";
+                this.arrayLayers[this.selectedLayer].txtOpacity.value = porcentagem + "%";
             }
             let opacidade = porcentagem / 100;
-            this.arrayLayers[camadaSelecionada].opacity = opacidade;
-            this.arrayLayers[camadaSelecionada].ctx.canvas.style.opacity = opacidade;
+            this.arrayLayers[this.selectedLayer].opacity = opacidade;
+            this.arrayLayers[this.selectedLayer].ctx.canvas.style.opacity = opacidade;
         },
         validateProperties() {
             const arrayProperties = [document.getElementById("txtNomeProjeto"),
@@ -137,7 +139,7 @@ function projectObject() {
             while (this.properties.numberLayers > this.arrayLayers.length) { this.createElements(color); }
             document.getElementById("nomeDoProjeto").innerText = this.properties.name;
             this.layerOpacityBar.content.style.display = "flex";
-            projetoCriado = true;
+            this.created = true;
             setTimeout(() => this.clickIconLayer(0), 5);
         },
         createElements(color) {
@@ -274,18 +276,35 @@ function projectObject() {
             if (!this.cursorInBttLook) {
                 for (let i = 0; i < this.properties.numberLayers; i++) {
                     if (i === num) {
-                        camadaSelecionada = num;
+                        this.selectedLayer = num;
                         this.eventLayer.canvas.style.zIndex = ((num + 1) * 2) + 1;
                         this.arrayLayers[i].icon.classList.replace("camadas", "camadaSelecionada");
                     }
                     else { this.arrayLayers[i].icon.classList.replace("camadaSelecionada", "camadas"); }
                 }
-                const opacidade = this.arrayLayers[camadaSelecionada].opacity;
-                cursorOpacidadeCamada.style.left = (200 * opacidade) - 7 + "px";
+                const opacidade = this.arrayLayers[this.selectedLayer].opacity;
+                this.layerOpacityBar.cursor.style.left = (200 * opacidade) - 7 + "px";
             }
         },
-        saveImage() {
-            desenhoCompleto();
+        createDrawComplete() {
+            if (!this.created) { return; }
+            this.drawComplete.clearRect(0, 0, this.properties.resolution.width, this.properties.resolution.height);
+            if (this.properties.background != false) {
+                this.drawComplete.globalAlpha = 1;
+                this.drawComplete.fillStyle = "rgb(" + this.properties.background.r + ", " + this.properties.background.g + ", " + this.properties.background.b + ")";
+                this.drawComplete.fillRect(0, 0, this.properties.resolution.width, this.properties.resolution.height);
+            }
+            for (let i = 0; i < this.properties.numberLayers; i++) {
+                if (this.arrayLayers[i].visible) {
+                    this.drawComplete.beginPath();
+                    this.drawComplete.globalAlpha = this.arrayLayers[i].opacity;
+                    this.drawComplete.drawImage(this.arrayLayers[i].ctx.canvas, 0, 0, this.properties.resolution.width, this.properties.resolution.height);
+                    this.drawComplete.closePath();
+                };
+            }
+        },
+        saveDraw() {
+            this.createDrawComplete();
             const blob = dataURLtoBlob(this.drawComplete.canvas.toDataURL("image/png"));
             const url = URL.createObjectURL(blob);
             const salvarImagem = document.createElement("a");
@@ -374,7 +393,7 @@ function projectObject() {
             for (let i = 0; i < objProjeto.coresSalvas.length; i++) { janelaSeleciona.salvarCor(objProjeto.coresSalvas[i]); }
             grid.tamanho = objProjeto.grid.tamanho;
             grid.posicao = objProjeto.grid.posicao;
-            if (objProjeto.grid.visivel === true) { criarGrid(grid.tela, grid.tamanho, grid.posicao, true); }
+            if (objProjeto.grid.visivel) { criarGrid(grid.tela, grid.tamanho, grid.posicao, true); }
         }
     }
 }

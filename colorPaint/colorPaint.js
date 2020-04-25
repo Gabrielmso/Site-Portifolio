@@ -3,15 +3,13 @@ const grid = {//Propriedades do grid e da visualização do projeto antes de cri
     tela: null, tamanho: 80, posicao: { x: 0, y: 0 }, visivel: false, visualizacaoAnterior: { scrollX: 0, scrollY: 0, zoom: 0 }
 };
 let corPrincipal, corSecundaria, corPrincipalOuSecundaria;
-let corEscolhidaPrincipal = { R: 0, G: 0, B: 0 };//Armazena a cor escolhida do primeiro plano.
-let corEscolhidaSecudaria = { R: 255, G: 255, B: 255 };//Armazena a cor escolhida no segundo plano.
+let corEscolhidaPrincipal = { r: 0, g: 0, b: 0 };//Armazena a cor escolhida do primeiro plano.
+let corEscolhidaSecudaria = { r: 255, g: 255, b: 255 };//Armazena a cor escolhida no segundo plano.
 let project, drawingTools, undoRedoChange, hotKeys, previewFunctions;
 let arrayCoresSalvas = [];//Armazena objetos cuja as propriedades possuem as informações sobre as cores salvas.
 let janelaPrincipal;
 let contentTelas;//Elemento onde ficará a "tela" para desenhar.
 let telasCanvas;//Elemento onde ficarão os canvas "camadas".
-let camadaSelecionada = 0;//Armazena a posição do arrayTelasCamadas com a camada selecionada.
-let projetoCriado = false;//Saber se um projeto foi criado.
 let txtCorEscolhida;//Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
 let txtPorcentagemZoom;//Recebe a string com a porcentagem de zoom no "telasCanvas".
 let janelaSeleciona;//Recebe toda a função "janelaSeletorDeCor".
@@ -42,7 +40,7 @@ function colorPaint() {
     menuPadrao();
     ajustarContents();
     criarOuAbrirProjeto();
-    txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+    txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.r + ", " + corEscolhidaPrincipal.g + ", " + corEscolhidaPrincipal.b + ")";
 
     project.addEventsToElements();
     drawingTools.addEventsToElements();
@@ -51,7 +49,7 @@ function colorPaint() {
     hotKeys.addEventsToElements();
 
     document.getElementById("bttCriarNovoProjeto").addEventListener("click", function () {
-        if (projetoCriado === false) {
+        if (!project.created) {
             if (janelaSelecionarCorVisivel === false) { contentJanelaCriarProjeto.style.display = "flex"; }
         }
         else {
@@ -64,7 +62,7 @@ function colorPaint() {
 
     document.getElementById("bttCriarprojeto").addEventListener("click", function () {
         project.validateProperties();
-        if (projetoCriado === true) { contentJanelaCriarProjeto.style.display = "none"; }
+        if (project.created) { contentJanelaCriarProjeto.style.display = "none"; }
     });
 
     document.getElementById("bttCancelaCriarprojetor").addEventListener("click", function () {
@@ -72,7 +70,7 @@ function colorPaint() {
     });
 
     document.getElementById("bttCriarGrade").addEventListener("click", function () {
-        if (projetoCriado === true) {
+        if (project.created) {
             grid.visualizacaoAnterior.scrollX = contentTelas.scrollLeft;
             grid.visualizacaoAnterior.scrollY = contentTelas.scrollTop;
             grid.visualizacaoAnterior.zoom = parseFloat(((txtPorcentagemZoom.value).replace("%", "")).replace(",", "."));
@@ -81,7 +79,7 @@ function colorPaint() {
             document.getElementById("txtPosicaoVerticalGrid").value = grid.posicao.y;
             document.getElementById("txtPosicaoHorizontalGrid").value = grid.posicao.x;
             ajustarNaVisualizacaoTelasCanvas();
-            if (grid.visivel === false) {
+            if (!grid.visivel) {
                 criarGrid(grid.tela, grid.tamanho, grid.posicao, true);
             }
         }
@@ -118,7 +116,7 @@ function colorPaint() {
     });
 
     document.getElementById("bttcancelarGrid").addEventListener("click", function () {
-        if (projetoCriado === true) {
+        if (project.created) {
             criarGrid(grid.tela, grid.tamanho, grid.posicao, false);
             contentJanelaMenuGrid.style.display = "none";
             ajustarVisualizacaoAntesGrid();
@@ -126,23 +124,23 @@ function colorPaint() {
     });
 
     corPrincipal.addEventListener("click", function () {
-        if (janelaSelecionarCorVisivel === true) {
+        if (janelaSelecionarCorVisivel) {
             janelaSeleciona.procurarCor(corEscolhidaPrincipal);
         }
         else {
             corPrincipalOuSecundaria = 1;
-            corAtual.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+            corAtual.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.r + ", " + corEscolhidaPrincipal.g + ", " + corEscolhidaPrincipal.b + ")";
             janelaSeleciona.abrir(corEscolhidaPrincipal);
         }
     });
 
     corSecundaria.addEventListener("click", function () {
-        if (janelaSelecionarCorVisivel === true) {
+        if (janelaSelecionarCorVisivel) {
             janelaSeleciona.procurarCor(corEscolhidaSecudaria);
         }
         else {
             corPrincipalOuSecundaria = 2;
-            corAtual.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.R + ", " + corEscolhidaSecudaria.G + ", " + corEscolhidaSecudaria.B + ")";
+            corAtual.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.r + ", " + corEscolhidaSecudaria.g + ", " + corEscolhidaSecudaria.b + ")";
             janelaSeleciona.abrir(corEscolhidaSecudaria);
         }
     });
@@ -152,31 +150,31 @@ function colorPaint() {
             corEscolhidaPrincipal = { R: 0, G: 0, B: 0 };
             drawingTools.toolProperties.color = corEscolhidaPrincipal;
             corEscolhidaSecudaria = { R: 255, G: 255, B: 255 };
-            corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
-            corSecundaria.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.R + ", " + corEscolhidaSecudaria.G + ", " + corEscolhidaSecudaria.B + ")";
-            txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+            corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.r + ", " + corEscolhidaPrincipal.g + ", " + corEscolhidaPrincipal.b + ")";
+            corSecundaria.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.r + ", " + corEscolhidaSecudaria.g + ", " + corEscolhidaSecudaria.b + ")";
+            txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.r + ", " + corEscolhidaPrincipal.g + ", " + corEscolhidaPrincipal.b + ")";
         }
     });
 
     document.getElementById("bttAlternaCor").addEventListener("mousedown", function () {//Alterna entre a corPrincipalEcolhida e a corSecundariaEscolhida.
         if (janelaSelecionarCorVisivel === false) {
-            corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.R + ", " + corEscolhidaSecudaria.G + ", " + corEscolhidaSecudaria.B + ")";
-            corSecundaria.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+            corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.r + ", " + corEscolhidaSecudaria.g + ", " + corEscolhidaSecudaria.b + ")";
+            corSecundaria.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.r + ", " + corEscolhidaPrincipal.g + ", " + corEscolhidaPrincipal.b + ")";
             const cor = corEscolhidaPrincipal;
             corEscolhidaPrincipal = corEscolhidaSecudaria;
             drawingTools.toolProperties.color = corEscolhidaPrincipal
             corEscolhidaSecudaria = cor;
-            txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+            txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.r + ", " + corEscolhidaPrincipal.g + ", " + corEscolhidaPrincipal.b + ")";
         }
     });
 
     document.getElementById("bttZoomMais").addEventListener("click", function () {//Aumentar o zoom no projeto.
-        if (projetoCriado === false) { return; };
+        if (!project.created) { return; };
         zoomNoProjeto(true, true, 1.25);
     });
 
     document.getElementById("bttZoomMenos").addEventListener("click", function () {//Diminuir o zoom no projeto.
-        if (projetoCriado === false) { return; };
+        if (!project.created) { return; };
         if (telasCanvas.offsetWidth >= 25) { zoomNoProjeto(false, true, 1.25); }
     });
 
@@ -191,7 +189,7 @@ function colorPaint() {
     document.getElementById("bttOkAtalhos").addEventListener("click", () => contentJanelaAtalhos.style.display = "none");
 
     document.getElementById("colorPaintContent").addEventListener("wheel", function (e) {//Zoom com o scroll do mouse.
-        if (hotKeys.ctrlPressed === true && projetoCriado === true) {
+        if (project.created && hotKeys.ctrlPressed) {
             e.preventDefault();
             if (e.deltaY < 0) { zoomNoProjeto(true, false, 1.11, e); }
             else { zoomNoProjeto(false, false, 1.11, e); }
@@ -205,7 +203,7 @@ function colorPaint() {
 
     window.addEventListener("resize", function () {
         ajustarContents();
-        if (projetoCriado === true) {
+        if (project.created) {
             ajustarNaVisualizacaoTelasCanvas();
             setTimeout(function () {
                 ajustarContents();

@@ -11,7 +11,7 @@ function previewFunctionsObject() {
             document.getElementById("janelaPreview").addEventListener("mousemove", (e) => this.mouseMovePreview(e));
         },
         mouseDownPreview(e) {
-            if (!projetoCriado) { return };
+            if (!project.created) { return };
             this.moverScrollPreview = true;
             this.moverScroll.style.cursor = "grabbing";
             const mousePos = pegarPosicaoMouse(this.contentTelaPreview, e);

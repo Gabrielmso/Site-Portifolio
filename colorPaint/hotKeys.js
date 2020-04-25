@@ -12,7 +12,7 @@ function hotKeysObject() {
             document.addEventListener("mousemove", (e) => this.mouseMoveMoveDraw(e));
         },
         keyDownEvent(e) {
-            if (projetoCriado === false) { return; }
+            if (!project.created) { return; }
             if (drawingTools.painting) { e.preventDefault(); return; }
             if (this.ctrlPressed) {//Teclas de atalho com o ctrl.
                 const keyFunction = this.keyDown[e.code];
