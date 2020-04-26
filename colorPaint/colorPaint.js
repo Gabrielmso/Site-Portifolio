@@ -36,7 +36,7 @@ function colorPaint() {
     txtCorEscolhida = document.getElementById("txtCorEscolhida");
     txtPorcentagemZoom = document.getElementById("txtPorcentagemZoom");
     grid.tela = document.getElementById("grid");
-    
+
 
     menuPadrao();
     ajustarContents();
@@ -236,15 +236,12 @@ function colorPaint() {
 }
 // ==========================================================================================================================================================================================================================================
 
-function criarGrid(tela, tamanho, posicao, criar) {
-    const numDeQuadrados = (Math.trunc((project.properties.resolution.width / tamanho) + 2.099)) * (Math.trunc((project.properties.resolution.height / tamanho) + 2.099));
+function criarGrid(tela, size, posicao, criar) {
+    const numDeQuadrados = (Math.trunc((project.properties.resolution.width / size) + 2.099)) * (Math.trunc((project.properties.resolution.height / size) + 2.099));
     if (numDeQuadrados > 5700) {
         alert("Aumente o tamanho da grade!");
         return;
-    }
-    else if (numDeQuadrados > 1100) {
-        alert("O tamanho da grade está muito baixo, isso pode acarretar problemas de performance!");
-    }
+    } else if (numDeQuadrados > 1100) { alert("O tamanho da grade está muito baixo, isso pode acarretar problemas de performance!"); }
     let el = tela.firstElementChild;
     while (el != null) {
         el.remove();
@@ -252,17 +249,17 @@ function criarGrid(tela, tamanho, posicao, criar) {
     }
     if (criar === true) {
         const pos = {
-            x: (((posicao.x / tamanho) - (Math.trunc(posicao.x / tamanho))) * tamanho),
-            y: (((posicao.y / tamanho) - (Math.trunc(posicao.y / tamanho))) * tamanho)
+            x: (((posicao.x / size) - (Math.trunc(posicao.x / size))) * size),
+            y: (((posicao.y / size) - (Math.trunc(posicao.y / size))) * size)
         }
-        if (pos.x < 0) { pos.x = tamanho + pos.x };
-        if (pos.y < 0) { pos.y = tamanho + pos.y };
-        const larguraTela = (project.properties.resolution.width + (tamanho * 2.1)),
-            alturaTela = (project.properties.resolution.height + (tamanho * 2.1));
-        const larguraQuadrado = ((tamanho / larguraTela) * 100), alturaQuadrado = ((tamanho / alturaTela) * 100);
+        if (pos.x < 0) { pos.x = size + pos.x };
+        if (pos.y < 0) { pos.y = size + pos.y };
+        const larguraTela = (project.properties.resolution.width + (size * 2.1)),
+            alturaTela = (project.properties.resolution.height + (size * 2.1));
+        const larguraQuadrado = ((size / larguraTela) * 100), alturaQuadrado = ((size / alturaTela) * 100);
         const styleQuadrado = "width: " + larguraQuadrado + "%; height: " + alturaQuadrado + "%;";
-        tela.style.top = (-100 * ((tamanho - pos.y) / project.properties.resolution.height)) + "%";
-        tela.style.left = (-100 * ((tamanho - pos.x) / project.properties.resolution.width)) + "%";
+        tela.style.top = (-100 * ((size - pos.y) / project.properties.resolution.height)) + "%";
+        tela.style.left = (-100 * ((size - pos.x) / project.properties.resolution.width)) + "%";
         tela.style.width = ((larguraTela / project.properties.resolution.width) * 100) + "%";
         tela.style.height = ((alturaTela / project.properties.resolution.height) * 100) + "%";
         for (let i = 0; i < numDeQuadrados; i++) {

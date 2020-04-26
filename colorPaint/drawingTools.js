@@ -32,14 +32,14 @@ function drawingToolsObject() {
                 this.cursor.style.display = "none";
             },
             wheel(e) {
-                const velocid = 7;
+                const velocity = 7;
                 if (!hotKeys.shiftPressed) {
-                    if (e.deltaY < 0) { contentTelas.scrollTop -= contentTelas.offsetHeight / velocid; }
-                    else { contentTelas.scrollTop += contentTelas.offsetHeight / velocid; }
+                    if (e.deltaY < 0) { contentTelas.scrollTop -= contentTelas.offsetHeight / velocity; }
+                    else { contentTelas.scrollTop += contentTelas.offsetHeight / velocity; }
                 }
                 else {
-                    if (e.deltaY < 0) { contentTelas.scrollLeft -= contentTelas.offsetWidth / velocid; }
-                    else { contentTelas.scrollLeft += contentTelas.offsetWidth / velocid; }
+                    if (e.deltaY < 0) { contentTelas.scrollLeft -= contentTelas.offsetWidth / velocity; }
+                    else { contentTelas.scrollLeft += contentTelas.offsetWidth / velocity; }
                 }
             }
         },
@@ -75,31 +75,28 @@ function drawingToolsObject() {
             clicked: false
         },
         getCursorPosition(e) {
+            const mouse = pegarPosicaoMouse(telasCanvas, e);
+            this.mousePosition.x = parseFloat(((project.properties.resolution.width / telasCanvas.offsetWidth) * mouse.x).toFixed(1));
+            this.mousePosition.y = parseFloat(((project.properties.resolution.height / telasCanvas.offsetHeight) * mouse.y).toFixed(1));
             if (this.cursorTool.show) {
-                const telaPosition = telasCanvas.getBoundingClientRect(), mouse = pegarPosicaoMouse(janelaPrincipal, e),
-                    posX = mouse.x - this.cursorTool.halfSize, posY = mouse.y - this.cursorTool.halfSize;
+                const posX = e.pageX - this.cursorTool.halfSize + document.body.scrollLeft,
+                    posY = e.pageY - this.cursorTool.halfSize + document.body.scrollTop;
                 this.cursorTool.changeCursorPosition(posX, posY);
-                this.mousePosition.x = parseFloat(((project.properties.resolution.width / telasCanvas.offsetWidth) * (mouse.x - telaPosition.left - document.body.scrollLeft)).toFixed(1));
-                this.mousePosition.y = parseFloat(((project.properties.resolution.height / telasCanvas.offsetHeight) * (mouse.y - telaPosition.top - document.body.scrollTop)).toFixed(1));
-                this.txtPositionCursor.value = Math.floor(this.mousePosition.x + 1) + ", " + Math.floor(this.mousePosition.y + 1);
+                this.txtPositionCursor.value = Math.ceil(this.mousePosition.x) + ", " + Math.ceil(this.mousePosition.y);
                 if (!this.painting) {
                     const contentPosition = contentTelas.getBoundingClientRect();
-                    if (mouse.x < contentPosition.left || mouse.x > contentPosition.left + contentPosition.width ||
-                        mouse.y < contentPosition.top || mouse.y > contentPosition.top + contentPosition.height) {
+                    if (e.pageX < contentPosition.left || e.pageX > contentPosition.left + contentPosition.width ||
+                        e.pageY < contentPosition.top || e.pageY > contentPosition.top + contentPosition.height) {
                         this.cursorTool.cursor.style.display = "none";
                         this.txtPositionCursor.value = "";
                     }
                     else if (!hotKeys.spacePressed) { this.cursorTool.cursor.style.display = "block"; }
                 }
-            } else {
-                const mouse = pegarPosicaoMouse(telasCanvas, e)
-                this.mousePosition.x = parseFloat(((project.properties.resolution.width / telasCanvas.offsetWidth) * mouse.x).toFixed(1));
-                this.mousePosition.y = parseFloat(((project.properties.resolution.height / telasCanvas.offsetHeight) * mouse.y).toFixed(1));
             }
         },
         addEventsToElements() {
             contentTelas.addEventListener("mousedown", (e) => this.mouseDownEventDrawing(e));
-            contentTelas.addEventListener("mousemove", () => this.txtPositionCursor.value = Math.floor(this.mousePosition.x + 1) + ", " + Math.floor(this.mousePosition.y + 1));
+            contentTelas.addEventListener("mousemove", () => this.txtPositionCursor.value = Math.ceil(this.mousePosition.x) + ", " + Math.ceil(this.mousePosition.y));
             contentTelas.addEventListener("mouseleave", () => { if (!this.cursorTool.show) { this.txtPositionCursor.value = "" } });
             this.cursorTool.cursor.addEventListener("mousedown", (e) => this.mouseDownEventDrawing(e));
             document.addEventListener("mousemove", throttle((e) => this.mouseMoveEventDrawing(e), 8));
@@ -150,7 +147,7 @@ function drawingToolsObject() {
                 }
                 else if (this.selectedTool === 6) {//Conta-gotas.
                     this.arrayTools[this.selectedTool].cursor.eyeDropper.style.display = "block";
-                    const corAtual = "25px solid rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+                    const corAtual = "25px solid rgb(" + corEscolhidaPrincipal.r + ", " + corEscolhidaPrincipal.g + ", " + corEscolhidaPrincipal.b + ")";
                     this.arrayTools[this.selectedTool].cursor.compareColors.style.borderLeft = corAtual;
                     this.arrayTools[this.selectedTool].cursor.compareColors.style.borderBottom = corAtual;
                     const mousePos = pegarPosicaoMouse(janelaPrincipal, e);
@@ -158,7 +155,7 @@ function drawingToolsObject() {
                 }
                 else if (this.selectedTool === 7) {//Balde de tinta.
                     if (this.mousePosition.x >= 0 && this.mousePosition.x <= project.properties.resolution.width && this.mousePosition.y >= 0 && this.mousePosition.y <= project.properties.resolution.height) {
-                        const cor = { R: corEscolhidaPrincipal.R, G: corEscolhidaPrincipal.G, B: corEscolhidaPrincipal.B, A: Math.round(this.toolProperties.opacity * 255) };
+                        const cor = { R: corEscolhidaPrincipal.r, G: corEscolhidaPrincipal.g, B: corEscolhidaPrincipal.b, A: Math.round(this.toolProperties.opacity * 255) };
                         this.paintBucket(this.mousePosition.x, this.mousePosition.y, project.arrayLayers[project.selectedLayer].ctx, cor);
                     }
                 }
@@ -447,13 +444,13 @@ function drawingToolsObject() {
                     alert("Nenhuma cor selecionada");
                     return;
                 }
-                if (janelaSelecionarCorVisivel === true) {
-                    janelaSeleciona.procurarCor({ R: pixel[0], G: pixel[1], B: pixel[2] });
+                if (janelaSelecionarCorVisivel) {
+                    janelaSeleciona.procurarCor({ r: pixel[0], g: pixel[1], b: pixel[2] });
                 }
                 else {
-                    corEscolhidaPrincipal = { R: pixel[0], G: pixel[1], B: pixel[2] };
+                    corEscolhidaPrincipal = { r: pixel[0], g: pixel[1], b: pixel[2] };
                     this.toolProperties.color = corEscolhidaPrincipal;
-                    const novaCor = "rgb(" + corEscolhidaPrincipal.R + ", " + corEscolhidaPrincipal.G + ", " + corEscolhidaPrincipal.B + ")";
+                    const novaCor = "rgb(" + corEscolhidaPrincipal.r + ", " + corEscolhidaPrincipal.g + ", " + corEscolhidaPrincipal.b + ")";
                     corPrincipal.style.backgroundColor = novaCor;
                     txtCorEscolhida.value = novaCor;
                 }
