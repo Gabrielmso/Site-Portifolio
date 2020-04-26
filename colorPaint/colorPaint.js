@@ -19,6 +19,7 @@ function colorPaint() {
     undoRedoChange = undoRedoChangeObject();
     previewFunctions = previewFunctionsObject();
     hotKeys = hotKeysObject();
+    janelaSeleciona = new janelaSeletorDeCor();
     const contentJanelaCriarProjeto = document.getElementById("contentJanelaCriarProjeto");
     const contentJanelaAtalhos = document.getElementById("contentJanelaAtalhos");
     const contentJanelaMenuGrid = document.getElementById("contentJanelaMenuGrid");
@@ -35,7 +36,7 @@ function colorPaint() {
     txtCorEscolhida = document.getElementById("txtCorEscolhida");
     txtPorcentagemZoom = document.getElementById("txtPorcentagemZoom");
     grid.tela = document.getElementById("grid");
-    janelaSeleciona = new janelaSeletorDeCor();
+    
 
     menuPadrao();
     ajustarContents();
@@ -147,9 +148,9 @@ function colorPaint() {
 
     document.getElementById("bttCoresPrincipais").addEventListener("mousedown", function () {//Coloca preto na corPrincipalEcolhida e branco na corSecundariaEscolhida.
         if (janelaSelecionarCorVisivel === false) {
-            corEscolhidaPrincipal = { R: 0, G: 0, B: 0 };
+            corEscolhidaPrincipal = { r: 0, g: 0, b: 0 };
             drawingTools.toolProperties.color = corEscolhidaPrincipal;
-            corEscolhidaSecudaria = { R: 255, G: 255, B: 255 };
+            corEscolhidaSecudaria = { r: 255, g: 255, b: 255 };
             corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.r + ", " + corEscolhidaPrincipal.g + ", " + corEscolhidaPrincipal.b + ")";
             corSecundaria.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.r + ", " + corEscolhidaSecudaria.g + ", " + corEscolhidaSecudaria.b + ")";
             txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.r + ", " + corEscolhidaPrincipal.g + ", " + corEscolhidaPrincipal.b + ")";

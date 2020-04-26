@@ -71,7 +71,7 @@ function janelaSeletorDeCor() {
             const infoCorSalva = {
                 id: arrayCoresSalvas.length,
                 elemento: corSalva,
-                cor: { r: corParaSalvar.r, g: corParaSalvar.r, b: corParaSalvar.b },
+                cor: { r: corParaSalvar.r, g: corParaSalvar.g, b: corParaSalvar.b },
                 selecionado: false
             }
             arrayCoresSalvas.push(infoCorSalva);
