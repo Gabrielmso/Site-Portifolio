@@ -1,11 +1,8 @@
 mudarMenu = false;
-const grid = {//Propriedades do grid e da visualização do projeto antes de criar o grid, e saber se está visível.
-    tela: null, tamanho: 80, posicao: { x: 0, y: 0 }, visivel: false, visualizacaoAnterior: { scrollX: 0, scrollY: 0, zoom: 0 }
-};
 let corPrincipal, corSecundaria, corPrincipalOuSecundaria;
 let corEscolhidaPrincipal = { r: 0, g: 0, b: 0 };//Armazena a cor escolhida do primeiro plano.
 let corEscolhidaSecudaria = { r: 255, g: 255, b: 255 };//Armazena a cor escolhida no segundo plano.
-let createProjectWindow, project, drawingTools, previewFunctions, undoRedoChange, hotKeys;
+let createProjectWindow, project, drawingTools, previewFunctions, undoRedoChange, hotKeys, createGridWindow;
 let arrayCoresSalvas = [];//Armazena objetos cuja as propriedades possuem as informações sobre as cores salvas.
 let janelaPrincipal;
 let contentTelas;//Elemento onde ficará a "tela" para desenhar.
@@ -21,8 +18,8 @@ function colorPaint() {
     previewFunctions = previewFunctionsObject();
     undoRedoChange = undoRedoChangeObject();
     hotKeys = hotKeysObject();
+    createGridWindow = createGridWindowObject();
     const contentJanelaAtalhos = document.getElementById("contentJanelaAtalhos");
-    const contentJanelaMenuGrid = document.getElementById("contentJanelaMenuGrid");
     const contentTools = document.getElementById("contentTools");
     const barraLateralEsquerda = document.getElementById("barraLateralEsquerda");
     const barraLateralDireita = document.getElementById("barraLateralDireita");
@@ -35,7 +32,6 @@ function colorPaint() {
     corSecundaria = document.getElementById("corSecundaria");
     txtCorEscolhida = document.getElementById("txtCorEscolhida");
     txtPorcentagemZoom = document.getElementById("txtPorcentagemZoom");
-    grid.tela = document.getElementById("grid");
 
     menuPadrao();
     ajustarContents();
@@ -49,60 +45,7 @@ function colorPaint() {
     hotKeys.addEventsToElements();
 
     document.getElementById("bttCriarNovoProjeto").addEventListener("mousedown", () => createProjectWindow.open());
-
-    document.getElementById("bttCriarGrade").addEventListener("click", function () {
-        if (project.created) {
-            grid.visualizacaoAnterior.scrollX = contentTelas.scrollLeft;
-            grid.visualizacaoAnterior.scrollY = contentTelas.scrollTop;
-            grid.visualizacaoAnterior.zoom = parseFloat(((txtPorcentagemZoom.value).replace("%", "")).replace(",", "."));
-            contentJanelaMenuGrid.style.display = "block";
-            document.getElementById("txtTamanhoGrid").value = grid.tamanho;
-            document.getElementById("txtPosicaoVerticalGrid").value = grid.posicao.y;
-            document.getElementById("txtPosicaoHorizontalGrid").value = grid.posicao.x;
-            ajustarNaVisualizacaoTelasCanvas();
-            if (!grid.visivel) {
-                criarGrid(grid.tela, grid.tamanho, grid.posicao, true);
-            }
-        }
-        else { alert("Nenhum projeto criado!"); }
-    });
-
-    document.getElementById("txtTamanhoGrid").addEventListener("change", function () {
-        const num = parseInt(this.value);
-        if (isNaN(num) === false && num > 0) {
-            grid.tamanho = num;
-            criarGrid(grid.tela, grid.tamanho, grid.posicao, true);
-        }
-    });
-
-    document.getElementById("txtPosicaoVerticalGrid").addEventListener("change", function () {
-        const num = parseInt(this.value);
-        if (isNaN(num) === false) {
-            grid.posicao.y = num;
-            criarGrid(grid.tela, grid.tamanho, grid.posicao, true);
-        }
-    });
-
-    document.getElementById("txtPosicaoHorizontalGrid").addEventListener("change", function () {
-        const num = parseInt(this.value);
-        if (isNaN(num) === false) {
-            grid.posicao.x = num;
-            criarGrid(grid.tela, grid.tamanho, grid.posicao, true);
-        }
-    });
-
-    document.getElementById("bttOkGrid").addEventListener("click", function () {
-        contentJanelaMenuGrid.style.display = "none";
-        ajustarVisualizacaoAntesGrid();
-    });
-
-    document.getElementById("bttcancelarGrid").addEventListener("click", function () {
-        if (project.created) {
-            criarGrid(grid.tela, grid.tamanho, grid.posicao, false);
-            contentJanelaMenuGrid.style.display = "none";
-            ajustarVisualizacaoAntesGrid();
-        }
-    });
+    document.getElementById("bttCriarGrade").addEventListener("mousedown", () => createGridWindow.open());
 
     corPrincipal.addEventListener("click", function () {
         if (janelaSelecionarCorVisivel) {
@@ -200,12 +143,6 @@ function colorPaint() {
         for (let i = 0; i < arrayop.length; i++) { arrayop[i].classList.replace("inicioopcoes", "mudaopcoes"); }
     }
 
-    function ajustarVisualizacaoAntesGrid() {
-        zoomNoProjeto("porcentagem", false, grid.visualizacaoAnterior.zoom);
-        contentTelas.scrollTop = grid.visualizacaoAnterior.scrollY;
-        contentTelas.scrollLeft = grid.visualizacaoAnterior.scrollX;
-    }
-
     function ajustarContents() {
         contentTools.style.height = (janelaPrincipal.offsetHeight - 90) + "px";
         contentCentro.style.width = contentTools.offsetWidth - barraLateralEsquerda.offsetWidth - barraLateralDireita.offsetWidth - 0.5 + "px";
@@ -213,43 +150,6 @@ function colorPaint() {
         contentTelas.style.height = (contentCentro.offsetHeight - 15) + "px";
         document.getElementById("janelaCamadas").style.height = (barraLateralEsquerda.offsetHeight - 336) + "px";
     }
-}
-// ==========================================================================================================================================================================================================================================
-
-function criarGrid(tela, size, posicao, criar) {
-    const numDeQuadrados = (Math.trunc((project.properties.resolution.width / size) + 2.099)) * (Math.trunc((project.properties.resolution.height / size) + 2.099));
-    if (numDeQuadrados > 5700) {
-        alert("Aumente o tamanho da grade!");
-        return;
-    } else if (numDeQuadrados > 1100) { alert("O tamanho da grade está muito baixo, isso pode acarretar problemas de performance!"); }
-    let el = tela.firstElementChild;
-    while (el != null) {
-        el.remove();
-        el = tela.firstElementChild;
-    }
-    if (criar === true) {
-        const pos = {
-            x: (((posicao.x / size) - (Math.trunc(posicao.x / size))) * size),
-            y: (((posicao.y / size) - (Math.trunc(posicao.y / size))) * size)
-        }
-        if (pos.x < 0) { pos.x = size + pos.x };
-        if (pos.y < 0) { pos.y = size + pos.y };
-        const larguraTela = (project.properties.resolution.width + (size * 2.1)),
-            alturaTela = (project.properties.resolution.height + (size * 2.1));
-        const larguraQuadrado = ((size / larguraTela) * 100), alturaQuadrado = ((size / alturaTela) * 100);
-        const styleQuadrado = "width: " + larguraQuadrado + "%; height: " + alturaQuadrado + "%;";
-        tela.style.top = (-100 * ((size - pos.y) / project.properties.resolution.height)) + "%";
-        tela.style.left = (-100 * ((size - pos.x) / project.properties.resolution.width)) + "%";
-        tela.style.width = ((larguraTela / project.properties.resolution.width) * 100) + "%";
-        tela.style.height = ((alturaTela / project.properties.resolution.height) * 100) + "%";
-        for (let i = 0; i < numDeQuadrados; i++) {
-            const quadrado = document.createElement("div");
-            quadrado.setAttribute("class", "quadrado");
-            quadrado.setAttribute("style", styleQuadrado);
-            tela.appendChild(quadrado);
-        }
-    }
-    grid.visivel = criar;
 }
 // ==========================================================================================================================================================================================================================================
 
