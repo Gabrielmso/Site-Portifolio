@@ -5,7 +5,7 @@ const grid = {//Propriedades do grid e da visualização do projeto antes de cri
 let corPrincipal, corSecundaria, corPrincipalOuSecundaria;
 let corEscolhidaPrincipal = { r: 0, g: 0, b: 0 };//Armazena a cor escolhida do primeiro plano.
 let corEscolhidaSecudaria = { r: 255, g: 255, b: 255 };//Armazena a cor escolhida no segundo plano.
-let project, drawingTools, undoRedoChange, hotKeys, previewFunctions;
+let createProjectWindow, project, drawingTools, previewFunctions, undoRedoChange, hotKeys;
 let arrayCoresSalvas = [];//Armazena objetos cuja as propriedades possuem as informações sobre as cores salvas.
 let janelaPrincipal;
 let contentTelas;//Elemento onde ficará a "tela" para desenhar.
@@ -14,13 +14,13 @@ let txtCorEscolhida;//Recebe a string da cor do primeiro plano no formato RGB pa
 let txtPorcentagemZoom;//Recebe a string com a porcentagem de zoom no "telasCanvas".
 let janelaSeleciona;//Recebe toda a função "janelaSeletorDeCor".
 function colorPaint() {
-    drawingTools = drawingToolsObject();
+    createProjectWindow = createProjectWindowObject();
     project = projectObject();
-    undoRedoChange = undoRedoChangeObject();
-    previewFunctions = previewFunctionsObject();
-    hotKeys = hotKeysObject();
     janelaSeleciona = new janelaSeletorDeCor();
-    const contentJanelaCriarProjeto = document.getElementById("contentJanelaCriarProjeto");
+    drawingTools = drawingToolsObject();
+    previewFunctions = previewFunctionsObject();
+    undoRedoChange = undoRedoChangeObject();
+    hotKeys = hotKeysObject();
     const contentJanelaAtalhos = document.getElementById("contentJanelaAtalhos");
     const contentJanelaMenuGrid = document.getElementById("contentJanelaMenuGrid");
     const contentTools = document.getElementById("contentTools");
@@ -37,7 +37,6 @@ function colorPaint() {
     txtPorcentagemZoom = document.getElementById("txtPorcentagemZoom");
     grid.tela = document.getElementById("grid");
 
-
     menuPadrao();
     ajustarContents();
     criarOuAbrirProjeto();
@@ -49,26 +48,7 @@ function colorPaint() {
     undoRedoChange.addEventsToElements();
     hotKeys.addEventsToElements();
 
-    document.getElementById("bttCriarNovoProjeto").addEventListener("click", function () {
-        if (!project.created) {
-            if (janelaSelecionarCorVisivel === false) { contentJanelaCriarProjeto.style.display = "flex"; }
-        }
-        else {
-            if (confirm("Todo o progresso não salvo será perdido, deseja continuar?") === true) {
-                sessionStorage.setItem("criarNovoProjeto", "true");
-                window.location.reload();
-            }
-        }
-    });
-
-    document.getElementById("bttCriarprojeto").addEventListener("click", function () {
-        project.validateProperties();
-        if (project.created) { contentJanelaCriarProjeto.style.display = "none"; }
-    });
-
-    document.getElementById("bttCancelaCriarprojetor").addEventListener("click", function () {
-        contentJanelaCriarProjeto.style.display = "none";
-    });
+    document.getElementById("bttCriarNovoProjeto").addEventListener("mousedown", () => createProjectWindow.open());
 
     document.getElementById("bttCriarGrade").addEventListener("click", function () {
         if (project.created) {
@@ -378,13 +358,13 @@ function zoomNoProjeto(zoom, centralizar, quanto) {
 function criarOuAbrirProjeto() {
     const carregar = document.getElementById("carregamento");
     if (sessionStorage.getItem("abrirProjetoSalvo") === "true") {
-        document.body.removeChild(carregar);
+        carregar.remove();
         project.openProject();
         sessionStorage.setItem("abrirProjetoSalvo", "false");
     }
     else if (sessionStorage.getItem("criarNovoProjeto") === "true") {
-        document.body.removeChild(carregar);
-        contentJanelaCriarProjeto.style.display = "flex";
+        carregar.remove();
+        createProjectWindow.open();
         sessionStorage.setItem("criarNovoProjeto", "false");
     }
     else { carregamento(); }
@@ -404,7 +384,7 @@ function criarOuAbrirProjeto() {
                 setTimeout(() => {
                     carregar.style.opacity = "0";
                     setTimeout(() => {
-                        document.body.removeChild(carregar);
+                        carregar.remove();
                     }, 1200);
                 }, 350);
             }, 1550);
