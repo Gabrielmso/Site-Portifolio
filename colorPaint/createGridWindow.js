@@ -40,8 +40,8 @@ function createGridWindowObject() {
                 }
             });
 
-            this.buttons.ok.addEventListener("mousedown", (e) => this.close());
-            this.buttons.cancel.addEventListener("mousedown", (e) => {
+            this.buttons.ok.addEventListener("mousedown", () => this.close());
+            this.buttons.cancel.addEventListener("mousedown", () => {
                 this.createGrid(false);
                 this.close();
             });
@@ -96,7 +96,7 @@ function createGridWindowObject() {
                 el.remove();
                 el = screen.firstElementChild;
             }
-            if (create === true) {
+            if (create) {
                 const position = {
                     x: (((pos.x / size) - (Math.trunc(pos.x / size))) * size), y: (((pos.y / size) - (Math.trunc(pos.y / size))) * size)
                 }
@@ -120,7 +120,7 @@ function createGridWindowObject() {
             this.gridProprieties.visible = create;
         },
         adjustPreviousVisualization() {
-            zoomNoProjeto("porcentagem", false, this.previousVisualization.zoom);
+            project.zoom("porcentagem", false, this.previousVisualization.zoom);
             contentTelas.scrollTop = this.previousVisualization.scrollY;
             contentTelas.scrollLeft = this.previousVisualization.scrollX;
         }

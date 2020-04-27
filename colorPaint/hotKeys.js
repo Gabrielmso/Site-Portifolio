@@ -147,13 +147,13 @@ function hotKeysObject() {
                 ajustarNaVisualizacaoTelasCanvas();
             },
             Digit1() {
-                zoomNoProjeto("porcentagem", true, 100);
+                project.zoom("porcentagem", true, 100);
             },
             Minus() {
-                zoomNoProjeto(false, true, 1.25);
+                project.zoom(false, true, 1.25);
             },
             Equal() {
-                zoomNoProjeto(true, true, 1.25);
+                project.zoom(true, true, 1.25);
             },
             KeyZ() {
                 undoRedoChange.undoChange();

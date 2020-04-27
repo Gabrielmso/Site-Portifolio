@@ -6,9 +6,8 @@ let createProjectWindow, project, drawingTools, previewFunctions, undoRedoChange
 let arrayCoresSalvas = [];//Armazena objetos cuja as propriedades possuem as informações sobre as cores salvas.
 let janelaPrincipal;
 let contentTelas;//Elemento onde ficará a "tela" para desenhar.
-let telasCanvas;//Elemento onde ficarão os canvas "camadas".
 let txtCorEscolhida;//Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
-let txtPorcentagemZoom;//Recebe a string com a porcentagem de zoom no "telasCanvas".
+let txtPorcentagemZoom;//Recebe a string com a porcentagem de zoom no "project.screen".
 let janelaSeleciona;//Recebe toda a função "janelaSeletorDeCor".
 function colorPaint() {
     createProjectWindow = createProjectWindowObject();
@@ -27,7 +26,6 @@ function colorPaint() {
     const contentCentro = document.getElementById("contentCentro");
     janelaPrincipal = document.getElementById("janelaPrincipal");
     contentTelas = document.getElementById("contentTelas");
-    telasCanvas = document.getElementById("telasCanvas");
     corPrincipal = document.getElementById("corPrincipal");
     corSecundaria = document.getElementById("corSecundaria");
     txtCorEscolhida = document.getElementById("txtCorEscolhida");
@@ -93,19 +91,17 @@ function colorPaint() {
     });
 
     document.getElementById("bttZoomMais").addEventListener("click", function () {//Aumentar o zoom no projeto.
-        if (!project.created) { return; };
-        zoomNoProjeto(true, true, 1.25);
+        project.zoom(true, true, 1.25);
     });
 
     document.getElementById("bttZoomMenos").addEventListener("click", function () {//Diminuir o zoom no projeto.
-        if (!project.created) { return; };
-        if (telasCanvas.offsetWidth >= 25) { zoomNoProjeto(false, true, 1.25); }
+        project.zoom(false, true, 1.25);
     });
 
     txtPorcentagemZoom.addEventListener("keyup", function (e) {
         if (e.code === "Enter" || e.keyCode === 13) {
             const valor = parseFloat(((this.value).replace("%", "")).replace(",", "."));
-            if (isNaN(valor) === false && valor >= 1) { zoomNoProjeto("porcentagem", true, valor); }
+            if (isNaN(valor) === false && valor >= 1) { project.zoom("porcentagem", true, valor); }
         }
     });
 
@@ -113,10 +109,10 @@ function colorPaint() {
     document.getElementById("bttOkAtalhos").addEventListener("click", () => contentJanelaAtalhos.style.display = "none");
 
     document.getElementById("colorPaintContent").addEventListener("wheel", function (e) {//Zoom com o scroll do mouse.
-        if (project.created && hotKeys.ctrlPressed) {
+        if (hotKeys.ctrlPressed) {
             e.preventDefault();
-            if (e.deltaY < 0) { zoomNoProjeto(true, false, 1.11, e); }
-            else { zoomNoProjeto(false, false, 1.11, e); }
+            if (e.deltaY < 0) { project.zoom(true, false, 1.10); }
+            else { project.zoom(false, false, 1.10); }
             const posContentTelas = pegarPosicaoMouse(contentTelas, e);
             const proporcaoPosY = drawingTools.mousePosition.y / project.properties.resolution.height;
             const proporcaoPosX = drawingTools.mousePosition.x / project.properties.resolution.width;
@@ -193,7 +189,7 @@ function ajustarTelasCanvas() {
     if (project.properties.resolution.width >= larguraMax || project.properties.resolution.height >= alturaMax) {
         ajustarNaVisualizacaoTelasCanvas();
     }
-    else { zoomNoProjeto("porcentagem", false, 100); }
+    else { project.zoom("porcentagem", false, 100); }
 }
 
 function ajustarNaVisualizacaoTelasCanvas() {
@@ -202,54 +198,23 @@ function ajustarNaVisualizacaoTelasCanvas() {
     let larguraTelasCanvas;
     if (project.properties.resolution.proportion >= proporcaoContent) {
         let novaAltura = larguraMax / project.properties.resolution.proportion;
-        telasCanvas.style.width = larguraMax + "px";
-        telasCanvas.style.height = novaAltura + "px";
-        telasCanvas.style.top = ((alturaMax + 12) / 2) - (novaAltura / 2) + "px";
-        telasCanvas.style.left = "6px";
+        project.screen.style.width = larguraMax + "px";
+        project.screen.style.height = novaAltura + "px";
+        project.screen.style.top = ((alturaMax + 12) / 2) - (novaAltura / 2) + "px";
+        project.screen.style.left = "6px";
         larguraTelasCanvas = larguraMax;
     }
     else {
         let novaLargura = alturaMax * project.properties.resolution.proportion;
-        telasCanvas.style.width = novaLargura + "px";
-        telasCanvas.style.height = alturaMax + "px";
-        telasCanvas.style.top = "6px";
-        telasCanvas.style.left = ((larguraMax + 12) / 2) - (novaLargura / 2) + "px";
+        project.screen.style.width = novaLargura + "px";
+        project.screen.style.height = alturaMax + "px";
+        project.screen.style.top = "6px";
+        project.screen.style.left = ((larguraMax + 12) / 2) - (novaLargura / 2) + "px";
         larguraTelasCanvas = novaLargura;
     }
     let zoomTelasCanvas = ((larguraTelasCanvas * 100) / project.properties.resolution.width).toFixed(2);
     zoomTelasCanvas = zoomTelasCanvas.replace(".", ",");
     txtPorcentagemZoom.value = zoomTelasCanvas + "%";
-    previewFunctions.changeMoverScrollSizeZoom();
-    drawingTools.changeCursorTool();
-}
-// ==========================================================================================================================================================================================================================================
-
-function zoomNoProjeto(zoom, centralizar, quanto) {
-    const larguraAnterior = telasCanvas.offsetWidth;
-    let larguraAtual, alturaAtual;
-    if (zoom === "porcentagem") {
-        larguraAtual = project.properties.resolution.width * (quanto / 100);
-        alturaAtual = (larguraAtual / project.properties.resolution.proportion);
-    }
-    else if (zoom === true) {
-        larguraAtual = (larguraAnterior * quanto);
-        alturaAtual = (larguraAtual / project.properties.resolution.proportion);
-    }
-    else if (zoom === false) {
-        larguraAtual = (larguraAnterior / quanto);
-        alturaAtual = (larguraAtual / project.properties.resolution.proportion);
-    }
-    telasCanvas.style.width = larguraAtual + "px";
-    telasCanvas.style.height = alturaAtual + "px";
-    if (larguraAtual >= (contentTelas.offsetWidth - 12)) { telasCanvas.style.left = "6px"; }
-    else { telasCanvas.style.left = (contentTelas.offsetWidth / 2) - (larguraAtual / 2) + "px"; }
-    if (alturaAtual >= (contentTelas.offsetHeight - 12)) { telasCanvas.style.top = "6px"; }
-    else { telasCanvas.style.top = (contentTelas.offsetHeight / 2) - (alturaAtual / 2) + "px"; }
-    if (centralizar === true) {
-        contentTelas.scrollTop = ((alturaAtual / 2) + 12) - (contentTelas.offsetHeight / 2);
-        contentTelas.scrollLeft = ((larguraAtual / 2) + 12) - (contentTelas.offsetWidth / 2);
-    }
-    txtPorcentagemZoom.value = ((larguraAtual * 100) / project.properties.resolution.width).toFixed(2).replace(".", ",") + "%";
     previewFunctions.changeMoverScrollSizeZoom();
     drawingTools.changeCursorTool();
 }

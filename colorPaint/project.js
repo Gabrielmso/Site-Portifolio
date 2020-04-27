@@ -8,6 +8,7 @@ function projectObject() {
         },
         created: false,//Saber se um projeto foi criado.
         drawComplete: document.getElementById("desenho").getContext("2d"),
+        screen: document.getElementById("telasCanvas"),
         eventLayer: document.getElementById("pintar").getContext("2d"),
         selectedLayer: 0,
         arrayLayers: [],
@@ -43,6 +44,30 @@ function projectObject() {
                     }
                 } else { this.openProject(); }
             });
+        },
+        zoom(zoom, centralize, quanto) {
+            if (!this.created) { return; }
+            const larguraAnterior = this.screen.offsetWidth;
+            let larguraAtual, alturaAtual;
+            if (zoom === "porcentagem") { larguraAtual = this.properties.resolution.width * (quanto / 100); }
+            else if (zoom) { larguraAtual = (larguraAnterior * quanto); }
+            else if (!zoom) { larguraAtual = (larguraAnterior / quanto); }
+            if (larguraAtual <= 25) { larguraAtual = 25; }
+            else if (larguraAtual >= this.properties.resolution.width * 32) { larguraAtual = this.properties.resolution.width * 32; }
+            alturaAtual = (larguraAtual / this.properties.resolution.proportion);
+            this.screen.style.width = larguraAtual + "px";
+            this.screen.style.height = alturaAtual + "px";
+            if (larguraAtual >= (contentTelas.offsetWidth - 12)) { this.screen.style.left = "6px"; }
+            else { this.screen.style.left = (contentTelas.offsetWidth / 2) - (larguraAtual / 2) + "px"; }
+            if (alturaAtual >= (contentTelas.offsetHeight - 12)) { this.screen.style.top = "6px"; }
+            else { this.screen.style.top = (contentTelas.offsetHeight / 2) - (alturaAtual / 2) + "px"; }
+            if (centralize === true) {
+                contentTelas.scrollTop = ((alturaAtual / 2) + 12) - (contentTelas.offsetHeight / 2);
+                contentTelas.scrollLeft = ((larguraAtual / 2) + 12) - (contentTelas.offsetWidth / 2);
+            }
+            txtPorcentagemZoom.value = ((larguraAtual * 100) / this.properties.resolution.width).toFixed(2).replace(".", ",") + "%";
+            previewFunctions.changeMoverScrollSizeZoom();
+            drawingTools.changeCursorTool();
         },
         applyOpacityLayer() {
             if (!this.layerOpacityBar.mousedown) { return; }
@@ -181,7 +206,7 @@ function projectObject() {
             elCamada.setAttribute("style", camadaStyle);
             elCamada.setAttribute("height", this.properties.resolution.height);
             elCamada.setAttribute("width", this.properties.resolution.width);
-            telasCanvas.appendChild(elCamada);
+            this.screen.appendChild(elCamada);
 
             // ================================== CRIA O PREVIEW DA CAMADA ====================================
             const idPreviewCamada = "camadaPreview" + num;
