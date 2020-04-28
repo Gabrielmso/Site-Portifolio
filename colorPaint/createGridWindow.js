@@ -58,31 +58,20 @@ function createGridWindowObject() {
                 this.contentWindow.style.display = "block";
                 this.addEventsToElements();
                 ajustarNaVisualizacaoTelasCanvas();
+                drawingTools.cursorTool.removeCursor();
                 if (!this.gridProprieties.visible) { this.createGrid(true); }
             }
             else { alert("Nenhum projeto criado!"); }
         },
         close() {
-            const bttOk = this.buttons.ok.cloneNode(true), bttCancel = this.buttons.cancel.cloneNode(true),
-                txtSize = this.inputs.size.cloneNode(true), txtPositionHorizontal = this.inputs.horizontalPosition.cloneNode(true),
-                txtPositionVertical = this.inputs.verticalPosition.cloneNode(true);
-            this.buttons.ok.parentNode.insertBefore(bttOk, this.buttons.ok);
-            this.buttons.ok.remove();
-            this.buttons.ok = bttOk;
-            this.buttons.cancel.parentNode.insertBefore(bttCancel, this.buttons.cancel);
-            this.buttons.cancel.remove();
-            this.buttons.cancel = bttCancel;
-            this.inputs.size.parentNode.insertBefore(txtSize, this.inputs.size);
-            this.inputs.size.remove();
-            this.inputs.size = txtSize;
-            this.inputs.horizontalPosition.parentNode.insertBefore(txtPositionHorizontal, this.inputs.horizontalPosition);
-            this.inputs.horizontalPosition.remove();
-            this.inputs.horizontalPosition = txtPositionHorizontal;
-            this.inputs.verticalPosition.parentNode.insertBefore(txtPositionVertical, this.inputs.verticalPosition);
-            this.inputs.verticalPosition.remove();
-            this.inputs.verticalPosition = txtPositionVertical;
+            this.buttons.ok = cloneReplaceElement(this.buttons.ok);
+            this.buttons.cancel = cloneReplaceElement(this.buttons.cancel);
+            this.inputs.size = cloneReplaceElement(this.inputs.size);
+            this.inputs.horizontalPosition = cloneReplaceElement(this.inputs.horizontalPosition);
+            this.inputs.verticalPosition = cloneReplaceElement(this.inputs.verticalPosition);
             this.contentWindow.style.display = "none";
-            this.adjustPreviousVisualization();
+            this.applyPreviousVisualization();
+            drawingTools.changeCursorTool();
         },
         createGrid(create) {
             const screen = this.gridProprieties.screen, size = this.gridProprieties.size, pos = this.gridProprieties.position,
@@ -119,7 +108,7 @@ function createGridWindowObject() {
             }
             this.gridProprieties.visible = create;
         },
-        adjustPreviousVisualization() {
+        applyPreviousVisualization() {
             project.zoom("porcentagem", false, this.previousVisualization.zoom);
             contentTelas.scrollTop = this.previousVisualization.scrollY;
             contentTelas.scrollLeft = this.previousVisualization.scrollX;

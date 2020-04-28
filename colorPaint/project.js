@@ -72,7 +72,7 @@ function projectObject() {
         applyOpacityLayer() {
             if (!this.layerOpacityBar.mousedown) { return; }
             this.layerOpacityBar.mousedown = false;
-            desenhoNoPreviewEIcone(this.arrayLayers[this.selectedLayer]);
+            this.drawInPreview(this.arrayLayers[this.selectedLayer]);
         },
         changeOpacityLayer(e) {
             if (!this.layerOpacityBar.mousedown) { return; }
@@ -81,15 +81,11 @@ function projectObject() {
             if (mouse.x <= 1) {
                 porcentagem = 1;
                 cursorOpacidadeCamada.style.left = "-7px";
-                this.arrayLayers[this.selectedLayer].txtOpacity.value = "1%";
             } else if (mouse.x >= 200) {
                 porcentagem = 100;
                 cursorOpacidadeCamada.style.left = "193px";
-                this.arrayLayers[this.selectedLayer].txtOpacity.value = "100%";
-            } else {
-                cursorOpacidadeCamada.style.left = mouse.x - 7 + "px";
-                this.arrayLayers[this.selectedLayer].txtOpacity.value = porcentagem + "%";
-            }
+            } else { cursorOpacidadeCamada.style.left = mouse.x - 7 + "px"; }
+            this.arrayLayers[this.selectedLayer].txtOpacity.value = porcentagem + "%";
             let opacidade = porcentagem / 100;
             this.arrayLayers[this.selectedLayer].opacity = opacidade;
             this.arrayLayers[this.selectedLayer].ctx.canvas.style.opacity = opacidade;
@@ -251,7 +247,6 @@ function projectObject() {
                 this.arrayLayers[num].bttLook.classList.replace("iconNaoVer", "iconVer");
             }
             this.arrayLayers[num].visible = !this.arrayLayers[num].visible;
-            desenhoNoPreviewEIcone(this.arrayLayers[num]);
         },
         clickIconLayer(num) {
             if (!this.cursorInBttLook) {
@@ -283,6 +278,24 @@ function projectObject() {
                     this.drawComplete.closePath();
                 };
             }
+        },
+        drawInLayer() {
+            undoRedoChange.saveChanges();
+            this.arrayLayers[this.selectedLayer].ctx.drawImage(this.eventLayer.canvas, 0, 0, this.properties.resolution.width, this.properties.resolution.height);
+            this.eventLayer.clearRect(0, 0, this.properties.resolution.width, this.properties.resolution.height);
+            this.drawInPreview(this.arrayLayers[this.selectedLayer]);
+        },
+        drawInPreview(layer) {
+            const camadaPreview = layer.previewLayer;
+            camadaPreview.clearRect(0, 0, camadaPreview.canvas.width, camadaPreview.canvas.height);
+            camadaPreview.globalAlpha = layer.opacity;
+            camadaPreview.drawImage(layer.ctx.canvas, 0, 0, camadaPreview.canvas.width, camadaPreview.canvas.height);
+            this.drawInIcon(layer)
+        },
+        drawInIcon(layer) {
+            const miniatura = layer.miniature;
+            miniatura.clearRect(0, 0, miniatura.canvas.width, miniatura.canvas.height);
+            miniatura.drawImage(layer.previewLayer.canvas, 0, 0, miniatura.canvas.width, miniatura.canvas.height);
         },
         saveDraw() {
             this.createDrawComplete();

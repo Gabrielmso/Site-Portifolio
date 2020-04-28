@@ -19,13 +19,8 @@ function createProjectWindowObject() {
             }
         },
         close() {
-            const create = this.buttons.create.cloneNode(true), cancel = this.buttons.cancel.cloneNode(true);
-            this.buttons.create.parentNode.insertBefore(create, this.buttons.create);
-            this.buttons.create.remove();
-            this.buttons.create = create;
-            this.buttons.cancel.parentNode.insertBefore(cancel, this.buttons.cancel);
-            this.buttons.cancel.remove();
-            this.buttons.cancel = cancel;
+            this.buttons.create = cloneReplaceElement(this.buttons.create);
+            this.buttons.cancel = cloneReplaceElement(this.buttons.cancel);
             this.contentWindow.style.display = "none";
         },
         validateProperties() {

@@ -105,8 +105,14 @@ function colorPaint() {
         }
     });
 
-    document.getElementById("bttAtalhos").addEventListener("click", () => contentJanelaAtalhos.style.display = "flex");
-    document.getElementById("bttOkAtalhos").addEventListener("click", () => contentJanelaAtalhos.style.display = "none");
+    document.getElementById("bttAtalhos").addEventListener("click", () => {
+        drawingTools.cursorTool.removeCursor();
+        contentJanelaAtalhos.style.display = "flex";
+    });
+    document.getElementById("bttOkAtalhos").addEventListener("click", () => {
+        drawingTools.changeCursorTool();
+        contentJanelaAtalhos.style.display = "none";
+    });
 
     document.getElementById("colorPaintContent").addEventListener("wheel", function (e) {//Zoom com o scroll do mouse.
         if (hotKeys.ctrlPressed) {
@@ -145,41 +151,6 @@ function colorPaint() {
         contentCentro.style.height = contentTools.style.height;
         contentTelas.style.height = (contentCentro.offsetHeight - 15) + "px";
         document.getElementById("janelaCamadas").style.height = (barraLateralEsquerda.offsetHeight - 336) + "px";
-    }
-}
-// ==========================================================================================================================================================================================================================================
-
-function desenharNaCamada(layer) {
-    undoRedoChange.saveChanges(layer.ctx);
-    layer.ctx.drawImage(project.eventLayer.canvas, 0, 0, project.properties.resolution.width, project.properties.resolution.height);
-    project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
-}
-
-function desenhoNoPreviewEIcone(layer) {
-    const camadaPreview = layer.previewLayer,
-        miniatura = layer.miniature;
-    camadaPreview.clearRect(0, 0, camadaPreview.canvas.width, camadaPreview.canvas.height);
-    miniatura.clearRect(0, 0, miniatura.canvas.width, miniatura.canvas.height);
-    camadaPreview.globalAlpha = layer.opacity;
-    camadaPreview.drawImage(layer.ctx.canvas, 0, 0, camadaPreview.canvas.width, camadaPreview.canvas.height);
-    miniatura.drawImage(camadaPreview.canvas, 0, 0, miniatura.canvas.width, miniatura.canvas.height);
-}
-
-function desenhoCompleto() {
-    project.drawComplete.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
-    if (project.properties.background != false) {
-        project.drawComplete.globalAlpha = 1;
-        project.drawComplete.fillStyle = "rgb(" + project.properties.background.r + ", " + project.properties.background.g + ", " + project.properties.background.b + ")";
-        project.drawComplete.fillRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
-    }
-    for (let i = 0; i < project.properties.numberLayers; i++) {
-        if (project.arrayLayers[i].visible) {
-            const opacidadeCamada = project.arrayLayers[i].opacity;
-            project.drawComplete.beginPath();
-            project.drawComplete.globalAlpha = opacidadeCamada;
-            project.drawComplete.drawImage(project.arrayLayers[i].ctx.canvas, 0, 0, project.properties.resolution.width, project.properties.resolution.height);
-            project.drawComplete.closePath();
-        };
     }
 }
 // ==========================================================================================================================================================================================================================================
@@ -260,6 +231,13 @@ function criarOuAbrirProjeto() {
 function pegarPosicaoMouse(elemento, e) {
     const pos = elemento.getBoundingClientRect();
     return { x: e.clientX - pos.left, y: e.clientY - pos.top }
+}
+
+function cloneReplaceElement(oldElement) {
+    const newElement = oldElement.cloneNode(true);
+    oldElement.parentNode.insertBefore(newElement, oldElement);
+    oldElement.remove();
+    return newElement;
 }
 
 function throttle(func, limit) {
