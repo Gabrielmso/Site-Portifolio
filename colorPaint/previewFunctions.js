@@ -33,18 +33,18 @@ function previewFunctionsObject() {
             moverScroll.style.left = (contentTelas.scrollLeft / mult2) + "px";
         },
         adjustPreview(proportion) {
-            const proporcaoEspaco = 256 / 150, contentTelaPreview = this.contentTelaPreview;
+            const proporcaoEspaco = 256 / 150;
             if (proportion >= proporcaoEspaco) {
                 const novaAltura = (256 / proportion);
-                contentTelaPreview.style.width = "256px";
-                contentTelaPreview.style.height = novaAltura + "px";
+                this.contentTelaPreview.style.width = "256px";
+                this.contentTelaPreview.style.height = novaAltura + "px";
             } else {
                 const novaLargura = (150 * proportion);
-                contentTelaPreview.style.width = novaLargura + "px";
-                contentTelaPreview.style.height = "150px";
+                this.contentTelaPreview.style.width = novaLargura + "px";
+                this.contentTelaPreview.style.height = "150px";
             }
-            this.ctxTelaPreview.canvas.width = Math.round(contentTelaPreview.offsetWidth * 1.5);
-            this.ctxTelaPreview.canvas.height = Math.round(contentTelaPreview.offsetHeight * 1.5);
+            this.ctxTelaPreview.canvas.width = Math.round(this.contentTelaPreview.offsetWidth * 1.5);
+            this.ctxTelaPreview.canvas.height = Math.round(this.contentTelaPreview.offsetHeight * 1.5);
         },
         changeMoverScrollSizeZoom() {//De acordo com o zoom que é dado muda o tamanho do "moverScroll".
             const tamanhoTelasCanvas = { x: telasCanvas.offsetWidth, y: telasCanvas.offsetHeight },

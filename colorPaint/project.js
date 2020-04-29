@@ -69,6 +69,22 @@ function projectObject() {
             previewFunctions.changeMoverScrollSizeZoom();
             drawingTools.changeCursorTool();
         },
+        adjustInVisualizationScreen() {
+            const larguraMax = contentTelas.offsetWidth - 12, alturaMax = contentTelas.offsetHeight - 12, proporcaoContent = larguraMax / alturaMax;
+            let zoomTelasCanvas;
+            if (this.properties.resolution.proportion >= proporcaoContent) {
+                zoomTelasCanvas = parseFloat(((larguraMax * 100) / this.properties.resolution.width).toFixed(2));
+            } else {
+                zoomTelasCanvas = parseFloat(((alturaMax * 100) / this.properties.resolution.height).toFixed(2));
+            }
+            this.zoom("porcentagem", false, zoomTelasCanvas);
+        },
+        adjustScreen() {
+            const larguraMax = contentTelas.offsetWidth - 12, alturaMax = contentTelas.offsetHeight - 12;
+            if (this.properties.resolution.width >= larguraMax || this.properties.resolution.height >= alturaMax) {
+                this.adjustInVisualizationScreen();
+            } else { this.zoom("porcentagem", false, 100); }
+        },
         applyOpacityLayer() {
             if (!this.layerOpacityBar.mousedown) { return; }
             this.layerOpacityBar.mousedown = false;
@@ -106,8 +122,6 @@ function projectObject() {
                 corFundo.style.backgroundImage = "url('colorPaint/imagens/fundoTela/transparente.png')";
                 fundoPreview.style.backgroundImage = "url('colorPaint/imagens/fundoTela/transparenteMiniatura.png')";
             }
-            ajustarTelasCanvas();
-            previewFunctions.adjustPreview(this.properties.resolution.proportion);
             this.drawComplete.canvas.width = this.properties.resolution.width;
             this.drawComplete.canvas.height = this.properties.resolution.height;
             this.eventLayer.canvas.width = this.properties.resolution.width;
@@ -117,7 +131,9 @@ function projectObject() {
             document.getElementById("nomeDoProjeto").innerText = this.properties.name;
             this.layerOpacityBar.content.style.display = "flex";
             this.created = true;
-            setTimeout(() => this.clickIconLayer(0), 5);
+            this.adjustScreen();
+            previewFunctions.adjustPreview(this.properties.resolution.proportion);
+            setTimeout(() => this.clickIconLayer(0), 3);
         },
         createElements(color) {
             const num = this.arrayLayers.length + 1;

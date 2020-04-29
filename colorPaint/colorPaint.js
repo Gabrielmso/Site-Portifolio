@@ -129,12 +129,8 @@ function colorPaint() {
 
     window.addEventListener("resize", function () {
         ajustarContents();
-        if (project.created) {
-            ajustarNaVisualizacaoTelasCanvas();
-            setTimeout(function () {
-                ajustarContents();
-            }, 120);
-        };
+        setTimeout(() => ajustarContents(), 120);
+        if (project.created) { project.adjustInVisualizationScreen(); };
     });
 
     function menuPadrao() {
@@ -152,42 +148,6 @@ function colorPaint() {
         contentTelas.style.height = (contentCentro.offsetHeight - 15) + "px";
         document.getElementById("janelaCamadas").style.height = (barraLateralEsquerda.offsetHeight - 336) + "px";
     }
-}
-// ==========================================================================================================================================================================================================================================
-
-function ajustarTelasCanvas() {
-    const larguraMax = contentTelas.offsetWidth - 12, alturaMax = contentTelas.offsetHeight - 12;
-    if (project.properties.resolution.width >= larguraMax || project.properties.resolution.height >= alturaMax) {
-        ajustarNaVisualizacaoTelasCanvas();
-    }
-    else { project.zoom("porcentagem", false, 100); }
-}
-
-function ajustarNaVisualizacaoTelasCanvas() {
-    const larguraMax = contentTelas.offsetWidth - 12, alturaMax = contentTelas.offsetHeight - 12,
-        proporcaoContent = larguraMax / alturaMax;
-    let larguraTelasCanvas;
-    if (project.properties.resolution.proportion >= proporcaoContent) {
-        let novaAltura = larguraMax / project.properties.resolution.proportion;
-        project.screen.style.width = larguraMax + "px";
-        project.screen.style.height = novaAltura + "px";
-        project.screen.style.top = ((alturaMax + 12) / 2) - (novaAltura / 2) + "px";
-        project.screen.style.left = "6px";
-        larguraTelasCanvas = larguraMax;
-    }
-    else {
-        let novaLargura = alturaMax * project.properties.resolution.proportion;
-        project.screen.style.width = novaLargura + "px";
-        project.screen.style.height = alturaMax + "px";
-        project.screen.style.top = "6px";
-        project.screen.style.left = ((larguraMax + 12) / 2) - (novaLargura / 2) + "px";
-        larguraTelasCanvas = novaLargura;
-    }
-    let zoomTelasCanvas = ((larguraTelasCanvas * 100) / project.properties.resolution.width).toFixed(2);
-    zoomTelasCanvas = zoomTelasCanvas.replace(".", ",");
-    txtPorcentagemZoom.value = zoomTelasCanvas + "%";
-    previewFunctions.changeMoverScrollSizeZoom();
-    drawingTools.changeCursorTool();
 }
 // ==========================================================================================================================================================================================================================================
 

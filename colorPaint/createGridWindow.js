@@ -57,7 +57,7 @@ function createGridWindowObject() {
                 this.inputs.verticalPosition.value = this.gridProprieties.position.y;
                 this.contentWindow.style.display = "block";
                 this.addEventsToElements();
-                ajustarNaVisualizacaoTelasCanvas();
+                project.adjustInVisualizationScreen();
                 drawingTools.cursorTool.removeCursor();
                 if (!this.gridProprieties.visible) { this.createGrid(true); }
             }

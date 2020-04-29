@@ -144,7 +144,7 @@ function hotKeysObject() {
         },
         keyDown: {
             Digit0() {
-                ajustarNaVisualizacaoTelasCanvas();
+                project.adjustInVisualizationScreen();
             },
             Digit1() {
                 project.zoom("porcentagem", true, 100);

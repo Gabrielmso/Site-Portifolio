@@ -10,8 +10,7 @@ function createProjectWindowObject() {
                 this.contentWindow.style.display = "flex";
                 this.buttons.create.addEventListener("mousedown", () => this.validateProperties());
                 this.buttons.cancel.addEventListener("mousedown", () => this.close());
-            }
-            else {
+            } else {
                 if (confirm("Todo o progresso não salvo será perdido, deseja continuar?")) {
                     sessionStorage.setItem("criarNovoProjeto", "true");
                     window.location.reload();
