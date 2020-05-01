@@ -6,6 +6,8 @@ function projectObject() {
             background: null,
             numberLayers: 0
         },
+        selectedColors: { primary: { r: 0, g: 0, b: 0 }, secondary: { r: 255, g: 255, b: 255 }},
+        savedColors: [],
         created: false,//Saber se um projeto foi criado.
         drawComplete: document.getElementById("desenho").getContext("2d"),
         screen: document.getElementById("telasCanvas"),
@@ -306,7 +308,7 @@ function projectObject() {
             camadaPreview.clearRect(0, 0, camadaPreview.canvas.width, camadaPreview.canvas.height);
             camadaPreview.globalAlpha = layer.opacity;
             camadaPreview.drawImage(layer.ctx.canvas, 0, 0, camadaPreview.canvas.width, camadaPreview.canvas.height);
-            this.drawInIcon(layer)
+            this.drawInIcon(layer);
         },
         drawInIcon(layer) {
             const miniatura = layer.miniature;
@@ -339,7 +341,7 @@ function projectObject() {
                     visivel: this.arrayLayers[i].visible,
                 };
             }
-            for (let i = 0; i < arrayCoresSalvas.length; i++) { coresSalvasProjeto[i] = arrayCoresSalvas[i].cor; }
+            for (let i = 0; i < this.savedColors.length; i++) { coresSalvasProjeto[i] = this.savedColors[i].cor; }
             const objProjeto = {
                 nomeProjeto: this.properties.name,
                 resolucaoDoProjeto: this.properties.resolution,

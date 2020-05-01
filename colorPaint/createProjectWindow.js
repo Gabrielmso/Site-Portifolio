@@ -58,7 +58,7 @@ function createProjectWindowObject() {
             if (valueCor === 1) { color = { r: 255, g: 255, b: 255 }; }
             else if (valueCor === 2) { color = { r: 0, g: 0, b: 0 }; }
             else if (valueCor === 3) { color = false; }
-            else { color = corEscolhidaPrincipal; }
+            else { color = project.selectedColors.primary; }
             for (let i = 0; i < arrayProperties.length; i++) { arrayProperties[i].style.backgroundColor = "rgb(37, 37, 37)"; }
             project.create(nomeProjeto, { width: larguraProjeto, height: alturaProjeto }, color, numeroCamadas);
             this.close();

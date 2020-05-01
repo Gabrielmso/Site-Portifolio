@@ -1,9 +1,6 @@
 mudarMenu = false;
 let corPrincipal, corSecundaria, corPrincipalOuSecundaria;
-let corEscolhidaPrincipal = { r: 0, g: 0, b: 0 };//Armazena a cor escolhida do primeiro plano.
-let corEscolhidaSecudaria = { r: 255, g: 255, b: 255 };//Armazena a cor escolhida no segundo plano.
 let createProjectWindow, project, drawingTools, previewFunctions, undoRedoChange, hotKeys, createGridWindow;
-let arrayCoresSalvas = [];//Armazena objetos cuja as propriedades possuem as informações sobre as cores salvas.
 let janelaPrincipal;
 let contentTelas;//Elemento onde ficará a "tela" para desenhar.
 let txtCorEscolhida;//Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
@@ -34,7 +31,7 @@ function colorPaint() {
     menuPadrao();
     ajustarContents();
     criarOuAbrirProjeto();
-    txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.r + ", " + corEscolhidaPrincipal.g + ", " + corEscolhidaPrincipal.b + ")";
+    txtCorEscolhida.value = "rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
 
     project.addEventsToElements();
     drawingTools.addEventsToElements();
@@ -46,57 +43,46 @@ function colorPaint() {
     document.getElementById("bttCriarGrade").addEventListener("mousedown", () => createGridWindow.open());
 
     corPrincipal.addEventListener("click", function () {
-        if (janelaSelecionarCorVisivel) {
-            janelaSeleciona.procurarCor(corEscolhidaPrincipal);
-        }
+        if (janelaSelecionarCorVisivel) { janelaSeleciona.procurarCor(project.selectedColors.primary); }
         else {
             corPrincipalOuSecundaria = 1;
-            corAtual.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.r + ", " + corEscolhidaPrincipal.g + ", " + corEscolhidaPrincipal.b + ")";
-            janelaSeleciona.abrir(corEscolhidaPrincipal);
+            corAtual.style.backgroundColor = "rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
+            janelaSeleciona.abrir(project.selectedColors.primary);
         }
     });
 
     corSecundaria.addEventListener("click", function () {
-        if (janelaSelecionarCorVisivel) {
-            janelaSeleciona.procurarCor(corEscolhidaSecudaria);
-        }
+        if (janelaSelecionarCorVisivel) { janelaSeleciona.procurarCor(project.selectedColors.secondary); }
         else {
             corPrincipalOuSecundaria = 2;
-            corAtual.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.r + ", " + corEscolhidaSecudaria.g + ", " + corEscolhidaSecudaria.b + ")";
-            janelaSeleciona.abrir(corEscolhidaSecudaria);
+            corAtual.style.backgroundColor = "rgb(" + project.selectedColors.secondary.r + ", " + project.selectedColors.secondary.g + ", " + project.selectedColors.secondary.b + ")";
+            janelaSeleciona.abrir(project.selectedColors.secondary);
         }
     });
 
     document.getElementById("bttCoresPrincipais").addEventListener("mousedown", function () {//Coloca preto na corPrincipalEcolhida e branco na corSecundariaEscolhida.
-        if (janelaSelecionarCorVisivel === false) {
-            corEscolhidaPrincipal = { r: 0, g: 0, b: 0 };
-            drawingTools.toolProperties.color = corEscolhidaPrincipal;
-            corEscolhidaSecudaria = { r: 255, g: 255, b: 255 };
-            corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.r + ", " + corEscolhidaPrincipal.g + ", " + corEscolhidaPrincipal.b + ")";
-            corSecundaria.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.r + ", " + corEscolhidaSecudaria.g + ", " + corEscolhidaSecudaria.b + ")";
-            txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.r + ", " + corEscolhidaPrincipal.g + ", " + corEscolhidaPrincipal.b + ")";
+        if (!janelaSelecionarCorVisivel) {
+            project.selectedColors.primary = { r: 0, g: 0, b: 0 };
+            project.selectedColors.secondary = { r: 255, g: 255, b: 255 };
+            corPrincipal.style.backgroundColor = "rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
+            corSecundaria.style.backgroundColor = "rgb(" + project.selectedColors.secondary.r + ", " + project.selectedColors.secondary.g + ", " + project.selectedColors.secondary.b + ")";
+            txtCorEscolhida.value = "rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
         }
     });
 
-    document.getElementById("bttAlternaCor").addEventListener("mousedown", function () {//Alterna entre a corPrincipalEcolhida e a corSecundariaEscolhida.
-        if (janelaSelecionarCorVisivel === false) {
-            corPrincipal.style.backgroundColor = "rgb(" + corEscolhidaSecudaria.r + ", " + corEscolhidaSecudaria.g + ", " + corEscolhidaSecudaria.b + ")";
-            corSecundaria.style.backgroundColor = "rgb(" + corEscolhidaPrincipal.r + ", " + corEscolhidaPrincipal.g + ", " + corEscolhidaPrincipal.b + ")";
-            const cor = corEscolhidaPrincipal;
-            corEscolhidaPrincipal = corEscolhidaSecudaria;
-            drawingTools.toolProperties.color = corEscolhidaPrincipal
-            corEscolhidaSecudaria = cor;
-            txtCorEscolhida.value = "rgb(" + corEscolhidaPrincipal.r + ", " + corEscolhidaPrincipal.g + ", " + corEscolhidaPrincipal.b + ")";
+    document.getElementById("bttAlternaCor").addEventListener("mousedown", () => {
+        if (!janelaSelecionarCorVisivel) {
+            corPrincipal.style.backgroundColor = "rgb(" + project.selectedColors.secondary.r + ", " + project.selectedColors.secondary.g + ", " + project.selectedColors.secondary.b + ")";
+            corSecundaria.style.backgroundColor = "rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
+            const cor = project.selectedColors.primary;
+            project.selectedColors.primary = project.selectedColors.secondary;
+            project.selectedColors.secondary = cor;
+            txtCorEscolhida.value = "rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
         }
     });
 
-    document.getElementById("bttZoomMais").addEventListener("click", function () {//Aumentar o zoom no projeto.
-        project.zoom(true, true, 1.25);
-    });
-
-    document.getElementById("bttZoomMenos").addEventListener("click", function () {//Diminuir o zoom no projeto.
-        project.zoom(false, true, 1.25);
-    });
+    document.getElementById("bttZoomMais").addEventListener("mousedown", () => project.zoom(true, true, 1.25));
+    document.getElementById("bttZoomMenos").addEventListener("mousedown", () => project.zoom(false, true, 1.25));
 
     txtPorcentagemZoom.addEventListener("keyup", function (e) {
         if (e.code === "Enter" || e.keyCode === 13) {
@@ -122,8 +108,8 @@ function colorPaint() {
             const posContentTelas = pegarPosicaoMouse(contentTelas, e);
             const proporcaoPosY = drawingTools.mousePosition.y / project.properties.resolution.height;
             const proporcaoPosX = drawingTools.mousePosition.x / project.properties.resolution.width;
-            contentTelas.scrollTop = (contentTelas.scrollHeight * proporcaoPosY) - (posContentTelas.y) - 5;
-            contentTelas.scrollLeft = (contentTelas.scrollWidth * proporcaoPosX) - (posContentTelas.x) - 5;
+            contentTelas.scrollTop = (contentTelas.scrollHeight * proporcaoPosY) - posContentTelas.y;
+            contentTelas.scrollLeft = (contentTelas.scrollWidth * proporcaoPosX) - posContentTelas.x;
         }
     });
 
@@ -157,13 +143,11 @@ function criarOuAbrirProjeto() {
         carregar.remove();
         project.openProject();
         sessionStorage.setItem("abrirProjetoSalvo", "false");
-    }
-    else if (sessionStorage.getItem("criarNovoProjeto") === "true") {
+    } else if (sessionStorage.getItem("criarNovoProjeto") === "true") {
         carregar.remove();
         createProjectWindow.open();
         sessionStorage.setItem("criarNovoProjeto", "false");
-    }
-    else { carregamento(); }
+    } else { carregamento(); }
     function carregamento() {
         const logoCarregamento = document.getElementById("logoCarregamento");
         logoCarregamento.style.transition = "opacity 1.5s linear";
