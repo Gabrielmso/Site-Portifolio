@@ -94,7 +94,7 @@ function colorSelectionWindowObject() {
             if (position < 0) { position = 0; }
             else if (position > widthBar) { position = widthBar; }
             this.cursors.spectrum.el.style.top = "0px";
-            this.cursors.spectrum.el.style.left = position - 10 + "px";
+            this.cursors.spectrum.el.style.left = (position - 10) + "px";
             let h = ((position * 360) / widthBar);
             if (h === 360) { h = 0; }
             this.colorHsv = { h: h, s: 100, v: 100 };

@@ -163,6 +163,7 @@ function drawingToolsObject() {
         },
         mouseUpEventDrawing(e) {
             if (this.painting) {
+                this.painting = false;
                 if (this.selectedTool === 6) {//Conta-gotas.  
                     const mousePos = pegarPosicaoMouse(janelaPrincipal, e);
                     this.eyeDropper(mousePos.x, mousePos.y, this.mousePosition.x, this.mousePosition.y, false)
@@ -176,7 +177,7 @@ function drawingToolsObject() {
                 project.drawInLayer();
                 janelaPrincipal.style.cursor = "";
             }
-            this.painting = this.toolSizeBar.clicked = this.toolOpacityBar.clicked = this.toolHardnessBar.clicked = false;
+            this.toolSizeBar.clicked = this.toolOpacityBar.clicked = this.toolHardnessBar.clicked = false;
         },
         mouseMoveEventDrawing(e) {
             this.getCursorPosition(e);
@@ -391,13 +392,8 @@ function drawingToolsObject() {
             const pixel = project.drawComplete.getImageData(posTelaX, posTelaY, 1, 1).data;
             if (mouseMovendo) {
                 const compareColors = this.arrayTools[this.selectedTool].cursor.compareColors;
-                if (pixel[3] === 0) {
-                    const novaCor = "25px solid rgba(0, 0, 0, 0)";
-                    compareColors.style.borderRight = novaCor;
-                    compareColors.style.borderTop = novaCor;
-                    return;
-                }
-                const novaCor = "25px solid rgb(" + pixel[0] + ", " + pixel[1] + ", " + pixel[2] + ")";
+                let novaCor = "25px solid rgb(" + pixel[0] + ", " + pixel[1] + ", " + pixel[2] + ")";
+                if (pixel[3] === 0) { novaCor = "25px solid rgba(0, 0, 0, 0)"; }
                 compareColors.style.borderRight = novaCor;
                 compareColors.style.borderTop = novaCor;
             } else {
