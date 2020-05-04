@@ -1,15 +1,14 @@
 mudarMenu = false;
-let corPrincipal, corSecundaria, corPrincipalOuSecundaria;
-let createProjectWindow, project, drawingTools, previewFunctions, undoRedoChange, hotKeys, createGridWindow;
+let corPrincipal, corSecundaria;
+let createProjectWindow, project, drawingTools, previewFunctions, undoRedoChange, hotKeys, createGridWindow, colorSelectionWindow;
 let janelaPrincipal;
 let contentTelas;//Elemento onde ficará a "tela" para desenhar.
 let txtCorEscolhida;//Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
 let txtPorcentagemZoom;//Recebe a string com a porcentagem de zoom no "project.screen".
-let janelaSeleciona;//Recebe toda a função "janelaSeletorDeCor".
 function colorPaint() {
     createProjectWindow = createProjectWindowObject();
     project = projectObject();
-    janelaSeleciona = new janelaSeletorDeCor();
+    colorSelectionWindow = colorSelectionWindowObject();
     drawingTools = drawingToolsObject();
     previewFunctions = previewFunctionsObject();
     undoRedoChange = undoRedoChangeObject();
@@ -19,7 +18,6 @@ function colorPaint() {
     const contentTools = document.getElementById("contentTools");
     const barraLateralEsquerda = document.getElementById("barraLateralEsquerda");
     const barraLateralDireita = document.getElementById("barraLateralDireita");
-    const corAtual = document.getElementById("corAtual");
     const contentCentro = document.getElementById("contentCentro");
     janelaPrincipal = document.getElementById("janelaPrincipal");
     contentTelas = document.getElementById("contentTelas");
@@ -38,30 +36,23 @@ function colorPaint() {
     previewFunctions.addEventsToElements();
     undoRedoChange.addEventsToElements();
     hotKeys.addEventsToElements();
+    colorSelectionWindow.addEventsToElements();
 
     document.getElementById("bttCriarNovoProjeto").addEventListener("mousedown", () => createProjectWindow.open());
     document.getElementById("bttCriarGrade").addEventListener("mousedown", () => createGridWindow.open());
 
     corPrincipal.addEventListener("click", function () {
-        if (janelaSelecionarCorVisivel) { janelaSeleciona.procurarCor(project.selectedColors.primary); }
-        else {
-            corPrincipalOuSecundaria = 1;
-            corAtual.style.backgroundColor = "rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
-            janelaSeleciona.abrir(project.selectedColors.primary);
-        }
+        if (colorSelectionWindow.opened) { colorSelectionWindow.findColor(project.selectedColors.primary); }
+        else { colorSelectionWindow.open(1); }
     });
 
     corSecundaria.addEventListener("click", function () {
-        if (janelaSelecionarCorVisivel) { janelaSeleciona.procurarCor(project.selectedColors.secondary); }
-        else {
-            corPrincipalOuSecundaria = 2;
-            corAtual.style.backgroundColor = "rgb(" + project.selectedColors.secondary.r + ", " + project.selectedColors.secondary.g + ", " + project.selectedColors.secondary.b + ")";
-            janelaSeleciona.abrir(project.selectedColors.secondary);
-        }
+        if (colorSelectionWindow.opened) { colorSelectionWindow.findColor(project.selectedColors.secondary); }
+        else { colorSelectionWindow.open(2); }
     });
 
     document.getElementById("bttCoresPrincipais").addEventListener("mousedown", function () {//Coloca preto na corPrincipalEcolhida e branco na corSecundariaEscolhida.
-        if (!janelaSelecionarCorVisivel) {
+        if (!colorSelectionWindow.opened) {
             project.selectedColors.primary = { r: 0, g: 0, b: 0 };
             project.selectedColors.secondary = { r: 255, g: 255, b: 255 };
             corPrincipal.style.backgroundColor = "rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
@@ -71,7 +62,7 @@ function colorPaint() {
     });
 
     document.getElementById("bttAlternaCor").addEventListener("mousedown", () => {
-        if (!janelaSelecionarCorVisivel) {
+        if (!colorSelectionWindow.opened) {
             corPrincipal.style.backgroundColor = "rgb(" + project.selectedColors.secondary.r + ", " + project.selectedColors.secondary.g + ", " + project.selectedColors.secondary.b + ")";
             corSecundaria.style.backgroundColor = "rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
             const cor = project.selectedColors.primary;
@@ -84,7 +75,7 @@ function colorPaint() {
     document.getElementById("bttZoomMais").addEventListener("mousedown", () => project.zoom(true, true, 1.25));
     document.getElementById("bttZoomMenos").addEventListener("mousedown", () => project.zoom(false, true, 1.25));
 
-    txtPorcentagemZoom.addEventListener("keyup", function (e) {
+    txtPorcentagemZoom.addEventListener("keyup", (e) => {
         if (e.code === "Enter" || e.keyCode === 13) {
             const valor = parseFloat(((this.value).replace("%", "")).replace(",", "."));
             if (isNaN(valor) === false && valor >= 1) { project.zoom("porcentagem", true, valor); }
@@ -100,7 +91,7 @@ function colorPaint() {
         contentJanelaAtalhos.style.display = "none";
     });
 
-    document.getElementById("colorPaintContent").addEventListener("wheel", function (e) {//Zoom com o scroll do mouse.
+    document.getElementById("colorPaintContent").addEventListener("wheel", (e) => {//Zoom com o scroll do mouse.
         if (hotKeys.ctrlPressed) {
             e.preventDefault();
             if (e.deltaY < 0) { project.zoom(true, false, 1.10); }
@@ -196,3 +187,10 @@ function throttle(func, limit) {
         }
     }
 }
+
+document.addEventListener("keydown", function (e) {
+    if (e.code === "F5" && project.created) {
+        e.preventDefault();
+        return false;
+    }
+});

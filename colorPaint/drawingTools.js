@@ -95,7 +95,7 @@ function drawingToolsObject() {
             }
             for (let i = 0; i < this.arrayTools.length; i++) {
                 this.arrayTools[i].tool.addEventListener("click", () => {
-                    if (!janelaSelecionarCorVisivel) { this.selectDrawingTool(i); }
+                    if (!colorSelectionWindow.opened) { this.selectDrawingTool(i); }
                 });
             }
         },
@@ -163,7 +163,6 @@ function drawingToolsObject() {
         },
         mouseUpEventDrawing(e) {
             if (this.painting) {
-                this.painting = false;
                 if (this.selectedTool === 6) {//Conta-gotas.  
                     const mousePos = pegarPosicaoMouse(janelaPrincipal, e);
                     this.eyeDropper(mousePos.x, mousePos.y, this.mousePosition.x, this.mousePosition.y, false)
@@ -173,14 +172,11 @@ function drawingToolsObject() {
                     this.clickToCurve = !(this.clickToCurve);
                     if (this.strokeCoordinates.x.length === 2) { return; }
                 }
-                this.strokeCoordinates.x = [];
-                this.strokeCoordinates.y = [];
+                this.strokeCoordinates = { x: [], y: [] };
                 project.drawInLayer();
                 janelaPrincipal.style.cursor = "";
             }
-            this.toolOpacityBar.clicked = false;
-            this.toolSizeBar.clicked = false;
-            this.toolHardnessBar.clicked = false;
+            this.painting = this.toolSizeBar.clicked = this.toolOpacityBar.clicked = this.toolHardnessBar.clicked = false;
         },
         mouseMoveEventDrawing(e) {
             this.getCursorPosition(e);
@@ -228,8 +224,7 @@ function drawingToolsObject() {
             }
             if (this.selectedTool === 6) { document.getElementById("propriedadesFerramentas").style.display = "none"; }
             else { document.getElementById("propriedadesFerramentas").style.display = "block"; }
-            this.strokeCoordinates.x = [];
-            this.strokeCoordinates.y = [];
+            this.strokeCoordinates = { x: [], y: [] };
             this.clickToCurve = false;
             this.changeCursorTool();
             project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
@@ -410,7 +405,7 @@ function drawingToolsObject() {
                     alert("Nenhuma cor selecionada");
                     return;
                 }
-                if (janelaSelecionarCorVisivel) { janelaSeleciona.procurarCor({ r: pixel[0], g: pixel[1], b: pixel[2] }); }
+                if (colorSelectionWindow.opened) { colorSelectionWindow.findColor({ r: pixel[0], g: pixel[1], b: pixel[2] }); }
                 else {
                     project.selectedColors.primary = { r: pixel[0], g: pixel[1], b: pixel[2] };
                     this.toolProperties.color = project.selectedColors.primary;

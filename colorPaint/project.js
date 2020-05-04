@@ -6,7 +6,8 @@ function projectObject() {
             background: null,
             numberLayers: 0
         },
-        selectedColors: { primary: { r: 0, g: 0, b: 0 }, secondary: { r: 255, g: 255, b: 255 }},
+        selectedColors: { primary: { r: 0, g: 0, b: 0 }, secondary: { r: 255, g: 255, b: 255 } },
+        contentSavedColors: document.getElementById("coresSalvas"),
         savedColors: [],
         created: false,//Saber se um projeto foi criado.
         drawComplete: document.getElementById("desenho").getContext("2d"),
@@ -46,6 +47,56 @@ function projectObject() {
                     }
                 } else { this.openProject(); }
             });
+            document.getElementById("bttRemoverCorSalva").addEventListener("mousedown", () => this.removeColor());
+        },
+        saveColor(colorToSave) {
+            let savedColor = false, numSavedColor = this.savedColors.length;
+            if (numSavedColor === 0) { document.getElementById("bttRemoverCorSalva").style.display = "block"; }
+            for (let i = 0; i < numSavedColor; i++) {
+                const color = this.savedColors[i].color;
+                if (color.r === colorToSave.r && color.g === colorToSave.g && color.b === colorToSave.b) {
+                    savedColor = true;
+                    alert("Essa cor já está salva!");
+                }
+            }
+            if (!savedColor) {
+                const styleColor = "background-color: rgb(" + colorToSave.r + ", " + colorToSave.g + ", " + colorToSave.b + ");";
+                const id = "cor" + (numSavedColor), savedColorEl = document.createElement("div");
+                savedColorEl.setAttribute("id", id);
+                savedColorEl.setAttribute("class", "corSalva cursor");
+                savedColorEl.setAttribute("style", styleColor);
+                const savedColorObject = { id: numSavedColor, element: savedColorEl, color: colorToSave, selected: false }
+                this.savedColors.push(savedColorObject);
+                this.contentSavedColors.appendChild(savedColorEl);
+                this.savedColors[numSavedColor].element.addEventListener("mousedown", (e) => {
+                    if (!colorSelectionWindow.opened) {
+                        this.savedColors[numSavedColor].selected = true;
+                        this.savedColors[numSavedColor].element.style.boxShadow = "0px 0px 4px rgb(255, 255, 255)";
+                        this.selectedColors.primary = this.savedColors[numSavedColor].color;
+                        const styleColor = "rgb(" + this.selectedColors.primary.r + ", " + this.selectedColors.primary.g + ", " + this.selectedColors.primary.b + ")";
+                        corPrincipal.style.backgroundColor = styleColor;
+                        txtCorEscolhida.value = styleColor;
+                        for (let i = 0; i < this.savedColors.length; i++) {
+                            if (i != numSavedColor) {
+                                this.savedColors[i].selected = false;
+                                this.savedColors[i].element.style.boxShadow = "";
+                            }
+                        }
+                    } else { colorSelectionWindow.findColor(this.savedColors[numSavedColor].color); }
+                });
+            }
+        },
+        removeColor() {
+            if (!colorSelectionWindow.opened) {
+                let colorsToSave = [];
+                for (let i = 0; i < this.savedColors.length; i++) {
+                    if (!this.savedColors[i].selected) { colorsToSave.push(this.savedColors[i].color); }
+                    this.savedColors[i].element.remove();
+                }
+                this.savedColors = [];
+                for (let i = 0; i < colorsToSave.length; i++) { this.saveColor(colorsToSave[i]); }
+                if (this.savedColors.length === 0) { document.getElementById("bttRemoverCorSalva").style.display = "none"; }
+            }
         },
         zoom(zoom, centralize, quanto) {
             if (!this.created) { return; }
@@ -402,7 +453,7 @@ function projectObject() {
                     if (!objProjeto.camadas[i].visivel) { this.clickBttLook(i); };
                 }
             }
-            for (let i = 0; i < objProjeto.coresSalvas.length; i++) { janelaSeleciona.salvarCor(objProjeto.coresSalvas[i]); }
+            for (let i = 0; i < objProjeto.coresSalvas.length; i++) { this.saveColor(objProjeto.coresSalvas[i]); }
             grid.tamanho = objProjeto.grid.tamanho;
             grid.posicao = objProjeto.grid.posicao;
             if (objProjeto.grid.visivel) { criarGrid(grid.tela, grid.tamanho, grid.posicao, true); }

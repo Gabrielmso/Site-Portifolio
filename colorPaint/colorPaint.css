@@ -597,7 +597,7 @@ p {
     z-index: 0;
 }
 
-.preview{
+.preview {
     position: absolute;
     width: 100%;
     height: 100%;
@@ -632,7 +632,7 @@ p {
     width: 100%;
     height: 100%;
     padding-top: 3px;
-    padding-left: 24px;
+    padding-left: 20px;
 }
 
 #contentInfo input {
@@ -954,34 +954,12 @@ p {
     height: 255px;
 }
 
-#cursorGradiente {
-    top: -10px;
-    left: 420px;
-}
-
-#cursorGradiente div {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    border: 1px solid rgb(255, 255, 255);
-}
-
-#cursorBarra {
-    top: 272px;
-    left: 0px;
-}
-
-#cursorBarra div {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    border: 1px solid rgb(255, 255, 255);
-}
-
 #contentBarraeEspectroCor {
+    position: relative;
     width: 530px;
     height: 20px;
-    margin-bottom: 7px;
+    margin-top: 3px;
+    margin-bottom: 4px;
 }
 
 #barraeEspectroCor {
@@ -1003,11 +981,18 @@ p {
 
 .cursorSeletor {
     position: absolute;
-    display: inline-block;
+    z-index: 3;
     width: 20px;
     height: 20px;
     border-radius: 50%;
     border: 1px solid rgb(0, 0, 0);
+}
+
+.cursorSeletor div {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 1px solid rgb(255, 255, 255);
 }
 
 /* ============================================= FIM Seletor de cores ============================================= */
@@ -1060,7 +1045,7 @@ p {
     transform: rotate(45deg);
 }
 
-#cursorFerramenta{
+#cursorFerramenta {
     display: none;
     position: absolute;
     border-radius: 50%;
@@ -1074,7 +1059,7 @@ p {
     cursor: none;
 }
 
-#cursorFerramenta div{
+#cursorFerramenta div {
     position: relative;
     width: 100%;
     height: 100%;
