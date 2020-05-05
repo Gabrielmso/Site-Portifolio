@@ -34,7 +34,7 @@ function colorSelectionWindowObject() {
             });
             this.canvas.spectrum.canvas.parentNode.addEventListener("mousedown", (e) => {
                 this.cursors.spectrum.clicked = true;
-                this.moveCursorSpectrum(getMousePosition(e.currentTarget, e).x)
+                this.moveCursorSpectrum(getMousePosition(e.currentTarget, e).x);
             });
             this.canvas.gradient.canvas.parentNode.addEventListener("mousedown", (e) => {
                 this.cursors.gradient.clicked = true;

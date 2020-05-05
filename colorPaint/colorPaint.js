@@ -85,10 +85,12 @@ function colorPaint() {
     document.getElementById("bttAtalhos").addEventListener("click", () => {
         drawingTools.cursorTool.removeCursor();
         contentJanelaAtalhos.style.display = "flex";
+        backgroundBlur(true);
     });
     document.getElementById("bttOkAtalhos").addEventListener("click", () => {
         drawingTools.changeCursorTool();
         contentJanelaAtalhos.style.display = "none";
+        backgroundBlur(false);
     });
 
     document.getElementById("colorPaintContent").addEventListener("wheel", (e) => {//Zoom com o scroll do mouse.
@@ -194,3 +196,13 @@ document.addEventListener("keydown", function (e) {
         return false;
     }
 });
+
+function backgroundBlur(blur) {
+    if (blur) {
+        janelaPrincipal.style.filter = "blur(9px)";
+        colorSelectionWindow.window.style.filter = "blur(9px)";
+    } else {
+        janelaPrincipal.style.filter = "";
+        colorSelectionWindow.window.style.filter = "";
+    }
+}

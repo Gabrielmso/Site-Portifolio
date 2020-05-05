@@ -10,6 +10,8 @@ function createProjectWindowObject() {
                 this.contentWindow.style.display = "flex";
                 this.buttons.create.addEventListener("mousedown", () => this.validateProperties());
                 this.buttons.cancel.addEventListener("mousedown", () => this.close());
+                backgroundBlur(true);
+                drawingTools.cursorTool.removeCursor();
             } else {
                 if (confirm("Todo o progresso não salvo será perdido, deseja continuar?")) {
                     sessionStorage.setItem("criarNovoProjeto", "true");
@@ -21,6 +23,8 @@ function createProjectWindowObject() {
             this.buttons.create = cloneReplaceElement(this.buttons.create);
             this.buttons.cancel = cloneReplaceElement(this.buttons.cancel);
             this.contentWindow.style.display = "none";
+            backgroundBlur(false);
+            drawingTools.changeCursorTool();
         },
         validateProperties() {
             const arrayProperties = [document.getElementById("txtNomeProjeto"),
