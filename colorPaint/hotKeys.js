@@ -8,7 +8,7 @@ function hotKeysObject() {
             document.addEventListener("keydown", (e) => this.keyDownEvent(e));
             document.addEventListener("keyup", (e) => this.keyUpEvent(e));
             document.addEventListener("mouseup", (e) => this.mouseUpMoveDraw(e));
-            telasCanvas.addEventListener("mousedown", (e) => this.mouseDownMoveDraw(e));
+            project.screen.addEventListener("mousedown", (e) => this.mouseDownMoveDraw(e));
             document.addEventListener("mousemove", (e) => this.mouseMoveMoveDraw(e));
         },
         keyDownEvent(e) {
@@ -76,13 +76,13 @@ function hotKeysObject() {
         keyDownSpace() {
             if (this.spacePressed === false) {
                 this.spacePressed = true;
-                telasCanvas.style.cursor = "grab";
+                project.screen.style.cursor = "grab";
                 drawingTools.cursorTool.cursor.style.display = "none";
             }
         },
         keyUpSpace() {
             this.spacePressed = false;
-            telasCanvas.style.cursor = "";
+            project.screen.style.cursor = "";
             if (drawingTools.cursorTool.show) { drawingTools.cursorTool.cursor.style.display = "block"; }
         },
         moveDrawWithSpace(mousePosition) {
@@ -94,7 +94,7 @@ function hotKeysObject() {
         mouseDownMoveDraw(e) {
             if (this.spacePressed) {
                 this.infoMoveDrawWithSpace = { move: true, startCoordinate: pegarPosicaoMouse(contentTelas, e), scroolTop: contentTelas.scrollTop, scrollLeft: contentTelas.scrollLeft };
-                telasCanvas.style.cursor = "grabbing";
+                e.currentTarget.style.cursor = "grabbing";
             }
         },
         mouseMoveMoveDraw(e) {
@@ -103,7 +103,7 @@ function hotKeysObject() {
         mouseUpMoveDraw(e) {
             if (this.spacePressed) {
                 this.infoMoveDrawWithSpace = { move: false, startCoordinate: null, scroolTop: null, scrollLeft: null };
-                telasCanvas.style.cursor = "grab";
+                project.screen.style.cursor = "grab";
             }
         },
         changeToolSizeHotKey(increase) {

@@ -47,7 +47,7 @@ function previewFunctionsObject() {
             this.ctxTelaPreview.canvas.height = Math.round(this.contentTelaPreview.offsetHeight * 1.5);
         },
         changeMoverScrollSizeZoom() {//De acordo com o zoom que é dado muda o tamanho do "moverScroll".
-            const tamanhoTelasCanvas = { x: telasCanvas.offsetWidth, y: telasCanvas.offsetHeight },
+            const tamanhoTelasCanvas = { x: project.screen.offsetWidth, y: project.screen.offsetHeight },
                 tamanhoContentTelas = { x: contentTelas.offsetWidth, y: contentTelas.offsetHeight },
                 tamanhoContentTelaPreview = { x: this.contentTelaPreview.offsetWidth, y: this.contentTelaPreview.offsetHeight };
             if (tamanhoTelasCanvas.x <= (tamanhoContentTelas.x - 10) && tamanhoTelasCanvas.y <= (tamanhoContentTelas.y - 10)) {

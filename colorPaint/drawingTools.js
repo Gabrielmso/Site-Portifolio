@@ -100,9 +100,9 @@ function drawingToolsObject() {
             }
         },
         getCursorPosition(e) {
-            const mouse = pegarPosicaoMouse(telasCanvas, e);
-            this.mousePosition.x = parseFloat(((project.properties.resolution.width / telasCanvas.offsetWidth) * mouse.x).toFixed(1));
-            this.mousePosition.y = parseFloat(((project.properties.resolution.height / telasCanvas.offsetHeight) * mouse.y).toFixed(1));
+            const mouse = pegarPosicaoMouse(project.screen, e);
+            this.mousePosition.x = parseFloat(((project.properties.resolution.width / project.screen.offsetWidth) * mouse.x).toFixed(1));
+            this.mousePosition.y = parseFloat(((project.properties.resolution.height / project.screen.offsetHeight) * mouse.y).toFixed(1));
             if (this.cursorTool.show) {
                 const posX = e.pageX - this.cursorTool.halfSize + document.body.scrollLeft,
                     posY = e.pageY - this.cursorTool.halfSize + document.body.scrollTop;
@@ -292,7 +292,7 @@ function drawingToolsObject() {
                 contentTelas.style.cursor = "url('colorPaint/imagens/cursor/cursorBaldeDeTinta.png') 0 0, pointer";
                 return;
             }
-            const tamanho = this.toolProperties.size * ((telasCanvas.offsetWidth) / project.properties.resolution.width);
+            const tamanho = this.toolProperties.size * ((project.screen.offsetWidth) / project.properties.resolution.width);
             if (tamanho < 15) {
                 this.cursorTool.removeCursor();
                 contentTelas.style.cursor = "url('colorPaint/imagens/cursor/crossHair.png') 12.5 12.5, pointer";
