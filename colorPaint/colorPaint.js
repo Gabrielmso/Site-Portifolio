@@ -96,7 +96,7 @@ function colorPaint() {
             e.preventDefault();
             if (e.deltaY < 0) { project.zoom(true, false, 1.10); }
             else { project.zoom(false, false, 1.10); }
-            const posContentTelas = pegarPosicaoMouse(contentTelas, e);
+            const posContentTelas = getMousePosition(contentTelas, e);
             const proporcaoPosY = drawingTools.mousePosition.y / project.properties.resolution.height;
             const proporcaoPosX = drawingTools.mousePosition.x / project.properties.resolution.width;
             contentTelas.scrollTop = (contentTelas.scrollHeight * proporcaoPosY) - posContentTelas.y;
@@ -163,7 +163,7 @@ function criarOuAbrirProjeto() {
     }
 }
 
-function pegarPosicaoMouse(elemento, e) {
+function getMousePosition(elemento, e) {
     const pos = elemento.getBoundingClientRect();
     return { x: e.clientX - pos.left, y: e.clientY - pos.top }
 }

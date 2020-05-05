@@ -6,7 +6,7 @@ function colorSelectionWindowObject() {
         colorHsv: { h: 0, s: 100, v: 100 },
         compareColors: { current: document.getElementById("corAtual"), selected: document.getElementById("corSelecionada") },
         window: document.getElementById("janelaSelecionarCor"),
-        clickMoveWindow: false,
+        barMoveWindow: { el: document.getElementById("barraMoverJanela"), clicked: false },
         inputs: { txtRgb: document.getElementById("codRGB"), txtHex: document.getElementById("codHEX") },
         buttons: {
             ok: document.getElementById("bttOkSelecionaCor"),
@@ -21,53 +21,52 @@ function colorSelectionWindowObject() {
             spectrum: { el: document.getElementById("cursorBarra"), clicked: false },
             gradient: { el: document.getElementById("cursorGradiente"), position: { x: 0, y: 0 }, clicked: false }
         },
-        mousePosition: { x: 0, y: 0 },
         mousePositionMoveWindow: { x: 0, y: 0 },
         addEventsToElements() {
             this.window.addEventListener("mousemove", (e) => this.moveCursors(e));
-            this.window.addEventListener("mousedown", (e) => {
-                if (!this.cursors.spectrum.clicked && !this.cursors.gradient.clicked && this.mousePosition.y < 10) {
-                    this.clickMoveWindow = true;
-                    this.mousePositionMoveWindow = pegarPosicaoMouse(e.currentTarget, e);
-                }
-            });
             document.addEventListener("mouseup", () => {
                 if (!this.opened) { return; }
-                this.cursors.spectrum.clicked = this.cursors.gradient.clicked = this.clickMoveWindow = false;
+                this.cursors.spectrum.clicked = this.cursors.gradient.clicked = this.barMoveWindow.clicked = false;
             });
             document.addEventListener("mousemove", (e) => {
                 if (!this.opened) { return; }
-                if (this.clickMoveWindow) { this.moveWindow(pegarPosicaoMouse(janelaPrincipal, e)); }
+                if (this.barMoveWindow.clicked) { this.moveWindow(getMousePosition(janelaPrincipal, e), true); }
             });
             this.canvas.spectrum.canvas.parentNode.addEventListener("mousedown", (e) => {
                 this.cursors.spectrum.clicked = true;
-                this.moveCursorSpectrum(pegarPosicaoMouse(e.currentTarget, e).x)
+                this.moveCursorSpectrum(getMousePosition(e.currentTarget, e).x)
             });
             this.canvas.gradient.canvas.parentNode.addEventListener("mousedown", (e) => {
                 this.cursors.gradient.clicked = true;
-                this.moveCursorGradient(pegarPosicaoMouse(e.currentTarget, e));
+                this.moveCursorGradient(getMousePosition(e.currentTarget, e));
             });
         },
         removeEventsToElements() {
+            this.barMoveWindow.el = cloneReplaceElement(this.barMoveWindow.el);
             this.inputs.txtRgb = cloneReplaceElement(this.inputs.txtRgb);
             this.inputs.txtHex = cloneReplaceElement(this.inputs.txtHex);
             this.buttons.ok = cloneReplaceElement(this.buttons.ok);
             this.buttons.saveColor = cloneReplaceElement(this.buttons.saveColor);
             this.buttons.cancel = cloneReplaceElement(this.buttons.cancel);
         },
-        moveWindow(mousePosition) {
-            let newPositionX = mousePosition.x - this.mousePositionMoveWindow.x,
-                newPositionY = mousePosition.y - this.mousePositionMoveWindow.y;
-            if (newPositionX < 0) { newPositionX = 0; }
-            else if (newPositionX + this.window.offsetWidth > janelaPrincipal.offsetWidth) {
-                newPositionX = janelaPrincipal.offsetWidth - this.window.offsetWidth;
+        moveWindow(mousePosition, move) {
+            if (move) {
+                let newPositionX = mousePosition.x - this.mousePositionMoveWindow.x,
+                    newPositionY = mousePosition.y - this.mousePositionMoveWindow.y;
+                if (newPositionX < 0) { newPositionX = 0; }
+                else if (newPositionX + this.window.offsetWidth > janelaPrincipal.offsetWidth) {
+                    newPositionX = janelaPrincipal.offsetWidth - this.window.offsetWidth;
+                }
+                if (newPositionY < 50) { newPositionY = 50 }
+                else if (newPositionY + this.window.offsetHeight > janelaPrincipal.offsetHeight) {
+                    newPositionY = janelaPrincipal.offsetHeight - this.window.offsetHeight;
+                }
+                this.window.style.left = newPositionX + "px";
+                this.window.style.top = newPositionY + "px";
+            } else {
+                this.barMoveWindow.clicked = true;
+                this.mousePositionMoveWindow = mousePosition;
             }
-            if (newPositionY < 50) { newPositionY = 50 }
-            else if (newPositionY + this.window.offsetHeight > janelaPrincipal.offsetHeight) {
-                newPositionY = janelaPrincipal.offsetHeight - this.window.offsetHeight;
-            }
-            this.window.style.left = newPositionX + "px";
-            this.window.style.top = newPositionY + "px";
         },
         findColor(color) {
             this.paintSpectrum();
@@ -82,8 +81,8 @@ function colorSelectionWindowObject() {
             this.moveCursorGradient({ x: posx, y: posy });
         },
         moveCursors(e) {
-            if (this.cursors.gradient.clicked) { this.moveCursorGradient(pegarPosicaoMouse(this.canvas.gradient.canvas, e)); }
-            else if (this.cursors.spectrum.clicked) { this.moveCursorSpectrum(pegarPosicaoMouse(this.canvas.spectrum.canvas, e).x); }
+            if (this.cursors.gradient.clicked) { this.moveCursorGradient(getMousePosition(this.canvas.gradient.canvas, e)); }
+            else if (this.cursors.spectrum.clicked) { this.moveCursorSpectrum(getMousePosition(this.canvas.spectrum.canvas, e).x); }
         },
         moveCursorSpectrum(position) {
             const widthBar = this.canvas.spectrum.canvas.offsetWidth;
@@ -143,6 +142,7 @@ function colorSelectionWindowObject() {
             }
         },
         open(num) {
+            this.barMoveWindow.el.addEventListener("mousedown", (e) => this.moveWindow(getMousePosition(e.currentTarget, e), false));
             this.inputs.txtRgb.addEventListener("keyup", (e) => this.txtRgbKeyUp(e));
             this.inputs.txtHex.addEventListener("keyup", (e) => this.txtHexKeyUp(e));
             this.buttons.ok.addEventListener("mousedown", () => this.selectColor())

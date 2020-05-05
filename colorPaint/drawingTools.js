@@ -100,7 +100,7 @@ function drawingToolsObject() {
             }
         },
         getCursorPosition(e) {
-            const mouse = pegarPosicaoMouse(project.screen, e);
+            const mouse = getMousePosition(project.screen, e);
             this.mousePosition.x = parseFloat(((project.properties.resolution.width / project.screen.offsetWidth) * mouse.x).toFixed(1));
             this.mousePosition.y = parseFloat(((project.properties.resolution.height / project.screen.offsetHeight) * mouse.y).toFixed(1));
             if (this.cursorTool.show) {
@@ -150,7 +150,7 @@ function drawingToolsObject() {
                     const corAtual = "25px solid rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
                     this.arrayTools[this.selectedTool].cursor.compareColors.style.borderLeft = corAtual;
                     this.arrayTools[this.selectedTool].cursor.compareColors.style.borderBottom = corAtual;
-                    const mousePos = pegarPosicaoMouse(janelaPrincipal, e);
+                    const mousePos = getMousePosition(janelaPrincipal, e);
                     this.eyeDropper(mousePos.x, mousePos.y, this.mousePosition.x, this.mousePosition.y, true);
                 } else if (this.selectedTool === 7) {//Balde de tinta.
                     if (this.mousePosition.x >= 0 && this.mousePosition.x <= project.properties.resolution.width && this.mousePosition.y >= 0 && this.mousePosition.y <= project.properties.resolution.height) {
@@ -165,7 +165,7 @@ function drawingToolsObject() {
             if (this.painting) {
                 this.painting = false;
                 if (this.selectedTool === 6) {//Conta-gotas.  
-                    const mousePos = pegarPosicaoMouse(janelaPrincipal, e);
+                    const mousePos = getMousePosition(janelaPrincipal, e);
                     this.eyeDropper(mousePos.x, mousePos.y, this.mousePosition.x, this.mousePosition.y, false)
                     this.arrayTools[this.selectedTool].cursor.eyeDropper.style.display = "none";
                     return;
@@ -194,7 +194,7 @@ function drawingToolsObject() {
                 } else if (this.selectedTool === 5) {//Curva;
                     this.curve(this.mousePosition.x, this.mousePosition.y, this.clickToCurve);
                 } else if (this.selectedTool === 6) {//Conta-gotas.
-                    const mousePos = pegarPosicaoMouse(janelaPrincipal, e);
+                    const mousePos = getMousePosition(janelaPrincipal, e);
                     this.eyeDropper(mousePos.x, mousePos.y, this.mousePosition.x, this.mousePosition.y, true)
                 }
             } else if (this.toolSizeBar.clicked) { this.changeToolSize(e); }
@@ -231,7 +231,7 @@ function drawingToolsObject() {
             project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
         },
         changeToolSize(e) {
-            let mousePos = pegarPosicaoMouse(this.toolSizeBar.bar, e), width = this.toolSizeBar.bar.offsetWidth;
+            let mousePos = getMousePosition(this.toolSizeBar.bar, e), width = this.toolSizeBar.bar.offsetWidth;
             mousePos.x = Math.round(mousePos.x);
             if (mousePos.x <= 0) {
                 mousePos.x = 0.5;
@@ -245,7 +245,7 @@ function drawingToolsObject() {
             this.changeCursorTool();
         },
         changeToolOpacity(e) {
-            const mousePos = pegarPosicaoMouse(this.toolOpacityBar.bar, e), width = this.toolOpacityBar.bar.offsetWidth;
+            const mousePos = getMousePosition(this.toolOpacityBar.bar, e), width = this.toolOpacityBar.bar.offsetWidth;
             let percentage = Math.round((mousePos.x * 100) / width);
             if (mousePos.x <= 1) {
                 percentage = 1;
@@ -258,7 +258,7 @@ function drawingToolsObject() {
             this.toolProperties.opacity = percentage / 100;
         },
         changeToolHardness(e) {
-            const mousePos = pegarPosicaoMouse(this.toolHardnessBar.bar, e), width = this.toolHardnessBar.bar.offsetWidth;
+            const mousePos = getMousePosition(this.toolHardnessBar.bar, e), width = this.toolHardnessBar.bar.offsetWidth;
             let percentage = Math.round((mousePos.x * 100) / width);
             if (mousePos.x < 1) {
                 percentage = 0;

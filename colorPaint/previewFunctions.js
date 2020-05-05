@@ -14,17 +14,15 @@ function previewFunctionsObject() {
             if (!project.created) { return };
             this.moverScrollPreview = true;
             this.moverScroll.style.cursor = "grabbing";
-            const mousePos = pegarPosicaoMouse(this.contentTelaPreview, e);
-            this.mouseMoveMoverScroll(mousePos.x, mousePos.y);
+            this.mouseMoveMoverScroll(getMousePosition(this.contentTelaPreview, e));
         },
         mouseUpPreview(e) {
             this.moverScrollPreview = false;
             this.moverScroll.style.cursor = "grab";
         },
         mouseMovePreview(e) {
-            if (this.moverScrollPreview === false) { return; }
-            const mousePos = pegarPosicaoMouse(this.contentTelaPreview, e);
-            this.mouseMoveMoverScroll(mousePos.x, mousePos.y);
+            if (!this.moverScrollPreview) { return; }
+            this.mouseMoveMoverScroll(getMousePosition(this.contentTelaPreview, e));
         },
         scrollContentTelas() {
             const mult = (contentTelas.scrollHeight - 12) / (this.contentTelaPreview.offsetHeight);
@@ -70,17 +68,17 @@ function previewFunctionsObject() {
                 this.moverScroll.style.height = Math.floor(tamanhoContentTelaPreview.y * proporcaoTamanhoY) + "px";;
             }
         },
-        mouseMoveMoverScroll(mouseX, mouseY) {//Mover o "moverScroll" com o mouse.
+        mouseMoveMoverScroll(mousePos) {//Mover o "moverScroll" com o mouse.
             const metadeLargura = this.moverScroll.offsetWidth / 2, metadeAltura = this.moverScroll.offsetHeight / 2,
                 contentTelaPreview = this.contentTelaPreview;
-            if (mouseX <= metadeLargura) { this.moverScroll.style.left = "0px"; }
-            else if (mouseX >= contentTelaPreview.offsetWidth - metadeLargura) {
+            if (mousePos.x <= metadeLargura) { this.moverScroll.style.left = "0px"; }
+            else if (mousePos.x >= contentTelaPreview.offsetWidth - metadeLargura) {
                 this.moverScroll.style.left = contentTelaPreview.offsetWidth - (metadeLargura * 2) + "px";
-            } else { this.moverScroll.style.left = mouseX - (Math.floor(metadeLargura)) + "px"; }
-            if (mouseY <= metadeAltura) { this.moverScroll.style.top = "0px"; }
-            else if (mouseY >= contentTelaPreview.offsetHeight - (Math.floor(metadeAltura))) {
+            } else { this.moverScroll.style.left = mousePos.x - (Math.floor(metadeLargura)) + "px"; }
+            if (mousePos.y <= metadeAltura) { this.moverScroll.style.top = "0px"; }
+            else if (mousePos.y >= contentTelaPreview.offsetHeight - (Math.floor(metadeAltura))) {
                 this.moverScroll.style.top = contentTelaPreview.offsetHeight - (metadeAltura * 2) + "px";
-            } else { this.moverScroll.style.top = mouseY - (Math.floor(metadeAltura)) + "px"; }
+            } else { this.moverScroll.style.top = mousePos.y - (Math.floor(metadeAltura)) + "px"; }
             this.changeScrollsContentTelas(this.moverScroll.offsetTop, this.moverScroll.offsetLeft);
         },
         changeScrollsContentTelas(topPos, leftPos) {//Mudar o valor dos Scroll's do contentTelas movendo o "moverScroll".

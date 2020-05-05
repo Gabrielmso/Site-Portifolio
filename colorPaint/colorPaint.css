@@ -882,6 +882,15 @@ p {
 
 /* ============================================= Seletor de cores ============================================= */
 
+#barraMoverJanela {
+    position: absolute;
+    width: 100%;
+    height: 10px;
+    top: 0px;
+    left: 0px;
+    cursor: move;
+}
+
 #janelaSelecionarCor {
     position: absolute;
     display: none;
