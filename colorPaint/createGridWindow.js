@@ -19,21 +19,21 @@ function createGridWindowObject() {
         },
         addEventsToElements() {
             this.inputs.size.addEventListener("change", (e) => {
-                const num = parseInt(e.target.value);
+                const num = parseInt(e.currentTarget.value);
                 if (!isNaN(num) && num > 0) {
                     this.gridProprieties.size = num;
                     this.createGrid(true);
                 }
             });
             this.inputs.horizontalPosition.addEventListener("change", (e) => {
-                const num = parseInt(e.target.value);
+                const num = parseInt(e.currentTarget.value);
                 if (!isNaN(num)) {
                     this.gridProprieties.position.x = num;
                     this.createGrid(true);
                 }
             });
             this.inputs.verticalPosition.addEventListener("change", (e) => {
-                const num = parseInt(e.target.value);
+                const num = parseInt(e.currentTarget.value);
                 if (!isNaN(num)) {
                     this.gridProprieties.position.y = num;
                     this.createGrid(true);

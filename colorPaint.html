@@ -19,10 +19,10 @@
     <script src="colorPaint/project.js"></script>
     <script src="colorPaint/colorSelectionWindow.js"></script>
     <script src="colorPaint/drawingTools.js"></script>
-    <script src="colorPaint/previewFunctions.js"></script>         
+    <script src="colorPaint/previewFunctions.js"></script>
     <script src="colorPaint/undoRedoChange.js"></script>
-    <script src="colorPaint/hotKeys.js"></script>   
-    <script src="colorPaint/createGridWindow.js"></script>   
+    <script src="colorPaint/hotKeys.js"></script>
+    <script src="colorPaint/createGridWindow.js"></script>
     <script>
         window.onload = () => {
             topoMenu();
@@ -253,7 +253,7 @@
                             <label>Cor do primeiro plano: </label><input id="txtCorEscolhida" type="text" readonly><br>
                         </div>
                     </div>
-                    <div id="janelaCamadas" style="margin-bottom: 0px;"class="janelasBarraLateralDireita">
+                    <div id="janelaCamadas" style="margin-bottom: 0px;" class="janelasBarraLateralDireita">
                         <label class="titulosBarraDireita">Camadas:</label>
                         <div id="contentIconeCamadas">
                         </div>
@@ -384,28 +384,32 @@
         </div>
         <!-- ================================ JANELA PARA SELECIONAR COR ========================== -->
         <section id="janelaSelecionarCor">
-            <div id="comparaCorAtualEEscolhida">
-                <div id="corSelecionada" class="noSelection"></div>
-                <div id="corAtual" class="noSelection"></div>
-            </div>
-            <div id="contentGradienteCor" class="noSelection">
-                <canvas id="gradienteCor" width="430" height="255"></canvas>
-                <div id="cursorGradiente" class="cursorSeletor">
-                    <div></div>
+            <div>
+                <div id="comparaCorAtualEEscolhida">
+                    <div id="corSelecionada" class="noSelection"></div>
+                    <div id="corAtual" class="noSelection"></div>
                 </div>
-            </div>
-            <div id="contentBarraeEspectroCor" class="noSelection">
-                <canvas id="barraeEspectroCor" width="530" height="20"></canvas>
-                <div id="cursorBarra" class="cursorSeletor">
-                    <div></div>
+                <div id="contentGradienteCor" class="noSelection">
+                    <canvas id="gradienteCor" class="canvasSelecionarCor" width="440" height="255"></canvas>
+                    <div id="cursorGradiente" class="cursorSeletor">
+                        <div></div>
+                    </div>
                 </div>
-            </div>
-            <label class="noSelection">RGB:</label><input id="codRGB" type="text">
-            <label class="noSelection">HEX:</label><input id="codHEX" type="text">
-            <div id="bttsSelecionarCor">
-                <button id="bttOkSelecionaCor" class="bttColorPaint cursor noSelection">Ok</button>
-                <button id="bttSalvarCor" class="bttColorPaint cursor noSelection">Salvar cor</button>
-                <button id="bttCancelarSelecionaCor" class="bttColorPaint cursor noSelection">Cancelar</button>
+                <div id="contentBarraeEspectroCor" class="noSelection">
+                    <canvas id="barraeEspectroCor" class="canvasSelecionarCor" width="540" height="20"></canvas>
+                    <div id="cursorBarra" class="cursorSeletor">
+                        <div></div>
+                    </div>
+                </div>
+                <div id="InputsjanelaSelecionarCor">
+                    <label class="noSelection">RGB:</label><input id="codRGB" type="text" style="margin-right: 18px;">
+                    <label class="noSelection">HEX:</label><input id="codHEX" type="text">
+                </div>
+                <div class="bttsJanela">
+                    <button id="bttOkSelecionaCor" class="bttColorPaint cursor noSelection">Ok</button>
+                    <button id="bttSalvarCor" class="bttColorPaint cursor noSelection">Salvar cor</button>
+                    <button id="bttCancelarSelecionaCor" class="bttColorPaint cursor noSelection">Cancelar</button>
+                </div>
             </div>
         </section>
         <!-- ================================FIM JANELA PARA SELECIONAR COR========================== -->

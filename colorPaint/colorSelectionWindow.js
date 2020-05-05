@@ -26,10 +26,10 @@ function colorSelectionWindowObject() {
         addEventsToElements() {
             this.window.addEventListener("mousemove", (e) => this.moveCursors(e));
             this.window.addEventListener("mousedown", (e) => {
-                if (!this.cursors.spectrum.clicked && !this.cursors.gradient.clicked) {
+                if (!this.cursors.spectrum.clicked && !this.cursors.gradient.clicked && this.mousePosition.y < 10) {
                     this.clickMoveWindow = true;
-                    this.mousePositionMoveWindow = this.mousePosition;
-                } else { this.moveCursors(e); }
+                    this.mousePositionMoveWindow = pegarPosicaoMouse(e.currentTarget, e);
+                }
             });
             document.addEventListener("mouseup", () => {
                 if (!this.opened) { return; }
@@ -37,10 +37,15 @@ function colorSelectionWindowObject() {
             });
             document.addEventListener("mousemove", (e) => {
                 if (!this.opened) { return; }
-                if (this.clickMoveWindow && this.mousePosition.y < 10) {
-                    const mousePos = pegarPosicaoMouse(janelaPrincipal, e);
-                    this.moveWindow(mousePos);
-                }
+                if (this.clickMoveWindow) { this.moveWindow(pegarPosicaoMouse(janelaPrincipal, e)); }
+            });
+            this.canvas.spectrum.canvas.parentNode.addEventListener("mousedown", (e) => {
+                this.cursors.spectrum.clicked = true;
+                this.moveCursorSpectrum(pegarPosicaoMouse(e.currentTarget, e).x)
+            });
+            this.canvas.gradient.canvas.parentNode.addEventListener("mousedown", (e) => {
+                this.cursors.gradient.clicked = true;
+                this.moveCursorGradient(pegarPosicaoMouse(e.currentTarget, e));
             });
         },
         removeEventsToElements() {
@@ -49,10 +54,6 @@ function colorSelectionWindowObject() {
             this.buttons.ok = cloneReplaceElement(this.buttons.ok);
             this.buttons.saveColor = cloneReplaceElement(this.buttons.saveColor);
             this.buttons.cancel = cloneReplaceElement(this.buttons.cancel);
-            this.cursors.spectrum.el = cloneReplaceElement(this.cursors.spectrum.el);
-            this.cursors.gradient.el = cloneReplaceElement(this.cursors.gradient.el);
-            this.canvas.spectrum = cloneReplaceElement(this.canvas.spectrum.canvas).getContext("2d");
-            this.canvas.gradient = cloneReplaceElement(this.canvas.gradient.canvas).getContext("2d");
         },
         moveWindow(mousePosition) {
             let newPositionX = mousePosition.x - this.mousePositionMoveWindow.x,
@@ -81,13 +82,8 @@ function colorSelectionWindowObject() {
             this.moveCursorGradient({ x: posx, y: posy });
         },
         moveCursors(e) {
-            if (this.cursors.gradient.clicked) {
-                this.mousePosition = pegarPosicaoMouse(this.canvas.gradient.canvas, e);
-                this.moveCursorGradient(this.mousePosition);
-            } else if (this.cursors.spectrum.clicked) {
-                this.mousePosition = pegarPosicaoMouse(this.canvas.spectrum.canvas, e);
-                this.moveCursorSpectrum(this.mousePosition.x);
-            } else if (!this.clickMoveWindow) { this.mousePosition = pegarPosicaoMouse(this.window, e); }
+            if (this.cursors.gradient.clicked) { this.moveCursorGradient(pegarPosicaoMouse(this.canvas.gradient.canvas, e)); }
+            else if (this.cursors.spectrum.clicked) { this.moveCursorSpectrum(pegarPosicaoMouse(this.canvas.spectrum.canvas, e).x); }
         },
         moveCursorSpectrum(position) {
             const widthBar = this.canvas.spectrum.canvas.offsetWidth;
@@ -128,7 +124,7 @@ function colorSelectionWindowObject() {
             this.selectedColor = cor;
         },
         txtRgbKeyUp(e) {
-            let codColor = e.target.value;
+            let codColor = e.currentTarget.value;
             codColor = codColor.split(",") || codColor.split(", ");
             for (let i = 0; i < codColor.length; i++) { codColor[i] = parseInt(codColor[i]); }
             if (codColor.length === 3) {
@@ -138,7 +134,7 @@ function colorSelectionWindowObject() {
             }
         },
         txtHexKeyUp(e) {
-            let codCorHEX = e.target.value;
+            let codCorHEX = e.currentTarget.value;
             if (codCorHEX.indexOf("#") === -1) { codCorHEX = "#" + codCorHEX; }
             let codColor = this.hexToRgb(codCorHEX);
             if (codColor === null) { return; }
@@ -152,17 +148,13 @@ function colorSelectionWindowObject() {
             this.buttons.ok.addEventListener("mousedown", () => this.selectColor())
             this.buttons.saveColor.addEventListener("mousedown", () => project.saveColor(this.selectedColor));
             this.buttons.cancel.addEventListener("mousedown", () => this.close());
-            this.canvas.spectrum.canvas.addEventListener("mousedown", () => this.cursors.spectrum.clicked = true);
-            this.cursors.spectrum.el.addEventListener("mousedown", () => this.cursors.spectrum.clicked = true);
-            this.canvas.gradient.canvas.addEventListener("mousedown", () => this.cursors.gradient.clicked = true);
-            this.cursors.gradient.el.addEventListener("mousedown", () => this.cursors.gradient.clicked = true);
             this.primaryOrSecondary = num;
             this.cursors.spectrum.clicked = this.cursors.gradient.clicked = this.clickMoveWindow = false;
             let color;
             if (this.primaryOrSecondary === 1) { color = project.selectedColors.primary; }
             else if (this.primaryOrSecondary === 2) { color = project.selectedColors.secondary; }
             drawingTools.previousTool = drawingTools.selectedTool;
-            drawingTools.arrayTools[6].tool.click();//Mudar para a ferramenta Conta-gotas.
+            drawingTools.selectDrawingTool(6);//Mudar para a ferramenta Conta-gotas.
             this.window.style.display = "block";
             this.opened = true;
             this.compareColors.current.style.backgroundColor = "rgb(" + color.r + ", " + color.g + ", " + color.b + ")";
@@ -171,7 +163,7 @@ function colorSelectionWindowObject() {
         close() {
             this.removeEventsToElements();
             this.opened = false;
-            drawingTools.arrayTools[drawingTools.previousTool].tool.click();
+            drawingTools.selectDrawingTool(drawingTools.previousTool);
             this.window.style.display = "none";
         },
         selectColor() {

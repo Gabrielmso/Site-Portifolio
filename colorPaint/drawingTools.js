@@ -94,7 +94,7 @@ function drawingToolsObject() {
                 el.property.addEventListener("mouseleave", () => el.contentBar.style.height = "0px");
             }
             for (let i = 0; i < this.arrayTools.length; i++) {
-                this.arrayTools[i].tool.addEventListener("click", () => {
+                this.arrayTools[i].tool.addEventListener("mousedown", () => {
                     if (!colorSelectionWindow.opened) { this.selectDrawingTool(i); }
                 });
             }
