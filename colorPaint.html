@@ -175,7 +175,7 @@
                         </ul>
                     </li>
                 </ul>
-                <button id="bttCriarNovoProjeto" class="bttColorPaint noSelection cursor">
+                <button id="bttCriarNovoProjeto" class="bttColorPaint noSelection cursor" style="top:5px; margin:0px">
                     Criar novo projeto
                 </button>
             </header>
@@ -273,7 +273,7 @@
                 <div class="tituloJanela noSelection">
                     <p>Propriedades do projeto</p>
                 </div>
-                <div id="contentPropriedadesProjeto">
+                <div class="conteudoJanela">
                     <ul>
                         <li><label class="noSelection">Nome:</label><input type="text" id="txtNomeProjeto"
                                 value="Sem-Título"></li>
@@ -294,7 +294,7 @@
                                 <option value="4">Cor do primeiro plano</option>
                             </select>
                         </li>
-                        <li>
+                        <li style="margin-bottom: 4px;">
                             <label class="noSelection">Número de camadas:</label><input id="numeroCamadasProjeto"
                                 type="number" min="1" max="5" value="3"><label class="noSelection">
                                 (limite 5)</label>
@@ -307,14 +307,13 @@
                 </div>
             </div>
         </div>
-        <!-- ================================= FIM JANELA CRIAR PROJETO =========================== -->
         <!-- ====================================== JANELA ATALHOS ================================ -->
         <div id="contentJanelaAtalhos" class="contentJanelas">
             <div class="janelas">
                 <div class="tituloJanela noSelection">
                     <p>Atalhos</p>
                 </div>
-                <div id="contentAtalhos">
+                <div class="atalhos conteudoJanela">
                     <ul>
                         <li>
                             <label>[ : Aumentar tamanho das ferramentas.</label>
@@ -343,7 +342,7 @@
                         <li>
                             <label>Ctrl + scroll do mouse: Controlar o zoom.</label>
                         </li>
-                        <li>
+                        <li style="margin-bottom: 4px;">
                             <label>Barra de espaço: Movimentar a tela.</label>
                         </li>
                     </ul>
@@ -359,7 +358,7 @@
                 <div class="tituloJanela noSelection">
                     <p>Propriedades da grade</p>
                 </div>
-                <div id="contentPropriedadesGrid">
+                <div class="conteudoJanela">
                     <ul>
                         <li>
                             <label>Tamanho:</label><input id="txtTamanhoGrid" type="number" value="80"><label>
@@ -369,7 +368,7 @@
                             <label>Posição vertical:</label><input id="txtPosicaoVerticalGrid" type="number"
                                 value="0"><label> px.</label>
                         </li>
-                        <li>
+                        <li style="margin-bottom: 4px;">
                             <label>Posição Horizontal:</label><input id="txtPosicaoHorizontalGrid" type="number"
                                 value="0"><label> px.</label>
                         </li>
@@ -413,7 +412,10 @@
                 </div>
             </div>
         </section>
-        <!-- ================================FIM JANELA PARA SELECIONAR COR========================== -->
+        <!-- ================================NOTIFICAÇÕES========================== -->
+        <section id="notificacao">
+            <div id="titulo"></div>
+        </section>
         <div id="cursorComparaContaGotas">
             <div id="comparaCoresContaGotas"></div>
         </div>
