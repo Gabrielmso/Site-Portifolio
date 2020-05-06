@@ -145,7 +145,7 @@ function projectObject() {
         },
         changeOpacityLayer(e) {
             if (!this.layerOpacityBar.mousedown) { return; }
-            const mouse = pegarPosicaoMouse(this.layerOpacityBar.bar, e);
+            const mouse = getMousePosition(this.layerOpacityBar.bar, e);
             let porcentagem = Math.round((mouse.x * 100) / this.layerOpacityBar.bar.offsetWidth);
             if (mouse.x <= 1) {
                 porcentagem = 1;
