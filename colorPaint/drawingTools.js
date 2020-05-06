@@ -94,9 +94,7 @@ function drawingToolsObject() {
                 el.property.addEventListener("mouseleave", () => el.contentBar.style.height = "0px");
             }
             for (let i = 0; i < this.arrayTools.length; i++) {
-                this.arrayTools[i].tool.addEventListener("mousedown", () => {
-                    if (!colorSelectionWindow.opened) { this.selectDrawingTool(i); }
-                });
+                this.arrayTools[i].tool.addEventListener("mousedown", () => this.selectDrawingTool(i));
             }
         },
         getCursorPosition(e) {
@@ -217,7 +215,8 @@ function drawingToolsObject() {
             this.changeToolHardness(e);
         },
         selectDrawingTool(i) {
-            project.createDrawComplete();
+            if (colorSelectionWindow.opened) { return; }
+            this.previousTool = this.selectedTool;
             this.selectedTool = this.arrayTools[i].id;
             this.arrayTools[i].tool.classList.replace("bttFerramentas", "bttFerramentasEscolhida");
             for (let e = 0; e < this.arrayTools.length; e++) {
@@ -228,6 +227,7 @@ function drawingToolsObject() {
             this.strokeCoordinates = { x: [], y: [] };
             this.clickToCurve = false;
             this.changeCursorTool();
+            project.createDrawComplete();
             project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
         },
         changeToolSize(e) {

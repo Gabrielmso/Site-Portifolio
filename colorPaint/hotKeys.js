@@ -25,8 +25,7 @@ function hotKeysObject() {
             else {
                 if (e.code === "BracketRight") {//Aumentar o tamanho da ferramenta.
                     this.changeToolSizeHotKey(true);
-                }
-                else if (e.code === "Backslash") {//Diminuir o tamanho da ferramenta.
+                } else if (e.code === "Backslash") {//Diminuir o tamanho da ferramenta.
                     this.changeToolSizeHotKey(false);
                 }
             }
@@ -61,7 +60,6 @@ function hotKeysObject() {
         keyDownControl() {
             this.ctrlPressed = true;
             if (drawingTools.selectedTool === 0) {
-                drawingTools.previousTool = 0;
                 drawingTools.selectDrawingTool(6);//Muda para a ferramenta conta gotas.
             }
         },
@@ -70,7 +68,6 @@ function hotKeysObject() {
             if (drawingTools.previousTool === 0 && drawingTools.selectedTool === 6) {
                 drawingTools.arrayTools[drawingTools.selectedTool].cursor.eyeDropper.style.display = "none";
                 drawingTools.selectDrawingTool(0);//Volta para a ferramenta pincel.                
-                drawingTools.previousTool = null;
             }
         },
         keyDownSpace() {
