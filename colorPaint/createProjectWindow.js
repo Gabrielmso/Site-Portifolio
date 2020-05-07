@@ -13,10 +13,13 @@ function createProjectWindowObject() {
                 backgroundBlur(true);
                 drawingTools.cursorTool.removeCursor();
             } else {
-                if (confirm("Todo o progresso não salvo será perdido, deseja continuar?")) {
+                notification.open({
+                    title: "Projeto em andamento!",
+                    text: "Todo o progresso não salvo será perdido, deseja continuar?"
+                }, "confirm", () => {
                     sessionStorage.setItem("criarNovoProjeto", "true");
                     window.location.reload();
-                }
+                });
             }
         },
         close() {

@@ -33,18 +33,21 @@ function projectObject() {
 
             document.getElementById("bttSalvarDesenho").addEventListener("mousedown", () => {
                 if (this.created) { this.saveDraw(); }
-                else { alert("Nenhum projeto criado!"); }
+                else { notification.open({ title: "Atenção!", text: "Nenhum projeto foi criado." }, "notify", null); }
             });
             document.getElementById("bttSalvarProjeto").addEventListener("mousedown", () => {
                 if (this.created) { this.saveProject(); }
-                else { alert("Nenhum projeto criado!"); }
+                else { notification.open({ title: "Atenção!", text: "Nenhum projeto foi criado." }, "notify", null); }
             });
             document.getElementById("bttAbrirProjeto").addEventListener("mousedown", () => {
                 if (this.created) {
-                    if (confirm("Todo o progresso não salvo será perdido, deseja continuar?")) {
+                    notification.open({
+                        title: "Projeto em andamento!",
+                        text: "Todo o progresso não salvo será perdido, deseja continuar?"
+                    }, "confirm", () => {
                         sessionStorage.setItem("abrirProjetoSalvo", "true");
                         window.location.reload();
-                    }
+                    });
                 } else { this.openProject(); }
             });
             document.getElementById("bttRemoverCorSalva").addEventListener("mousedown", () => this.removeColor());
@@ -56,7 +59,7 @@ function projectObject() {
                 const color = this.savedColors[i].color;
                 if (color.r === colorToSave.r && color.g === colorToSave.g && color.b === colorToSave.b) {
                     savedColor = true;
-                    alert("Essa cor já está salva!");
+                    notification.open({ title: "Atenção!", text: "Essa cor já está salva." }, "notify", null);
                 }
             }
             if (!savedColor) {
@@ -422,14 +425,29 @@ function projectObject() {
                 const arquivo = e.target.files[0];
                 const reader = new FileReader();
                 reader.onload = () => {
-                    if (reader.result === "") { alert("Este arquivo não possui projeto salvo!"); }
+                    if (reader.result === "") {
+                        notification.open({
+                            title: "Erro!",
+                            text: "Este arquivo não possui projeto salvo."
+                        }, "notify", null);
+                    }
                     else { this.loadProject(reader.result); }
                 };
-                if (!arquivo) { alert("Erro ao carregar projeto, tente novamente!"); }
+                if (!arquivo) {
+                    notification.open({
+                        title: "Erro!",
+                        text: "Falha ao carregar projeto, tente novamente."
+                    }, "notify", null);
+                }
                 else {
                     const extencao = arquivo.name.split('.').pop().toLowerCase();
                     if (extencao === "gm") { reader.readAsText(arquivo, "ISO-8859-1"); }
-                    else { alert("Arquivo selecionado inválido!"); }
+                    else {
+                        notification.open({
+                            title: "Erro!",
+                            text: "Arquivo selecionado inválido!"
+                        }, "notify", null);
+                    }
                 }
             }, false);
             input.click();

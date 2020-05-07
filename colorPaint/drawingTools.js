@@ -398,7 +398,10 @@ function drawingToolsObject() {
                 compareColors.style.borderTop = novaCor;
             } else {
                 if (pixel[3] === 0) {
-                    alert("Nenhuma cor selecionada");
+                    notification.open({
+                        title: "Atenção!",
+                        text: "Nenhuma cor foi selecionada."
+                    }, "notify", null);
                     return;
                 }
                 if (colorSelectionWindow.opened) { colorSelectionWindow.findColor({ r: pixel[0], g: pixel[1], b: pixel[2] }); }

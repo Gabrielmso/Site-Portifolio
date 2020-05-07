@@ -23,6 +23,7 @@
     <script src="colorPaint/undoRedoChange.js"></script>
     <script src="colorPaint/hotKeys.js"></script>
     <script src="colorPaint/createGridWindow.js"></script>
+    <script src="colorPaint/notifications.js"></script>
     <script>
         window.onload = () => {
             topoMenu();
@@ -412,9 +413,19 @@
                 </div>
             </div>
         </section>
-        <!-- ================================NOTIFICAÇÕES========================== -->
+
+        <!-- ================================ NOTIFICAÇÕES ========================== -->
         <section id="notificacao">
-            <div id="titulo"></div>
+            <div class="tituloJanela noSelection">
+                <p id="tituloNotificacao" style="font-weight: bold;"></p>
+            </div>
+            <div class="conteudoJanela">
+                <p id="textoNotificacao" class="noSelection"></p>
+            </div>
+            <div id="bttsNotificacao" class="bttsJanela">
+                <button id="bttNotificacao1" class="bttColorPaint cursor noSelection">sim</button>
+                <button id="bttNotificacao2" class="bttColorPaint cursor noSelection">não</button>
+            </div>
         </section>
         <div id="cursorComparaContaGotas">
             <div id="comparaCoresContaGotas"></div>

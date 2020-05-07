@@ -61,7 +61,12 @@ function createGridWindowObject() {
                 drawingTools.cursorTool.removeCursor();
                 if (!this.gridProprieties.visible) { this.createGrid(true); }
             }
-            else { alert("Nenhum projeto criado!"); }
+            else {
+                notification.open({
+                    title: "Atenção!",
+                    text: "Crie um novo projeto para visualizar a grade."
+                }, "notify", null);
+            }
         },
         close() {
             this.buttons.ok = cloneReplaceElement(this.buttons.ok);
@@ -77,9 +82,14 @@ function createGridWindowObject() {
             const screen = this.gridProprieties.screen, size = this.gridProprieties.size, pos = this.gridProprieties.position,
                 numDeQuadrados = (Math.trunc((project.properties.resolution.width / size) + 2.099)) * (Math.trunc((project.properties.resolution.height / size) + 2.099));
             if (numDeQuadrados > 5700) {
-                alert("Aumente o tamanho da grade!");
+                notification.open({ title: "Atenção!", text: "Aumente o tamanho da grade." }, "notify", null);
                 return;
-            } else if (numDeQuadrados > 1100) { alert("O tamanho da grade está muito baixo, isso pode acarretar problemas de performance!"); }
+            } else if (numDeQuadrados > 1100) {
+                notification.open({
+                    title: "Atenção!",
+                    text: "O tamanho da grade está muito baixo, isso pode acarretar problemas de performance!"
+                }, "notify", null);
+            }
             let el = screen.firstElementChild;
             while (el != null) {
                 el.remove();

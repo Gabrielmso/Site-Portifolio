@@ -1,6 +1,7 @@
 mudarMenu = false;
 let corPrincipal, corSecundaria;
-let createProjectWindow, project, drawingTools, previewFunctions, undoRedoChange, hotKeys, createGridWindow, colorSelectionWindow;
+let createProjectWindow, project, drawingTools, previewFunctions, undoRedoChange, hotKeys, createGridWindow, colorSelectionWindow,
+notification;
 let janelaPrincipal;
 let contentTelas;//Elemento onde ficará a "tela" para desenhar.
 let txtCorEscolhida;//Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
@@ -14,6 +15,7 @@ function colorPaint() {
     undoRedoChange = undoRedoChangeObject();
     hotKeys = hotKeysObject();
     createGridWindow = createGridWindowObject();
+    notification = notificationsObject();
     const contentJanelaAtalhos = document.getElementById("contentJanelaAtalhos");
     const contentTools = document.getElementById("contentTools");
     const barraLateralEsquerda = document.getElementById("barraLateralEsquerda");
@@ -201,8 +203,10 @@ function backgroundBlur(blur) {
     if (blur) {
         janelaPrincipal.style.filter = "blur(9px)";
         colorSelectionWindow.window.style.filter = "blur(9px)";
+        notification.window.style.filter = "blur(9px)";
     } else {
         janelaPrincipal.style.filter = "";
         colorSelectionWindow.window.style.filter = "";
+        notification.window.style.filter = "";
     }
 }
