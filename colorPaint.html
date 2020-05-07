@@ -268,120 +268,6 @@
                 </aside>
             </div>
         </div>
-        <!-- ================================== JANELA CRIAR PROJETO ============================ -->
-        <div id="contentJanelaCriarProjeto" class="contentJanelas">
-            <div class="janelas">
-                <div class="tituloJanela noSelection">
-                    <p>Propriedades do projeto</p>
-                </div>
-                <div class="conteudoJanela">
-                    <ul>
-                        <li><label class="noSelection">Nome:</label><input type="text" id="txtNomeProjeto"
-                                value="Sem-Título"></li>
-                        <li>
-                            <label class="noSelection">Largura:</label><input type="number" id="txtLarguraProjeto"
-                                value="1920" min="1" max="2560"><label class="noSelection"> px - (limite 2560)</label>
-                        </li>
-                        <li>
-                            <label class="noSelection">Altura:</label><input type="number" id="txtAlturaProjeto"
-                                value="1080" min="1" max="1440"><label class="noSelection">
-                                px - (limite 1440)</label>
-                        </li>
-                        <li>
-                            <label class="noSelection">Plano de fundo:</label><select id="corDeFundoProjeto">
-                                <option value="1">Branco</option>
-                                <option value="2">Preto</option>
-                                <option value="3">Transparente</option>
-                                <option value="4">Cor do primeiro plano</option>
-                            </select>
-                        </li>
-                        <li style="margin-bottom: 4px;">
-                            <label class="noSelection">Número de camadas:</label><input id="numeroCamadasProjeto"
-                                type="number" min="1" max="5" value="3"><label class="noSelection">
-                                (limite 5)</label>
-                        </li>
-                    </ul>
-                </div>
-                <div class="bttsJanela noSelection">
-                    <button id="bttCriarprojeto" class="bttColorPaint cursor">Criar projeto</button>
-                    <button id="bttCancelaCriarprojetor" class="bttColorPaint cursor">Cancelar</button>
-                </div>
-            </div>
-        </div>
-        <!-- ====================================== JANELA ATALHOS ================================ -->
-        <div id="contentJanelaAtalhos" class="contentJanelas">
-            <div class="janelas">
-                <div class="tituloJanela noSelection">
-                    <p>Atalhos</p>
-                </div>
-                <div class="atalhos conteudoJanela">
-                    <ul>
-                        <li>
-                            <label>[ : Aumentar tamanho das ferramentas.</label>
-                        </li>
-                        <li>
-                            <label>] : Diminuir tamanho das ferramentas.</label>
-                        </li>
-                        <li>
-                            <label>Ctrl + Z: Desfazer alteração.</label>
-                        </li>
-                        <li>
-                            <label>Ctrl + Y: Refazer alteração.</label>
-                        </li>
-                        <li>
-                            <label>Ctrl + 0: Ajustar na visualização.</label>
-                        </li>
-                        <li>
-                            <label>Ctrl + 1: Zoom 100%.</label>
-                        </li>
-                        <li>
-                            <label>Ctrl + + (mais): Mais zoom.</label>
-                        </li>
-                        <li>
-                            <label>Ctrl + - (menos): Menos zoom.</label>
-                        </li>
-                        <li>
-                            <label>Ctrl + scroll do mouse: Controlar o zoom.</label>
-                        </li>
-                        <li style="margin-bottom: 4px;">
-                            <label>Barra de espaço: Movimentar a tela.</label>
-                        </li>
-                    </ul>
-                </div>
-                <div class="bttsJanela noSelection">
-                    <button id="bttOkAtalhos" class="bttColorPaint cursor">Ok</button>
-                </div>
-            </div>
-        </div>
-        <!-- ================================ JANELA PARA ADICIONAR GRID ========================== -->
-        <div id="contentJanelaMenuGrid">
-            <div id="janelaMenuGrid">
-                <div class="tituloJanela noSelection">
-                    <p>Propriedades da grade</p>
-                </div>
-                <div class="conteudoJanela">
-                    <ul>
-                        <li>
-                            <label>Tamanho:</label><input id="txtTamanhoGrid" type="number" value="80"><label>
-                                px.</label>
-                        </li>
-                        <li>
-                            <label>Posição vertical:</label><input id="txtPosicaoVerticalGrid" type="number"
-                                value="0"><label> px.</label>
-                        </li>
-                        <li style="margin-bottom: 4px;">
-                            <label>Posição Horizontal:</label><input id="txtPosicaoHorizontalGrid" type="number"
-                                value="0"><label> px.</label>
-                        </li>
-                    </ul>
-                </div>
-                <div class="bttsJanela noSelection">
-                    <button id=bttOkGrid class="bttColorPaint cursor">Ok</button>
-                    <button id=bttcancelarGrid class="bttColorPaint cursor" title="Apaga a grade atual.">Cancelar
-                    </button>
-                </div>
-            </div>
-        </div>
         <!-- ================================ JANELA PARA SELECIONAR COR ========================== -->
         <section id="janelaSelecionarCor">
             <div id="barraMoverJanela" class="noSelection"></div>
@@ -413,25 +299,140 @@
                 </div>
             </div>
         </section>
-
-        <!-- ================================ NOTIFICAÇÕES ========================== -->
-        <section id="notificacao">
+        <div id="cursorComparaContaGotas">
+            <div id="comparaCoresContaGotas"></div>
+        </div>
+        <div id="cursorFerramenta" class="noSelection">
+            <div></div>
+        </div>
+    </section>
+    <!-- ================================== JANELA CRIAR PROJETO ============================ -->
+    <section id="contentJanelaCriarProjeto" class="contentJanelas">
+        <div class="janelas">
+            <div class="tituloJanela noSelection">
+                <p>Propriedades do projeto</p>
+            </div>
+            <div class="conteudoJanela">
+                <ul>
+                    <li><label class="noSelection">Nome:</label><input type="text" id="txtNomeProjeto"
+                            value="Sem-Título"></li>
+                    <li>
+                        <label class="noSelection">Largura:</label><input type="number" id="txtLarguraProjeto"
+                            value="1920" min="1" max="2560"><label class="noSelection"> px - (limite 2560)</label>
+                    </li>
+                    <li>
+                        <label class="noSelection">Altura:</label><input type="number" id="txtAlturaProjeto"
+                            value="1080" min="1" max="1440"><label class="noSelection">
+                            px - (limite 1440)</label>
+                    </li>
+                    <li>
+                        <label class="noSelection">Plano de fundo:</label><select id="corDeFundoProjeto">
+                            <option value="1">Branco</option>
+                            <option value="2">Preto</option>
+                            <option value="3">Transparente</option>
+                            <option value="4">Cor do primeiro plano</option>
+                        </select>
+                    </li>
+                    <li style="margin-bottom: 4px;">
+                        <label class="noSelection">Número de camadas:</label><input id="numeroCamadasProjeto"
+                            type="number" min="1" max="5" value="3"><label class="noSelection">
+                            (limite 5)</label>
+                    </li>
+                </ul>
+            </div>
+            <div class="bttsJanela noSelection">
+                <button id="bttCriarprojeto" class="bttColorPaint cursor">Criar projeto</button>
+                <button id="bttCancelaCriarprojetor" class="bttColorPaint cursor">Cancelar</button>
+            </div>
+        </div>
+    </section>
+    <!-- ================================ JANELA PARA ADICIONAR GRID ========================== -->
+    <section id="contentJanelaMenuGrid">
+        <div id="janelaMenuGrid">
+            <div class="tituloJanela noSelection">
+                <p>Propriedades da grade</p>
+            </div>
+            <div class="conteudoJanela">
+                <ul>
+                    <li>
+                        <label>Tamanho:</label><input id="txtTamanhoGrid" type="number" value="80"><label>
+                            px.</label>
+                    </li>
+                    <li>
+                        <label>Posição vertical:</label><input id="txtPosicaoVerticalGrid" type="number"
+                            value="0"><label> px.</label>
+                    </li>
+                    <li style="margin-bottom: 4px;">
+                        <label>Posição Horizontal:</label><input id="txtPosicaoHorizontalGrid" type="number"
+                            value="0"><label> px.</label>
+                    </li>
+                </ul>
+            </div>
+            <div class="bttsJanela noSelection">
+                <button id=bttOkGrid class="bttColorPaint cursor">Ok</button>
+                <button id=bttcancelarGrid class="bttColorPaint cursor" title="Apaga a grade atual.">Cancelar
+                </button>
+            </div>
+        </div>
+    </section>
+    <!-- ====================================== JANELA ATALHOS ================================ -->
+    <section id="contentJanelaAtalhos" class="contentJanelas">
+        <div class="janelas">
+            <div class="tituloJanela noSelection">
+                <p>Atalhos</p>
+            </div>
+            <div class="atalhos conteudoJanela">
+                <ul>
+                    <li>
+                        <label>[ : Aumentar tamanho das ferramentas.</label>
+                    </li>
+                    <li>
+                        <label>] : Diminuir tamanho das ferramentas.</label>
+                    </li>
+                    <li>
+                        <label>Ctrl + Z: Desfazer alteração.</label>
+                    </li>
+                    <li>
+                        <label>Ctrl + Y: Refazer alteração.</label>
+                    </li>
+                    <li>
+                        <label>Ctrl + 0: Ajustar na visualização.</label>
+                    </li>
+                    <li>
+                        <label>Ctrl + 1: Zoom 100%.</label>
+                    </li>
+                    <li>
+                        <label>Ctrl + + (mais): Mais zoom.</label>
+                    </li>
+                    <li>
+                        <label>Ctrl + - (menos): Menos zoom.</label>
+                    </li>
+                    <li>
+                        <label>Ctrl + scroll do mouse: Controlar o zoom.</label>
+                    </li>
+                    <li style="margin-bottom: 4px;">
+                        <label>Barra de espaço: Movimentar a tela.</label>
+                    </li>
+                </ul>
+            </div>
+            <div class="bttsJanela noSelection">
+                <button id="bttOkAtalhos" class="bttColorPaint cursor">Ok</button>
+            </div>
+        </div>
+    </section>
+    <!-- ================================ NOTIFICAÇÕES ========================== -->
+    <section id="contentNotificacao" class="noSelection">
+        <div id="notificacao">
             <div class="tituloJanela noSelection">
                 <p id="tituloNotificacao" style="font-weight: bold;"></p>
             </div>
             <div class="conteudoJanela">
                 <p id="textoNotificacao" class="noSelection"></p>
             </div>
-            <div id="bttsNotificacao" class="bttsJanela">
-                <button id="bttNotificacao1" class="bttColorPaint cursor noSelection">sim</button>
-                <button id="bttNotificacao2" class="bttColorPaint cursor noSelection">não</button>
+            <div class="bttsJanela">
+                <button id="bttNotificacao1" class="bttColorPaint cursor noSelection"></button>
+                <button id="bttNotificacao2" class="bttColorPaint cursor noSelection"></button>
             </div>
-        </section>
-        <div id="cursorComparaContaGotas">
-            <div id="comparaCoresContaGotas"></div>
-        </div>
-        <div id="cursorFerramenta" class="noSelection">
-            <div></div>
         </div>
     </section>
     <div id="carregamento">

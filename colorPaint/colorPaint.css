@@ -34,8 +34,6 @@ p {
     min-width: 1000px;
     min-height: 630px;
     overflow: hidden;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 #janelaPrincipal {
@@ -243,7 +241,7 @@ p {
     color: rgba(213, 192, 107, 0.7);
 }
 
-.bttColorPaint:focus{
+.bttColorPaint:focus {
     outline: 0;
 }
 
@@ -760,7 +758,8 @@ p {
     left: 0px;
     width: 100%;
     height: 100%;
-    z-index: 10000001;
+    z-index: 10000000;
+    overflow: hidden;
 }
 
 #janelaMenuGrid {
@@ -791,7 +790,7 @@ p {
     display: none;
     top: 150px;
     left: 140px;
-    border-top: 1px solid rgb(65, 65, 65);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
     background-color: rgb(37, 37, 37);
     width: 560px;
     height: 380px;
@@ -895,7 +894,7 @@ p {
     width: 100%;
     height: 100%;
     background-color: rgb(0, 0, 0);
-    z-index: 10000001;
+    z-index: 10000003;
     transition: opacity 1.2s ease-in-out;
 }
 
@@ -1084,8 +1083,9 @@ p {
     height: 100%;
     top: 0px;
     left: 0px;
-    z-index: 10000001;
+    z-index: 10000002;
     background-color: rgba(0, 0, 0, 0.35);
+    overflow: hidden;
 }
 
 .janelas {
@@ -1096,6 +1096,8 @@ p {
     height: auto;
     border-radius: 10px;
     padding: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.45);
 }
 
 .tituloJanela {
@@ -1167,15 +1169,26 @@ p {
     margin-bottom: 3px;
 }
 
+#contentNotificacao {
+    position: absolute;
+    z-index: 10000001;
+    display: none;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    overflow: hidden;
+}
+
 #notificacao {
     position: absolute;
-    display: block;
     bottom: -150px;
     right: 10px;
     width: 400px;
     padding: 10px;
     background-color: rgba(135, 0, 0, 0.95);
     border-radius: 10px;
-    z-index: 10000000;
+    box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.45);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
     transition: bottom 400ms ease-in-out, opacity 500ms ease-in-out;
 }

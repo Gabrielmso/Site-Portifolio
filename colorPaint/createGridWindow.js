@@ -58,14 +58,13 @@ function createGridWindowObject() {
                 this.contentWindow.style.display = "block";
                 this.addEventsToElements();
                 project.adjustInVisualizationScreen();
-                drawingTools.cursorTool.removeCursor();
                 if (!this.gridProprieties.visible) { this.createGrid(true); }
             }
             else {
                 notification.open({
                     title: "Atenção!",
                     text: "Crie um novo projeto para visualizar a grade."
-                }, "notify", null);
+                }, { name: "notify", time: 2000 }, null);
             }
         },
         close() {
@@ -76,19 +75,21 @@ function createGridWindowObject() {
             this.inputs.verticalPosition = cloneReplaceElement(this.inputs.verticalPosition);
             this.contentWindow.style.display = "none";
             this.applyPreviousVisualization();
-            drawingTools.changeCursorTool();
         },
         createGrid(create) {
             const screen = this.gridProprieties.screen, size = this.gridProprieties.size, pos = this.gridProprieties.position,
                 numDeQuadrados = (Math.trunc((project.properties.resolution.width / size) + 2.099)) * (Math.trunc((project.properties.resolution.height / size) + 2.099));
             if (numDeQuadrados > 5700) {
-                notification.open({ title: "Atenção!", text: "Aumente o tamanho da grade." }, "notify", null);
+                notification.open({
+                    title: "Atenção!",
+                    text: "Aumente o tamanho da grade."
+                }, { name: "notify", time: 1400 }, null);
                 return;
             } else if (numDeQuadrados > 1100) {
                 notification.open({
                     title: "Atenção!",
                     text: "O tamanho da grade está muito baixo, isso pode acarretar problemas de performance!"
-                }, "notify", null);
+                }, { name: "notify", time: 2600 }, null);
             }
             let el = screen.firstElementChild;
             while (el != null) {

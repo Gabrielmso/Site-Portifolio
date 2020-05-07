@@ -12,9 +12,7 @@ function undoRedoChangeObject() {
                 alteracao: project.arrayLayers[project.selectedLayer].ctx.getImageData(0, 0, project.properties.resolution.width, project.properties.resolution.height)
             };
             this.changes.undone.push(objAlteracao);
-            if (this.changes.undone.length > 20) {
-                this.changes.undone.shift();
-            }
+            if (this.changes.undone.length > 20) { this.changes.undone.shift(); }
             if (this.changes.redone.length > 0 || this.changes.undone.length === 1) {
                 this.buttons.undo.classList.add("bttHover");
                 this.buttons.undo.classList.add("cursor");

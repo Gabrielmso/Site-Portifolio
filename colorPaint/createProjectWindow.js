@@ -11,12 +11,11 @@ function createProjectWindowObject() {
                 this.buttons.create.addEventListener("mousedown", () => this.validateProperties());
                 this.buttons.cancel.addEventListener("mousedown", () => this.close());
                 backgroundBlur(true);
-                drawingTools.cursorTool.removeCursor();
             } else {
                 notification.open({
                     title: "Projeto em andamento!",
                     text: "Todo o progresso não salvo será perdido, deseja continuar?"
-                }, "confirm", () => {
+                }, { name: "confirm", time: null }, () => {
                     sessionStorage.setItem("criarNovoProjeto", "true");
                     window.location.reload();
                 });
@@ -27,7 +26,6 @@ function createProjectWindowObject() {
             this.buttons.cancel = cloneReplaceElement(this.buttons.cancel);
             this.contentWindow.style.display = "none";
             backgroundBlur(false);
-            drawingTools.changeCursorTool();
         },
         validateProperties() {
             const arrayProperties = [document.getElementById("txtNomeProjeto"),

@@ -75,6 +75,10 @@ function drawingToolsObject() {
         },
         addEventsToElements() {
             contentTelas.addEventListener("contextmenu", (e) => e.preventDefault());
+            janelaPrincipal.addEventListener("mouseleave", () => {
+                if (!this.painting) { this.cursorTool.removeCursor(); }
+            });
+            janelaPrincipal.addEventListener("mouseenter", () => this.changeCursorTool());
             this.cursorTool.cursor.addEventListener("contextmenu", (e) => e.preventDefault());
             contentTelas.addEventListener("mousedown", (e) => this.mouseDownEventDrawing(e));
             contentTelas.addEventListener("mousemove", () => this.txtPositionCursor.value = Math.ceil(this.mousePosition.x) + ", " + Math.ceil(this.mousePosition.y));
@@ -401,7 +405,7 @@ function drawingToolsObject() {
                     notification.open({
                         title: "Atenção!",
                         text: "Nenhuma cor foi selecionada."
-                    }, "notify", null);
+                    }, { name: "notify", time: 1500 }, null);
                     return;
                 }
                 if (colorSelectionWindow.opened) { colorSelectionWindow.findColor({ r: pixel[0], g: pixel[1], b: pixel[2] }); }

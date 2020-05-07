@@ -21,7 +21,7 @@ function colorPaint() {
     const barraLateralEsquerda = document.getElementById("barraLateralEsquerda");
     const barraLateralDireita = document.getElementById("barraLateralDireita");
     const contentCentro = document.getElementById("contentCentro");
-    janelaPrincipal = document.getElementById("janelaPrincipal");
+    janelaPrincipal = document.getElementById("colorPaintContent");
     contentTelas = document.getElementById("contentTelas");
     corPrincipal = document.getElementById("corPrincipal");
     corSecundaria = document.getElementById("corSecundaria");
@@ -85,12 +85,10 @@ function colorPaint() {
     });
 
     document.getElementById("bttAtalhos").addEventListener("click", () => {
-        drawingTools.cursorTool.removeCursor();
         contentJanelaAtalhos.style.display = "flex";
         backgroundBlur(true);
     });
     document.getElementById("bttOkAtalhos").addEventListener("click", () => {
-        drawingTools.changeCursorTool();
         contentJanelaAtalhos.style.display = "none";
         backgroundBlur(false);
     });
