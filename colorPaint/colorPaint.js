@@ -39,6 +39,7 @@ function colorPaint() {
     undoRedoChange.addEventsToElements();
     hotKeys.addEventsToElements();
     colorSelectionWindow.addEventsToElements();
+    notification.addEventsToElements();
 
     document.getElementById("bttCriarNovoProjeto").addEventListener("mousedown", () => createProjectWindow.open());
     document.getElementById("bttCriarGrade").addEventListener("mousedown", () => createGridWindow.open());
