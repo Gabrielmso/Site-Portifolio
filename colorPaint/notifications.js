@@ -48,7 +48,8 @@ function notificationsObject() {
             }
         },
         close() {
-            if (this.mouseInWindow && this.type === "notify") { return; }
+            if (!this.opened || this.mouseInWindow && this.type === "notify") { return; }
+            this.opened = false;
             this.buttons.btt1 = cloneReplaceElement(this.buttons.btt1);
             this.buttons.btt2 = cloneReplaceElement(this.buttons.btt2);
             this.hideTransition();

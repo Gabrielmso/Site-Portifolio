@@ -153,7 +153,7 @@ function colorSelectionWindowObject() {
             let color;
             if (this.primaryOrSecondary === 1) { color = project.selectedColors.primary; }
             else if (this.primaryOrSecondary === 2) { color = project.selectedColors.secondary; }
-            drawingTools.selectDrawingTool(6);//Mudar para a ferramenta Conta-gotas.
+            drawingTools.selectDrawingTool(drawingTools.arrayTools.length - 1);//Mudar para a ferramenta Conta-gotas.
             this.window.style.display = "block";
             this.opened = true;
             this.compareColors.current.style.backgroundColor = "rgb(" + color.r + ", " + color.g + ", " + color.b + ")";

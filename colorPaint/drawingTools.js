@@ -1,20 +1,20 @@
 function drawingToolsObject() {
     return {
         arrayTools: [
-            { tool: document.getElementById("pincel"), name: "brush", id: 0 },
-            { tool: document.getElementById("linha"), name: "line", id: 1 },
-            { tool: document.getElementById("retangulo"), name: "rectangle", id: 2 },
-            { tool: document.getElementById("elipse"), name: "ellipse", id: 3 },
-            { tool: document.getElementById("borracha"), name: "eraser", id: 4 },
-            { tool: document.getElementById("curva"), name: "curve", id: 5 },
+            { tool: document.getElementById("pincel"), name: "brush" },
+            { tool: document.getElementById("linha"), name: "line" },
+            { tool: document.getElementById("retangulo"), name: "rectangle" },
+            { tool: document.getElementById("elipse"), name: "ellipse" },
+            { tool: document.getElementById("borracha"), name: "brush" },
+            { tool: document.getElementById("curva"), name: "curve" },
+            { tool: document.getElementById("baldeDeTinta"), name: "paintBucket" },
             {
-                tool: document.getElementById("contaGotas"), name: "eyeDropper", id: 6,
+                tool: document.getElementById("contaGotas"), name: "eyeDropper",
                 cursor: {
                     eyeDropper: document.getElementById("cursorComparaContaGotas"),
                     compareColors: document.getElementById("comparaCoresContaGotas")
                 }
-            },
-            { tool: document.getElementById("baldeDeTinta"), name: "paintBucket", id: 7 }
+            }
         ],
         cursorTool: {
             cursor: document.getElementById("cursorFerramenta"),
@@ -84,7 +84,7 @@ function drawingToolsObject() {
             contentTelas.addEventListener("mousemove", () => this.txtPositionCursor.value = Math.ceil(this.mousePosition.x) + ", " + Math.ceil(this.mousePosition.y));
             contentTelas.addEventListener("mouseleave", () => { if (!this.cursorTool.show) { this.txtPositionCursor.value = "" } });
             this.cursorTool.cursor.addEventListener("mousedown", (e) => this.mouseDownEventDrawing(e));
-            document.addEventListener("mousemove", throttle((e) => this.mouseMoveEventDrawing(e), 8));
+            document.addEventListener("mousemove", throttle((e) => this.mouseMoveEventDrawing(e), 10));
             document.addEventListener("mouseup", (e) => this.mouseUpEventDrawing(e));
             this.cursorTool.cursor.addEventListener("wheel", (e) => this.cursorTool.wheel(e));
             this.toolOpacityBar.bar.addEventListener("mousedown", (e) => this.mouseDownToolOpacityBar(e));
@@ -128,37 +128,17 @@ function drawingToolsObject() {
                 else { return; }
                 this.painting = true;
                 this.applyToolChanges();
+                project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
                 project.eventLayer.beginPath();
                 project.eventLayer.lineJoin = project.eventLayer.lineCap = "round";
                 project.arrayLayers[project.selectedLayer].ctx.globalCompositeOperation = "source-over";
-                if (this.selectedTool < 4) {
-                    this.strokeCoordinates.x[0] = this.mousePosition.x;
-                    this.strokeCoordinates.y[0] = this.mousePosition.y;
-                    this[this.arrayTools[this.selectedTool].name](this.mousePosition.x, this.mousePosition.y);
-                } else if (this.selectedTool === 4) {//Borracha. 
-                    this.strokeCoordinates.x[0] = this.mousePosition.x;
-                    this.strokeCoordinates.y[0] = this.mousePosition.y;
-                    project.arrayLayers[project.selectedLayer].ctx.globalCompositeOperation = "destination-out";
+                if (this.selectedTool === 4) {
                     project.eventLayer.strokeStyle = "rgba(255, 0, 0, " + this.toolProperties.opacity + ")";
-                    this.brush(this.mousePosition.x, this.mousePosition.y);
-                } else if (this.selectedTool === 5) {//Curva;
-                    if (this.clickToCurve === false) {
-                        this.strokeCoordinates.x[0] = this.mousePosition.x;
-                        this.strokeCoordinates.y[0] = this.mousePosition.y;
-                    }
-                    this.curve(this.mousePosition.x, this.mousePosition.y, this.clickToCurve);
-                } else if (this.selectedTool === 6) {//Conta-gotas.
-                    this.arrayTools[this.selectedTool].cursor.eyeDropper.style.display = "block";
-                    const corAtual = "25px solid rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
-                    this.arrayTools[this.selectedTool].cursor.compareColors.style.borderLeft = corAtual;
-                    this.arrayTools[this.selectedTool].cursor.compareColors.style.borderBottom = corAtual;
-                    const mousePos = getMousePosition(janelaPrincipal, e);
-                    this.eyeDropper(mousePos.x, mousePos.y, this.mousePosition.x, this.mousePosition.y, true);
-                } else if (this.selectedTool === 7) {//Balde de tinta.
-                    if (this.mousePosition.x >= 0 && this.mousePosition.x <= project.properties.resolution.width && this.mousePosition.y >= 0 && this.mousePosition.y <= project.properties.resolution.height) {
-                        const cor = { R: this.toolProperties.color.r, G: this.toolProperties.color.g, B: this.toolProperties.color.b, A: Math.round(this.toolProperties.opacity * 255) };
-                        this.paintBucket(this.mousePosition.x, this.mousePosition.y, project.arrayLayers[project.selectedLayer].ctx, cor);
-                    }
+                    project.arrayLayers[project.selectedLayer].ctx.globalCompositeOperation = "destination-out";
+                }
+                if (this.selectedTool < 7) { this[this.arrayTools[this.selectedTool].name](this.mousePosition); }
+                else if (this.selectedTool === 7) {//Conta-gotas.
+                    this.eyeDropper(getMousePosition(janelaPrincipal, e), this.mousePosition, true);
                 }
                 if (this.cursorTool.show) { janelaPrincipal.style.cursor = "none"; }
             }
@@ -166,15 +146,14 @@ function drawingToolsObject() {
         mouseUpEventDrawing(e) {
             if (this.painting) {
                 this.painting = false;
-                if (this.selectedTool === 6) {//Conta-gotas.  
-                    const mousePos = getMousePosition(janelaPrincipal, e);
-                    this.eyeDropper(mousePos.x, mousePos.y, this.mousePosition.x, this.mousePosition.y, false)
-                    this.arrayTools[this.selectedTool].cursor.eyeDropper.style.display = "none";
+                if (this.selectedTool === 7) {//Conta-gotas.  
+                    this.eyeDropper(getMousePosition(janelaPrincipal, e), this.mousePosition, false);
                     return;
                 } else if (this.selectedTool === 5) {//Curva. 
-                    this.clickToCurve = !(this.clickToCurve);
+                    this.clickToCurve = !this.clickToCurve;
                     if (this.strokeCoordinates.x.length === 2) { return; }
                 }
+                console.log(JSON.stringify(this.strokeCoordinates));
                 this.strokeCoordinates = { x: [], y: [] };
                 project.drawInLayer();
                 janelaPrincipal.style.cursor = "";
@@ -185,19 +164,12 @@ function drawingToolsObject() {
             this.getCursorPosition(e);
             if (this.painting) {
                 const lastIndex = this.strokeCoordinates.x.length - 1;
-                if (this.selectedTool < 4) {
-                    if (this.strokeCoordinates.x[lastIndex] === this.mousePosition.x &&
-                        this.strokeCoordinates.y[lastIndex] === this.mousePosition.y) { return; }
-                    this[this.arrayTools[this.selectedTool].name](this.mousePosition.x, this.mousePosition.y);
-                } else if (this.selectedTool === 4) {//Borracha. 
-                    if (this.strokeCoordinates.x[lastIndex] === this.mousePosition.x &&
-                        this.strokeCoordinates.y[lastIndex] === this.mousePosition.y) { return; }
-                    this.brush(this.mousePosition.x, this.mousePosition.y);
-                } else if (this.selectedTool === 5) {//Curva;
-                    this.curve(this.mousePosition.x, this.mousePosition.y, this.clickToCurve);
-                } else if (this.selectedTool === 6) {//Conta-gotas.
-                    const mousePos = getMousePosition(janelaPrincipal, e);
-                    this.eyeDropper(mousePos.x, mousePos.y, this.mousePosition.x, this.mousePosition.y, true)
+                if (this.strokeCoordinates.x[lastIndex] === this.mousePosition.x &&
+                    this.strokeCoordinates.y[lastIndex] === this.mousePosition.y) { return; }
+                project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
+                if (this.selectedTool < 7) { this[this.arrayTools[this.selectedTool].name](this.mousePosition); }
+                else if (this.selectedTool === 7) {//Conta-gotas.                   
+                    this.eyeDropper(getMousePosition(janelaPrincipal, e), this.mousePosition, true)
                 }
             } else if (this.toolSizeBar.clicked) { this.changeToolSize(e); }
             else if (this.toolOpacityBar.clicked) { this.changeToolOpacity(e); }
@@ -221,15 +193,15 @@ function drawingToolsObject() {
         selectDrawingTool(i) {
             if (colorSelectionWindow.opened) { return; }
             this.previousTool = this.selectedTool;
-            this.selectedTool = this.arrayTools[i].id;
+            this.selectedTool = i;
+            this.strokeCoordinates = { x: [], y: [] };
+            this.painting = this.clickToCurve = false;
             this.arrayTools[i].tool.classList.replace("bttFerramentas", "bttFerramentasEscolhida");
             for (let e = 0; e < this.arrayTools.length; e++) {
                 if (e != i) { this.arrayTools[e].tool.classList.replace("bttFerramentasEscolhida", "bttFerramentas"); }
             }
-            if (this.selectedTool === 6) { document.getElementById("propriedadesFerramentas").style.display = "none"; }
+            if (this.selectedTool === 7) { document.getElementById("propriedadesFerramentas").style.display = "none"; }
             else { document.getElementById("propriedadesFerramentas").style.display = "block"; }
-            this.strokeCoordinates = { x: [], y: [] };
-            this.clickToCurve = false;
             this.changeCursorTool();
             project.createDrawComplete();
             project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
@@ -287,37 +259,37 @@ function drawingToolsObject() {
             project.eventLayer.strokeStyle = "rgba(" + color.r + ", " + color.g + ", " + color.b + ", " + this.toolProperties.opacity + ")";
         },
         changeCursorTool() {
-            if (this.selectedTool === 6) {
-                this.cursorTool.removeCursor();
+            if (this.selectedTool === 7) {
                 contentTelas.style.cursor = "url('colorPaint/imagens/cursor/cursorContaGotas.png') 0 20, pointer";
-                return;
-            } else if (this.selectedTool === 7) {
                 this.cursorTool.removeCursor();
+                return;
+            } else if (this.selectedTool === 6) {
                 contentTelas.style.cursor = "url('colorPaint/imagens/cursor/cursorBaldeDeTinta.png') 0 0, pointer";
+                this.cursorTool.removeCursor();
                 return;
             }
-            const tamanho = this.toolProperties.size * ((project.screen.offsetWidth) / project.properties.resolution.width);
-            if (tamanho < 15) {
-                this.cursorTool.removeCursor();
+            const size = this.toolProperties.size * ((project.screen.offsetWidth) / project.properties.resolution.width);
+            if (size < 15) {
                 contentTelas.style.cursor = "url('colorPaint/imagens/cursor/crossHair.png') 12.5 12.5, pointer";
-            } else {
+                this.cursorTool.removeCursor();
+            }
+            else {
                 const previousPosition = { x: Math.round(this.cursorTool.cursor.offsetLeft + this.cursorTool.halfSize), y: Math.round(this.cursorTool.cursor.offsetTop + this.cursorTool.halfSize) };
                 this.cursorTool.showCursor();
-                this.cursorTool.halfSize = tamanho / 2;
-                this.cursorTool.cursor.style.width = tamanho + "px";
-                this.cursorTool.cursor.style.height = tamanho + "px";
+                this.cursorTool.halfSize = size / 2;
+                this.cursorTool.cursor.style.width = size + "px";
+                this.cursorTool.cursor.style.height = size + "px";
                 this.cursorTool.changeCursorPosition(Math.round(previousPosition.x - this.cursorTool.halfSize), Math.round(previousPosition.y - this.cursorTool.halfSize));
                 contentTelas.style.cursor = "none";
-                if (tamanho > 249) { this.cursorTool.cursor.style.backgroundImage = ""; }
+                if (size > 249) { this.cursorTool.cursor.style.backgroundImage = ""; }
                 else { this.cursorTool.cursor.style.backgroundImage = "none"; }
             }
         },
-        brush(mouseX, mouseY) {
-            this.strokeCoordinates.x.push(mouseX);
-            this.strokeCoordinates.y.push(mouseY);
-            project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
-            let ponto1 = { x: this.strokeCoordinates.x[0], y: this.strokeCoordinates.y[0] };
-            let ponto2 = { x: this.strokeCoordinates.x[1], y: this.strokeCoordinates.y[1] };
+        brush(mousePos) {
+            this.strokeCoordinates.x.push(mousePos.x);
+            this.strokeCoordinates.y.push(mousePos.y);
+            let ponto1 = { x: this.strokeCoordinates.x[0], y: this.strokeCoordinates.y[0] },
+                ponto2 = { x: this.strokeCoordinates.x[1], y: this.strokeCoordinates.y[1] };
             project.eventLayer.beginPath();
             project.eventLayer.moveTo(ponto1.x, ponto1.y);
             for (let i = 0; i < this.strokeCoordinates.x.length; i++) {
@@ -332,10 +304,14 @@ function drawingToolsObject() {
                 return { x: ponto1.x + (ponto2.x - ponto1.x) / 2, y: ponto1.y + (ponto2.y - ponto1.y) / 2 };
             }
         },
-        line(mouseX, mouseY) {
-            this.strokeCoordinates.x[1] = mouseX;
-            this.strokeCoordinates.y[1] = mouseY;
-            project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
+        line(mousePos) {
+            if (this.strokeCoordinates.x.length === 0) {
+                this.strokeCoordinates.x[0] = mousePos.x;
+                this.strokeCoordinates.y[0] = mousePos.y;
+            } else {
+                this.strokeCoordinates.x[1] = mousePos.x;
+                this.strokeCoordinates.y[1] = mousePos.y;
+            }
             const pontoInicial = { x: this.strokeCoordinates.x[0], y: this.strokeCoordinates.y[0] },
                 pontoFinal = { x: this.strokeCoordinates.x[1], y: this.strokeCoordinates.y[1] };
             project.eventLayer.beginPath();
@@ -343,19 +319,27 @@ function drawingToolsObject() {
             project.eventLayer.lineTo(pontoFinal.x, pontoFinal.y);
             project.eventLayer.stroke();
         },
-        rectangle(mouseX, mouseY) {
-            this.strokeCoordinates.x[1] = mouseX;
-            this.strokeCoordinates.y[1] = mouseY;
-            project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
+        rectangle(mousePos) {
+            if (this.strokeCoordinates.x.length === 0) {
+                this.strokeCoordinates.x[0] = mousePos.x;
+                this.strokeCoordinates.y[0] = mousePos.y;
+            } else {
+                this.strokeCoordinates.x[1] = mousePos.x;
+                this.strokeCoordinates.y[1] = mousePos.y;
+            }
             const pontoInicial = { x: this.strokeCoordinates.x[0], y: this.strokeCoordinates.y[0] },
                 pontoFinal = { x: this.strokeCoordinates.x[1], y: this.strokeCoordinates.y[1] };
             project.eventLayer.beginPath();
             project.eventLayer.strokeRect(pontoInicial.x, pontoInicial.y, pontoFinal.x - pontoInicial.x, pontoFinal.y - pontoInicial.y);
         },
-        ellipse(mouseX, mouseY) {
-            this.strokeCoordinates.x[1] = mouseX;
-            this.strokeCoordinates.y[1] = mouseY;
-            project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
+        ellipse(mousePos) {
+            if (this.strokeCoordinates.x.length === 0) {
+                this.strokeCoordinates.x[0] = mousePos.x;
+                this.strokeCoordinates.y[0] = mousePos.y;
+            } else {
+                this.strokeCoordinates.x[1] = mousePos.x;
+                this.strokeCoordinates.y[1] = mousePos.y;
+            }
             const pontoInicial = { x: this.strokeCoordinates.x[0], y: this.strokeCoordinates.y[0] },
                 pontoFinal = { x: this.strokeCoordinates.x[1], y: this.strokeCoordinates.y[1] };
             const raioX = (pontoFinal.x - pontoInicial.x) / 2, raioY = (pontoFinal.y - pontoInicial.y) / 2;
@@ -370,37 +354,47 @@ function drawingToolsObject() {
             }
             project.eventLayer.stroke();
         },
-        curve(mouseX, mouseY, curvar) {
-            if (curvar === false) {
-                this.strokeCoordinates.x[1] = mouseX;
-                this.strokeCoordinates.y[1] = mouseY;
+        curve(mousePos) {
+            if (!this.clickToCurve) {
+                if (this.strokeCoordinates.x.length === 0) {
+                    this.strokeCoordinates.x[0] = mousePos.x;
+                    this.strokeCoordinates.y[0] = mousePos.y;
+                } else {
+                    this.strokeCoordinates.x[1] = mousePos.x;
+                    this.strokeCoordinates.y[1] = mousePos.y;
+                }
             }
-            project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
             const pontoInicial = { x: this.strokeCoordinates.x[0], y: this.strokeCoordinates.y[0] },
                 pontoFinal = { x: this.strokeCoordinates.x[1], y: this.strokeCoordinates.y[1] };
             project.eventLayer.beginPath();
             project.eventLayer.moveTo(pontoInicial.x, pontoInicial.y);
-            if (curvar === true) {
-                this.strokeCoordinates.x[2] = mouseX;
-                this.strokeCoordinates.y[2] = mouseY;
+            if (this.clickToCurve) {
+                this.strokeCoordinates.x[2] = mousePos.x;
+                this.strokeCoordinates.y[2] = mousePos.y;
                 const pontoControle = { x: this.strokeCoordinates.x[2], y: this.strokeCoordinates.y[2] };
                 project.eventLayer.quadraticCurveTo(pontoControle.x, pontoControle.y, pontoFinal.x, pontoFinal.y);
             } else { project.eventLayer.lineTo(pontoFinal.x, pontoFinal.y); }
             project.eventLayer.stroke();
         },
-        eyeDropper(mouseX, mouseY, posTelaX, posTelaY, mouseMovendo) {
+        eyeDropper(cursorPos, mousePos, move) {
             const cursorEyeDropper = this.arrayTools[this.selectedTool].cursor.eyeDropper,
-                X = mouseX - (cursorEyeDropper.offsetWidth / 2), Y = mouseY - (cursorEyeDropper.offsetHeight / 2);
-            cursorEyeDropper.style.left = X + "px";
-            cursorEyeDropper.style.top = Y + "px";
-            const pixel = project.drawComplete.getImageData(posTelaX, posTelaY, 1, 1).data;
-            if (mouseMovendo) {
-                const compareColors = this.arrayTools[this.selectedTool].cursor.compareColors;
+                compareColors = this.arrayTools[this.selectedTool].cursor.compareColors;
+            if (cursorEyeDropper.style.display === "none") {
+                cursorEyeDropper.style.display = "block";
+                const corAtual = "25px solid rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
+                compareColors.style.borderLeft = corAtual;
+                compareColors.style.borderBottom = corAtual;
+            }
+            cursorEyeDropper.style.left = cursorPos.x - (cursorEyeDropper.offsetWidth / 2) + "px";
+            cursorEyeDropper.style.top = cursorPos.y - (cursorEyeDropper.offsetHeight / 2) + "px";
+            const pixel = project.drawComplete.getImageData(mousePos.x, mousePos.y, 1, 1).data;
+            if (move) {
                 let novaCor = "25px solid rgb(" + pixel[0] + ", " + pixel[1] + ", " + pixel[2] + ")";
                 if (pixel[3] === 0) { novaCor = "25px solid rgba(0, 0, 0, 0)"; }
                 compareColors.style.borderRight = novaCor;
                 compareColors.style.borderTop = novaCor;
             } else {
+                cursorEyeDropper.style.display = "none";
                 if (pixel[3] === 0) {
                     notification.open({
                         title: "Atenção!",
@@ -418,87 +412,100 @@ function drawingToolsObject() {
                 }
             }
         },
-        paintBucket(mouseX, mouseY, context, selectedColor) {
-            this.strokeCoordinates.x[0] = Math.round(mouseX);
-            this.strokeCoordinates.y[0] = Math.round(mouseY);
-            const camada = context.getImageData(0, 0, project.properties.resolution.width, project.properties.resolution.height),
-                clearCanvas = context.createImageData(project.properties.resolution.width, project.properties.resolution.height);
-            pintar(this.strokeCoordinates.x[0], this.strokeCoordinates.y[0]);
-            function pintar(posX, posY) {
-                const pixelPos = (posY * project.properties.resolution.width + posX) * 4, R = camada.data[pixelPos],
-                    G = camada.data[pixelPos + 1], B = camada.data[pixelPos + 2], A = camada.data[pixelPos + 3];
-                if (R === selectedColor.R && G === selectedColor.G && B === selectedColor.B && A === 255) { return; }
-                preencher(posX, posY, R, G, B, A);
+        paintBucket(mousePos) {
+            if (this.mousePosition.x < 0 || this.mousePosition.x > project.properties.resolution.width ||
+                this.mousePosition.y < 0 || this.mousePosition.y > project.properties.resolution.height) {
+                this.painting = false;
+                return;
             }
-            function preencher(posClickX, posClickY, R, G, B, A) {
+            this.strokeCoordinates.x[0] = Math.floor(mousePos.x);
+            this.strokeCoordinates.y[0] = Math.floor(mousePos.y);
+            const context = project.arrayLayers[project.selectedLayer].ctx,
+                camada = context.getImageData(0, 0, project.properties.resolution.width, project.properties.resolution.height),
+                clearCanvas = context.createImageData(project.properties.resolution.width, project.properties.resolution.height),
+                selectedColor = {
+                    r: this.toolProperties.color.r, g: this.toolProperties.color.g,
+                    b: this.toolProperties.color.b, a: Math.round(this.toolProperties.opacity * 255)
+                };
+            const pintar = (posX, posY) => {
+                const pixelPos = (posY * project.properties.resolution.width + posX) * 4,
+                    cor = {
+                        r: camada.data[pixelPos], g: camada.data[pixelPos + 1],
+                        b: camada.data[pixelPos + 2], a: camada.data[pixelPos + 3]
+                    }
+                if (cor.r === selectedColor.r && cor.g === selectedColor.g &&
+                    cor.b === selectedColor.b && cor.a === 255) {
+                    this.painting = false;
+                    return;
+                }
+                preencher(posX, posY, cor);
+            }
+            function preencher(posClickX, posClickY, cor) {
                 let pixelsVerificados = [[posClickX, posClickY]];
                 while (pixelsVerificados.length > 0) {
                     const novaPosicao = pixelsVerificados.pop();
                     let x = novaPosicao[0], y = novaPosicao[1];
                     let posicaoPixel = (y * project.properties.resolution.width + x) * 4;
-                    while (y >= 0 && compararCorInicial(posicaoPixel, R, G, B, A)) {
+                    while (y >= 0 && compararCorInicial(posicaoPixel, cor)) {
                         y = y - 1;
                         posicaoPixel = posicaoPixel - project.properties.resolution.width * 4;
                     }
-                    pintarPixel(posicaoPixel, selectedColor.R, selectedColor.G, selectedColor.B, selectedColor.A);
+                    pintarPixel(posicaoPixel, selectedColor);
                     posicaoPixel = posicaoPixel + project.properties.resolution.width * 4;
                     y = y + 1;
                     let ladoEsquerdo = false, ladoDireito = false;
-                    while (y < project.properties.resolution.height - 1 && compararCorInicial(posicaoPixel, R, G, B, A)) {
-                        pintarPixel(posicaoPixel, selectedColor.R, selectedColor.G, selectedColor.B, selectedColor.A);
+                    while (y < project.properties.resolution.height - 1 && compararCorInicial(posicaoPixel, cor)) {
+                        pintarPixel(posicaoPixel, selectedColor);
                         y = y + 1;
                         if (x > 0) {
-                            if (compararCorInicial(posicaoPixel - 4, R, G, B, A) === true) {
+                            if (compararCorInicial(posicaoPixel - 4, cor) === true) {
                                 if (!ladoEsquerdo) {
                                     ladoEsquerdo = true;
                                     pixelsVerificados.push([x - 1, y]);
                                 }
                             } else {
-                                pintarPixel(posicaoPixel - 4, selectedColor.R, selectedColor.G, selectedColor.B, selectedColor.A);
+                                pintarPixel(posicaoPixel - 4, selectedColor);
                                 if (ladoEsquerdo) { ladoEsquerdo = false; }
                             }
                         }
                         if (x < project.properties.resolution.width - 1) {
-                            if (compararCorInicial(posicaoPixel + 4, R, G, B, A) === true) {
+                            if (compararCorInicial(posicaoPixel + 4, cor) === true) {
                                 if (!ladoDireito) {
                                     ladoDireito = true;
                                     pixelsVerificados.push([x + 1, y]);
                                 }
                             } else {
-                                pintarPixel(posicaoPixel + 4, selectedColor.R, selectedColor.G, selectedColor.B, selectedColor.A);
+                                pintarPixel(posicaoPixel + 4, selectedColor);
                                 if (ladoDireito) { ladoDireito = false; }
                             }
                         }
                         posicaoPixel = posicaoPixel + project.properties.resolution.width * 4;
                     }
-                    pintarPixel(posicaoPixel, selectedColor.R, selectedColor.G, selectedColor.B, selectedColor.A);
+                    pintarPixel(posicaoPixel, selectedColor);
                 }
                 project.eventLayer.putImageData(clearCanvas, 0, 0);
             }
-            function compararCorInicial(pixelPos, clickR, clickG, clickB, clickA) {
+            function compararCorInicial(pixelPos, cor) {
                 const r = camada.data[pixelPos], g = camada.data[pixelPos + 1], b = camada.data[pixelPos + 2],
                     a = camada.data[pixelPos + 3];
                 if (clearCanvas.data[pixelPos + 3] === 0) {
-                    if (clickR === selectedColor.R && clickG === selectedColor.G && clickB === selectedColor.B && clickA === 255) {
+                    if (cor.r === selectedColor.r && cor.g === selectedColor.g &&
+                        cor.b === selectedColor.b && cor.a === 255) {
                         return false;
                     }
-                    if (r === clickR && g === clickG && b === clickB && a === clickA) { return true; }
-                    if (r === selectedColor.R && g === selectedColor.G && b === selectedColor.B && a === selectedColor.A) {
+                    if (r === cor.r && g === cor.g && b === cor.b && a === cor.a) { return true; }
+                    if (r === selectedColor.r && g === selectedColor.g && b === selectedColor.b && a === selectedColor.a) {
                         return false;
                     }
                 } else { return false; }
             }
-            function pintarPixel(pixelPos, R, G, B, A) {
-                clearCanvas.data[pixelPos] = R;
-                clearCanvas.data[pixelPos + 1] = G;
-                clearCanvas.data[pixelPos + 2] = B;
-                clearCanvas.data[pixelPos + 3] = A;
-
-                camada.data[pixelPos] = R;
-                camada.data[pixelPos + 1] = G;
-                camada.data[pixelPos + 2] = B;
-                camada.data[pixelPos + 3] = A;
+            function pintarPixel(pixelPos, cor) {
+                camada.data[pixelPos] = clearCanvas.data[pixelPos] = cor.r;
+                camada.data[pixelPos + 1] = clearCanvas.data[pixelPos + 1] = cor.g;
+                camada.data[pixelPos + 2] = clearCanvas.data[pixelPos + 2] = cor.b;
+                camada.data[pixelPos + 3] = clearCanvas.data[pixelPos + 3] = cor.a;
             }
+            pintar(this.strokeCoordinates.x[0], this.strokeCoordinates.y[0]);
         }
     }
 }

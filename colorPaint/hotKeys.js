@@ -60,13 +60,13 @@ function hotKeysObject() {
         keyDownControl() {
             this.ctrlPressed = true;
             if (drawingTools.selectedTool === 0) {
-                drawingTools.selectDrawingTool(6);//Muda para a ferramenta conta gotas.
+                drawingTools.selectDrawingTool(drawingTools.arrayTools.length - 1);//Muda para a ferramenta conta gotas.
             }
         },
         keyUpControl() {
             this.ctrlPressed = false;
-            if (drawingTools.previousTool === 0 && drawingTools.selectedTool === 6) {
-                drawingTools.arrayTools[drawingTools.selectedTool].cursor.eyeDropper.style.display = "none";
+            if (drawingTools.previousTool === 0 && drawingTools.selectedTool === drawingTools.arrayTools.length - 1) {
+                drawingTools.arrayTools[drawingTools.arrayTools.length - 1].cursor.eyeDropper.style.display = "none";
                 drawingTools.selectDrawingTool(0);//Volta para a ferramenta pincel.                
             }
         },

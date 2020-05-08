@@ -913,7 +913,6 @@ p {
 /* =============================================== fim carregamento =============================================== */
 
 #cursorComparaContaGotas {
-    display: none;
     position: absolute;
     width: 250px;
     height: 250px;
@@ -1184,7 +1183,7 @@ p {
     right: 10px;
     width: 400px;
     padding: 10px;
-    background-color: rgba(135, 0, 0, 0.95);
+    background-color: rgba(129, 7, 6, 0.97);
     border-radius: 10px;
     box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.45);
     border-top: 1px solid rgba(255, 255, 255, 0.2);
