@@ -80,7 +80,7 @@ function colorPaint() {
 
     txtPorcentagemZoom.addEventListener("keyup", (e) => {
         if (e.code === "Enter" || e.keyCode === 13) {
-            const valor = parseFloat(((this.value).replace("%", "")).replace(",", "."));
+            const valor = parseFloat(((e.currentTarget.value).replace("%", "")).replace(",", "."));
             if (isNaN(valor) === false && valor >= 1) { project.zoom("porcentagem", true, valor); }
         }
     });

@@ -337,8 +337,7 @@ function projectObject() {
                         this.selectedLayer = num;
                         this.eventLayer.canvas.style.zIndex = ((num + 1) * 2) + 1;
                         this.arrayLayers[i].icon.classList.replace("camadas", "camadaSelecionada");
-                    }
-                    else { this.arrayLayers[i].icon.classList.replace("camadaSelecionada", "camadas"); }
+                    } else { this.arrayLayers[i].icon.classList.replace("camadaSelecionada", "camadas"); }
                 }
                 const opacidade = this.arrayLayers[this.selectedLayer].opacity;
                 this.layerOpacityBar.cursor.style.left = (200 * opacidade) - 7 + "px";
