@@ -404,15 +404,15 @@ function projectObject() {
                     visivel: this.arrayLayers[i].visible,
                 };
             }
-            for (let i = 0; i < this.savedColors.length; i++) { coresSalvasProjeto[i] = this.savedColors[i].cor; }
+            for (let i = 0; i < this.savedColors.length; i++) { coresSalvasProjeto[i] = this.savedColors[i].color; }
             const objProjeto = {
-                nomeProjeto: this.properties.name,
-                resolucaoDoProjeto: this.properties.resolution,
-                corDeFundo: this.properties.background,
-                coresSalvas: coresSalvasProjeto,
-                grid: { tamanho: grid.tamanho, posicao: grid.posicao, visivel: grid.visivel, },
-                numeroDeCamadas: this.properties.numberLayers,
-                camadas: dadosCamadas
+                nomeProjeto: this.properties.name, resolucaoDoProjeto: this.properties.resolution,
+                corDeFundo: this.properties.background, coresSalvas: coresSalvasProjeto,
+                grid: {
+                    size: createGridWindow.gridProprieties.size, position: createGridWindow.gridProprieties.position,
+                    visible: createGridWindow.gridProprieties.visible
+                },
+                numeroDeCamadas: this.properties.numberLayers, camadas: dadosCamadas
             }
             const data = encode(JSON.stringify(objProjeto));
             const blob = new Blob([data], { type: "application/octet-stream;charset=utf-8" });
@@ -481,9 +481,9 @@ function projectObject() {
                 }
             }
             for (let i = 0; i < objProjeto.coresSalvas.length; i++) { this.saveColor(objProjeto.coresSalvas[i]); }
-            grid.tamanho = objProjeto.grid.tamanho;
-            grid.posicao = objProjeto.grid.posicao;
-            if (objProjeto.grid.visivel) { criarGrid(grid.tela, grid.tamanho, grid.posicao, true); }
+            createGridWindow.gridProprieties.size = objProjeto.grid.size;
+            createGridWindow.gridProprieties.position = objProjeto.grid.position;
+            if (objProjeto.grid.visible) { createGridWindow.createGrid(true); }
         }
     }
 }
