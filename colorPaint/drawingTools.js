@@ -381,8 +381,7 @@ function drawingToolsObject() {
             if (cursorEyeDropper.style.display === "none") {
                 cursorEyeDropper.style.display = "block";
                 const corAtual = "25px solid rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
-                compareColors.style.borderLeft = corAtual;
-                compareColors.style.borderBottom = corAtual;
+                compareColors.style.borderBottom = compareColors.style.borderLeft = corAtual;
             }
             cursorEyeDropper.style.left = cursorPos.x - (cursorEyeDropper.offsetWidth / 2) + "px";
             cursorEyeDropper.style.top = cursorPos.y - (cursorEyeDropper.offsetHeight / 2) + "px";
@@ -390,8 +389,7 @@ function drawingToolsObject() {
             if (move) {
                 let novaCor = "25px solid rgb(" + pixel[0] + ", " + pixel[1] + ", " + pixel[2] + ")";
                 if (pixel[3] === 0) { novaCor = "25px solid rgba(0, 0, 0, 0)"; }
-                compareColors.style.borderRight = novaCor;
-                compareColors.style.borderTop = novaCor;
+                compareColors.style.borderTop = compareColors.style.borderRight = novaCor;
             } else {
                 cursorEyeDropper.style.display = "none";
                 if (pixel[3] === 0) {
@@ -404,10 +402,8 @@ function drawingToolsObject() {
                 if (colorSelectionWindow.opened) { colorSelectionWindow.findColor({ r: pixel[0], g: pixel[1], b: pixel[2] }); }
                 else {
                     project.selectedColors.primary = { r: pixel[0], g: pixel[1], b: pixel[2] };
-                    this.toolProperties.color = project.selectedColors.primary;
-                    const novaCor = "rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
-                    corPrincipal.style.backgroundColor = novaCor;
-                    txtCorEscolhida.value = novaCor;
+                    const novaCor = "rgb(" + pixel[0] + ", " + pixel[1] + ", " + pixel[2] + ")";
+                    txtCorEscolhida.value = corPrincipal.style.backgroundColor = novaCor;
                 }
             }
         },

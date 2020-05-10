@@ -319,19 +319,32 @@ function projectObject() {
             }
         },
         clickBttLook(num) {
+            this.arrayLayers[num].visible = !this.arrayLayers[num].visible;
+            this.cursorInBttLook = false;
             if (this.arrayLayers[num].visible) {
-                this.arrayLayers[num].ctx.canvas.style.display = "none";
-                this.arrayLayers[num].previewLayer.canvas.style.display = "none";
-                this.arrayLayers[num].bttLook.classList.replace("iconVer", "iconNaoVer");
-            } else {
                 this.arrayLayers[num].ctx.canvas.style.display = "block";
                 this.arrayLayers[num].previewLayer.canvas.style.display = "block";
                 this.arrayLayers[num].bttLook.classList.replace("iconNaoVer", "iconVer");
+                this.clickIconLayer(num);
+            } else {
+                this.arrayLayers[num].ctx.canvas.style.display = "none";
+                this.arrayLayers[num].previewLayer.canvas.style.display = "none";
+                this.arrayLayers[num].bttLook.classList.replace("iconVer", "iconNaoVer");
+                if (this.properties.numberLayers === 1) {
+                    this.arrayLayers[num].icon.classList.replace("camadaSelecionada", "camadas");
+                } else {
+                    for (let i = 0; i < this.properties.numberLayers; i++) {
+                        if (i != num && num === this.selectedLayer && this.arrayLayers[i].visible) {
+                            this.clickIconLayer(i);
+                            i = this.properties.numberLayers;
+                        }
+                    }
+                }
             }
-            this.arrayLayers[num].visible = !this.arrayLayers[num].visible;
         },
         clickIconLayer(num) {
             if (!this.cursorInBttLook) {
+                if (!this.arrayLayers[num].visible) { return; }
                 for (let i = 0; i < this.properties.numberLayers; i++) {
                     if (i === num) {
                         this.selectedLayer = num;
