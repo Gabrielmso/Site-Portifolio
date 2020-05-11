@@ -1,18 +1,16 @@
 ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 6px;
+    height: 6px;
 }
 
 *::-webkit-scrollbar-thumb {
-    min-height: 28px;
-    background: rgb(185, 185, 185);
+    background: rgb(121, 121, 121);
+    border: 1px solid  rgb(91, 91, 91);
 }
 
 *::-webkit-scrollbar-track {
-    background: rgb(119, 119, 119);
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgb(102, 102, 102);
+    background: rgb(71, 71, 71);
+    border: 1px solid  rgb(91, 91, 91);
 }
 
 body, html {
@@ -487,6 +485,7 @@ p {
     display: inline-block;
     overflow: hidden;
     margin-right: 10px;
+    margin-bottom: 3px;
 }
 
 #desenho {

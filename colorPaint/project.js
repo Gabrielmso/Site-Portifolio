@@ -301,15 +301,10 @@ function projectObject() {
                 document.getElementById(idIconTela) != null && document.getElementById(idCamada) != null &&
                 document.getElementById(idPreviewCamada) != null) {
                 const objCamada = {
-                    name: nomeCamada,
-                    ctx: elCamada.getContext("2d"),
-                    icon: iconeCamada,
-                    previewLayer: elPreviewCamada.getContext("2d"),
-                    miniature: iconTela.getContext("2d"),
-                    bttLook: bttVisivel,
-                    txtOpacity: txtPorcentagem,
-                    opacity: 1,
-                    visible: true
+                    name: nomeCamada, ctx: elCamada.getContext("2d"),
+                    icon: iconeCamada, previewLayer: elPreviewCamada.getContext("2d"),
+                    miniature: iconTela.getContext("2d"), bttLook: bttVisivel,
+                    txtOpacity: txtPorcentagem, opacity: 1, visible: true
                 };
                 this.arrayLayers[num - 1] = objCamada;
                 this.arrayLayers[num - 1].icon.addEventListener("mousedown", () => this.clickIconLayer(num - 1));
@@ -343,18 +338,16 @@ function projectObject() {
             }
         },
         clickIconLayer(num) {
-            if (!this.cursorInBttLook) {
-                if (!this.arrayLayers[num].visible) { return; }
-                for (let i = 0; i < this.properties.numberLayers; i++) {
-                    if (i === num) {
-                        this.selectedLayer = num;
-                        this.eventLayer.canvas.style.zIndex = ((num + 1) * 2) + 1;
-                        this.arrayLayers[i].icon.classList.replace("camadas", "camadaSelecionada");
-                    } else { this.arrayLayers[i].icon.classList.replace("camadaSelecionada", "camadas"); }
-                }
-                const opacidade = this.arrayLayers[this.selectedLayer].opacity;
-                this.layerOpacityBar.cursor.style.left = (200 * opacidade) - 7 + "px";
+            if (this.cursorInBttLook || !this.arrayLayers[num].visible) { return; }
+            for (let i = 0; i < this.properties.numberLayers; i++) {
+                if (i === num) {
+                    this.selectedLayer = num;
+                    this.eventLayer.canvas.style.zIndex = ((num + 1) * 2) + 1;
+                    this.arrayLayers[i].icon.classList.replace("camadas", "camadaSelecionada");
+                } else { this.arrayLayers[i].icon.classList.replace("camadaSelecionada", "camadas"); }
             }
+            const opacidade = this.arrayLayers[this.selectedLayer].opacity;
+            this.layerOpacityBar.cursor.style.left = (200 * opacidade) - 7 + "px";
         },
         createDrawComplete() {
             if (!this.created) { return; }
@@ -413,8 +406,7 @@ function projectObject() {
             for (let i = 0; i < this.properties.numberLayers; i++) {
                 dadosCamadas[i] = {
                     imgDataCamada: this.arrayLayers[i].ctx.canvas.toDataURL("imagem/png"),
-                    opacidade: this.arrayLayers[i].opacity,
-                    visivel: this.arrayLayers[i].visible,
+                    opacidade: this.arrayLayers[i].opacity, visivel: this.arrayLayers[i].visible,
                 };
             }
             for (let i = 0; i < this.savedColors.length; i++) { coresSalvasProjeto[i] = this.savedColors[i].color; }
@@ -444,30 +436,26 @@ function projectObject() {
             const input = document.createElement("input");
             input.setAttribute("type", "file");
             input.addEventListener("change", (e) => {
-                const arquivo = e.target.files[0];
+                const arquivo = e.currentTarget.files[0];
                 const reader = new FileReader();
                 reader.onload = () => {
                     if (reader.result === "") {
                         notification.open({
-                            title: "Erro!",
-                            text: "Este arquivo não possui projeto salvo."
+                            title: "Erro!", text: "Este arquivo não possui projeto salvo."
                         }, { name: "notify", time: 2000 }, null);
                     }
                     else { this.loadProject(reader.result); }
                 };
                 if (!arquivo) {
                     notification.open({
-                        title: "Erro!",
-                        text: "Falha ao carregar projeto, tente novamente."
+                        title: "Erro!", text: "Falha ao carregar projeto, tente novamente."
                     }, { name: "notify", time: 2000 }, null);
-                }
-                else {
+                } else {
                     const extencao = arquivo.name.split('.').pop().toLowerCase();
                     if (extencao === "gm") { reader.readAsText(arquivo, "ISO-8859-1"); }
                     else {
                         notification.open({
-                            title: "Erro!",
-                            text: "Arquivo selecionado inválido!"
+                            title: "Erro!", text: "Arquivo selecionado inválido!"
                         }, { name: "notify", time: 2000 }, null);
                     }
                 }
