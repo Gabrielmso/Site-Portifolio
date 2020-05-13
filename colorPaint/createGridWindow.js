@@ -1,13 +1,11 @@
 function createGridWindowObject() {
     return {
-        gridProprieties: {
-            screen: document.getElementById("grid"),
-            size: 80,
-            position: { x: 0, y: 0 },
-            visible: false,
-        },
+        gridProprieties: { screen: document.getElementById("grid"), size: 80, position: { x: 0, y: 0 }, visible: false, },
         previousVisualization: { scrollX: 0, scrollY: 0, zoom: 0 },
         contentWindow: document.getElementById("contentJanelaMenuGrid"),
+        window: document.getElementById("janelaMenuGrid"),
+        barMoveWindow: document.getElementById("barraMoverJanelaMenuGrid"),
+        mousePositionMoveWindow: null,
         inputs: {
             size: document.getElementById("txtTamanhoGrid"),
             horizontalPosition: document.getElementById("txtPosicaoHorizontalGrid"),
@@ -45,6 +43,7 @@ function createGridWindowObject() {
                 this.createGrid(false);
                 this.close();
             });
+            this.barMoveWindow.addEventListener("mousedown", (e) => this.moveWindow(getMousePosition(e.currentTarget, e), false));
         },
         open() {
             if (project.created) {
@@ -61,10 +60,8 @@ function createGridWindowObject() {
                 if (!this.gridProprieties.visible) { this.createGrid(true); }
             }
             else {
-                notification.open({
-                    title: "Atenção!",
-                    text: "Crie um novo projeto para visualizar a grade."
-                }, { name: "notify", time: 2000 }, null);
+                notification.open({ title: "Atenção!", text: "Crie um novo projeto para visualizar a grade." },
+                    { name: "notify", time: 2000 }, null);
             }
         },
         close() {
@@ -73,6 +70,7 @@ function createGridWindowObject() {
             this.inputs.size = cloneReplaceElement(this.inputs.size);
             this.inputs.horizontalPosition = cloneReplaceElement(this.inputs.horizontalPosition);
             this.inputs.verticalPosition = cloneReplaceElement(this.inputs.verticalPosition);
+            this.barMoveWindow = cloneReplaceElement(this.barMoveWindow);
             this.contentWindow.style.display = "none";
             this.applyPreviousVisualization();
         },
@@ -123,6 +121,35 @@ function createGridWindowObject() {
             project.zoom("porcentagem", false, this.previousVisualization.zoom);
             contentTelas.scrollTop = this.previousVisualization.scrollY;
             contentTelas.scrollLeft = this.previousVisualization.scrollX;
+        },
+        moveWindow(mousePosition, move) {
+            if (move) {
+                this.window.style.transform = "none";
+                let newPositionX = mousePosition.x - this.mousePositionMoveWindow.x,
+                    newPositionY = mousePosition.y - this.mousePositionMoveWindow.y;
+                if (newPositionX < 0) { newPositionX = 0; }
+                else if (newPositionX + this.window.offsetWidth > this.contentWindow.offsetWidth) {
+                    newPositionX = this.contentWindow.offsetWidth - this.window.offsetWidth;
+                }
+                if (newPositionY < 50) { newPositionY = 50 }
+                else if (newPositionY + this.window.offsetHeight > this.contentWindow.offsetHeight) {
+                    newPositionY = this.contentWindow.offsetHeight - this.window.offsetHeight;
+                }
+                this.window.style.left = newPositionX + "px";
+                this.window.style.top = newPositionY + "px";
+            } else {
+                this.mousePositionMoveWindow = mousePosition;
+                this.contentWindow.addEventListener("mousemove", createGridWindow.mouseMoveEvent);
+                this.contentWindow.addEventListener("mouseup", createGridWindow.mouseUpEvent);
+            }
+
+        },
+        mouseMoveEvent(e) {
+            createGridWindow.moveWindow(getMousePosition(createGridWindow.contentWindow, e), true);
+        },
+        mouseUpEvent() {
+            createGridWindow.contentWindow.removeEventListener("mousemove", createGridWindow.mouseMoveEvent);
+            createGridWindow.contentWindow.addEventListener("mouseup", createGridWindow.mouseUpEvent);
         }
     }
 }

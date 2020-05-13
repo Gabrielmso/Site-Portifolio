@@ -6,7 +6,7 @@ function colorSelectionWindowObject() {
         colorHsv: { h: 0, s: 100, v: 100 },
         compareColors: { current: document.getElementById("corAtual"), selected: document.getElementById("corSelecionada") },
         window: document.getElementById("janelaSelecionarCor"),
-        barMoveWindow: { el: document.getElementById("barraMoverJanela"), clicked: false },
+        barMoveWindow: { el: document.getElementById("moverJanelaSelecionarCor"), clicked: false },
         inputs: { txtRgb: document.getElementById("codRGB"), txtHex: document.getElementById("codHEX") },
         buttons: {
             ok: document.getElementById("bttOkSelecionaCor"),
@@ -21,16 +21,12 @@ function colorSelectionWindowObject() {
             spectrum: { el: document.getElementById("cursorBarra"), clicked: false },
             gradient: { el: document.getElementById("cursorGradiente"), position: { x: 0, y: 0 }, clicked: false }
         },
-        mousePositionMoveWindow: { x: 0, y: 0 },
+        mousePositionMoveWindow: null,
         addEventsToElements() {
             this.window.addEventListener("mousemove", (e) => this.moveCursors(e));
             document.addEventListener("mouseup", () => {
                 if (!this.opened) { return; }
                 this.cursors.spectrum.clicked = this.cursors.gradient.clicked = this.barMoveWindow.clicked = false;
-            });
-            document.addEventListener("mousemove", (e) => {
-                if (!this.opened) { return; }
-                if (this.barMoveWindow.clicked) { this.moveWindow(getMousePosition(janelaPrincipal, e), true); }
             });
             this.canvas.spectrum.canvas.parentNode.addEventListener("mousedown", (e) => {
                 this.cursors.spectrum.clicked = true;
@@ -42,6 +38,7 @@ function colorSelectionWindowObject() {
             });
         },
         removeEventsToElements() {
+            document.removeEventListener("mousemove", colorSelectionWindow.mouseMoveEvent);
             this.barMoveWindow.el = cloneReplaceElement(this.barMoveWindow.el);
             this.inputs.txtRgb = cloneReplaceElement(this.inputs.txtRgb);
             this.inputs.txtHex = cloneReplaceElement(this.inputs.txtHex);
@@ -66,6 +63,12 @@ function colorSelectionWindowObject() {
             } else {
                 this.barMoveWindow.clicked = true;
                 this.mousePositionMoveWindow = mousePosition;
+                document.addEventListener("mousemove", colorSelectionWindow.mouseMoveEvent);
+            }
+        },
+        mouseMoveEvent(e) {
+            if (colorSelectionWindow.barMoveWindow.clicked) {
+                colorSelectionWindow.moveWindow(getMousePosition(janelaPrincipal, e), true);
             }
         },
         findColor(color) {
