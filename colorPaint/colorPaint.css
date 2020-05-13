@@ -5,12 +5,12 @@
 
 *::-webkit-scrollbar-thumb {
     background: rgb(121, 121, 121);
-    border: 1px solid  rgb(91, 91, 91);
+    border: 1px solid rgb(91, 91, 91);
 }
 
 *::-webkit-scrollbar-track {
     background: rgb(71, 71, 71);
-    border: 1px solid  rgb(91, 91, 91);
+    border: 1px solid rgb(91, 91, 91);
 }
 
 body, html {
@@ -264,8 +264,7 @@ p {
     position: relative;
     overflow: hidden;
     width: 100px;
-    left: 0px;
-    height: auto;
+    height: 240px;
     padding: 12px;
 }
 
@@ -348,40 +347,43 @@ p {
 #coresSelecionadas {
     position: relative;
     width: 100%;
-    height: 58px;
+    height: 48px;
 }
 
 #corPrincipal {
-    top: 5px;
+    top: 2px;
     left: 25px;
     background-color: rgb(0, 0, 0);
     z-index: 2;
 }
 
-#corPrincipal div {
-    width: 100%;
-    height: 100%;
-    border: 1px solid rgb(255, 255, 255);
-}
-
 #corSecundaria {
-    top: 20px;
-    left: 40px;
+    top: 17px;
+    left: 41px;
     background-color: rgb(255, 255, 255);
     z-index: 1;
 }
 
-#corSecundaria div {
+.corEscolhida {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 5px;
+}
+
+.corEscolhida div {
     width: 100%;
     height: 100%;
     border: 1px solid rgb(255, 255, 255);
+    border-radius: 5px;
 }
 
 #bttAlternaCor {
     position: absolute;
     width: 12px;
     height: 13px;
-    top: 39px;
+    top: 36px;
     left: 23px;
     background-image: url("../colorPaint/imagens/icones/iconeAlternaCor.jpg");
     background-repeat: no-repeat;
@@ -391,7 +393,7 @@ p {
     position: absolute;
     width: 12px;
     height: 13px;
-    top: 3px;
+    top: 0px;
     left: 60px;
     background-image: url("../colorPaint/imagens/icones/iconeCoresPrincipais.jpg");
     background-repeat: no-repeat;
@@ -402,7 +404,7 @@ p {
     width: 85px;
     height: auto;
     padding: 7px;
-    max-height: 120px;
+    max-height: 166px;
     overflow-x: auto;
     scrollbar-width: thin;
     background-color: rgb(37, 37, 37);
@@ -477,7 +479,6 @@ p {
     width: 100%;
     overflow: auto;
     scrollbar-width: thin;
-    cursor: url("../colorPaint/imagens/cursor/crossHair.png") 12.5 12.5, pointer;
 }
 
 #telasCanvas {
@@ -736,13 +737,6 @@ p {
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    border: 1px solid rgb(0, 0, 0);
-}
-
-.corEscolhida {
-    position: absolute;
-    width: 30px;
-    height: 30px;
     border: 1px solid rgb(0, 0, 0);
 }
 

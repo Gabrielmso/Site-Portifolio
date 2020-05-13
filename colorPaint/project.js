@@ -34,26 +34,21 @@ function projectObject() {
             document.getElementById("bttSalvarDesenho").addEventListener("mousedown", () => {
                 if (this.created) { this.saveDraw(); }
                 else {
-                    notification.open({
-                        title: "Atenção!",
-                        text: "Nenhum projeto foi criado."
-                    }, { name: "notify", time: 1500 }, null);
+                    notification.open({ title: "Atenção!", text: "Nenhum projeto foi criado." },
+                        { name: "notify", time: 1500 }, null);
                 }
             });
             document.getElementById("bttSalvarProjeto").addEventListener("mousedown", () => {
                 if (this.created) { this.saveProject(); }
                 else {
-                    notification.open({
-                        title: "Atenção!",
-                        text: "Nenhum projeto foi criado."
-                    }, { name: "notify", time: 1500 }, null);
+                    notification.open({ title: "Atenção!", text: "Nenhum projeto foi criado." },
+                        { name: "notify", time: 1500 }, null);
                 }
             });
             document.getElementById("bttAbrirProjeto").addEventListener("mousedown", () => {
                 if (this.created) {
                     notification.open({
-                        title: "Projeto em andamento!",
-                        text: "Todo o progresso não salvo será perdido, deseja continuar?"
+                        title: "Projeto em andamento!", text: "Todo o progresso não salvo será perdido, deseja continuar?"
                     }, { name: "confirm", time: null }, () => {
                         sessionStorage.setItem("abrirProjetoSalvo", "true");
                         window.location.reload();
@@ -199,6 +194,10 @@ function projectObject() {
             this.created = true;
             this.adjustScreen();
             previewFunctions.adjustPreview(this.properties.resolution.proportion);
+            drawingTools.addEventsToElements();
+            previewFunctions.addEventsToElements();
+            undoRedoChange.addEventsToElements();
+            hotKeys.addEventsToElements();
             setTimeout(() => this.clickIconLayer(0), 3);
         },
         createElements(color) {
@@ -350,7 +349,6 @@ function projectObject() {
             this.layerOpacityBar.cursor.style.left = (200 * opacidade) - 7 + "px";
         },
         createDrawComplete() {
-            if (!this.created) { return; }
             this.drawComplete.clearRect(0, 0, this.properties.resolution.width, this.properties.resolution.height);
             if (this.properties.background != false) {
                 this.drawComplete.globalAlpha = 1;
@@ -440,23 +438,20 @@ function projectObject() {
                 const reader = new FileReader();
                 reader.onload = () => {
                     if (reader.result === "") {
-                        notification.open({
-                            title: "Erro!", text: "Este arquivo não possui projeto salvo."
-                        }, { name: "notify", time: 2000 }, null);
+                        notification.open({ title: "Erro!", text: "Este arquivo não possui projeto salvo." },
+                            { name: "notify", time: 2000 }, null);
                     }
                     else { this.loadProject(reader.result); }
                 };
                 if (!arquivo) {
-                    notification.open({
-                        title: "Erro!", text: "Falha ao carregar projeto, tente novamente."
-                    }, { name: "notify", time: 2000 }, null);
+                    notification.open({ title: "Erro!", text: "Falha ao carregar projeto, tente novamente." },
+                        { name: "notify", time: 2000 }, null);
                 } else {
                     const extencao = arquivo.name.split('.').pop().toLowerCase();
                     if (extencao === "gm") { reader.readAsText(arquivo, "ISO-8859-1"); }
                     else {
-                        notification.open({
-                            title: "Erro!", text: "Arquivo selecionado inválido!"
-                        }, { name: "notify", time: 2000 }, null);
+                        notification.open({ title: "Erro!", text: "Arquivo selecionado inválido!" },
+                            { name: "notify", time: 2000 }, null);
                     }
                 }
             }, false);

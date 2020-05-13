@@ -12,7 +12,6 @@ function hotKeysObject() {
             document.addEventListener("mousemove", (e) => this.mouseMoveMoveDraw(e));
         },
         keyDownEvent(e) {
-            if (!project.created) { return; }
             if (drawingTools.painting) { e.preventDefault(); return; }
             if (this.ctrlPressed) {//Teclas de atalho com o ctrl.
                 const keyFunction = this.keyDown[e.code];
@@ -23,11 +22,8 @@ function hotKeysObject() {
                 }
             }
             else {
-                if (e.code === "BracketRight") {//Aumentar o tamanho da ferramenta.
-                    this.changeToolSizeHotKey(true);
-                } else if (e.code === "Backslash") {//Diminuir o tamanho da ferramenta.
-                    this.changeToolSizeHotKey(false);
-                }
+                if (e.code === "BracketRight") { this.changeToolSizeHotKey(true); }//Aumentar o tamanho da ferramenta.
+                else if (e.code === "Backslash") { this.changeToolSizeHotKey(false); }//Diminuir o tamanho da ferramenta.
             }
             if (e.code === "ControlRight" || e.code === "ControlLeft" || e.keyCode === 17) {
                 e.preventDefault();

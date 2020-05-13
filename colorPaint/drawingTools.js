@@ -121,27 +121,25 @@ function drawingToolsObject() {
             }
         },
         mouseDownEventDrawing(e) {
-            if (!project.created || hotKeys.spacePressed || this.painting) { return; }
-            if (project.arrayLayers[project.selectedLayer].visible) {
-                if (e.button === 0) { this.toolProperties.color = project.selectedColors.primary; }
-                else if (e.button === 2) { this.toolProperties.color = project.selectedColors.secondary; }
-                else { return; }
-                this.painting = true;
-                this.applyToolChanges();
-                project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
-                project.eventLayer.beginPath();
-                project.eventLayer.lineJoin = project.eventLayer.lineCap = "round";
-                project.arrayLayers[project.selectedLayer].ctx.globalCompositeOperation = "source-over";
-                if (this.selectedTool === 4) {
-                    project.eventLayer.strokeStyle = "rgba(255, 0, 0, " + this.toolProperties.opacity + ")";
-                    project.arrayLayers[project.selectedLayer].ctx.globalCompositeOperation = "destination-out";
-                }
-                if (this.selectedTool < 7) { this[this.arrayTools[this.selectedTool].name](this.mousePosition); }
-                else if (this.selectedTool === 7) {//Conta-gotas.
-                    this.eyeDropper(getMousePosition(janelaPrincipal, e), this.mousePosition, true);
-                }
-                if (this.cursorTool.show) { janelaPrincipal.style.cursor = "none"; }
+            if (!project.arrayLayers[project.selectedLayer].visible || hotKeys.spacePressed || this.painting) { return; }
+            if (e.button === 0) { this.toolProperties.color = project.selectedColors.primary; }
+            else if (e.button === 2) { this.toolProperties.color = project.selectedColors.secondary; }
+            else { return; }
+            this.painting = true;
+            this.applyToolChanges();
+            project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
+            project.eventLayer.beginPath();
+            project.eventLayer.lineJoin = project.eventLayer.lineCap = "round";
+            project.arrayLayers[project.selectedLayer].ctx.globalCompositeOperation = "source-over";
+            if (this.selectedTool === 4) {
+                project.eventLayer.strokeStyle = "rgba(255, 0, 0, " + this.toolProperties.opacity + ")";
+                project.arrayLayers[project.selectedLayer].ctx.globalCompositeOperation = "destination-out";
             }
+            if (this.selectedTool < 7) { this[this.arrayTools[this.selectedTool].name](this.mousePosition); }
+            else if (this.selectedTool === 7) {//Conta-gotas.
+                this.eyeDropper(getMousePosition(janelaPrincipal, e), this.mousePosition, true);
+            }
+            if (this.cursorTool.show) { janelaPrincipal.style.cursor = "none"; }
         },
         mouseUpEventDrawing(e) {
             if (this.painting) {
@@ -195,14 +193,11 @@ function drawingToolsObject() {
             this.selectedTool = i;
             this.strokeCoordinates = { x: [], y: [] };
             this.painting = this.clickToCurve = false;
-            this.arrayTools[i].tool.classList.replace("bttFerramentas", "bttFerramentasEscolhida");
-            for (let e = 0; e < this.arrayTools.length; e++) {
-                if (e != i) { this.arrayTools[e].tool.classList.replace("bttFerramentasEscolhida", "bttFerramentas"); }
-            }
+            this.arrayTools[this.previousTool].tool.classList.replace("bttFerramentasEscolhida", "bttFerramentas");
+            this.arrayTools[this.selectedTool].tool.classList.replace("bttFerramentas", "bttFerramentasEscolhida");
             if (this.selectedTool === 7) { document.getElementById("propriedadesFerramentas").style.display = "none"; }
             else { document.getElementById("propriedadesFerramentas").style.display = "block"; }
             this.changeCursorTool();
-            project.createDrawComplete();
             project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
         },
         changeToolSize(e) {
@@ -382,6 +377,8 @@ function drawingToolsObject() {
                 cursorEyeDropper.style.display = "block";
                 const corAtual = "25px solid rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
                 compareColors.style.borderBottom = compareColors.style.borderLeft = corAtual;
+                project.createDrawComplete();
+                project.screen.style.imageRendering = "pixelated";
             }
             cursorEyeDropper.style.left = cursorPos.x - (cursorEyeDropper.offsetWidth / 2) + "px";
             cursorEyeDropper.style.top = cursorPos.y - (cursorEyeDropper.offsetHeight / 2) + "px";
@@ -392,10 +389,10 @@ function drawingToolsObject() {
                 compareColors.style.borderTop = compareColors.style.borderRight = novaCor;
             } else {
                 cursorEyeDropper.style.display = "none";
+                project.screen.style.imageRendering = "auto";
                 if (pixel[3] === 0) {
                     notification.open({
-                        title: "Atenção!",
-                        text: "Nenhuma cor foi selecionada."
+                        title: "Atenção!", text: "Nenhuma cor foi selecionada."
                     }, { name: "notify", time: 1500 }, null);
                     return;
                 }

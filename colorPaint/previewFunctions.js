@@ -11,7 +11,6 @@ function previewFunctionsObject() {
             document.getElementById("janelaPreview").addEventListener("mousemove", (e) => this.mouseMovePreview(e));
         },
         mouseDownPreview(e) {
-            if (!project.created) { return; }
             this.moverScrollPreview = true;
             this.moverScroll.style.cursor = "grabbing";
             this.mouseMoveMoverScroll(getMousePosition(this.contentTelaPreview, e));

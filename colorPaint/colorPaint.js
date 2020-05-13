@@ -34,10 +34,6 @@ function colorPaint() {
     txtCorEscolhida.value = "rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
 
     project.addEventsToElements();
-    drawingTools.addEventsToElements();
-    previewFunctions.addEventsToElements();
-    undoRedoChange.addEventsToElements();
-    hotKeys.addEventsToElements();
     colorSelectionWindow.addEventsToElements();
     notification.addEventsToElements();
 
