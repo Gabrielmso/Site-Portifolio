@@ -7,17 +7,18 @@ function previewFunctionsObject() {
         addEventsToElements() {
             contentTelas.addEventListener("scroll", (e) => this.scrollContentTelas(e));
             this.contentTelaPreview.addEventListener("mousedown", (e) => this.mouseDownPreview(e));
-            document.addEventListener("mouseup", (e) => this.mouseUpPreview(e));
             document.getElementById("janelaPreview").addEventListener("mousemove", (e) => this.mouseMovePreview(e));
         },
         mouseDownPreview(e) {
             this.moverScrollPreview = true;
             this.moverScroll.style.cursor = "grabbing";
             this.mouseMoveMoverScroll(getMousePosition(this.contentTelaPreview, e));
+            document.addEventListener("mouseup", previewFunctions.mouseUpPreview);
         },
         mouseUpPreview(e) {
-            this.moverScrollPreview = false;
-            this.moverScroll.style.cursor = "grab";
+            previewFunctions.moverScrollPreview = false;
+            previewFunctions.moverScroll.style.cursor = "grab";
+            document.removeEventListener("mouseup", previewFunctions.mouseUpPreview);
         },
         mouseMovePreview(e) {
             if (!this.moverScrollPreview) { return; }

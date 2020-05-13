@@ -142,7 +142,6 @@ function createGridWindowObject() {
                 this.contentWindow.addEventListener("mousemove", createGridWindow.mouseMoveEvent);
                 this.contentWindow.addEventListener("mouseup", createGridWindow.mouseUpEvent);
             }
-
         },
         mouseMoveEvent(e) {
             createGridWindow.moveWindow(getMousePosition(createGridWindow.contentWindow, e), true);
@@ -150,6 +149,7 @@ function createGridWindowObject() {
         mouseUpEvent() {
             createGridWindow.contentWindow.removeEventListener("mousemove", createGridWindow.mouseMoveEvent);
             createGridWindow.contentWindow.addEventListener("mouseup", createGridWindow.mouseUpEvent);
+            createGridWindow.mousePositionMoveWindow = null;
         }
     }
 }

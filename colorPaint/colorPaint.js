@@ -1,7 +1,7 @@
 mudarMenu = false;
 let corPrincipal, corSecundaria;
 let createProjectWindow, project, drawingTools, previewFunctions, undoRedoChange, hotKeys, createGridWindow, colorSelectionWindow,
-notification;
+notification, openProject;
 let janelaPrincipal;
 let contentTelas;//Elemento onde ficará a "tela" para desenhar.
 let txtCorEscolhida;//Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
@@ -9,6 +9,7 @@ let txtPorcentagemZoom;//Recebe a string com a porcentagem de zoom no "project.s
 function colorPaint() {
     createProjectWindow = createProjectWindowObject();
     project = projectObject();
+    openProject = openProjectObject();
     colorSelectionWindow = colorSelectionWindowObject();
     drawingTools = drawingToolsObject();
     previewFunctions = previewFunctionsObject();
@@ -131,7 +132,7 @@ function criarOuAbrirProjeto() {
     const carregar = document.getElementById("carregamento");
     if (sessionStorage.getItem("abrirProjetoSalvo") === "true") {
         carregar.remove();
-        project.openProject();
+        openProject.open();
         sessionStorage.setItem("abrirProjetoSalvo", "false");
     } else if (sessionStorage.getItem("criarNovoProjeto") === "true") {
         carregar.remove();
@@ -141,7 +142,7 @@ function criarOuAbrirProjeto() {
     function carregamento() {
         const logoCarregamento = document.getElementById("logoCarregamento");
         logoCarregamento.style.transition = "opacity 1.5s linear";
-        setTimeout(function () {
+        setTimeout(() => {
             logoCarregamento.style.opacity = "1";
             setTimeout(() => {
                 const posLogo = logoBlack.getBoundingClientRect();
@@ -153,9 +154,7 @@ function criarOuAbrirProjeto() {
                 logoCarregamento.style.top = posLogo.top + 25 + "px";
                 setTimeout(() => {
                     carregar.style.opacity = "0";
-                    setTimeout(() => {
-                        carregar.remove();
-                    }, 1200);
+                    setTimeout(() => carregar.remove(), 1200);
                 }, 350);
             }, 1550);
         }, 150);
@@ -175,14 +174,14 @@ function cloneReplaceElement(oldElement) {
 }
 
 function throttle(func, limit) {
-    let inThrottle
+    let inThrottle;
     return function () {
-        const args = arguments
-        const context = this
+        const args = arguments;
+        const context = this;
         if (!inThrottle) {
-            func.apply(context, args)
-            inThrottle = true
-            setTimeout(() => inThrottle = false, limit)
+            func.apply(context, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
         }
     }
 }

@@ -17,6 +17,7 @@
     <script src="colorPaint/colorPaint.js"></script>
     <script src="colorPaint/createProjectWindow.js"></script>
     <script src="colorPaint/project.js"></script>
+    <script src="colorPaint/openProject.js"></script>
     <script src="colorPaint/colorSelectionWindow.js"></script>
     <script src="colorPaint/drawingTools.js"></script>
     <script src="colorPaint/previewFunctions.js"></script>
@@ -170,8 +171,8 @@
                                 title="Salva as propriedades do projeto, o conteúdo das camadas, em um arquivo no formato GM.">
                                 <label class="cursor">Salvar projeto</label>
                             </li>
-                            <li id="bttAbrirProjeto" title="Carrega um projeto salvo.">
-                                <label class="cursor">Abrir projeto</label>
+                            <li id="bttcarregarProjeto">
+                                <label class="cursor">Carregar projeto</label>
                             </li>
                         </ul>
                     </li>
@@ -419,6 +420,12 @@
             <div class="bttsJanela noSelection">
                 <button id="bttOkAtalhos" class="bttColorPaint cursor">Ok</button>
             </div>
+        </div>
+    </section>
+    <section id="contentAbrirProjeto" class="contentJanelas">
+        <div id="soltarArquivo" class="noSelection">
+            <p>Arraste e solte o arquivo do projeto aqui ou ...</p>
+            <button id="bttSelecionarProjeto" class="cursor">Selecionar arquivo</button>
         </div>
     </section>
     <!-- ================================ NOTIFICAÇÕES ========================== -->

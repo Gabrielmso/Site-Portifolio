@@ -6,7 +6,7 @@ function colorSelectionWindowObject() {
         colorHsv: { h: 0, s: 100, v: 100 },
         compareColors: { current: document.getElementById("corAtual"), selected: document.getElementById("corSelecionada") },
         window: document.getElementById("janelaSelecionarCor"),
-        barMoveWindow: { el: document.getElementById("moverJanelaSelecionarCor"), clicked: false },
+        barMoveWindow: document.getElementById("moverJanelaSelecionarCor"),
         inputs: { txtRgb: document.getElementById("codRGB"), txtHex: document.getElementById("codHEX") },
         buttons: {
             ok: document.getElementById("bttOkSelecionaCor"),
@@ -26,7 +26,7 @@ function colorSelectionWindowObject() {
             this.window.addEventListener("mousemove", (e) => this.moveCursors(e));
             document.addEventListener("mouseup", () => {
                 if (!this.opened) { return; }
-                this.cursors.spectrum.clicked = this.cursors.gradient.clicked = this.barMoveWindow.clicked = false;
+                this.cursors.spectrum.clicked = this.cursors.gradient.clicked = false;
             });
             this.canvas.spectrum.canvas.parentNode.addEventListener("mousedown", (e) => {
                 this.cursors.spectrum.clicked = true;
@@ -38,8 +38,7 @@ function colorSelectionWindowObject() {
             });
         },
         removeEventsToElements() {
-            document.removeEventListener("mousemove", colorSelectionWindow.mouseMoveEvent);
-            this.barMoveWindow.el = cloneReplaceElement(this.barMoveWindow.el);
+            this.barMoveWindow = cloneReplaceElement(this.barMoveWindow);
             this.inputs.txtRgb = cloneReplaceElement(this.inputs.txtRgb);
             this.inputs.txtHex = cloneReplaceElement(this.inputs.txtHex);
             this.buttons.ok = cloneReplaceElement(this.buttons.ok);
@@ -61,15 +60,18 @@ function colorSelectionWindowObject() {
                 this.window.style.left = newPositionX + "px";
                 this.window.style.top = newPositionY + "px";
             } else {
-                this.barMoveWindow.clicked = true;
                 this.mousePositionMoveWindow = mousePosition;
                 document.addEventListener("mousemove", colorSelectionWindow.mouseMoveEvent);
+                document.addEventListener("mouseup", colorSelectionWindow.mouseUpEvent);
             }
         },
         mouseMoveEvent(e) {
-            if (colorSelectionWindow.barMoveWindow.clicked) {
-                colorSelectionWindow.moveWindow(getMousePosition(janelaPrincipal, e), true);
-            }
+            colorSelectionWindow.moveWindow(getMousePosition(janelaPrincipal, e), true);
+        },
+        mouseUpEvent(e) {
+            document.removeEventListener("mousemove", colorSelectionWindow.mouseMoveEvent);
+            document.removeEventListener("mouseup", colorSelectionWindow.mouseUpEvent);
+            colorSelectionWindow.mousePositionMoveWindow = null;
         },
         findColor(color) {
             this.paintSpectrum();
@@ -145,7 +147,7 @@ function colorSelectionWindowObject() {
             }
         },
         open(num) {
-            this.barMoveWindow.el.addEventListener("mousedown", (e) => this.moveWindow(getMousePosition(e.currentTarget, e), false));
+            this.barMoveWindow.addEventListener("mousedown", (e) => this.moveWindow(getMousePosition(e.currentTarget, e), false));
             this.inputs.txtRgb.addEventListener("keyup", (e) => this.txtRgbKeyUp(e));
             this.inputs.txtHex.addEventListener("keyup", (e) => this.txtHexKeyUp(e));
             this.buttons.ok.addEventListener("mousedown", () => this.selectColor())

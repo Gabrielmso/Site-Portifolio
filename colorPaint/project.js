@@ -30,7 +30,6 @@ function projectObject() {
             });
             this.layerOpacityBar.content.addEventListener("mouseup", () => this.applyOpacityLayer());
             this.layerOpacityBar.content.addEventListener("mouseleave", () => this.applyOpacityLayer());
-
             document.getElementById("bttSalvarDesenho").addEventListener("mousedown", () => {
                 if (this.created) { this.saveDraw(); }
                 else {
@@ -45,16 +44,7 @@ function projectObject() {
                         { name: "notify", time: 1500 }, null);
                 }
             });
-            document.getElementById("bttAbrirProjeto").addEventListener("mousedown", () => {
-                if (this.created) {
-                    notification.open({
-                        title: "Projeto em andamento!", text: "Todo o progresso não salvo será perdido, deseja continuar?"
-                    }, { name: "confirm", time: null }, () => {
-                        sessionStorage.setItem("abrirProjetoSalvo", "true");
-                        window.location.reload();
-                    });
-                } else { this.openProject(); }
-            });
+            document.getElementById("bttcarregarProjeto").addEventListener("mousedown", () => openProject.open());
             document.getElementById("bttRemoverCorSalva").addEventListener("mousedown", () => this.removeColor());
         },
         saveColor(colorToSave) {
@@ -429,33 +419,6 @@ function projectObject() {
                 for (let i = 0; i < s.length; i++) { out[i] = s.charCodeAt(i); }
                 return new Uint8Array(out);
             }
-        },
-        openProject() {
-            const input = document.createElement("input");
-            input.setAttribute("type", "file");
-            input.addEventListener("change", (e) => {
-                const arquivo = e.currentTarget.files[0];
-                const reader = new FileReader();
-                reader.onload = () => {
-                    if (reader.result === "") {
-                        notification.open({ title: "Erro!", text: "Este arquivo não possui projeto salvo." },
-                            { name: "notify", time: 2000 }, null);
-                    }
-                    else { this.loadProject(reader.result); }
-                };
-                if (!arquivo) {
-                    notification.open({ title: "Erro!", text: "Falha ao carregar projeto, tente novamente." },
-                        { name: "notify", time: 2000 }, null);
-                } else {
-                    const extencao = arquivo.name.split('.').pop().toLowerCase();
-                    if (extencao === "gm") { reader.readAsText(arquivo, "ISO-8859-1"); }
-                    else {
-                        notification.open({ title: "Erro!", text: "Arquivo selecionado inválido!" },
-                            { name: "notify", time: 2000 }, null);
-                    }
-                }
-            }, false);
-            input.click();
         },
         loadProject(projetoJSON) {
             const objProjeto = JSON.parse(projetoJSON);
