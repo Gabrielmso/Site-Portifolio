@@ -44,7 +44,16 @@ function projectObject() {
                         { name: "notify", time: 1500 }, null);
                 }
             });
-            document.getElementById("bttcarregarProjeto").addEventListener("mousedown", () => openProject.open());
+            document.getElementById("bttcarregarProjeto").addEventListener("mousedown", () => {
+                if (this.created) {
+                    notification.open({
+                        title: "Projeto em andamento!", text: "Todo o progresso não salvo será perdido, deseja continuar?"
+                    }, { name: "confirm", time: null }, () => {
+                        sessionStorage.setItem("abrirProjetoSalvo", "true");
+                        window.location.reload();
+                    });
+                } else { openProject.open() }
+            });
             document.getElementById("bttRemoverCorSalva").addEventListener("mousedown", () => this.removeColor());
         },
         saveColor(colorToSave) {
@@ -420,29 +429,39 @@ function projectObject() {
                 return new Uint8Array(out);
             }
         },
-        loadProject(projetoJSON) {
-            const objProjeto = JSON.parse(projetoJSON);
-            this.create(objProjeto.nomeProjeto, objProjeto.resolucaoDoProjeto, objProjeto.corDeFundo, objProjeto.numeroDeCamadas);
-            for (let i = 0; i < this.properties.numberLayers; i++) {
-                const opacidade = objProjeto.camadas[i].opacidade;
-                this.arrayLayers[i].txtOpacity.value = Math.round(opacidade * 100) + "%";
-                this.arrayLayers[i].opacity = opacidade;
-                this.arrayLayers[i].ctx.canvas.style.opacity = opacidade;
-                const imgData = new Image();
-                imgData.src = objProjeto.camadas[i].imgDataCamada;
-                imgData.onload = () => {
-                    this.arrayLayers[i].ctx.drawImage(imgData, 0, 0);
-                    const larguraMiniatura = this.arrayLayers[i].miniature.canvas.width, alturaMiniatura = this.arrayLayers[i].miniature.canvas.height;
-                    this.arrayLayers[i].previewLayer.globalAlpha = this.arrayLayers[i].opacity;
-                    this.arrayLayers[i].previewLayer.drawImage(this.arrayLayers[i].ctx.canvas, 0, 0, this.arrayLayers[i].previewLayer.canvas.width, this.arrayLayers[i].previewLayer.canvas.height);
-                    this.arrayLayers[i].miniature.drawImage(this.arrayLayers[i].previewLayer.canvas, 0, 0, larguraMiniatura, alturaMiniatura);
-                    if (!objProjeto.camadas[i].visivel) { this.clickBttLook(i); };
+        loadProject(file) {
+            const createSavedProject = (objProjeto) => {
+                this.create(objProjeto.nomeProjeto, objProjeto.resolucaoDoProjeto, objProjeto.corDeFundo, objProjeto.numeroDeCamadas);
+                for (let i = 0; i < this.properties.numberLayers; i++) {
+                    const opacidade = objProjeto.camadas[i].opacidade;
+                    this.arrayLayers[i].txtOpacity.value = Math.round(opacidade * 100) + "%";
+                    this.arrayLayers[i].opacity = opacidade;
+                    this.arrayLayers[i].ctx.canvas.style.opacity = opacidade;
+                    const imgData = new Image();
+                    imgData.src = objProjeto.camadas[i].imgDataCamada;
+                    imgData.onload = () => {
+                        this.arrayLayers[i].ctx.drawImage(imgData, 0, 0);
+                        const larguraMiniatura = this.arrayLayers[i].miniature.canvas.width, alturaMiniatura = this.arrayLayers[i].miniature.canvas.height;
+                        this.arrayLayers[i].previewLayer.globalAlpha = this.arrayLayers[i].opacity;
+                        this.arrayLayers[i].previewLayer.drawImage(this.arrayLayers[i].ctx.canvas, 0, 0, this.arrayLayers[i].previewLayer.canvas.width, this.arrayLayers[i].previewLayer.canvas.height);
+                        this.arrayLayers[i].miniature.drawImage(this.arrayLayers[i].previewLayer.canvas, 0, 0, larguraMiniatura, alturaMiniatura);
+                        if (!objProjeto.camadas[i].visivel) { this.clickBttLook(i); };
+                    }
                 }
+                for (let i = 0; i < objProjeto.coresSalvas.length; i++) { this.saveColor(objProjeto.coresSalvas[i]); }
+                createGridWindow.gridProprieties.size = objProjeto.grid.size;
+                createGridWindow.gridProprieties.position = objProjeto.grid.position;
+                if (objProjeto.grid.visible) { createGridWindow.createGrid(true); }
             }
-            for (let i = 0; i < objProjeto.coresSalvas.length; i++) { this.saveColor(objProjeto.coresSalvas[i]); }
-            createGridWindow.gridProprieties.size = objProjeto.grid.size;
-            createGridWindow.gridProprieties.position = objProjeto.grid.position;
-            if (objProjeto.grid.visible) { createGridWindow.createGrid(true); }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                if (e.currentTarget.result === "") {
+                    notification.open({ title: "Erro!", text: "Este arquivo não possui projeto salvo." },
+                        { name: "notify", time: 2000 }, null);
+                } else { createSavedProject(JSON.parse(e.currentTarget.result)); }
+                openProject.conclude();
+            };
+            reader.readAsText(file, "ISO-8859-1");
         }
     }
 }

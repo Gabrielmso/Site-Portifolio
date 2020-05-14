@@ -887,36 +887,44 @@ p {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    border: 3px dashed rgba(255, 255, 255, 0.6);
-    border-radius: 15px;
+    border-radius: 20px;
 }
 
-#soltarArquivo p {
-    color: rgba(255, 255, 255, 0.6);
-    line-height: 40px;
+#soltarArquivo p {    
+    line-height: 30px;
     text-align: center;
-    font-size: 35px;
+    font-size: 26px;
     margin-bottom: 20px;
 }
 
 #soltarArquivo button {
     border: none;
-    border-radius: 40px;
+    border-radius: 30px;
     background-color: rgba(255, 255, 255, 0.12);
     color: rgba(255, 255, 255, 0.6);
     text-transform: uppercase;
     font-family: "robotoRegular";
-    padding: 0px 20px;
+    padding: 0px 15px;
     transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
-    height: 40px;
+    height: 30px;
     text-align: center;
-    line-height: 40px;
-    font-size: 25px;
+    line-height: 30px;
+    font-size: 18px;
 }
 
 #soltarArquivo button:hover {
     background-color: rgba(255, 255, 255, 0.4);
     color: rgba(0, 0, 0, 0.6);
+}
+
+.dragEnter{
+    color: rgba(213, 192, 107, 0.7);
+    border: 2px dashed rgba(213, 192, 107, 0.7);
+}
+
+.dragLeave{
+    color: rgba(255, 255, 255, 0.6);
+    border: 2px dashed rgba(255, 255, 255, 0.6);
 }
 
 /* ================================================= carregamento ================================================= */
@@ -1226,7 +1234,8 @@ p {
     position: absolute;
     bottom: -150px;
     right: 10px;
-    width: 400px;
+    min-width: 276px;
+    max-width: 350px;
     padding: 10px;
     background-color: rgba(129, 7, 6, 0.97);
     border-radius: 10px;
