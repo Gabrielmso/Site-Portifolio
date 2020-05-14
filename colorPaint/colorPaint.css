@@ -918,8 +918,8 @@ p {
 }
 
 .dragEnter{
-    color: rgba(213, 192, 107, 0.7);
-    border: 2px dashed rgba(213, 192, 107, 0.7);
+    color: rgba(213, 192, 107, 0.8);
+    border: 2px dashed rgba(213, 192, 107, 0.8);
 }
 
 .dragLeave{
