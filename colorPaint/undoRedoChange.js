@@ -50,7 +50,6 @@ function undoRedoChangeObject() {
                     this.buttons.redo.style.opacity = "1";
                 }
                 project.drawInPreview(project.arrayLayers[camada]);
-                project.createDrawComplete();
             }
         },
         redoChange() {
@@ -74,7 +73,6 @@ function undoRedoChangeObject() {
                     this.buttons.redo.style.opacity = "0.5";
                 }
                 project.drawInPreview(project.arrayLayers[camada]);
-                project.createDrawComplete();
             }
         }
     }

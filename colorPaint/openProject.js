@@ -24,7 +24,7 @@ function openProjectObject() {
                 this.dropFile.addEventListener("drop", (e) => {
                     preventDefaultAction(e);
                     this.fileValidation(e.dataTransfer.files[0]);
-                })
+                });
             }
         },
         close() {
