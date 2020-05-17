@@ -17,7 +17,6 @@
     <script src="colorPaint/colorPaint.js"></script>
     <script src="colorPaint/createProjectWindow.js"></script>
     <script src="colorPaint/project.js"></script>
-    <script src="colorPaint/openProject.js"></script>
     <script src="colorPaint/colorSelectionWindow.js"></script>
     <script src="colorPaint/drawingTools.js"></script>
     <script src="colorPaint/previewFunctions.js"></script>
@@ -307,16 +306,16 @@
             <div></div>
         </div>
     </section>
-    <!-- ================================== JANELA CRIAR PROJETO ============================ -->
-    <section id="contentJanelaCriarProjeto" class="contentJanelas">
-        <div class="janelas">
-            <div class="tituloJanela noSelection">
-                <p>Propriedades do projeto</p>
+    <!-- ================================== JANELA CRIAR/ABRIR PROJETO ============================ -->
+    <section id="contentCriarAbrirProjeto" class="contentJanelas">
+        <section id="janelaCriarProjeto">
+            <div class="noSelection">
+                <p>Propriedades para o novo projeto</p>
             </div>
             <div class="conteudoJanela">
                 <ul>
                     <li><label class="noSelection">Nome:</label><input type="text" id="txtNomeProjeto"
-                            value="Sem-Título"></li>
+                            value="Sem-Título" style="width: 229px;"></li>
                     <li>
                         <label class="noSelection">Largura:</label><input type="number" id="txtLarguraProjeto"
                             value="1920" min="1" max="2560"><label class="noSelection"> px - (limite 2560)</label>
@@ -341,11 +340,15 @@
                     </li>
                 </ul>
             </div>
-            <div class="bttsJanela noSelection">
-                <button id="bttCriarprojeto" class="bttColorPaint cursor">Criar projeto</button>
-                <button id="bttCancelaCriarprojetor" class="bttColorPaint cursor">Cancelar</button>
+            <div class="noSelection">
+                <button id="bttCriarprojeto" class="cursor">Criar projeto</button>
+                <!-- <button id="bttCancelaCriarprojetor" class="bttColorPaint cursor">Cancelar</button> -->
             </div>
-        </div>
+        </section>
+        <section id="janelaAbrirProjeto" class="noSelection dragLeave">
+            <p>Arraste e solte o arquivo do projeto aqui ou ...</p>
+            <button id="bttSelecionarProjeto" class="cursor">Selecionar arquivo</button>
+        </section>
     </section>
     <!-- ================================ JANELA PARA ADICIONAR GRID ========================== -->
     <section id="contentJanelaMenuGrid">
@@ -420,12 +423,6 @@
             <div class="bttsJanela noSelection">
                 <button id="bttOkAtalhos" class="bttColorPaint cursor">Ok</button>
             </div>
-        </div>
-    </section>
-    <section id="contentAbrirProjeto" class="contentJanelas">
-        <div id="soltarArquivo" class="noSelection dragLeave">
-            <p>Arraste e solte o arquivo do projeto aqui ou ...</p>
-            <button id="bttSelecionarProjeto" class="cursor">Selecionar arquivo</button>
         </div>
     </section>
     <!-- ================================ NOTIFICAÇÕES ========================== -->

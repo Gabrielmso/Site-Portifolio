@@ -1,7 +1,7 @@
 mudarMenu = false;
 let corPrincipal, corSecundaria;
 let createProjectWindow, project, drawingTools, previewFunctions, undoRedoChange, hotKeys, createGridWindow, colorSelectionWindow,
-    notification, openProject;
+    notification;
 let janelaPrincipal;
 let contentTelas;//Elemento onde ficará a "tela" para desenhar.
 let txtCorEscolhida;//Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
@@ -9,7 +9,6 @@ let txtPorcentagemZoom;//Recebe a string com a porcentagem de zoom no "project.s
 function colorPaint() {
     createProjectWindow = createProjectWindowObject();
     project = projectObject();
-    openProject = openProjectObject();
     colorSelectionWindow = colorSelectionWindowObject();
     drawingTools = drawingToolsObject();
     previewFunctions = previewFunctionsObject();
@@ -30,6 +29,7 @@ function colorPaint() {
     txtPorcentagemZoom = document.getElementById("txtPorcentagemZoom");
 
     menuPadrao();
+    menu.style.transition = "none";
     ajustarContents();
     criarOuAbrirProjeto();
     txtCorEscolhida.value = "rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
@@ -38,7 +38,7 @@ function colorPaint() {
     colorSelectionWindow.addEventsToElements();
     notification.addEventsToElements();
 
-    document.getElementById("bttCriarNovoProjeto").addEventListener("mousedown", () => createProjectWindow.open());
+    document.getElementById("bttCriarNovoProjeto").addEventListener("mousedown", () => createProjectWindow.open("create"));
     document.getElementById("bttCriarGrade").addEventListener("mousedown", () => createGridWindow.open());
 
     corPrincipal.addEventListener("click", function () {
@@ -106,7 +106,7 @@ function colorPaint() {
 
     document.addEventListener("dragover", preventDefaultAction);
     document.addEventListener("dragenter", preventDefaultAction);
-    document.addEventListener("drop", preventDefaultAction); 
+    document.addEventListener("drop", preventDefaultAction);
 
     window.addEventListener("resize", function () {
         ajustarContents();
@@ -134,14 +134,14 @@ function colorPaint() {
 
 function criarOuAbrirProjeto() {
     const carregar = document.getElementById("carregamento");
-    if (sessionStorage.getItem("abrirProjetoSalvo") === "true") {
-        carregar.remove();
-        openProject.open();
-        sessionStorage.setItem("abrirProjetoSalvo", "false");
-    } else if (sessionStorage.getItem("criarNovoProjeto") === "true") {
-        carregar.remove();
-        createProjectWindow.open();
-        sessionStorage.setItem("criarNovoProjeto", "false");
+    if (sessionStorage.getItem("load") === "true") {
+        fadeOut();
+        createProjectWindow.open("load");
+        sessionStorage.removeItem("load");
+    } else if (sessionStorage.getItem("create") === "true") {
+        fadeOut();
+        createProjectWindow.open("create");
+        sessionStorage.removeItem("create");
     } else { carregamento(); }
     function carregamento() {
         const logoCarregamento = document.getElementById("logoCarregamento");
@@ -156,12 +156,13 @@ function criarOuAbrirProjeto() {
                 logoCarregamento.style.opacity = "0.75";
                 logoCarregamento.style.left = posLogo.left + 45 + "px";
                 logoCarregamento.style.top = posLogo.top + 25 + "px";
-                setTimeout(() => {
-                    carregar.style.opacity = "0";
-                    setTimeout(() => carregar.remove(), 1200);
-                }, 350);
+                setTimeout(fadeOut, 350);
             }, 1550);
         }, 150);
+    }
+    function fadeOut() {
+        carregar.style.opacity = "0";
+        setTimeout(() => carregar.remove(), 700);
     }
 }
 
@@ -199,10 +200,12 @@ document.addEventListener("keydown", function (e) {
 
 function backgroundBlur(blur) {
     if (blur) {
+        menu.style.filter = "blur(9px)"
         janelaPrincipal.style.filter = "blur(9px)";
         colorSelectionWindow.window.style.filter = "blur(9px)";
         notification.window.style.filter = "blur(9px)";
     } else {
+        menu.style.filter = ""
         janelaPrincipal.style.filter = "";
         colorSelectionWindow.window.style.filter = "";
         notification.window.style.filter = "";

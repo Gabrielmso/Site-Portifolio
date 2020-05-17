@@ -44,16 +44,7 @@ function projectObject() {
                         { name: "notify", time: 1500 }, null);
                 }
             });
-            document.getElementById("bttcarregarProjeto").addEventListener("mousedown", () => {
-                if (this.created) {
-                    notification.open({
-                        title: "Projeto em andamento!", text: "Todo o progresso não salvo será perdido, deseja continuar?"
-                    }, { name: "confirm", time: null }, () => {
-                        sessionStorage.setItem("abrirProjetoSalvo", "true");
-                        window.location.reload();
-                    });
-                } else { openProject.open() }
-            });
+            document.getElementById("bttcarregarProjeto").addEventListener("mousedown", () => createProjectWindow.open("load"));
             document.getElementById("bttRemoverCorSalva").addEventListener("mousedown", () => this.removeColor());
         },
         saveColor(colorToSave) {
@@ -459,7 +450,6 @@ function projectObject() {
                     notification.open({ title: "Erro!", text: "Este arquivo não possui projeto salvo." },
                         { name: "notify", time: 2000 }, null);
                 } else { createSavedProject(JSON.parse(e.currentTarget.result)); }
-                openProject.conclude();
             };
             reader.readAsText(file, "ISO-8859-1");
         }
