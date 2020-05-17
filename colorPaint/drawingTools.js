@@ -84,7 +84,7 @@ function drawingToolsObject() {
             contentTelas.addEventListener("mousemove", () => this.txtPositionCursor.value = Math.ceil(this.mousePosition.x) + ", " + Math.ceil(this.mousePosition.y));
             contentTelas.addEventListener("mouseleave", () => { if (!this.cursorTool.show) { this.txtPositionCursor.value = "" } });
             this.cursorTool.cursor.addEventListener("mousedown", (e) => this.mouseDownEventDrawing(e));
-            document.addEventListener("mousemove", throttle((e) => this.mouseMoveEventDrawing(e), 10));
+            document.addEventListener("mousemove", throttle((e) => this.mouseMoveEventDrawing(e), 12));
             document.addEventListener("mouseup", (e) => this.mouseUpEventDrawing(e));
             this.cursorTool.cursor.addEventListener("wheel", (e) => this.cursorTool.wheel(e));
             this.toolOpacityBar.bar.addEventListener("mousedown", (e) => this.mouseDownToolOpacityBar(e));
@@ -103,8 +103,8 @@ function drawingToolsObject() {
         },
         getCursorPosition(e) {
             const mouse = getMousePosition(project.screen, e);
-            this.mousePosition.x = parseFloat(((project.properties.resolution.width / project.screen.offsetWidth) * mouse.x).toFixed(1));
-            this.mousePosition.y = parseFloat(((project.properties.resolution.height / project.screen.offsetHeight) * mouse.y).toFixed(1));
+            this.mousePosition.x = +((project.properties.resolution.width / project.screen.offsetWidth) * mouse.x).toFixed(1);
+            this.mousePosition.y = +((project.properties.resolution.height / project.screen.offsetHeight) * mouse.y).toFixed(1);
             if (this.cursorTool.show) {
                 const posX = e.pageX - this.cursorTool.halfSize + document.body.scrollLeft,
                     posY = e.pageY - this.cursorTool.halfSize + document.body.scrollTop;
@@ -287,8 +287,11 @@ function drawingToolsObject() {
             project.eventLayer.beginPath();
             project.eventLayer.moveTo(ponto1.x, ponto1.y);
             for (let i = 0; i < this.strokeCoordinates.x.length; i++) {
-                const midPoint = midPointBtw(ponto1, ponto2);
-                project.eventLayer.quadraticCurveTo(ponto1.x, ponto1.y, midPoint.x, midPoint.y);
+                let dis = { x: (ponto2.x - ponto1.x) ** 2, y: (ponto2.y - ponto1.y) ** 2 };
+                if (((dis.x + dis.y) ** 0.5) > 3) {
+                    const midPoint = midPointBtw(ponto1, ponto2);
+                    project.eventLayer.quadraticCurveTo(ponto1.x, ponto1.y, midPoint.x, midPoint.y);
+                } else { project.eventLayer.lineTo(ponto2.x, ponto2.y); }
                 ponto1 = { x: this.strokeCoordinates.x[i], y: this.strokeCoordinates.y[i] };
                 ponto2 = { x: this.strokeCoordinates.x[i + 1], y: this.strokeCoordinates.y[i + 1] };
             }

@@ -40,6 +40,21 @@ function colorPaint() {
 
     document.getElementById("bttCriarNovoProjeto").addEventListener("mousedown", () => createProjectWindow.open("create"));
     document.getElementById("bttCriarGrade").addEventListener("mousedown", () => createGridWindow.open());
+    document.getElementById("bttSalvarDesenho").addEventListener("mousedown", () => {
+        if (this.created) { this.saveDraw(); }
+        else {
+            notification.open({ title: "Atenção!", text: "Nenhum projeto foi criado." },
+                { name: "notify", time: 1500 }, null);
+        }
+    });
+    document.getElementById("bttSalvarProjeto").addEventListener("mousedown", () => {
+        if (this.created) { this.saveProject(); }
+        else {
+            notification.open({ title: "Atenção!", text: "Nenhum projeto foi criado." },
+                { name: "notify", time: 1500 }, null);
+        }
+    });
+    document.getElementById("bttcarregarProjeto").addEventListener("mousedown", () => createProjectWindow.open("load"));
 
     corPrincipal.addEventListener("click", function () {
         if (colorSelectionWindow.opened) { colorSelectionWindow.findColor(project.selectedColors.primary); }

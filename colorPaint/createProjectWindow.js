@@ -85,7 +85,6 @@ function createProjectWindowObject() {
                 alturaProjeto = parseInt(arrayProperties[2].value),
                 valueCor = parseInt(arrayProperties[3].value),
                 numeroCamadas = parseInt(arrayProperties[4].value);
-
             if (larguraProjeto > 2560 || larguraProjeto < 1) {
                 campoInvalido(arrayProperties[1]);
                 return;
@@ -125,8 +124,7 @@ function createProjectWindowObject() {
                 if (extencao === "gm") {
                     project.loadProject(file);
                     this.conclude();
-                }
-                else {
+                } else {
                     notification.open({ title: "Erro!", text: "Arquivo selecionado inválido!" },
                         { name: "notify", time: 2000 }, null);
                     this.close();

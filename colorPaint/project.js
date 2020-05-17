@@ -30,21 +30,6 @@ function projectObject() {
             });
             this.layerOpacityBar.content.addEventListener("mouseup", () => this.applyOpacityLayer());
             this.layerOpacityBar.content.addEventListener("mouseleave", () => this.applyOpacityLayer());
-            document.getElementById("bttSalvarDesenho").addEventListener("mousedown", () => {
-                if (this.created) { this.saveDraw(); }
-                else {
-                    notification.open({ title: "Atenção!", text: "Nenhum projeto foi criado." },
-                        { name: "notify", time: 1500 }, null);
-                }
-            });
-            document.getElementById("bttSalvarProjeto").addEventListener("mousedown", () => {
-                if (this.created) { this.saveProject(); }
-                else {
-                    notification.open({ title: "Atenção!", text: "Nenhum projeto foi criado." },
-                        { name: "notify", time: 1500 }, null);
-                }
-            });
-            document.getElementById("bttcarregarProjeto").addEventListener("mousedown", () => createProjectWindow.open("load"));
             document.getElementById("bttRemoverCorSalva").addEventListener("mousedown", () => this.removeColor());
         },
         saveColor(colorToSave) {
