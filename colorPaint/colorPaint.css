@@ -391,7 +391,7 @@ button, input, select {
     height: 13px;
     top: 36px;
     left: 23px;
-    background-image: url("../colorPaint/imagens/icones/iconeAlternaCor.jpg");
+    background-image: url("../colorPaint/imagens/icones/iconeAlternaCor.png");
     background-repeat: no-repeat;
 }
 
@@ -401,7 +401,7 @@ button, input, select {
     height: 13px;
     top: 0px;
     left: 60px;
-    background-image: url("../colorPaint/imagens/icones/iconeCoresPrincipais.jpg");
+    background-image: url("../colorPaint/imagens/icones/iconeCoresPrincipais.png");
     background-repeat: no-repeat;
 }
 
