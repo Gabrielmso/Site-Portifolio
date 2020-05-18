@@ -84,7 +84,7 @@ function drawingToolsObject() {
             contentTelas.addEventListener("mousemove", () => this.txtPositionCursor.value = Math.ceil(this.mousePosition.x) + ", " + Math.ceil(this.mousePosition.y));
             contentTelas.addEventListener("mouseleave", () => { if (!this.cursorTool.show) { this.txtPositionCursor.value = "" } });
             this.cursorTool.cursor.addEventListener("mousedown", (e) => this.mouseDownEventDrawing(e));
-            document.addEventListener("mousemove", throttle((e) => this.mouseMoveEventDrawing(e), 12));
+            document.addEventListener("mousemove", throttle((e) => this.mouseMoveEventDrawing(e), 11));
             document.addEventListener("mouseup", (e) => this.mouseUpEventDrawing(e));
             this.cursorTool.cursor.addEventListener("wheel", (e) => this.cursorTool.wheel(e));
             this.toolOpacityBar.bar.addEventListener("mousedown", (e) => this.mouseDownToolOpacityBar(e));
@@ -266,8 +266,7 @@ function drawingToolsObject() {
             if (size < 15) {
                 contentTelas.style.cursor = "url('colorPaint/imagens/cursor/crossHair.png') 12.5 12.5, pointer";
                 this.cursorTool.removeCursor();
-            }
-            else {
+            } else {
                 const previousPosition = { x: Math.round(this.cursorTool.cursor.offsetLeft + this.cursorTool.halfSize), y: Math.round(this.cursorTool.cursor.offsetTop + this.cursorTool.halfSize) };
                 this.cursorTool.showCursor();
                 this.cursorTool.halfSize = size / 2;
@@ -442,16 +441,16 @@ function drawingToolsObject() {
                     let x = novaPosicao[0], y = novaPosicao[1];
                     let posicaoPixel = (y * project.properties.resolution.width + x) * 4;
                     while (y >= 0 && compararCorInicial(posicaoPixel, cor)) {
-                        y = y - 1;
-                        posicaoPixel = posicaoPixel - project.properties.resolution.width * 4;
+                        y -= 1;
+                        posicaoPixel -= project.properties.resolution.width * 4;
                     }
                     pintarPixel(posicaoPixel, selectedColor);
-                    posicaoPixel = posicaoPixel + project.properties.resolution.width * 4;
-                    y = y + 1;
+                    posicaoPixel += project.properties.resolution.width * 4;
+                    y += 1;
                     let ladoEsquerdo = false, ladoDireito = false;
                     while (y < project.properties.resolution.height - 1 && compararCorInicial(posicaoPixel, cor)) {
                         pintarPixel(posicaoPixel, selectedColor);
-                        y = y + 1;
+                        y += 1;
                         if (x > 0) {
                             if (compararCorInicial(posicaoPixel - 4, cor) === true) {
                                 if (!ladoEsquerdo) {
@@ -474,7 +473,7 @@ function drawingToolsObject() {
                                 if (ladoDireito) { ladoDireito = false; }
                             }
                         }
-                        posicaoPixel = posicaoPixel + project.properties.resolution.width * 4;
+                        posicaoPixel += project.properties.resolution.width * 4;
                     }
                     pintarPixel(posicaoPixel, selectedColor);
                 }
