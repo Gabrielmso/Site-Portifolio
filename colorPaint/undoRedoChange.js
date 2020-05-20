@@ -8,8 +8,8 @@ function undoRedoChangeObject() {
         },
         saveChanges() {
             const objAlteracao = {
-                camadaAlterada: project.selectedLayer,
-                alteracao: project.arrayLayers[project.selectedLayer].ctx.getImageData(0, 0, project.properties.resolution.width, project.properties.resolution.height)
+                numLayer: project.selectedLayer,
+                change: project.arrayLayers[project.selectedLayer].ctx.getImageData(0, 0, project.properties.resolution.width, project.properties.resolution.height)
             };
             this.changes.undone.push(objAlteracao);
             if (this.changes.undone.length > 20) { this.changes.undone.shift(); }
@@ -26,9 +26,12 @@ function undoRedoChangeObject() {
         undoChange() {
             if (this.changes.undone.length > 0) {
                 const ultimoIndice = this.changes.undone.length - 1,
-                    camada = this.changes.undone[ultimoIndice].camadaAlterada,
-                    imagemCamada = this.changes.undone[ultimoIndice].alteracao,
-                    objAlteracao = { camadaAlterada: camada, visivel: project.arrayLayers[camada].visivel, alteracao: project.arrayLayers[camada].ctx.getImageData(0, 0, project.properties.resolution.width, project.properties.resolution.height) };
+                    camada = this.changes.undone[ultimoIndice].numLayer,
+                    imagemCamada = this.changes.undone[ultimoIndice].change,
+                    objAlteracao = {
+                        numLayer: camada,
+                        change: project.arrayLayers[camada].ctx.getImageData(0, 0, project.properties.resolution.width, project.properties.resolution.height)
+                    };
                 if (project.selectedLayer != camada) { project.clickIconLayer(camada); }
                 if (!project.arrayLayers[camada].visible) {
                     project.clickBttLook(camada);
@@ -55,9 +58,12 @@ function undoRedoChangeObject() {
         redoChange() {
             if (this.changes.redone.length > 0) {
                 const ultimoIndice = this.changes.redone.length - 1,
-                    camada = this.changes.redone[ultimoIndice].camadaAlterada,
-                    imagemCamada = this.changes.redone[ultimoIndice].alteracao,
-                    objAlteracao = { camadaAlterada: camada, visivel: project.arrayLayers[camada].visivel, alteracao: project.arrayLayers[camada].ctx.getImageData(0, 0, project.properties.resolution.width, project.properties.resolution.height) };
+                    camada = this.changes.redone[ultimoIndice].numLayer,
+                    imagemCamada = this.changes.redone[ultimoIndice].change,
+                    objAlteracao = {
+                        numLayer: camada,
+                        change: project.arrayLayers[camada].ctx.getImageData(0, 0, project.properties.resolution.width, project.properties.resolution.height)
+                    };
                 if (project.selectedLayer != camada) { project.clickIconLayer(camada); }
                 this.changes.undone.push(objAlteracao);
                 project.arrayLayers[camada].ctx.putImageData(imagemCamada, 0, 0);

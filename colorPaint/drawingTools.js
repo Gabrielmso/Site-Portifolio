@@ -5,7 +5,7 @@ function drawingToolsObject() {
             { tool: document.getElementById("linha"), name: "line" },
             { tool: document.getElementById("retangulo"), name: "rectangle" },
             { tool: document.getElementById("elipse"), name: "ellipse" },
-            { tool: document.getElementById("borracha"), name: "brush" },
+            { tool: document.getElementById("borracha"), name: "eraser" },
             { tool: document.getElementById("curva"), name: "curve" },
             { tool: document.getElementById("baldeDeTinta"), name: "paintBucket" },
             {
@@ -131,10 +131,6 @@ function drawingToolsObject() {
             project.eventLayer.beginPath();
             project.eventLayer.lineJoin = project.eventLayer.lineCap = "round";
             project.arrayLayers[project.selectedLayer].ctx.globalCompositeOperation = "source-over";
-            if (this.selectedTool === 4) {
-                project.eventLayer.strokeStyle = "rgba(255, 0, 0, " + this.toolProperties.opacity + ")";
-                project.arrayLayers[project.selectedLayer].ctx.globalCompositeOperation = "destination-out";
-            }
             if (this.selectedTool < 7) { this[this.arrayTools[this.selectedTool].name](this.mousePosition); }
             else if (this.selectedTool === 7) {//Conta-gotas.
                 this.eyeDropper(getMousePosition(janelaPrincipal, e), this.mousePosition, true);
@@ -152,7 +148,10 @@ function drawingToolsObject() {
                     if (this.strokeCoordinates.x.length === 2) { return; }
                 }
                 this.strokeCoordinates = { x: [], y: [] };
-                project.drawInLayer();
+                if (this.selectedTool != 4) {
+                    undoRedoChange.saveChanges();
+                    project.drawInLayer();
+                } else { project.drawInPreview(project.arrayLayers[project.selectedLayer]); }//Borracha
                 janelaPrincipal.style.cursor = "";
             }
             this.toolSizeBar.clicked = this.toolOpacityBar.clicked = this.toolHardnessBar.clicked = false;
@@ -195,9 +194,9 @@ function drawingToolsObject() {
             this.painting = this.clickToCurve = false;
             this.arrayTools[this.previousTool].tool.classList.replace("bttFerramentasEscolhida", "bttFerramentas");
             this.arrayTools[this.selectedTool].tool.classList.replace("bttFerramentas", "bttFerramentasEscolhida");
-            if (this.selectedTool === 7) { document.getElementById("propriedadesFerramentas").style.display = "none"; }
-            else { document.getElementById("propriedadesFerramentas").style.display = "block"; }
             this.changeCursorTool();
+            if (this.selectedTool != 4) { project.eventLayer.canvas.style.opacity = ""; }
+            else { project.eventLayer.canvas.style.opacity = "0"; }//Borracha
             project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
         },
         changeToolSize(e) {
@@ -274,7 +273,7 @@ function drawingToolsObject() {
                 this.cursorTool.cursor.style.height = size + "px";
                 this.cursorTool.changeCursorPosition(Math.round(previousPosition.x - this.cursorTool.halfSize), Math.round(previousPosition.y - this.cursorTool.halfSize));
                 contentTelas.style.cursor = "none";
-                if (size > 249) { this.cursorTool.cursor.style.backgroundImage = ""; }
+                if (size > 180) { this.cursorTool.cursor.style.backgroundImage = ""; }
                 else { this.cursorTool.cursor.style.backgroundImage = "none"; }
             }
         },
@@ -300,6 +299,17 @@ function drawingToolsObject() {
                 return { x: ponto1.x + (ponto2.x - ponto1.x) / 2, y: ponto1.y + (ponto2.y - ponto1.y) / 2 };
             }
         },
+        eraser(mousePos) {
+            if (this.strokeCoordinates.x.length === 0) {
+                undoRedoChange.saveChanges();
+                project.eventLayer.strokeStyle = "rgba(0, 0, 0, " + this.toolProperties.opacity + ")";
+                project.arrayLayers[project.selectedLayer].ctx.globalCompositeOperation = "destination-out";
+            }
+            const imageData = undoRedoChange.changes.undone[undoRedoChange.changes.undone.length - 1].change;
+            this.brush(mousePos);
+            project.arrayLayers[project.selectedLayer].ctx.putImageData(imageData, 0, 0);
+            project.arrayLayers[project.selectedLayer].ctx.drawImage(project.eventLayer.canvas, 0, 0, project.properties.resolution.width, project.properties.resolution.height);
+        },
         line(mousePos) {
             if (this.strokeCoordinates.x.length === 0) {
                 this.strokeCoordinates.x[0] = mousePos.x;
@@ -308,11 +318,11 @@ function drawingToolsObject() {
                 this.strokeCoordinates.x[1] = mousePos.x;
                 this.strokeCoordinates.y[1] = mousePos.y;
             }
-            const pontoInicial = { x: this.strokeCoordinates.x[0], y: this.strokeCoordinates.y[0] },
-                pontoFinal = { x: this.strokeCoordinates.x[1], y: this.strokeCoordinates.y[1] };
+            const startPoint = { x: this.strokeCoordinates.x[0], y: this.strokeCoordinates.y[0] },
+                endPoint = { x: this.strokeCoordinates.x[1], y: this.strokeCoordinates.y[1] };
             project.eventLayer.beginPath();
-            project.eventLayer.moveTo(pontoInicial.x, pontoInicial.y);
-            project.eventLayer.lineTo(pontoFinal.x, pontoFinal.y);
+            project.eventLayer.moveTo(startPoint.x, startPoint.y);
+            project.eventLayer.lineTo(endPoint.x, endPoint.y);
             project.eventLayer.stroke();
         },
         rectangle(mousePos) {
@@ -323,10 +333,10 @@ function drawingToolsObject() {
                 this.strokeCoordinates.x[1] = mousePos.x;
                 this.strokeCoordinates.y[1] = mousePos.y;
             }
-            const pontoInicial = { x: this.strokeCoordinates.x[0], y: this.strokeCoordinates.y[0] },
-                pontoFinal = { x: this.strokeCoordinates.x[1], y: this.strokeCoordinates.y[1] };
+            const startPoint = { x: this.strokeCoordinates.x[0], y: this.strokeCoordinates.y[0] },
+                endPoint = { x: this.strokeCoordinates.x[1], y: this.strokeCoordinates.y[1] };
             project.eventLayer.beginPath();
-            project.eventLayer.strokeRect(pontoInicial.x, pontoInicial.y, pontoFinal.x - pontoInicial.x, pontoFinal.y - pontoInicial.y);
+            project.eventLayer.strokeRect(startPoint.x, startPoint.y, endPoint.x - startPoint.x, endPoint.y - startPoint.y);
         },
         ellipse(mousePos) {
             if (this.strokeCoordinates.x.length === 0) {
@@ -336,10 +346,10 @@ function drawingToolsObject() {
                 this.strokeCoordinates.x[1] = mousePos.x;
                 this.strokeCoordinates.y[1] = mousePos.y;
             }
-            const pontoInicial = { x: this.strokeCoordinates.x[0], y: this.strokeCoordinates.y[0] },
-                pontoFinal = { x: this.strokeCoordinates.x[1], y: this.strokeCoordinates.y[1] };
-            const raioX = (pontoFinal.x - pontoInicial.x) / 2, raioY = (pontoFinal.y - pontoInicial.y) / 2;
-            const centroEixoX = pontoInicial.x + raioX, centroEixoY = pontoInicial.y + raioY;
+            const startPoint = { x: this.strokeCoordinates.x[0], y: this.strokeCoordinates.y[0] },
+                endPoint = { x: this.strokeCoordinates.x[1], y: this.strokeCoordinates.y[1] };
+            const raioX = (endPoint.x - startPoint.x) / 2, raioY = (endPoint.y - startPoint.y) / 2;
+            const centroEixoX = startPoint.x + raioX, centroEixoY = startPoint.y + raioY;
             const passoAngulo = 0.005;
             let angulo = 0;
             const voltaCompleta = Math.PI * 2 + passoAngulo;
@@ -360,16 +370,16 @@ function drawingToolsObject() {
                     this.strokeCoordinates.y[1] = mousePos.y;
                 }
             }
-            const pontoInicial = { x: this.strokeCoordinates.x[0], y: this.strokeCoordinates.y[0] },
-                pontoFinal = { x: this.strokeCoordinates.x[1], y: this.strokeCoordinates.y[1] };
+            const startPoint = { x: this.strokeCoordinates.x[0], y: this.strokeCoordinates.y[0] },
+                endPoint = { x: this.strokeCoordinates.x[1], y: this.strokeCoordinates.y[1] };
             project.eventLayer.beginPath();
-            project.eventLayer.moveTo(pontoInicial.x, pontoInicial.y);
+            project.eventLayer.moveTo(startPoint.x, startPoint.y);
             if (this.clickToCurve) {
                 this.strokeCoordinates.x[2] = mousePos.x;
                 this.strokeCoordinates.y[2] = mousePos.y;
-                const pontoControle = { x: this.strokeCoordinates.x[2], y: this.strokeCoordinates.y[2] };
-                project.eventLayer.quadraticCurveTo(pontoControle.x, pontoControle.y, pontoFinal.x, pontoFinal.y);
-            } else { project.eventLayer.lineTo(pontoFinal.x, pontoFinal.y); }
+                const curvePoint = { x: this.strokeCoordinates.x[2], y: this.strokeCoordinates.y[2] };
+                project.eventLayer.quadraticCurveTo(curvePoint.x, curvePoint.y, endPoint.x, endPoint.y);
+            } else { project.eventLayer.lineTo(endPoint.x, endPoint.y); }
             project.eventLayer.stroke();
         },
         eyeDropper(cursorPos, mousePos, move) {
