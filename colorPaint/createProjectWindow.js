@@ -85,10 +85,10 @@ function createProjectWindowObject() {
                 alturaProjeto = parseInt(arrayProperties[2].value),
                 valueCor = parseInt(arrayProperties[3].value),
                 numeroCamadas = parseInt(arrayProperties[4].value);
-            if (larguraProjeto > 2560 || larguraProjeto < 1) {
+            if (larguraProjeto > 1920 || larguraProjeto < 1) {
                 campoInvalido(arrayProperties[1]);
                 return;
-            } else if (alturaProjeto > 1440 || alturaProjeto < 1) {
+            } else if (alturaProjeto > 1080 || alturaProjeto < 1) {
                 campoInvalido(arrayProperties[2]);
                 return;
             } else if (valueCor > 4 || valueCor < 1) {

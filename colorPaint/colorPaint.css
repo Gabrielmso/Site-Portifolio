@@ -277,51 +277,63 @@ button, input, select {
 /* ===================================== FERRAMENTAS ========================================= */
 
 #pincel {
-    background-image: url("../colorPaint/imagens/icones/ferramentaPincel.png");
+    background-image: url("../colorPaint/imagens/spriteIcons.png");
+    background-position: 0px 1px;
 }
 
 #borracha {
-    background-image: url("../colorPaint/imagens/icones/ferramentaBorracha.png");
+    background-image: url("../colorPaint/imagens/spriteIcons.png");
+    background-position: -35px 1px;
 }
 
 #contaGotas {
-    background-image: url("../colorPaint/imagens/icones/ferramentaContaGotas.png");
+    background-image: url("../colorPaint/imagens/spriteIcons.png");
+    background-position: -245px 1px;
 }
 
 #linha {
-    background-image: url("../colorPaint/imagens/icones/ferramentaLinha.png");
+    background-image: url("../colorPaint/imagens/spriteIcons.png");
+    background-position: -70px 0px;
 }
 
 #curva {
-    background-image: url("../colorPaint/imagens/icones/ferramentaCurva.png");
+    background-image: url("../colorPaint/imagens/spriteIcons.png");
+    background-position: -105px 0px;
 }
 
 #retangulo {
-    background-image: url("../colorPaint/imagens/icones/ferramentaRetangulo.png");
+    background-image: url("../colorPaint/imagens/spriteIcons.png");
+    background-position: -140px 0px;
 }
 
 #elipse {
-    background-image: url("../colorPaint/imagens/icones/ferramentaElipse.png");
+    background-image: url("../colorPaint/imagens/spriteIcons.png");
+    background-position: -175px 0px;
 }
 
 #baldeDeTinta {
-    background-image: url("../colorPaint/imagens/icones/ferramentaBaldeDeTinta.png");
+    background-image: url("../colorPaint/imagens/spriteIcons.png");
+    background-position: -210px 0px;
 }
 
 #bttZoomMenos {
-    background-image: url("../colorPaint/imagens/icones/zoomMenos.png");
+    background-image: url("/colorPaint/imagens/spriteIcons.png");
+    background-position: -280px 0px;
 }
 
 #bttZoomMais {
-    background-image: url("../colorPaint/imagens/icones/zoomMais.png");
+    background-image: url("/colorPaint/imagens/spriteIcons.png");
+    background-position: -315px 0px;
 }
 
 #bttDesfazer {
-    background-image: url("../colorPaint/imagens/icones/iconeDesfazer.png");
+    background-image: url("/colorPaint/imagens/spriteIcons.png");
+    background-position: -350px 1px;
 }
 
 #bttRefazer {
-    background-image: url("../colorPaint/imagens/icones/iconeRefazer.png");
+    background-image: url("../colorPaint/imagens/spriteIcons.png");
+    background-position: -385px 1px;
 }
 
 .bttHover:hover {
@@ -330,24 +342,20 @@ button, input, select {
 
 .bttFerramentas {
     width: 35px;
-    height: 30px;
+    height: 31px;
     display: inline-block;
     background-color: rgb(37, 37, 37);
     border-radius: 5px;
-    background-repeat: no-repeat;
-    background-size: 70%;
-    background-position: 50%;
+    margin-bottom: -1px;
 }
 
 .bttFerramentasEscolhida {
     width: 35px;
-    height: 30px;
+    height: 31px;
     display: inline-block;
     background-color: rgb(13, 13, 13);
     border-radius: 5px;
-    background-repeat: no-repeat;
-    background-size: 70%;
-    background-position: 50%;
+    margin-bottom: -1px;
 }
 
 #coresSelecionadas {
@@ -391,8 +399,8 @@ button, input, select {
     height: 13px;
     top: 36px;
     left: 23px;
-    background-image: url("../colorPaint/imagens/icones/iconeAlternaCor.png");
-    background-repeat: no-repeat;
+    background-image: url("/colorPaint/imagens/spriteIcons.png");
+    background-position: -435px -1px;
 }
 
 #bttCoresPrincipais {
@@ -401,8 +409,8 @@ button, input, select {
     height: 13px;
     top: 0px;
     left: 60px;
-    background-image: url("../colorPaint/imagens/icones/iconeCoresPrincipais.png");
-    background-repeat: no-repeat;
+    background-image: url("/colorPaint/imagens/spriteIcons.png");
+    background-position: -420px 1px;
 }
 
 #coresSalvas {
