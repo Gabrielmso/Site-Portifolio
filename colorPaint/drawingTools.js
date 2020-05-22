@@ -200,44 +200,39 @@ function drawingToolsObject() {
             project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
         },
         changeToolSize(e) {
-            let mousePos = getMousePosition(this.toolSizeBar.bar, e), width = this.toolSizeBar.bar.offsetWidth;
-            mousePos.x = Math.round(mousePos.x);
-            if (mousePos.x <= 0) {
-                mousePos.x = 0.5;
-                this.toolSizeBar.cursor.style.left = "-7px";
-            } else if (mousePos.x >= width) {
-                mousePos.x = width;
-                this.toolSizeBar.cursor.style.left = width - 7 + "px";;
-            } else { this.toolSizeBar.cursor.style.left = mousePos.x - 7 + "px"; }
-            this.toolSizeBar.txt.value = mousePos.x + "px";
-            this.toolProperties.size = mousePos.x;
+            const mousePos = getMousePosition(this.toolSizeBar.bar, e);
+            this.applyToolSize(Math.round(mousePos.x))
+        },
+        applyToolSize(pos) {
+            width = this.toolSizeBar.bar.offsetWidth
+            let soma = 0, part, size;
+            if (pos <= 0) { pos = 0.5; }
+            else if (pos >= width) { pos = width; }
+            part = Math.ceil(pos / 50)
+            for (let i = 0; i < part; i++) { soma += (width * 1 / 5) * i; }
+            size = ((pos - (width * ((part - 1) / 5))) * part) + soma;
+            this.toolSizeBar.cursor.style.left = Math.floor(pos - 7) + "px";
+            this.toolSizeBar.txt.value = size + "px";
+            this.toolProperties.size = size;
             this.changeCursorTool();
         },
         changeToolOpacity(e) {
             const mousePos = getMousePosition(this.toolOpacityBar.bar, e), width = this.toolOpacityBar.bar.offsetWidth;
-            let percentage = Math.round((mousePos.x * 100) / width);
-            if (mousePos.x <= 1) {
-                percentage = 1;
-                this.toolOpacityBar.cursor.style.left = "-7px";
-            } else if (mousePos.x >= width) {
-                percentage = 100;
-                this.toolOpacityBar.cursor.style.left = width - 7 + "px";
-            } else { this.toolOpacityBar.cursor.style.left = mousePos.x - 7 + "px"; }
+            if (mousePos.x <= 1) { mousePos.x = 1; }
+            else if (mousePos.x >= width) { mousePos.x = width; }
+            const percentage = Math.ceil((mousePos.x * 100) / width);
             this.toolOpacityBar.txt.value = percentage + "%";
             this.toolProperties.opacity = percentage / 100;
+            this.toolOpacityBar.cursor.style.left = mousePos.x - 7 + "px";
         },
         changeToolHardness(e) {
             const mousePos = getMousePosition(this.toolHardnessBar.bar, e), width = this.toolHardnessBar.bar.offsetWidth;
-            let percentage = Math.round((mousePos.x * 100) / width);
-            if (mousePos.x < 1) {
-                percentage = 0;
-                this.toolHardnessBar.cursor.style.left = "-7px";
-            } else if (mousePos.x >= width) {
-                percentage = 100;
-                this.toolHardnessBar.cursor.style.left = width - 7 + "px";
-            } else { this.toolHardnessBar.cursor.style.left = mousePos.x - 7 + "px"; }
+            if (mousePos.x <= 1) { mousePos.x = 1; }
+            else if (mousePos.x >= width) { mousePos.x = width; }
+            const percentage = Math.ceil((mousePos.x * 100) / width);
             this.toolHardnessBar.txt.value = percentage + "%";
             this.toolProperties.hardness = percentage / 100;
+            this.toolHardnessBar.cursor.style.left = mousePos.x - 7 + "px";
         },
         applyToolChanges() {
             const maximoBlur = this.toolProperties.size / 6.2;

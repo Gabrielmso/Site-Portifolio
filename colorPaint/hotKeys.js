@@ -100,34 +100,10 @@ function hotKeysObject() {
             }
         },
         changeToolSizeHotKey(increase) {
-            if (increase === true) {//Aumenta o tamanho da ferramenta.
-                if (drawingTools.toolProperties.size === 0.5) {
-                    drawingTools.toolProperties.size = 1;
-                    drawingTools.toolSizeBar.cursor.style.left = 1 - 7 + "px";
-                } else if (drawingTools.toolProperties.size < 15) {
-                    drawingTools.toolProperties.size += 1;
-                    drawingTools.toolSizeBar.cursor.style.left = drawingTools.toolProperties.size - 7 + "px";
-                } else if (drawingTools.toolProperties.size >= 15 && drawingTools.toolProperties.size <= 245) {
-                    drawingTools.toolProperties.size += 5;
-                    drawingTools.toolSizeBar.cursor.style.left = drawingTools.toolProperties.size - 7 + "px";
-                } else if (drawingTools.toolProperties.size > 245) {
-                    drawingTools.toolProperties.size = 250;
-                    drawingTools.toolSizeBar.cursor.style.left = drawingTools.toolProperties.size - 7 + "px";
-                }
-            } else {//Diminui o tamanho da ferramenta.
-                if (drawingTools.toolProperties.size <= 250 && drawingTools.toolProperties.size > 15) {
-                    drawingTools.toolProperties.size -= 5;
-                    drawingTools.toolSizeBar.cursor.style.left = drawingTools.toolProperties.size - 7 + "px";
-                } else if (drawingTools.toolProperties.size <= 15 && drawingTools.toolProperties.size > 1) {
-                    drawingTools.toolProperties.size -= 1;
-                    drawingTools.toolSizeBar.cursor.style.left = drawingTools.toolProperties.size - 7 + "px";
-                } else if (drawingTools.toolProperties.size === 1) {
-                    drawingTools.toolProperties.size = 0.5;
-                    drawingTools.toolSizeBar.cursor.style.left = "-7px"
-                }
-            }
-            drawingTools.toolSizeBar.txt.value = drawingTools.toolProperties.size + "px";
-            drawingTools.changeCursorTool();
+            let pos = drawingTools.toolSizeBar.cursor.offsetLeft + 7;
+            if (increase === true) { pos += 1; } //Aumenta o tamanho da ferramenta.
+            else { pos -= 1; }//Diminui o tamanho da ferramenta.
+            drawingTools.applyToolSize(pos)
         },
         keyDown: {
             Digit0() {
