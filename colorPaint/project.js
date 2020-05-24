@@ -340,6 +340,7 @@ function projectObject() {
             }
         },
         drawInLayer() {
+            undoRedoChange.saveChanges();
             this.arrayLayers[this.selectedLayer].ctx.drawImage(this.eventLayer.canvas, 0, 0, this.properties.resolution.width, this.properties.resolution.height);
             this.eventLayer.clearRect(0, 0, this.properties.resolution.width, this.properties.resolution.height);
             this.drawInPreview(this.arrayLayers[this.selectedLayer]);

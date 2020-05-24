@@ -3,13 +3,12 @@ function hotKeysObject() {
         ctrlPressed: false,
         spacePressed: false,
         shiftPressed: false,
-        infoMoveDrawWithSpace: { move: false, startCoordinate: null, scroolTop: null, scrollLeft: null },
+        infoMoveDrawWithSpace: { startCoordinate: null, scroolTop: null, scrollLeft: null },
         addEventsToElements() {
             document.addEventListener("keydown", (e) => this.keyDownEvent(e));
             document.addEventListener("keyup", (e) => this.keyUpEvent(e));
             document.addEventListener("mouseup", (e) => this.mouseUpMoveDraw(e));
             project.screen.addEventListener("mousedown", (e) => this.mouseDownMoveDraw(e));
-            document.addEventListener("mousemove", (e) => this.mouseMoveMoveDraw(e));
         },
         keyDownEvent(e) {
             if (drawingTools.painting) { e.preventDefault(); return; }
@@ -17,11 +16,9 @@ function hotKeysObject() {
                 const keyFunction = this.keyDown[e.code];
                 if (keyFunction) {
                     e.preventDefault();
-                    drawingTools.clickToCurve = false;
                     keyFunction();
                 }
-            }
-            else {
+            } else {
                 if (e.code === "BracketRight") { this.changeToolSizeHotKey(true); }//Aumentar o tamanho da ferramenta.
                 else if (e.code === "Backslash") { this.changeToolSizeHotKey(false); }//Diminuir o tamanho da ferramenta.
             }
@@ -45,7 +42,7 @@ function hotKeysObject() {
             }
             if (e.code === "Space") {
                 e.preventDefault();
-                this.infoMoveDrawWithSpace = { move: false, startCoordinate: null, scroolTop: null, scrollLeft: null };
+                this.infoMoveDrawWithSpace = { startCoordinate: null, scroolTop: null, scrollLeft: null };
                 this.keyUpSpace();
             }
             if (e.code === "ShiftLeft") {
@@ -67,7 +64,7 @@ function hotKeysObject() {
             }
         },
         keyDownSpace() {
-            if (this.spacePressed === false) {
+            if (!this.spacePressed) {
                 this.spacePressed = true;
                 project.screen.style.cursor = "grab";
                 drawingTools.cursorTool.cursor.style.display = "none";
@@ -75,6 +72,7 @@ function hotKeysObject() {
         },
         keyUpSpace() {
             this.spacePressed = false;
+            document.removeEventListener("mousemove", hotKeys.mouseMoveMoveDraw);
             project.screen.style.cursor = "";
             if (drawingTools.cursorTool.show) { drawingTools.cursorTool.cursor.style.display = "block"; }
         },
@@ -86,16 +84,18 @@ function hotKeysObject() {
         },
         mouseDownMoveDraw(e) {
             if (this.spacePressed) {
-                this.infoMoveDrawWithSpace = { move: true, startCoordinate: getMousePosition(contentTelas, e), scroolTop: contentTelas.scrollTop, scrollLeft: contentTelas.scrollLeft };
+                document.addEventListener("mousemove", hotKeys.mouseMoveMoveDraw);
+                this.infoMoveDrawWithSpace = { startCoordinate: getMousePosition(contentTelas, e), scroolTop: contentTelas.scrollTop, scrollLeft: contentTelas.scrollLeft };
                 e.currentTarget.style.cursor = "grabbing";
             }
         },
         mouseMoveMoveDraw(e) {
-            if (this.infoMoveDrawWithSpace.move) { this.moveDrawWithSpace(getMousePosition(contentTelas, e)); }
+            hotKeys.moveDrawWithSpace(getMousePosition(contentTelas, e));
         },
         mouseUpMoveDraw(e) {
             if (this.spacePressed) {
-                this.infoMoveDrawWithSpace = { move: false, startCoordinate: null, scroolTop: null, scrollLeft: null };
+                document.removeEventListener("mousemove", hotKeys.mouseMoveMoveDraw);
+                this.infoMoveDrawWithSpace = { startCoordinate: null, scroolTop: null, scrollLeft: null };
                 project.screen.style.cursor = "grab";
             }
         },
@@ -122,7 +122,7 @@ function hotKeysObject() {
                 undoRedoChange.undoChange();
             },
             KeyY() {
-                undoRedoChange.redoChange();;
+                undoRedoChange.redoChange();
             },
         },
     }

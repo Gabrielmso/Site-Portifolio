@@ -40,6 +40,11 @@ function colorPaint() {
 
     document.getElementById("bttCriarNovoProjeto").addEventListener("mousedown", () => createProjectWindow.open("create"));
     document.getElementById("bttCriarGrade").addEventListener("mousedown", () => createGridWindow.open());
+    document.getElementById("bttModoCursor").addEventListener("mousedown", (e) => {
+        drawingTools.cursorTool.show = !drawingTools.cursorTool.show;
+        e.currentTarget.getElementsByTagName("span")[0].innerText = drawingTools.cursorTool.show ? "Padrão" : "Simples";
+        drawingTools.changeCursorTool();
+    });
     document.getElementById("bttSalvarDesenho").addEventListener("mousedown", () => {
         if (project.created) { project.saveDraw(); }
         else {

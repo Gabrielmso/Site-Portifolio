@@ -24,6 +24,12 @@ function undoRedoChangeObject() {
             this.changes.redone = [];
         },
         undoChange() {
+            if (drawingTools.clickToCurve) {
+                const backPreviousTool = drawingTools.previousTool;
+                drawingTools.selectDrawingTool(5);
+                drawingTools.previousTool = backPreviousTool;
+                return;
+            }
             if (this.changes.undone.length > 0) {
                 const ultimoIndice = this.changes.undone.length - 1,
                     camada = this.changes.undone[ultimoIndice].numLayer,
@@ -38,8 +44,6 @@ function undoRedoChangeObject() {
                     return;
                 }
                 this.changes.redone.push(objAlteracao);
-                drawingTools.clickToCurve = false;
-                project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
                 project.arrayLayers[camada].ctx.putImageData(imagemCamada, 0, 0);
                 this.changes.undone.pop();
                 if (this.changes.undone.length === 0) {
@@ -57,6 +61,11 @@ function undoRedoChangeObject() {
         },
         redoChange() {
             if (this.changes.redone.length > 0) {
+                if (drawingTools.clickToCurve) {
+                    const backPreviousTool = drawingTools.previousTool;
+                    drawingTools.selectDrawingTool(5);
+                    drawingTools.previousTool = backPreviousTool;
+                }
                 const ultimoIndice = this.changes.redone.length - 1,
                     camada = this.changes.redone[ultimoIndice].numLayer,
                     imagemCamada = this.changes.redone[ultimoIndice].change,

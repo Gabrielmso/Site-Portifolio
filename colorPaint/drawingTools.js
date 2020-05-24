@@ -18,18 +18,19 @@ function drawingToolsObject() {
         ],
         cursorTool: {
             cursor: document.getElementById("cursorFerramenta"),
-            show: false,
+            show: true,
+            visible: false,
             halfSize: 20,
             changeCursorPosition(left, top) {
                 this.cursor.style.top = top + "px";
                 this.cursor.style.left = left + "px";
             },
-            showCursor() {
-                this.show = true;
-            },
-            removeCursor() {
-                this.show = false;
+            invisibleCursor() {
+                this.visible = false;
                 this.cursor.style.display = "none";
+            },
+            visibleCursor() {
+                this.visible = true;
             },
             wheel(e) {
                 const velocity = 7;
@@ -76,13 +77,13 @@ function drawingToolsObject() {
         addEventsToElements() {
             contentTelas.addEventListener("contextmenu", (e) => e.preventDefault());
             janelaPrincipal.addEventListener("mouseleave", () => {
-                if (!this.painting) { this.cursorTool.removeCursor(); }
+                if (!this.painting) { this.cursorTool.invisibleCursor(); }
             });
             janelaPrincipal.addEventListener("mouseenter", () => this.changeCursorTool());
             this.cursorTool.cursor.addEventListener("contextmenu", (e) => e.preventDefault());
             contentTelas.addEventListener("mousedown", (e) => this.mouseDownEventDrawing(e));
             contentTelas.addEventListener("mousemove", () => this.txtPositionCursor.value = Math.ceil(this.mousePosition.x) + ", " + Math.ceil(this.mousePosition.y));
-            contentTelas.addEventListener("mouseleave", () => { if (!this.cursorTool.show) { this.txtPositionCursor.value = "" } });
+            contentTelas.addEventListener("mouseleave", () => { if (!this.cursorTool.visible) { this.txtPositionCursor.value = "" } });
             this.cursorTool.cursor.addEventListener("mousedown", (e) => this.mouseDownEventDrawing(e));
             document.addEventListener("mousemove", throttle((e) => this.mouseMoveEventDrawing(e), 11));
             document.addEventListener("mouseup", (e) => this.mouseUpEventDrawing(e));
@@ -93,7 +94,7 @@ function drawingToolsObject() {
             for (let i = 0; i < this.toolProperties.elements.length; i++) {
                 let el = this.toolProperties.elements[i];
                 el.property.addEventListener("mouseenter", () => {
-                    if (!this.painting) { el.contentBar.style.height = "36px"; }
+                    if (!this.painting && !this.clickToCurve) { el.contentBar.style.height = "36px"; }
                 });
                 el.property.addEventListener("mouseleave", () => el.contentBar.style.height = "0px");
             }
@@ -105,10 +106,7 @@ function drawingToolsObject() {
             const mouse = getMousePosition(project.screen, e);
             this.mousePosition.x = +((project.properties.resolution.width / project.screen.offsetWidth) * mouse.x).toFixed(1);
             this.mousePosition.y = +((project.properties.resolution.height / project.screen.offsetHeight) * mouse.y).toFixed(1);
-            if (this.cursorTool.show) {
-                const posX = e.pageX - this.cursorTool.halfSize + document.body.scrollLeft,
-                    posY = e.pageY - this.cursorTool.halfSize + document.body.scrollTop;
-                this.cursorTool.changeCursorPosition(posX, posY);
+            if (this.cursorTool.visible) {
                 this.txtPositionCursor.value = Math.ceil(this.mousePosition.x) + ", " + Math.ceil(this.mousePosition.y);
                 if (!this.painting) {
                     const contentPosition = contentTelas.getBoundingClientRect();
@@ -116,8 +114,13 @@ function drawingToolsObject() {
                         e.pageY < contentPosition.top || e.pageY > contentPosition.top + contentPosition.height) {
                         this.cursorTool.cursor.style.display = "none";
                         this.txtPositionCursor.value = "";
-                    } else if (!hotKeys.spacePressed) { this.cursorTool.cursor.style.display = "block"; }
+                    } else if (!hotKeys.spacePressed) {
+                        this.cursorTool.cursor.style.display = "block";
+                    }
                 }
+                const posX = e.pageX - this.cursorTool.halfSize + document.body.scrollLeft,
+                    posY = e.pageY - this.cursorTool.halfSize + document.body.scrollTop;
+                this.cursorTool.changeCursorPosition(posX, posY);
             }
         },
         mouseDownEventDrawing(e) {
@@ -135,11 +138,12 @@ function drawingToolsObject() {
             else if (this.selectedTool === 7) {//Conta-gotas.
                 this.eyeDropper(getMousePosition(janelaPrincipal, e), this.mousePosition, true);
             }
-            if (this.cursorTool.show) { janelaPrincipal.style.cursor = "none"; }
+            if (this.cursorTool.visible) { janelaPrincipal.style.cursor = "none"; }
         },
         mouseUpEventDrawing(e) {
             if (this.painting) {
                 this.painting = false;
+                janelaPrincipal.style.cursor = "";
                 if (this.selectedTool === 7) {//Conta-gotas.  
                     this.eyeDropper(getMousePosition(janelaPrincipal, e), this.mousePosition, false);
                     return;
@@ -148,11 +152,8 @@ function drawingToolsObject() {
                     if (this.strokeCoordinates.x.length === 2) { return; }
                 }
                 this.strokeCoordinates = { x: [], y: [] };
-                if (this.selectedTool != 4) {
-                    undoRedoChange.saveChanges();
-                    project.drawInLayer();
-                } else { project.drawInPreview(project.arrayLayers[project.selectedLayer]); }//Borracha
-                janelaPrincipal.style.cursor = "";
+                if (this.selectedTool != 4) { project.drawInLayer(); }
+                else { project.drawInPreview(project.arrayLayers[project.selectedLayer]); }//Borracha
             }
             this.toolSizeBar.clicked = this.toolOpacityBar.clicked = this.toolHardnessBar.clicked = false;
         },
@@ -172,17 +173,14 @@ function drawingToolsObject() {
             else if (this.toolHardnessBar.clicked) { this.changeToolHardness(e); }
         },
         mouseDownToolSizeBar(e) {
-            if (this.clickToCurve) { return; }
             this.toolSizeBar.clicked = true;
             this.changeToolSize(e);
         },
         mouseDownToolOpacityBar(e) {
-            if (this.clickToCurve) { return; }
             this.toolOpacityBar.clicked = true;
             this.changeToolOpacity(e);
         },
         mouseDownToolHardnessBar(e) {
-            if (this.clickToCurve) { return; }
             this.toolHardnessBar.clicked = true;
             this.changeToolHardness(e);
         },
@@ -239,26 +237,35 @@ function drawingToolsObject() {
         },
         changeCursorTool() {
             if (this.selectedTool === 7) {
-                contentTelas.style.cursor = "url('colorPaint/imagens/cursor/cursorContaGotas.png') 0 20, pointer";
-                this.cursorTool.removeCursor();
+                contentTelas.style.cursor = "url('/colorPaint/imagens/cursor/cursorContaGotas.png') 0 20, pointer";
+                this.cursorTool.invisibleCursor();
                 return;
             } else if (this.selectedTool === 6) {
-                contentTelas.style.cursor = "url('colorPaint/imagens/cursor/cursorBaldeDeTinta.png') 0 0, pointer";
-                this.cursorTool.removeCursor();
+                contentTelas.style.cursor = "url('/colorPaint/imagens/cursor/cursorBaldeDeTinta.png') 0 0, pointer";
+                this.cursorTool.invisibleCursor();
                 return;
             }
             const size = this.toolProperties.size * ((project.screen.offsetWidth) / project.properties.resolution.width);
-            if (size < 15) {
-                contentTelas.style.cursor = "url('colorPaint/imagens/cursor/crossHair.png') 12.5 12.5, pointer";
-                this.cursorTool.removeCursor();
-            } else {
-                const previousPosition = { x: Math.round(this.cursorTool.cursor.offsetLeft + this.cursorTool.halfSize), y: Math.round(this.cursorTool.cursor.offsetTop + this.cursorTool.halfSize) };
-                this.cursorTool.showCursor();
-                this.cursorTool.halfSize = size / 2;
-                this.cursorTool.cursor.style.width = this.cursorTool.cursor.style.height = size + "px";
-                this.cursorTool.changeCursorPosition(Math.round(previousPosition.x - this.cursorTool.halfSize), Math.round(previousPosition.y - this.cursorTool.halfSize));
+            if (this.cursorTool.show) {
+                this.cursorTool.visibleCursor();
                 contentTelas.style.cursor = "none";
-                this.cursorTool.cursor.style.backgroundImage = size <= 150 ? "none" : "";
+                const previousPosition = { x: Math.round(this.cursorTool.cursor.offsetLeft + this.cursorTool.halfSize), y: Math.round(this.cursorTool.cursor.offsetTop + this.cursorTool.halfSize) };
+                if (size < 15) {
+                    this.cursorTool.cursor.classList.remove("bordaCursor");
+                    this.cursorTool.cursor.style.backgroundImage = "url('/colorPaint/imagens/cursor/crossHair.png')";
+                    this.cursorTool.cursor.style.width = this.cursorTool.cursor.style.height = "52px";
+                    this.cursorTool.halfSize = 27;
+                } else {
+                    this.cursorTool.cursor.classList.add("bordaCursor");
+                    this.cursorTool.halfSize = size / 2;
+                    this.cursorTool.cursor.style.width = this.cursorTool.cursor.style.height = size + "px";
+                    this.cursorTool.cursor.style.backgroundImage = size <= 150 ? "none" : "";
+                }
+                this.cursorTool.changeCursorPosition(Math.round(previousPosition.x - this.cursorTool.halfSize), Math.round(previousPosition.y - this.cursorTool.halfSize));
+            } else {
+                this.cursorTool.invisibleCursor();
+                contentTelas.style.cursor = size < 20 ? "url('/colorPaint/imagens/cursor/crossHair.png') 12.5 12.5 , pointer" :
+                    "url('/colorPaint/imagens/cursor/circle.png') 10 10 , pointer";
             }
         },
         brush(mousePos) {
