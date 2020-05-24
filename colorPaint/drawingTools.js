@@ -199,13 +199,12 @@ function drawingToolsObject() {
             project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
         },
         changeToolSize(e) {
-            const mousePos = getMousePosition(this.toolSizeBar.bar, e);
-            this.applyToolSize(Math.round(mousePos.x))
+            this.applyToolSize(Math.round(getMousePosition(this.toolSizeBar.bar, e).x));
         },
         applyToolSize(pos) {
             const res = project.properties.resolution, maxSize = res.proportion > 1 ? res.width : res.height,
                 width = this.toolSizeBar.bar.offsetWidth, left = pos <= 0 ? 0.5 : pos >= width ? width : pos,
-                size = left <= 50 ? left : Math.floor(((maxSize / 100) * ((100 * (left - 50)) / (width - 50))) + 50);
+                size = left <= 50 ? left : Math.floor((((maxSize * ((left - 13) / (width - 13))) / 100) * ((100 * (left - 50)) / (width - 50))) + 50);
             this.toolSizeBar.cursor.style.left = Math.floor(left - 7) + "px";
             this.toolSizeBar.txt.value = size + "px";
             this.toolProperties.size = size;
@@ -216,7 +215,7 @@ function drawingToolsObject() {
             mousePos.x = mousePos.x <= 1 ? 1 : mousePos.x >= width ? width : mousePos.x;
             const percentage = Math.ceil((mousePos.x * 100) / width);
             this.toolOpacityBar.txt.value = percentage + "%";
-            this.toolProperties.opacity = percentage / 100;
+            this.toolProperties.opacity = +((percentage / 100).toFixed(2));
             this.toolOpacityBar.cursor.style.left = mousePos.x - 7 + "px";
         },
         changeToolHardness(e) {
@@ -224,12 +223,11 @@ function drawingToolsObject() {
             mousePos.x = mousePos.x <= 0 ? 0 : mousePos.x >= width ? width : mousePos.x;
             const percentage = Math.ceil((mousePos.x * 100) / width);
             this.toolHardnessBar.txt.value = percentage + "%";
-            this.toolProperties.hardness = percentage / 100;
+            this.toolProperties.hardness = +((percentage / 100).toFixed(2));
             this.toolHardnessBar.cursor.style.left = mousePos.x - 7 + "px";
         },
         applyToolChanges() {
-            const maximoBlur = this.toolProperties.size / 6.2;
-            const color = this.toolProperties.color;
+            const maximoBlur = this.toolProperties.size / 6.2, color = this.toolProperties.color;
             let dureza = maximoBlur - (maximoBlur * this.toolProperties.hardness);
             if (this.toolProperties.size < 100) {
                 const proporcao = ((100 - this.toolProperties.size) / 180);
@@ -257,34 +255,32 @@ function drawingToolsObject() {
                 const previousPosition = { x: Math.round(this.cursorTool.cursor.offsetLeft + this.cursorTool.halfSize), y: Math.round(this.cursorTool.cursor.offsetTop + this.cursorTool.halfSize) };
                 this.cursorTool.showCursor();
                 this.cursorTool.halfSize = size / 2;
-                this.cursorTool.cursor.style.width = size + "px";
-                this.cursorTool.cursor.style.height = size + "px";
+                this.cursorTool.cursor.style.width = this.cursorTool.cursor.style.height = size + "px";
                 this.cursorTool.changeCursorPosition(Math.round(previousPosition.x - this.cursorTool.halfSize), Math.round(previousPosition.y - this.cursorTool.halfSize));
                 contentTelas.style.cursor = "none";
-                if (size > 180) { this.cursorTool.cursor.style.backgroundImage = ""; }
-                else { this.cursorTool.cursor.style.backgroundImage = "none"; }
+                this.cursorTool.cursor.style.backgroundImage = size <= 150 ? "none" : "";
             }
         },
         brush(mousePos) {
             this.strokeCoordinates.x.push(mousePos.x);
             this.strokeCoordinates.y.push(mousePos.y);
-            let ponto1 = { x: this.strokeCoordinates.x[0], y: this.strokeCoordinates.y[0] },
-                ponto2 = { x: this.strokeCoordinates.x[1], y: this.strokeCoordinates.y[1] };
+            let point1 = { x: this.strokeCoordinates.x[0], y: this.strokeCoordinates.y[0] },
+                point2 = { x: this.strokeCoordinates.x[1], y: this.strokeCoordinates.y[1] };
             project.eventLayer.beginPath();
-            project.eventLayer.moveTo(ponto1.x, ponto1.y);
+            project.eventLayer.moveTo(point1.x, point1.y);
             for (let i = 0; i < this.strokeCoordinates.x.length; i++) {
-                let dis = { x: (ponto2.x - ponto1.x) ** 2, y: (ponto2.y - ponto1.y) ** 2 };
+                let dis = { x: (point2.x - point1.x) ** 2, y: (point2.y - point1.y) ** 2 };
                 if (((dis.x + dis.y) ** 0.5) > 3) {
-                    const midPoint = midPointBtw(ponto1, ponto2);
-                    project.eventLayer.quadraticCurveTo(ponto1.x, ponto1.y, midPoint.x, midPoint.y);
-                } else { project.eventLayer.lineTo(ponto2.x, ponto2.y); }
-                ponto1 = { x: this.strokeCoordinates.x[i], y: this.strokeCoordinates.y[i] };
-                ponto2 = { x: this.strokeCoordinates.x[i + 1], y: this.strokeCoordinates.y[i + 1] };
+                    const midPoint = midPointBtw(point1, point2);
+                    project.eventLayer.quadraticCurveTo(point1.x, point1.y, midPoint.x, midPoint.y);
+                } else { project.eventLayer.lineTo(point2.x, point2.y); }
+                point1 = { x: this.strokeCoordinates.x[i], y: this.strokeCoordinates.y[i] };
+                point2 = { x: this.strokeCoordinates.x[i + 1], y: this.strokeCoordinates.y[i + 1] };
             }
-            project.eventLayer.lineTo(ponto1.x, ponto1.y);
+            project.eventLayer.lineTo(point1.x, point1.y);
             project.eventLayer.stroke();
-            function midPointBtw(ponto1, ponto2) {
-                return { x: ponto1.x + (ponto2.x - ponto1.x) / 2, y: ponto1.y + (ponto2.y - ponto1.y) / 2 };
+            function midPointBtw(point1, point2) {
+                return { x: point1.x + (point2.x - point1.x) / 2, y: point1.y + (point2.y - point1.y) / 2 };
             }
         },
         eraser(mousePos) {
