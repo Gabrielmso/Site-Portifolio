@@ -288,7 +288,7 @@ button, input, select {
 
 #contaGotas {
     background-image: url("../colorPaint/imagens/spriteIcons.png");
-    background-position: -245px 1px;
+    background-position: -315px 1px;
 }
 
 #linha {
@@ -316,24 +316,34 @@ button, input, select {
     background-position: -210px 0px;
 }
 
+#borrar {
+    background-image: url("../colorPaint/imagens/spriteIcons.png");
+    background-position: -247px 0px;
+}
+
+#desfoque {
+    background-image: url("../colorPaint/imagens/spriteIcons.png");
+    background-position: -280px 0px;
+}
+
 #bttZoomMenos {
     background-image: url("/colorPaint/imagens/spriteIcons.png");
-    background-position: -280px 0px;
+    background-position: -350px 0px;
 }
 
 #bttZoomMais {
     background-image: url("/colorPaint/imagens/spriteIcons.png");
-    background-position: -315px 0px;
+    background-position: -385px 0px;
 }
 
 #bttDesfazer {
     background-image: url("/colorPaint/imagens/spriteIcons.png");
-    background-position: -350px 1px;
+    background-position: -420px 1px;
 }
 
 #bttRefazer {
     background-image: url("../colorPaint/imagens/spriteIcons.png");
-    background-position: -385px 1px;
+    background-position: -455px 1px;
 }
 
 .bttHover:hover {
@@ -400,7 +410,7 @@ button, input, select {
     top: 36px;
     left: 23px;
     background-image: url("/colorPaint/imagens/spriteIcons.png");
-    background-position: -435px -1px;
+    background-position: -505px -1px;
 }
 
 #bttCoresPrincipais {
@@ -410,7 +420,7 @@ button, input, select {
     top: 0px;
     left: 60px;
     background-image: url("/colorPaint/imagens/spriteIcons.png");
-    background-position: -420px 1px;
+    background-position: -490px 1px;
 }
 
 #coresSalvas {
