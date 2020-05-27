@@ -322,6 +322,7 @@ function projectObject() {
             }
             const opacidade = this.arrayLayers[this.selectedLayer].opacity;
             this.layerOpacityBar.cursor.style.left = (200 * opacidade) - 7 + "px";
+            drawingTools.currentLayer = this.arrayLayers[this.selectedLayer].ctx;
         },
         createDrawComplete() {
             this.drawComplete.clearRect(0, 0, this.properties.resolution.width, this.properties.resolution.height);

@@ -270,7 +270,7 @@ button, input, select {
     position: relative;
     overflow: hidden;
     width: 100px;
-    height: 276px;
+    height: 272px;
     padding: 12px;
 }
 
@@ -346,7 +346,7 @@ button, input, select {
     display: inline-block;
     background-color: rgb(37, 37, 37);
     border-radius: 5px;
-    margin-bottom: -1px;
+    margin-bottom: -2px;
 }
 
 .bttFerramentasEscolhida {
@@ -355,7 +355,7 @@ button, input, select {
     display: inline-block;
     background-color: rgb(13, 13, 13);
     border-radius: 5px;
-    margin-bottom: -1px;
+    margin-bottom: -2px;
 }
 
 #coresSelecionadas {
@@ -418,7 +418,7 @@ button, input, select {
     width: 85px;
     height: auto;
     padding: 7px;
-    max-height: 166px;
+    max-height: 134px;
     overflow-x: auto;
     scrollbar-width: thin;
     background-color: rgb(37, 37, 37);

@@ -8,10 +8,8 @@ function drawingToolsObject() {
             { tool: document.getElementById("borracha"), name: "eraser" },
             { tool: document.getElementById("curva"), name: "curve" },
             { tool: document.getElementById("baldeDeTinta"), name: "paintBucket" },
-            {
-                tool: document.getElementById("borrar"), name: "smudge", tempCanvas: null,
-                featherGradient: null
-            },
+            { tool: document.getElementById("desfoque"), name: "blur" },
+            { tool: document.getElementById("borrar"), name: "smudge" },
             {
                 tool: document.getElementById("contaGotas"), name: "eyeDropper",
                 cursor: {
@@ -47,6 +45,7 @@ function drawingToolsObject() {
                 }
             }
         },
+        currentLayer: null,
         selectedTool: 0,
         previousTool: null,
         clickToCurve: false,
@@ -58,7 +57,8 @@ function drawingToolsObject() {
             elements: [{ property: document.getElementById("propriedadeTamanho"), contentBar: document.getElementById("contentBarraTamanho") },
             { property: document.getElementById("propriedadeOpacidade"), contentBar: document.getElementById("contentBarraOpacidade") },
             { property: document.getElementById("propriedadeDureza"), contentBar: document.getElementById("contentBarraDureza") }],
-            size: 5, opacity: 1, hardness: 1, color: { r: 0, g: 0, b: 0 }
+            size: 5, opacity: 1, hardness: 1, color: { r: 0, g: 0, b: 0 }, brushCanvas: null, brushForm: null, halfSize: null,
+            filter: null,
         },
         toolSizeBar: {
             bar: document.getElementById("barraTamanho"),
@@ -137,9 +137,9 @@ function drawingToolsObject() {
             project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
             project.eventLayer.beginPath();
             project.eventLayer.lineJoin = project.eventLayer.lineCap = "round";
-            project.arrayLayers[project.selectedLayer].ctx.globalCompositeOperation = "source-over";
+            this.currentLayer.globalCompositeOperation = "source-over";
             if (this.selectedTool < this.arrayTools.length - 1) { this[this.arrayTools[this.selectedTool].name](this.mousePosition); }
-            else if (this.selectedTool === this.arrayTools.length - 1) {//Conta-gotas.
+            else {//Conta-gotas.
                 this.eyeDropper(getMousePosition(janelaPrincipal, e), this.mousePosition, true);
             }
             if (this.cursorTool.visible) { janelaPrincipal.style.cursor = "none"; }
@@ -169,8 +169,8 @@ function drawingToolsObject() {
                     this.strokeCoordinates.y[lastIndex] === this.mousePosition.y) { return; }
                 project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
                 if (this.selectedTool < this.arrayTools.length - 1) { this[this.arrayTools[this.selectedTool].name](this.mousePosition); }
-                else if (this.selectedTool === this.arrayTools.length - 1) {//Conta-gotas.                   
-                    this.eyeDropper(getMousePosition(janelaPrincipal, e), this.mousePosition, true)
+                else {//Conta-gotas.                   
+                    this.eyeDropper(getMousePosition(janelaPrincipal, e), this.mousePosition, true);
                 }
             } else if (this.toolSizeBar.clicked) { this.changeToolSize(e); }
             else if (this.toolOpacityBar.clicked) { this.changeToolOpacity(e); }
@@ -298,12 +298,12 @@ function drawingToolsObject() {
             if (this.strokeCoordinates.x.length === 0) {
                 undoRedoChange.saveChanges();
                 project.eventLayer.strokeStyle = "rgba(0, 0, 0, " + this.toolProperties.opacity + ")";
-                project.arrayLayers[project.selectedLayer].ctx.globalCompositeOperation = "destination-out";
+                this.currentLayer.globalCompositeOperation = "destination-out";
             }
             const imageData = undoRedoChange.changes.undone[undoRedoChange.changes.undone.length - 1].change;
             this.brush(mousePos);
-            project.arrayLayers[project.selectedLayer].ctx.putImageData(imageData, 0, 0);
-            project.arrayLayers[project.selectedLayer].ctx.drawImage(project.eventLayer.canvas, 0, 0, project.properties.resolution.width, project.properties.resolution.height);
+            this.currentLayer.putImageData(imageData, 0, 0);
+            this.currentLayer.drawImage(project.eventLayer.canvas, 0, 0, project.properties.resolution.width, project.properties.resolution.height);
         },
         line(mousePos) {
             if (this.strokeCoordinates.x.length === 0) {
@@ -414,71 +414,48 @@ function drawingToolsObject() {
         smudge(mousePos) {
             this.strokeCoordinates.x.push(mousePos.x);
             this.strokeCoordinates.y.push(mousePos.y);
-            const feather = (ctx) => {
-                ctx.save();
-                ctx.fillStyle = this.arrayTools[this.selectedTool].featherGradient;
-                ctx.globalCompositeOperation = 'destination-out';
-                const { width, height } = ctx.canvas;
-                ctx.translate(width / 2, height / 2);
-                ctx.fillRect(-width / 2, -height / 2, width, height);
-                ctx.restore();
-            }
-            const updateBrush = (x, y) => {
-                const width = this.toolProperties.size, pos = { x: x - (width / 2), y: y - (width / 2) },
-                    ctx = this.arrayTools[this.selectedTool].tempCanvas;
-                ctx.clearRect(0, 0, width, width);
-                ctx.drawImage(project.arrayLayers[project.selectedLayer].ctx.canvas,
-                    pos.x, pos.y, width, width, 0, 0, width, width);
-                feather(ctx);
-            }
-            const createFeatherGradient = () => {
-                const radius = this.toolProperties.size / 2;
-                const innerRadius = Math.min(radius * this.toolProperties.hardness, radius - 1);
-                const gradient = this.arrayTools[this.selectedTool].tempCanvas.createRadialGradient(
-                    0, 0, innerRadius,
-                    0, 0, radius);
-                gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
-                gradient.addColorStop(1, 'rgba(0, 0, 0, 1)');
-                return gradient;
-            }
-            if (this.strokeCoordinates.x.length === 1) {
+            const length = this.strokeCoordinates.x.length;
+            if (length === 1) {
                 undoRedoChange.saveChanges();
-                this.arrayTools[this.selectedTool].tempCanvas = document.createElement("canvas").getContext("2d");
-                this.arrayTools[this.selectedTool].tempCanvas.canvas.width = this.toolProperties.size;
-                this.arrayTools[this.selectedTool].tempCanvas.canvas.height = this.toolProperties.size;
-                this.arrayTools[this.selectedTool].featherGradient = createFeatherGradient();
-                updateBrush(mousePos.x, mousePos.y);
+                this.start(this.strokeCoordinates.x[length - 1], this.strokeCoordinates.y[length - 1]);
                 return;
             }
-            const lastIndex = this.strokeCoordinates.x.length - 2
-            const line = setupLine(this.strokeCoordinates.x[lastIndex], this.strokeCoordinates.y[lastIndex],
-                this.strokeCoordinates.x[lastIndex + 1], this.strokeCoordinates.y[lastIndex + 1]);
-            for (let more = true; more;) {
-                project.arrayLayers[project.selectedLayer].ctx.globalAlpha = 0.8 * this.toolProperties.opacity * line.u;
-                project.arrayLayers[project.selectedLayer].ctx.drawImage(
-                    this.arrayTools[this.selectedTool].tempCanvas.canvas,
-                    line.pos[0] - this.toolProperties.size / 2,
-                    line.pos[1] - this.toolProperties.size / 2);
-                updateBrush(line.pos[0], line.pos[1]);
-                more = nextPosLine(line);
+            this.updateSmudge(this.strokeCoordinates.x[length - 2], this.strokeCoordinates.y[length - 2],
+                this.strokeCoordinates.x[length - 1], this.strokeCoordinates.y[length - 1]);
+        },
+        blur(mousePos) {
+            this.strokeCoordinates.x.push(Math.floor(mousePos.x));
+            this.strokeCoordinates.y.push(Math.floor(mousePos.y));
+            const length = this.strokeCoordinates.x.length;
+            const setBlurBlush = (brush, x, y) => {
+                const size = this.toolProperties.size;
+                brush.globalCompositeOperation = "source-over";
+                brush.clearRect(0, 0, size, size);
+                brush.filter = this.toolProperties.filter;
+                brush.drawImage(this.currentLayer.canvas, x, y, size, size, 0, 0, size, size);
+                brush.filter = "blur(0px)";
+                brush.save();
+                brush.fillStyle = this.toolProperties.brushForm;
+                brush.globalCompositeOperation = "destination-out";
+                brush.translate(this.toolProperties.halfSize, this.toolProperties.halfSize);
+                brush.fillRect(-this.toolProperties.halfSize, -this.toolProperties.halfSize, size, size);
+                brush.restore();
+                this.currentLayer.drawImage(this.toolProperties.brushCanvas.canvas, x, y);
             }
-            project.arrayLayers[project.selectedLayer].ctx.globalAlpha = 1;
-            function nextPosLine(line) {
-                --line.counter;
-                line.u = 1 - line.counter / line.endPnt;
-                if (line.counter <= 0) { return false; }
-                let posX = line.pos[0], posy = line.pos[1];
-                line.pos = [posX + line.plus[0], posy + line.plus[1]]
-                return true;
+            if (length === 1) {
+                undoRedoChange.saveChanges();
+                this.toolProperties.brushCanvas = document.createElement("canvas").getContext("2d");
+                this.toolProperties.brushCanvas.canvas.width = this.toolProperties.brushCanvas.canvas.height = this.toolProperties.size;
+                this.toolProperties.halfSize = this.toolProperties.size / 2;
+                this.toolProperties.filter = "blur(" + ((0.1 * this.toolProperties.halfSize) * this.toolProperties.opacity).toFixed(2) + "px)";
+                this.toolProperties.brushForm = this.setBrushForm();
+                return;
             }
-            function setupLine(x, y, endX, endY) {
-                const deltaX = endX - x, deltaY = endY - y;
-                const counter = ((deltaX ** 2) + (deltaY ** 2)) ** 0.5;
-                return {
-                    pos: [x, y], endPos: [endX, endY], plus: [deltaX / counter, deltaY / counter],
-                    counter: counter, endPnt: counter, u: 0,
-                };
+            const pos = {
+                x: this.strokeCoordinates.x[length - 1] - this.toolProperties.halfSize,
+                y: this.strokeCoordinates.y[length - 1] - this.toolProperties.halfSize
             };
+            setBlurBlush(this.toolProperties.brushCanvas, pos.x, pos.y);
         },
         paintBucket(mousePos) {
             if (this.mousePosition.x < 0 || this.mousePosition.x > project.properties.resolution.width ||
@@ -488,9 +465,8 @@ function drawingToolsObject() {
             }
             this.strokeCoordinates.x[0] = Math.floor(mousePos.x);
             this.strokeCoordinates.y[0] = Math.floor(mousePos.y);
-            const context = project.arrayLayers[project.selectedLayer].ctx,
-                camada = context.getImageData(0, 0, project.properties.resolution.width, project.properties.resolution.height),
-                clearCanvas = context.createImageData(project.properties.resolution.width, project.properties.resolution.height),
+            const camada = this.currentLayer.getImageData(0, 0, project.properties.resolution.width, project.properties.resolution.height),
+                clearCanvas = this.currentLayer.createImageData(project.properties.resolution.width, project.properties.resolution.height),
                 selectedColor = {
                     r: this.toolProperties.color.r, g: this.toolProperties.color.g,
                     b: this.toolProperties.color.b, a: Math.round(this.toolProperties.opacity * 255)
@@ -574,6 +550,94 @@ function drawingToolsObject() {
                 camada.data[pixelPos + 3] = clearCanvas.data[pixelPos + 3] = cor.a;
             }
             pintar(this.strokeCoordinates.x[0], this.strokeCoordinates.y[0]);
-        }
+        },
+
+        setBrushBackground(x, y) {
+            const size = this.toolProperties.size, pos = {
+                x: x - this.toolProperties.halfSize, y: y - this.toolProperties.halfSize
+            },
+                ctx = this.toolProperties.brushCanvas;
+            ctx.clearRect(0, 0, size, size);
+            ctx.filter = "blur(" + (this.toolProperties.size / 6.2) - ((this.toolProperties.size / 6.2) * this.toolProperties.hardness) + "px)"
+
+            ctx.drawImage(this.currentLayer.canvas, pos.x, pos.y, size, size, 0, 0, size, size);
+            this.feather(ctx);
+        },
+        setBrushForm() {
+            let innerRadius = Math.min(this.toolProperties.halfSize * this.toolProperties.hardness,
+                this.toolProperties.halfSize - 1);
+            innerRadius = innerRadius < 1 ? 1 : innerRadius;
+            const gradient = this.toolProperties.brushCanvas.createRadialGradient(
+                0, 0, innerRadius, 0, 0, this.toolProperties.halfSize);
+            gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 1)');
+            return gradient;
+        },
+        feather(ctx) {
+            ctx.save();
+            ctx.fillStyle = this.toolProperties.brushForm;
+            ctx.globalCompositeOperation = 'destination-out';
+            const { width, height } = ctx.canvas;
+            ctx.translate(width / 2, height / 2);
+            ctx.fillRect(-width / 2, -height / 2, width, height);
+            ctx.restore();
+        },
+        start(x, y) {
+            this.toolProperties.brushCanvas = document.createElement("canvas").getContext("2d");
+            this.toolProperties.brushCanvas.canvas.width = this.toolProperties.brushCanvas.canvas.height = this.toolProperties.size;
+            this.toolProperties.halfSize = this.toolProperties.size / 2;
+            this.toolProperties.brushForm = this.setBrushForm();
+            this.setBrushBackground(x, y);
+        },
+        updateSmudge(x, y, endX, endY) {
+            const line = setupLine();
+            for (let more = true; more;) {
+                this.currentLayer.globalAlpha = +((0.7 * this.toolProperties.opacity * line.u).toFixed(2));
+                this.currentLayer.drawImage(this.toolProperties.brushCanvas.canvas,
+                    line.pos[0] - this.toolProperties.halfSize,
+                    line.pos[1] - this.toolProperties.halfSize);
+                this.setBrushBackground(line.pos[0], line.pos[1]);
+                more = nextPosLine(line);
+            }
+            this.currentLayer.globalAlpha = 1;
+            function nextPosLine(line) {
+                --line.counter;
+                line.u = 1 - line.counter / line.endPnt;
+                if (line.counter <= 0) { return false; }
+                let posX = line.pos[0], posy = line.pos[1];
+                line.pos = [posX + line.plus[0], posy + line.plus[1]]
+                return true;
+            }
+            function setupLine() {
+                const deltaX = endX - x, deltaY = endY - y;
+                const counter = +(((deltaX ** 2) + (deltaY ** 2)) ** 0.5).toFixed(2);
+                return {
+                    pos: [x, y], plus: [deltaX / counter, deltaY / counter],
+                    counter: counter, endPnt: counter, u: 0,
+                };
+            };
+        },
+        updateBlur(x, y, endX, endY) {
+            const line = setupLine();
+            for (let more = true; more;) {
+                this.currentLayer.drawImage(this.toolProperties.brushCanvas.canvas,
+                    line.pos[0] - this.toolProperties.halfSize,
+                    line.pos[1] - this.toolProperties.halfSize);
+                this.setBrushBackground(line.pos[0], line.pos[1]);
+                more = nextPosLine(line);
+            }
+            this.currentLayer.globalAlpha = 1;
+            function nextPosLine(line) {
+                --line.counter;
+                line.u = 1 - line.counter / line.endPnt;
+                if (line.counter <= 0) { return false; }
+                return true;
+            }
+            function setupLine() {
+                const deltaX = endX - x, deltaY = endY - y;
+                const counter = +(((deltaX ** 2) + (deltaY ** 2)) ** 0.5).toFixed(2);
+                return { pos: [x, y], counter: counter, endPnt: counter, u: 0 };
+            };
+        },
     }
 }
