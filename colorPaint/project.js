@@ -110,9 +110,7 @@ function projectObject() {
             let zoomTelasCanvas;
             if (this.properties.resolution.proportion >= proporcaoContent) {
                 zoomTelasCanvas = parseFloat(((larguraMax * 100) / this.properties.resolution.width).toFixed(2));
-            } else {
-                zoomTelasCanvas = parseFloat(((alturaMax * 100) / this.properties.resolution.height).toFixed(2));
-            }
+            } else { zoomTelasCanvas = parseFloat(((alturaMax * 100) / this.properties.resolution.height).toFixed(2)); }
             this.zoom("porcentagem", false, zoomTelasCanvas);
         },
         adjustScreen() {
@@ -152,8 +150,7 @@ function projectObject() {
             let color = false;
             if (this.properties.background != false) {
                 color = "rgb(" + this.properties.background.r + ", " + this.properties.background.g + ", " + this.properties.background.b + ")"
-                corFundo.style.backgroundColor = color;
-                fundoPreview.style.backgroundColor = color;
+                fundoPreview.style.backgroundColor = corFundo.style.backgroundColor = color;
             } else {
                 corFundo.style.backgroundImage = "url('colorPaint/imagens/fundoTela/transparente.png')";
                 fundoPreview.style.backgroundImage = "url('colorPaint/imagens/fundoTela/transparenteMiniatura.png')";
@@ -183,7 +180,6 @@ function projectObject() {
             const iconeCamada = document.createElement("div");
             iconeCamada.setAttribute("id", idicone);
             iconeCamada.setAttribute("class", "camadas");
-
             if (num === 1) { contentIconeCamadas.appendChild(iconeCamada); }
             else {
                 const idElAnterior = "camadaIcone" + (num - 1);
@@ -191,13 +187,11 @@ function projectObject() {
                 contentIconeCamadas.insertBefore(iconeCamada, elAnterior);
             }
             contentIconeCamadas.scrollTop = contentIconeCamadas.scrollHeight;
-
             const bttVisivel = document.createElement("div");
             const idBttVisivel = "visivel" + num;
             bttVisivel.setAttribute("id", idBttVisivel);
             bttVisivel.setAttribute("class", "iconVer cursor");
             iconeCamada.appendChild(bttVisivel);
-
             const info = document.createElement("label");
             const idNome = "nomeCamada" + num;
             const nomeCamada = document.createElement("span");
@@ -213,22 +207,18 @@ function projectObject() {
             txtPorcentagem.setAttribute("readOnly", "true");
             txtPorcentagem.setAttribute("class", "opacidadeCamada");
             txtPorcentagem.setAttribute("value", "100%");
-
             info.appendChild(nomeCamada);
             info.appendChild(br);
             info.appendChild(txtOpacidade);
             info.appendChild(txtPorcentagem);
             iconeCamada.appendChild(info);
-
             const contentMiniIcon = document.createElement("div");
             contentMiniIcon.setAttribute("class", "contentIcon");
             iconeCamada.appendChild(contentMiniIcon);
-
             const idIconTela = "iconTela" + num;
             const iconTela = document.createElement("canvas");
             iconTela.setAttribute("id", idIconTela);
             let styleIconTela;
-
             if (this.properties.resolution.proportion >= 1) {
                 const iconAltura = Math.round(80 / this.properties.resolution.proportion);
                 styleIconTela = "width: 80px; height: " + iconAltura + "px; ";
@@ -236,19 +226,15 @@ function projectObject() {
                 const iconLargura = Math.round(80 * this.properties.resolution.proportion);
                 styleIconTela = "width: " + iconLargura + "px; height: 80px; ";
             }
-
             if (color != false) { styleIconTela = styleIconTela + "background-color: " + color; }
             else { styleIconTela = styleIconTela + "background-image: url('colorPaint/imagens/fundoTela/transparenteMiniatura.png')"; }
-
             iconTela.setAttribute("style", styleIconTela);
             iconTela.setAttribute("class", "iconTela");
             contentMiniIcon.appendChild(iconTela);
             iconTela.width = Math.round(iconTela.offsetWidth * 1.6);
             iconTela.height = Math.round(iconTela.offsetHeight * 1.6);
-
             const sobrePor = document.createElement("div");
             contentMiniIcon.appendChild(sobrePor);
-
             // ====================================== CRIA A CAMADA ========================================
             const idCamada = "telaCamada" + num;
             const camadaStyle = "z-index: " + (num * 2) + ";";
@@ -259,7 +245,6 @@ function projectObject() {
             elCamada.setAttribute("height", this.properties.resolution.height);
             elCamada.setAttribute("width", this.properties.resolution.width);
             this.screen.appendChild(elCamada);
-
             // ================================== CRIA O PREVIEW DA CAMADA ====================================
             const idPreviewCamada = "camadaPreview" + num;
             const elPreviewCamada = document.createElement("canvas");
@@ -269,16 +254,14 @@ function projectObject() {
             elPreviewCamada.setAttribute("height", Math.round(previewFunctions.ctxTelaPreview.canvas.height));
             elPreviewCamada.setAttribute("width", Math.round(previewFunctions.ctxTelaPreview.canvas.width));
             previewFunctions.contentTelaPreview.appendChild(elPreviewCamada);
-
             if (document.getElementById(idicone) != null && document.getElementById(idBttVisivel) != null &&
                 document.getElementById(idNome) != null && document.getElementById(idPocentagem) != null &&
                 document.getElementById(idIconTela) != null && document.getElementById(idCamada) != null &&
                 document.getElementById(idPreviewCamada) != null) {
                 const objCamada = {
-                    name: nomeCamada, ctx: elCamada.getContext("2d"),
-                    icon: iconeCamada, previewLayer: elPreviewCamada.getContext("2d"),
-                    miniature: iconTela.getContext("2d"), bttLook: bttVisivel,
-                    txtOpacity: txtPorcentagem, opacity: 1, visible: true
+                    name: nomeCamada, ctx: elCamada.getContext("2d"), icon: iconeCamada,
+                    previewLayer: elPreviewCamada.getContext("2d"), miniature: iconTela.getContext("2d"),
+                    bttLook: bttVisivel, txtOpacity: txtPorcentagem, opacity: 1, visible: true
                 };
                 this.arrayLayers[num - 1] = objCamada;
                 this.arrayLayers[num - 1].icon.addEventListener("mousedown", () => this.clickIconLayer(num - 1));

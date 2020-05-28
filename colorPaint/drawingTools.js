@@ -156,8 +156,8 @@ function drawingToolsObject() {
                     if (this.strokeCoordinates.x.length === 2) { return; }
                 }
                 this.strokeCoordinates = { x: [], y: [] };
-                if (this.selectedTool != 4 && this.selectedTool != 7) { project.drawInLayer(); }
-                else { project.drawInPreview(project.arrayLayers[project.selectedLayer]); }//Borracha
+                if (this.selectedTool != 4 && this.selectedTool != 7 && this.selectedTool != 8) { project.drawInLayer(); }
+                else { project.drawInPreview(project.arrayLayers[project.selectedLayer]); }
             }
             this.toolSizeBar.clicked = this.toolOpacityBar.clicked = this.toolHardnessBar.clicked = false;
         },
@@ -193,6 +193,7 @@ function drawingToolsObject() {
             this.previousTool = this.selectedTool;
             this.selectedTool = i;
             this.strokeCoordinates = { x: [], y: [] };
+            this.toolProperties.brushCanvas = this.toolProperties.brushCanvas = null;
             this.painting = this.clickToCurve = false;
             this.arrayTools[this.previousTool].tool.classList.replace("bttFerramentasEscolhida", "bttFerramentas");
             this.arrayTools[this.selectedTool].tool.classList.replace("bttFerramentas", "bttFerramentasEscolhida");
@@ -297,13 +298,18 @@ function drawingToolsObject() {
         eraser(mousePos) {
             if (this.strokeCoordinates.x.length === 0) {
                 undoRedoChange.saveChanges();
+                this.toolProperties.brushCanvas = document.createElement("canvas").getContext("2d");
+                this.toolProperties.brushCanvas.canvas.width = project.properties.resolution.width;
+                this.toolProperties.brushCanvas.canvas.height = project.properties.resolution.height;
+                this.toolProperties.brushCanvas.drawImage(this.currentLayer.canvas, 0, 0);
                 project.eventLayer.strokeStyle = "rgba(0, 0, 0, " + this.toolProperties.opacity + ")";
-                this.currentLayer.globalCompositeOperation = "destination-out";
             }
-            const imageData = undoRedoChange.changes.undone[undoRedoChange.changes.undone.length - 1].change;
             this.brush(mousePos);
-            this.currentLayer.putImageData(imageData, 0, 0);
-            this.currentLayer.drawImage(project.eventLayer.canvas, 0, 0, project.properties.resolution.width, project.properties.resolution.height);
+            this.currentLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
+            this.currentLayer.globalCompositeOperation = "source-over";
+            this.currentLayer.drawImage(this.toolProperties.brushCanvas.canvas, 0, 0, project.properties.resolution.width, project.properties.resolution.height);
+            this.currentLayer.globalCompositeOperation = "destination-out";
+            this.currentLayer.drawImage(project.eventLayer.canvas, 0, 0);
         },
         line(mousePos) {
             if (this.strokeCoordinates.x.length === 0) {
