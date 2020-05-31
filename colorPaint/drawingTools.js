@@ -259,7 +259,7 @@ function drawingToolsObject() {
                     this.cursorTool.cursor.classList.remove("bordaCursor");
                     this.cursorTool.cursor.style.backgroundImage = "url('/colorPaint/imagens/cursor/crossHair.png')";
                     this.cursorTool.cursor.style.width = this.cursorTool.cursor.style.height = "52px";
-                    this.cursorTool.halfSize = 27;
+                    this.cursorTool.halfSize = 26;
                 } else {
                     this.cursorTool.cursor.classList.add("bordaCursor");
                     this.cursorTool.halfSize = size / 2;
@@ -557,7 +557,6 @@ function drawingToolsObject() {
             }
             pintar(this.strokeCoordinates.x[0], this.strokeCoordinates.y[0]);
         },
-
         setBrushBackground(x, y) {
             const size = this.toolProperties.size, pos = {
                 x: x - this.toolProperties.halfSize, y: y - this.toolProperties.halfSize
