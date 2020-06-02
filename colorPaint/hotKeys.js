@@ -13,7 +13,7 @@ function hotKeysObject() {
         keyDownEvent(e) {
             if (drawingTools.painting) { e.preventDefault(); return; }
             if (this.ctrlPressed) {//Teclas de atalho com o ctrl.
-                const keyFunction = this.keyDown[e.code];
+                const keyFunction = this.hotKeysWithCtrl[e.code];
                 if (keyFunction) {
                     e.preventDefault();
                     keyFunction();
@@ -105,7 +105,7 @@ function hotKeysObject() {
             else { pos -= 1; }//Diminui o tamanho da ferramenta.
             drawingTools.applyToolSize(pos)
         },
-        keyDown: {
+        hotKeysWithCtrl: {
             Digit0() {
                 project.adjustInVisualizationScreen();
             },
