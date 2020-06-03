@@ -135,12 +135,26 @@ function drawingToolsObject() {
             this.strokeCoordinates.x.push(this.mousePosition.x);
             this.strokeCoordinates.y.push(this.mousePosition.y);
             if (hotKeys.shiftPressed) {
-                const lastIndex = this.strokeCoordinates.x.length - 1
-                const deltaX = Math.abs(this.strokeCoordinates.x[lastIndex] - this.strokeCoordinates.x[0]),
-                    deltaY = Math.abs(this.strokeCoordinates.y[lastIndex] - this.strokeCoordinates.y[0]);
-                if (hotKeys.infoTraceUsedShift.sizeX < deltaX) { hotKeys.infoTraceUsedShift.sizeX = deltaX; }
-                if (hotKeys.infoTraceUsedShift.sizeY < deltaY) { hotKeys.infoTraceUsedShift.sizeY = deltaY; }
-                if (hotKeys.infoTraceUsedShift.sizeX > hotKeys.infoTraceUsedShift.sizeY) {
+                const lastIndex = this.strokeCoordinates.x.length - 1,
+                    deltaX = this.strokeCoordinates.x[lastIndex] - this.strokeCoordinates.x[0],
+                    deltaY = this.strokeCoordinates.y[lastIndex] - this.strokeCoordinates.y[0];
+                if (hotKeys.infoTraceUsedShift.sizeX < Math.abs(deltaX)) { hotKeys.infoTraceUsedShift.sizeX = Math.abs(deltaX); }
+                if (hotKeys.infoTraceUsedShift.sizeY < Math.abs(deltaY)) { hotKeys.infoTraceUsedShift.sizeY = Math.abs(deltaY); }
+                if (this.selectedTool === 2 || this.selectedTool === 3) {
+                    if (Math.abs(deltaX) >= Math.abs(deltaY)) {
+                        if (deltaX < 0 && deltaY < 0 || deltaX > 0 && deltaY > 0) {
+                            this.strokeCoordinates.y[lastIndex] = this.strokeCoordinates.y[0] + (deltaX);
+                        } else if (deltaX < 0 && deltaY > 0 || deltaX > 0 && deltaY < 0) {
+                            this.strokeCoordinates.y[lastIndex] = this.strokeCoordinates.y[0] - (deltaX);
+                        }
+                    } else {
+                        if (deltaY < 0 && deltaX < 0 || deltaY > 0 && deltaX > 0) {
+                            this.strokeCoordinates.x[lastIndex] = this.strokeCoordinates.x[0] + (deltaY);
+                        } else if (deltaY < 0 && deltaX > 0 || deltaY > 0 && deltaX < 0) {
+                            this.strokeCoordinates.x[lastIndex] = this.strokeCoordinates.x[0] - (deltaY);
+                        }
+                    }
+                } else if (hotKeys.infoTraceUsedShift.sizeX >= hotKeys.infoTraceUsedShift.sizeY) {
                     for (let i = 0; i <= lastIndex; i++) { this.strokeCoordinates.y[i] = this.strokeCoordinates.y[0]; }
                 } else {
                     for (let i = 0; i <= lastIndex; i++) { this.strokeCoordinates.x[i] = this.strokeCoordinates.x[0]; }
@@ -192,7 +206,7 @@ function drawingToolsObject() {
                     this.clickToCurve = !this.clickToCurve;
                     if (this.strokeCoordinates.x.length === 2) { return; }
                 }
-                console.log(JSON.stringify(this.strokeCoordinates));
+                // console.log(JSON.stringify(this.strokeCoordinates));
                 this.strokeCoordinates = { x: [], y: [] };
                 if (this.selectedTool != 4 && this.selectedTool != 7 && this.selectedTool != 8) { project.drawInLayer(); }
                 else { project.drawInPreview(project.arrayLayers[project.selectedLayer]); }
