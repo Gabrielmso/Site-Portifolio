@@ -1,9 +1,8 @@
 function hotKeysObject() {
     return {
-        ctrlPressed: false,
-        spacePressed: false,
-        shiftPressed: false,
+        ctrlPressed: false, spacePressed: false, shiftPressed: false,
         infoMoveDrawWithSpace: { startCoordinate: null, scroolTop: null, scrollLeft: null },
+        infoTraceUsedShift: { sizeX: 0, sizeY: 0 },
         addEventsToElements() {
             document.addEventListener("keydown", (e) => this.keyDownEvent(e));
             document.addEventListener("keyup", (e) => this.keyUpEvent(e));
@@ -47,6 +46,7 @@ function hotKeysObject() {
             }
             if (e.code === "ShiftLeft") {
                 e.preventDefault();
+                this.infoTraceUsedShift = { sizeX: 0, sizeY: 0 };
                 this.shiftPressed = false;
             }
         },
