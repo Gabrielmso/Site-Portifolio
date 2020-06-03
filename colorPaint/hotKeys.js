@@ -59,7 +59,7 @@ function hotKeysObject() {
         keyUpControl() {
             this.ctrlPressed = false;
             if (drawingTools.previousTool === 0 && drawingTools.selectedTool === drawingTools.arrayTools.length - 1) {
-                drawingTools.arrayTools[drawingTools.arrayTools.length - 1].cursor.eyeDropper.style.display = "none";
+                drawingTools.cursorTool.eyeDropper.cursor.style.display = "none";
                 drawingTools.selectDrawingTool(0);//Volta para a ferramenta pincel.                
             }
         },
