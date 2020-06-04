@@ -206,7 +206,7 @@ function drawingToolsObject() {
                     this.clickToCurve = !this.clickToCurve;
                     if (this.strokeCoordinates.x.length === 2) { return; }
                 }
-                // console.log(JSON.stringify(this.strokeCoordinates));
+                console.log(JSON.stringify(this.strokeCoordinates));
                 this.strokeCoordinates = { x: [], y: [] };
                 if (this.selectedTool != 4 && this.selectedTool != 7 && this.selectedTool != 8) { project.drawInLayer(); }
                 else { project.drawInPreview(project.arrayLayers[project.selectedLayer]); }
@@ -275,7 +275,7 @@ function drawingToolsObject() {
             }
             project.eventLayer.filter = "blur(" + dureza + "px)";
             project.eventLayer.lineWidth = (this.toolProperties.size - dureza);
-            project.eventLayer.strokeStyle = "rgba(" + color.r + ", " + color.g + ", " + color.b + ", " + this.toolProperties.opacity + ")";
+            project.eventLayer.strokeStyle = project.eventLayer.fillStyle = "rgba(" + color.r + ", " + color.g + ", " + color.b + ", " + this.toolProperties.opacity + ")";
         },
         changeCursorTool() {
             if (this.selectedTool === this.arrayTools.length - 1) {
@@ -311,24 +311,20 @@ function drawingToolsObject() {
             }
         },
         brush(move) {
-            let point1 = { x: this.strokeCoordinates.x[0], y: this.strokeCoordinates.y[0] },
-                point2 = { x: this.strokeCoordinates.x[1], y: this.strokeCoordinates.y[1] };
+            let point1, point2;
             project.eventLayer.beginPath();
-            project.eventLayer.moveTo(point1.x, point1.y);
+            project.eventLayer.moveTo(this.strokeCoordinates.x[0], this.strokeCoordinates.y[0]);
             for (let i = 0; i < this.strokeCoordinates.x.length; i++) {
-                let dis = { x: (point2.x - point1.x) ** 2, y: (point2.y - point1.y) ** 2 };
-                if (((dis.x + dis.y) ** 0.5) > 3) {
-                    const midPoint = midPointBtw(point1, point2);
-                    project.eventLayer.quadraticCurveTo(point1.x, point1.y, midPoint.x, midPoint.y);
-                } else { project.eventLayer.lineTo(point2.x, point2.y); }
                 point1 = { x: this.strokeCoordinates.x[i], y: this.strokeCoordinates.y[i] };
                 point2 = { x: this.strokeCoordinates.x[i + 1], y: this.strokeCoordinates.y[i + 1] };
+                const dis = { x: (point2.x - point1.x) ** 2, y: (point2.y - point1.y) ** 2 };
+                if ((Math.sqrt(dis.x + dis.y)) >= 3) {
+                    const midPoint = { x: point1.x + (point2.x - point1.x) / 2, y: point1.y + (point2.y - point1.y) / 2 };
+                    project.eventLayer.quadraticCurveTo(point1.x, point1.y, midPoint.x, midPoint.y);
+                } else { project.eventLayer.lineTo(point2.x, point2.y); }
             }
             project.eventLayer.lineTo(point1.x, point1.y);
             project.eventLayer.stroke();
-            function midPointBtw(point1, point2) {
-                return { x: point1.x + (point2.x - point1.x) / 2, y: point1.y + (point2.y - point1.y) / 2 };
-            }
         },
         eraser(move) {
             if (!move) {

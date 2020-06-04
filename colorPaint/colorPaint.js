@@ -63,17 +63,17 @@ function colorPaint() {
     });
     document.getElementById("bttcarregarProjeto").addEventListener("mousedown", () => createProjectWindow.open("load"));
 
-    corPrincipal.addEventListener("click", function () {
+    corPrincipal.addEventListener("mousedown", () => {
         if (colorSelectionWindow.opened) { colorSelectionWindow.findColor(project.selectedColors.primary); }
         else { colorSelectionWindow.open(1); }
     });
 
-    corSecundaria.addEventListener("click", function () {
+    corSecundaria.addEventListener("mousedown", () => {
         if (colorSelectionWindow.opened) { colorSelectionWindow.findColor(project.selectedColors.secondary); }
         else { colorSelectionWindow.open(2); }
     });
 
-    document.getElementById("bttCoresPrincipais").addEventListener("mousedown", function () {//Coloca preto na corPrincipalEcolhida e branco na corSecundariaEscolhida.
+    document.getElementById("bttCoresPrincipais").addEventListener("mousedown", () => {//Coloca preto na corPrincipalEcolhida e branco na corSecundariaEscolhida.
         if (!colorSelectionWindow.opened) {
             project.selectedColors.primary = { r: 0, g: 0, b: 0 };
             project.selectedColors.secondary = { r: 255, g: 255, b: 255 };
@@ -130,7 +130,7 @@ function colorPaint() {
     document.addEventListener("dragenter", preventDefaultAction);
     document.addEventListener("drop", preventDefaultAction);
 
-    window.addEventListener("resize", function () {
+    window.addEventListener("resize", () => {
         ajustarContents();
         setTimeout(() => ajustarContents(), 120);
         if (project.created) { project.adjustInVisualizationScreen(); };
