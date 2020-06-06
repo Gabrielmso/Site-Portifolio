@@ -27,9 +27,8 @@ function colorPaint() {
     corSecundaria = document.getElementById("corSecundaria");
     txtCorEscolhida = document.getElementById("txtCorEscolhida");
     txtPorcentagemZoom = document.getElementById("txtPorcentagemZoom");
-
-    menuPadrao();
     menu.style.transition = "none";
+    menuPadrao();
     ajustarContents();
     criarOuAbrirProjeto();
     txtCorEscolhida.value = "rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
@@ -75,22 +74,16 @@ function colorPaint() {
 
     document.getElementById("bttCoresPrincipais").addEventListener("mousedown", () => {//Coloca preto na corPrincipalEcolhida e branco na corSecundariaEscolhida.
         if (!colorSelectionWindow.opened) {
-            project.selectedColors.primary = { r: 0, g: 0, b: 0 };
-            project.selectedColors.secondary = { r: 255, g: 255, b: 255 };
-            corPrincipal.style.backgroundColor = "rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
-            corSecundaria.style.backgroundColor = "rgb(" + project.selectedColors.secondary.r + ", " + project.selectedColors.secondary.g + ", " + project.selectedColors.secondary.b + ")";
-            txtCorEscolhida.value = "rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
+            applySelectedColorPlane(1, { r: 0, g: 0, b: 0 });
+            applySelectedColorPlane(2, { r: 255, g: 255, b: 255 });
         }
     });
 
     document.getElementById("bttAlternaCor").addEventListener("mousedown", () => {
         if (!colorSelectionWindow.opened) {
-            corPrincipal.style.backgroundColor = "rgb(" + project.selectedColors.secondary.r + ", " + project.selectedColors.secondary.g + ", " + project.selectedColors.secondary.b + ")";
-            corSecundaria.style.backgroundColor = "rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
             const cor = project.selectedColors.primary;
-            project.selectedColors.primary = project.selectedColors.secondary;
-            project.selectedColors.secondary = cor;
-            txtCorEscolhida.value = "rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
+            applySelectedColorPlane(1, project.selectedColors.secondary);
+            applySelectedColorPlane(2, cor);
         }
     });
 
@@ -115,7 +108,7 @@ function colorPaint() {
 
     document.getElementById("colorPaintContent").addEventListener("wheel", (e) => {//Zoom com o scroll do mouse.
         if (hotKeys.ctrlPressed) {
-            e.preventDefault();
+            preventDefaultAction(e);
             if (e.deltaY < 0) { project.zoom(true, false, 1.10); }
             else { project.zoom(false, false, 1.10); }
             const posContentTelas = getMousePosition(contentTelas, e);
@@ -153,6 +146,20 @@ function colorPaint() {
     }
 }
 // ==========================================================================================================================================================================================================================================
+
+function applySelectedColorPlane(plane, rgbColor) {
+    const apply = {
+        color1(rgb) {
+            project.selectedColors.primary = rgb;
+            txtCorEscolhida.value = corPrincipal.style.backgroundColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+        },
+        color2(rgb) {
+            project.selectedColors.secondary = rgb;
+            corSecundaria.style.backgroundColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+        }
+    }
+    apply["color" + plane](rgbColor);
+}
 
 function criarOuAbrirProjeto() {
     const carregar = document.getElementById("carregamento");
@@ -215,7 +222,7 @@ function throttle(func, limit) {
 
 document.addEventListener("keydown", function (e) {
     if (e.code === "F5" && project.created) {
-        e.preventDefault();
+        preventDefaultAction(e);
         return false;
     }
 });

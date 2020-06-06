@@ -55,10 +55,7 @@ function projectObject() {
                     if (!colorSelectionWindow.opened) {
                         this.savedColors[numSavedColor].selected = true;
                         this.savedColors[numSavedColor].element.style.boxShadow = "0px 0px 4px rgb(255, 255, 255)";
-                        this.selectedColors.primary = this.savedColors[numSavedColor].color;
-                        const styleColor = "rgb(" + this.selectedColors.primary.r + ", " + this.selectedColors.primary.g + ", " + this.selectedColors.primary.b + ")";
-                        corPrincipal.style.backgroundColor = styleColor;
-                        txtCorEscolhida.value = styleColor;
+                        applySelectedColorPlane(1, this.savedColors[numSavedColor].color);
                         for (let i = 0; i < this.savedColors.length; i++) {
                             if (i != numSavedColor) {
                                 this.savedColors[i].selected = false;

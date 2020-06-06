@@ -49,14 +49,10 @@ function colorSelectionWindowObject() {
             if (move) {
                 let newPositionX = mousePosition.x - this.mousePositionMoveWindow.x,
                     newPositionY = mousePosition.y - this.mousePositionMoveWindow.y;
-                if (newPositionX < 0) { newPositionX = 0; }
-                else if (newPositionX + this.window.offsetWidth > janelaPrincipal.offsetWidth) {
-                    newPositionX = janelaPrincipal.offsetWidth - this.window.offsetWidth;
-                }
-                if (newPositionY < 50) { newPositionY = 50 }
-                else if (newPositionY + this.window.offsetHeight > janelaPrincipal.offsetHeight) {
-                    newPositionY = janelaPrincipal.offsetHeight - this.window.offsetHeight;
-                }
+                newPositionX = newPositionX < 0 ? 0 : newPositionX + this.window.offsetWidth > janelaPrincipal.offsetWidth ?
+                    janelaPrincipal.offsetWidth - this.window.offsetWidth : newPositionX;
+                newPositionY = newPositionY < 50 ? 50 : newPositionY + this.window.offsetHeight > janelaPrincipal.offsetHeight ?
+                    janelaPrincipal.offsetHeight - this.window.offsetHeight : newPositionY;
                 this.window.style.left = newPositionX + "px";
                 this.window.style.top = newPositionY + "px";
             } else {
@@ -90,12 +86,11 @@ function colorSelectionWindowObject() {
             else if (this.cursors.spectrum.clicked) { this.moveCursorSpectrum(getMousePosition(this.canvas.spectrum.canvas, e).x); }
         },
         moveCursorSpectrum(position) {
-            const widthBar = this.canvas.spectrum.canvas.offsetWidth;
-            if (position < 0) { position = 0; }
-            else if (position > widthBar) { position = widthBar; }
+            const width = this.canvas.spectrum.canvas.offsetWidth;
+            position = position < 0 ? 0 : position > width ? width : position;
             this.cursors.spectrum.el.style.top = "0px";
             this.cursors.spectrum.el.style.left = (position - 10) + "px";
-            let h = ((position * 360) / widthBar);
+            let h = ((position * 360) / width);
             if (h === 360) { h = 0; }
             this.colorHsv = { h: h, s: 100, v: 100 };
             const color = this.hsvToRgb(this.colorHsv);
@@ -105,10 +100,8 @@ function colorSelectionWindowObject() {
         },
         moveCursorGradient(position) {
             const width = this.canvas.gradient.canvas.offsetWidth, height = this.canvas.gradient.canvas.offsetHeight;
-            if (position.x < 0) { position.x = 0 }
-            else if (position.x > width) { position.x = width }
-            if (position.y < 0) { position.y = 0 }
-            else if (position.y > height) { position.y = height }
+            position.x = position.x < 0 ? 0 : position.x > width ? width : position.x;
+            position.y = position.y < 0 ? 0 : position.y > height ? height : position.y;
             this.cursors.gradient.position = { x: position.x, y: position.y };
             this.cursors.gradient.el.style.left = (position.x - 10) + "px";
             this.cursors.gradient.el.style.top = (position.y - 10) + "px";
@@ -128,9 +121,8 @@ function colorSelectionWindowObject() {
             this.selectedColor = cor;
         },
         txtRgbKeyUp(e) {
-            let codColor = e.currentTarget.value;
-            codColor = codColor.split(",") || codColor.split(", ");
-            for (let i = 0; i < codColor.length; i++) { codColor[i] = parseInt(codColor[i]); }
+            const codColor = e.currentTarget.value.split(",") || e.currentTarget.value.split(", ");
+            for (let i = 0; i < codColor.length; i++) { codColor[i] = +codColor[i]; }
             if (codColor.length === 3) {
                 if (codColor[0] <= 255 && codColor[1] <= 255 && codColor[2] <= 255) {
                     this.findColor({ r: codColor[0], g: codColor[1], b: codColor[2] });
@@ -138,13 +130,10 @@ function colorSelectionWindowObject() {
             }
         },
         txtHexKeyUp(e) {
-            let codCorHEX = e.currentTarget.value;
-            if (codCorHEX.indexOf("#") === -1) { codCorHEX = "#" + codCorHEX; }
-            let codColor = this.hexToRgb(codCorHEX);
+            const codCorHEX = e.currentTarget.value.indexOf('#') === -1 ? "#" + e.currentTarget.value : e.currentTarget.value,
+                codColor = this.hexToRgb(codCorHEX);
             if (codColor === null) { return; }
-            if (codColor[0] <= 255 && codColor[1] <= 255 && codColor[2] <= 255) {
-                this.findColor({ r: codColor[0], g: codColor[1], b: codColor[2] });
-            }
+            this.findColor({ r: codColor[0], g: codColor[1], b: codColor[2] });
         },
         open(num) {
             this.barMoveWindow.addEventListener("mousedown", (e) => this.moveWindow(getMousePosition(e.currentTarget, e), false));
@@ -155,9 +144,7 @@ function colorSelectionWindowObject() {
             this.buttons.cancel.addEventListener("mousedown", () => this.close());
             this.primaryOrSecondary = num;
             this.cursors.spectrum.clicked = this.cursors.gradient.clicked = this.clickMoveWindow = false;
-            let color;
-            if (this.primaryOrSecondary === 1) { color = project.selectedColors.primary; }
-            else if (this.primaryOrSecondary === 2) { color = project.selectedColors.secondary; }
+            const color = this.primaryOrSecondary === 1 ? project.selectedColors.primary : project.selectedColors.secondary;
             drawingTools.selectDrawingTool(drawingTools.arrayTools.length - 1);//Mudar para a ferramenta Conta-gotas.
             this.window.style.display = "block";
             this.opened = true;
@@ -171,15 +158,7 @@ function colorSelectionWindowObject() {
             this.window.style.display = "none";
         },
         selectColor() {
-            const styleColor = "rgb(" + this.selectedColor.r + ", " + this.selectedColor.g + ", " + this.selectedColor.b + ")";
-            if (this.primaryOrSecondary === 1) {
-                project.selectedColors.primary = this.selectedColor;
-                corPrincipal.style.backgroundColor = styleColor;
-                txtCorEscolhida.value = styleColor;
-            } else if (this.primaryOrSecondary === 2) {
-                project.selectedColors.secondary = this.selectedColor;
-                corSecundaria.style.backgroundColor = styleColor;
-            }
+            applySelectedColorPlane(this.primaryOrSecondary, this.selectedColor);
             this.close();
             for (let i = 0; i < project.savedColors.length; i++) {
                 project.savedColors[i].selected = false;
@@ -234,9 +213,8 @@ function colorSelectionWindowObject() {
                 diff = v - Math.min(rabs, gabs, babs);
             diffc = c => (v - c) / 6 / diff + 1 / 2;
             percentRoundFn = num => (num * 100) / 100;
-            if (diff == 0) {
-                h = s = 0;
-            } else {
+            if (diff == 0) { h = s = 0; }
+            else {
                 s = diff / v;
                 rr = diffc(rabs);
                 gg = diffc(gabs);

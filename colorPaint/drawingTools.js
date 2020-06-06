@@ -180,7 +180,6 @@ function drawingToolsObject() {
             this.storeStrokeCoordinates();
             this.applyToolChanges();
             project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
-            project.eventLayer.lineJoin = project.eventLayer.lineCap = "round";
             this.currentLayer.globalCompositeOperation = "source-over";
             this[this.arrayTools[this.selectedTool].name](false);
             if (this.cursorTool.visible) { janelaPrincipal.style.cursor = "none"; }
@@ -206,7 +205,6 @@ function drawingToolsObject() {
                     this.clickToCurve = !this.clickToCurve;
                     if (this.strokeCoordinates.x.length === 2) { return; }
                 }
-                console.log(JSON.stringify(this.strokeCoordinates));
                 this.strokeCoordinates = { x: [], y: [] };
                 if (this.selectedTool != 4 && this.selectedTool != 7 && this.selectedTool != 8) { project.drawInLayer(); }
                 else { project.drawInPreview(project.arrayLayers[project.selectedLayer]); }
@@ -230,7 +228,7 @@ function drawingToolsObject() {
             this.previousTool = this.selectedTool;
             this.selectedTool = i;
             this.strokeCoordinates = { x: [], y: [] };
-            this.toolProperties.brushCanvas = this.toolProperties.brushCanvas = null;
+            this.toolProperties.brushCanvas = this.toolProperties.brushForm = null;
             this.painting = this.clickToCurve = false;
             this.arrayTools[this.previousTool].tool.classList.replace("bttFerramentasEscolhida", "bttFerramentas");
             this.arrayTools[this.selectedTool].tool.classList.replace("bttFerramentas", "bttFerramentasEscolhida");
@@ -273,6 +271,7 @@ function drawingToolsObject() {
                 const proporcao = ((100 - this.toolProperties.size) / 180);
                 dureza += (dureza * proporcao);
             }
+            project.eventLayer.lineJoin = project.eventLayer.lineCap = "round";
             project.eventLayer.filter = "blur(" + dureza + "px)";
             project.eventLayer.lineWidth = (this.toolProperties.size - dureza);
             project.eventLayer.strokeStyle = project.eventLayer.fillStyle = "rgba(" + color.r + ", " + color.g + ", " + color.b + ", " + this.toolProperties.opacity + ")";
@@ -295,7 +294,7 @@ function drawingToolsObject() {
                 if (size < 15) {
                     this.cursorTool.cursor.classList.remove("bordaCursor");
                     this.cursorTool.cursor.style.backgroundImage = "url('/colorPaint/imagens/cursor/crossHair.png')";
-                    this.cursorTool.cursor.style.width = this.cursorTool.cursor.style.height = "52px";
+                    this.cursorTool.cursor.style.width = this.cursorTool.cursor.style.height = "52.5px";
                     this.cursorTool.halfSize = 26;
                 } else {
                     this.cursorTool.cursor.classList.add("bordaCursor");
@@ -409,11 +408,7 @@ function drawingToolsObject() {
                     return;
                 }
                 if (colorSelectionWindow.opened) { colorSelectionWindow.findColor({ r: pixel[0], g: pixel[1], b: pixel[2] }); }
-                else {
-                    project.selectedColors.primary = { r: pixel[0], g: pixel[1], b: pixel[2] };
-                    const novaCor = "rgb(" + pixel[0] + ", " + pixel[1] + ", " + pixel[2] + ")";
-                    txtCorEscolhida.value = corPrincipal.style.backgroundColor = novaCor;
-                }
+                else { applySelectedColorPlane(1, { r: pixel[0], g: pixel[1], b: pixel[2] }); }
             }
         },
         smudge(move) {
