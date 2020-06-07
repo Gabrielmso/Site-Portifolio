@@ -6,12 +6,15 @@ function undoRedoChangeObject() {
             this.buttons.redo.addEventListener("mousedown", () => this.redoChange());
             this.buttons.undo.addEventListener("mousedown", () => this.undoChange());
         },
+        createCopyLayer(layer) {
+            const ctxCanvas = document.createElement("canvas").getContext("2d");
+            ctxCanvas.canvas.width = project.properties.resolution.width;
+            ctxCanvas.canvas.height = project.properties.resolution.height;
+            ctxCanvas.drawImage(layer, 0, 0);
+            return ctxCanvas;
+        },
         saveChanges() {
-            const objAlteracao = {
-                numLayer: project.selectedLayer,
-                change: project.arrayLayers[project.selectedLayer].ctx.getImageData(0, 0, project.properties.resolution.width, project.properties.resolution.height)
-            };
-            this.changes.undone.push(objAlteracao);
+            this.changes.undone.push({ numLayer: project.selectedLayer, change: this.createCopyLayer(drawingTools.currentLayer.canvas) });
             if (this.changes.undone.length > 20) { this.changes.undone.shift(); }
             if (this.changes.redone.length > 0 || this.changes.undone.length === 1) {
                 this.buttons.undo.classList.add("bttHover");
@@ -31,20 +34,15 @@ function undoRedoChangeObject() {
                 return;
             }
             if (this.changes.undone.length > 0) {
-                const ultimoIndice = this.changes.undone.length - 1,
-                    camada = this.changes.undone[ultimoIndice].numLayer,
-                    imagemCamada = this.changes.undone[ultimoIndice].change,
-                    objAlteracao = {
-                        numLayer: camada,
-                        change: project.arrayLayers[camada].ctx.getImageData(0, 0, project.properties.resolution.width, project.properties.resolution.height)
-                    };
+                const ultimoIndice = this.changes.undone.length - 1, camada = this.changes.undone[ultimoIndice].numLayer;
                 if (project.selectedLayer != camada) { project.clickIconLayer(camada); }
                 if (!project.arrayLayers[camada].visible) {
                     project.clickBttLook(camada);
                     return;
                 }
-                this.changes.redone.push(objAlteracao);
-                project.arrayLayers[camada].ctx.putImageData(imagemCamada, 0, 0);
+                this.changes.redone.push({ numLayer: camada, change: this.createCopyLayer(project.arrayLayers[camada].ctx.canvas) });
+                project.arrayLayers[camada].ctx.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
+                project.arrayLayers[camada].ctx.drawImage(this.changes.undone[ultimoIndice].change.canvas, 0, 0);
                 this.changes.undone.pop();
                 if (this.changes.undone.length === 0) {
                     this.buttons.undo.classList.remove("bttHover");
@@ -66,16 +64,11 @@ function undoRedoChangeObject() {
                     drawingTools.selectDrawingTool(5);
                     drawingTools.previousTool = backPreviousTool;
                 }
-                const ultimoIndice = this.changes.redone.length - 1,
-                    camada = this.changes.redone[ultimoIndice].numLayer,
-                    imagemCamada = this.changes.redone[ultimoIndice].change,
-                    objAlteracao = {
-                        numLayer: camada,
-                        change: project.arrayLayers[camada].ctx.getImageData(0, 0, project.properties.resolution.width, project.properties.resolution.height)
-                    };
+                const ultimoIndice = this.changes.redone.length - 1, camada = this.changes.redone[ultimoIndice].numLayer;
                 if (project.selectedLayer != camada) { project.clickIconLayer(camada); }
-                this.changes.undone.push(objAlteracao);
-                project.arrayLayers[camada].ctx.putImageData(imagemCamada, 0, 0);
+                this.changes.undone.push({ numLayer: camada, change: this.createCopyLayer(project.arrayLayers[camada].ctx.canvas) });
+                project.arrayLayers[camada].ctx.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
+                project.arrayLayers[camada].ctx.drawImage(this.changes.redone[ultimoIndice].change.canvas, 0, 0);
                 this.changes.redone.pop();
                 if (this.changes.undone.length === 1) {
                     this.buttons.undo.classList.add("bttHover");

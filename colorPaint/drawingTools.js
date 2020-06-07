@@ -208,6 +208,7 @@ function drawingToolsObject() {
                 this.strokeCoordinates = { x: [], y: [] };
                 if (this.selectedTool != 4 && this.selectedTool != 7 && this.selectedTool != 8) { project.drawInLayer(); }
                 else { project.drawInPreview(project.arrayLayers[project.selectedLayer]); }
+                this.currentLayer.globalCompositeOperation = "source-over";
             }
             this.toolSizeBar.clicked = this.toolOpacityBar.clicked = this.toolHardnessBar.clicked = false;
         },
