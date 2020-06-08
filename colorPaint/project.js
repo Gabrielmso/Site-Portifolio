@@ -55,7 +55,7 @@ function projectObject() {
                     if (!colorSelectionWindow.opened) {
                         this.savedColors[numSavedColor].selected = true;
                         this.savedColors[numSavedColor].element.style.boxShadow = "0px 0px 4px rgb(255, 255, 255)";
-                        applySelectedColorPlane(1, this.savedColors[numSavedColor].color);
+                        applySelectedColorPlane(e.button, this.savedColors[numSavedColor].color);
                         for (let i = 0; i < this.savedColors.length; i++) {
                             if (i != numSavedColor) {
                                 this.savedColors[i].selected = false;
@@ -64,6 +64,7 @@ function projectObject() {
                         }
                     } else { colorSelectionWindow.findColor(this.savedColors[numSavedColor].color); }
                 });
+                this.savedColors[numSavedColor].element.addEventListener("contextmenu", preventDefaultAction);
             }
         },
         removeColor() {

@@ -28,9 +28,7 @@ function undoRedoChangeObject() {
         },
         undoChange() {
             if (drawingTools.clickToCurve) {
-                const backPreviousTool = drawingTools.previousTool;
                 drawingTools.selectDrawingTool(5);
-                drawingTools.previousTool = backPreviousTool;
                 return;
             }
             if (this.changes.undone.length > 0) {
@@ -59,11 +57,7 @@ function undoRedoChangeObject() {
         },
         redoChange() {
             if (this.changes.redone.length > 0) {
-                if (drawingTools.clickToCurve) {
-                    const backPreviousTool = drawingTools.previousTool;
-                    drawingTools.selectDrawingTool(5);
-                    drawingTools.previousTool = backPreviousTool;
-                }
+                if (drawingTools.clickToCurve) { drawingTools.selectDrawingTool(5); }
                 const ultimoIndice = this.changes.redone.length - 1, camada = this.changes.redone[ultimoIndice].numLayer;
                 if (project.selectedLayer != camada) { project.clickIconLayer(camada); }
                 this.changes.undone.push({ numLayer: camada, change: this.createCopyLayer(project.arrayLayers[camada].ctx.canvas) });

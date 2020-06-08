@@ -13,10 +13,7 @@ function drawingToolsObject() {
             { tool: document.getElementById("contaGotas"), name: "eyeDropper", }
         ],
         cursorTool: {
-            cursor: document.getElementById("cursorFerramenta"),
-            show: true,
-            visible: false,
-            halfSize: 20,
+            cursor: document.getElementById("cursorFerramenta"), show: true, visible: false, halfSize: 20,
             eyeDropper: {
                 cursor: document.getElementById("cursorComparaContaGotas"), compareColors: document.getElementById("comparaCoresContaGotas"),
                 halfSize: 125, position: null
@@ -43,14 +40,10 @@ function drawingToolsObject() {
                 }
             }
         },
-        currentLayer: null,
-        selectedTool: 0,
-        previousTool: null,
-        clickToCurve: false,
+        currentLayer: null, selectedTool: 0, previousTool: null, clickToCurve: false,
         txtPositionCursor: document.getElementById("txtPosicaoCursor"),
-        mousePosition: { x: 0, y: 0 },
-        strokeCoordinates: { x: [], y: [] },
-        painting: false,
+        mousePosition: { x: 0, y: 0 }, strokeCoordinates: { x: [], y: [] },
+        painting: false, bttMouseUsed: false,
         toolProperties: {
             elements: [{ property: document.getElementById("propriedadeTamanho"), contentBar: document.getElementById("contentBarraTamanho") },
             { property: document.getElementById("propriedadeOpacidade"), contentBar: document.getElementById("contentBarraOpacidade") },
@@ -77,12 +70,12 @@ function drawingToolsObject() {
             clicked: false
         },
         addEventsToElements() {
-            contentTelas.addEventListener("contextmenu", (e) => e.preventDefault());
+            contentTelas.addEventListener("contextmenu", preventDefaultAction);
             janelaPrincipal.addEventListener("mouseleave", () => {
                 if (!this.painting) { this.cursorTool.invisibleCursor(); }
             });
             janelaPrincipal.addEventListener("mouseenter", () => this.changeCursorTool());
-            this.cursorTool.cursor.addEventListener("contextmenu", (e) => e.preventDefault());
+            this.cursorTool.cursor.addEventListener("contextmenu", preventDefaultAction);
             contentTelas.addEventListener("mousedown", (e) => this.mouseDownEventDrawing(e));
             contentTelas.addEventListener("mousemove", () => this.txtPositionCursor.value = Math.ceil(this.mousePosition.x) + ", " + Math.ceil(this.mousePosition.y));
             contentTelas.addEventListener("mouseleave", () => { if (!this.cursorTool.visible) { this.txtPositionCursor.value = "" } });
@@ -172,10 +165,12 @@ function drawingToolsObject() {
             };
         },
         mouseDownEventDrawing(e) {
+            preventDefaultAction(e);
+            this.bttMouseUsed = e.button;
             if (!project.arrayLayers[project.selectedLayer].visible || hotKeys.spacePressed || this.painting) { return; }
-            if (e.button === 0) { this.toolProperties.color = project.selectedColors.primary; }
-            else if (e.button === 2) { this.toolProperties.color = project.selectedColors.secondary; }
-            else { return; }
+            if (this.bttMouseUsed === 0) { this.toolProperties.color = project.selectedColors.primary; }
+            else if (this.bttMouseUsed === 2) { this.toolProperties.color = project.selectedColors.secondary; }
+            else { this.selectDrawingTool(4); }
             this.painting = true;
             this.storeStrokeCoordinates();
             this.applyToolChanges();
@@ -198,7 +193,8 @@ function drawingToolsObject() {
             if (this.painting) {
                 this.painting = false;
                 janelaPrincipal.style.cursor = "";
-                if (this.selectedTool === this.arrayTools.length - 1) {//Conta-gotas.  
+                if (this.bttMouseUsed === 1) { this.selectDrawingTool(this.previousTool) }
+                else if (this.selectedTool === this.arrayTools.length - 1) {//Conta-gotas.  
                     this.eyeDropper("mouseup");
                     return;
                 } else if (this.selectedTool === 5) {//Curva. 
@@ -210,7 +206,7 @@ function drawingToolsObject() {
                 else { project.drawInPreview(project.arrayLayers[project.selectedLayer]); }
                 this.currentLayer.globalCompositeOperation = "source-over";
             }
-            this.toolSizeBar.clicked = this.toolOpacityBar.clicked = this.toolHardnessBar.clicked = false;
+            this.bttMouseUsed = this.toolSizeBar.clicked = this.toolOpacityBar.clicked = this.toolHardnessBar.clicked = false;
         },
         mouseDownToolSizeBar(e) {
             this.toolSizeBar.clicked = true;
@@ -226,7 +222,7 @@ function drawingToolsObject() {
         },
         selectDrawingTool(i) {
             if (colorSelectionWindow.opened) { return; }
-            this.previousTool = this.selectedTool;
+            this.previousTool = this.previousTool === this.selectedTool ? this.previousTool : this.selectedTool;
             this.selectedTool = i;
             this.strokeCoordinates = { x: [], y: [] };
             this.toolProperties.brushCanvas = this.toolProperties.brushForm = null;
@@ -409,7 +405,7 @@ function drawingToolsObject() {
                     return;
                 }
                 if (colorSelectionWindow.opened) { colorSelectionWindow.findColor({ r: pixel[0], g: pixel[1], b: pixel[2] }); }
-                else { applySelectedColorPlane(1, { r: pixel[0], g: pixel[1], b: pixel[2] }); }
+                else { applySelectedColorPlane(this.bttMouseUsed, { r: pixel[0], g: pixel[1], b: pixel[2] }); }
             }
         },
         smudge(move) {

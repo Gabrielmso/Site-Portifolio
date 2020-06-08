@@ -158,6 +158,7 @@ function applySelectedColorPlane(plane, rgbColor) {
             corSecundaria.style.backgroundColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
         }
     }
+    plane = plane === 0 ? 1 : plane > 2 ? 1 : plane;
     apply["color" + plane](rgbColor);
 }
 
