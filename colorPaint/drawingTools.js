@@ -193,8 +193,7 @@ function drawingToolsObject() {
             if (this.painting) {
                 this.painting = false;
                 janelaPrincipal.style.cursor = "";
-                if (this.bttMouseUsed === 1) { this.selectDrawingTool(this.previousTool) }
-                else if (this.selectedTool === this.arrayTools.length - 1) {//Conta-gotas.  
+                if (this.selectedTool === this.arrayTools.length - 1) {//Conta-gotas.  
                     this.eyeDropper("mouseup");
                     return;
                 } else if (this.selectedTool === 5) {//Curva. 
@@ -204,6 +203,7 @@ function drawingToolsObject() {
                 this.strokeCoordinates = { x: [], y: [] };
                 if (this.selectedTool != 4 && this.selectedTool != 7 && this.selectedTool != 8) { project.drawInLayer(); }
                 else { project.drawInPreview(project.arrayLayers[project.selectedLayer]); }
+                if (this.bttMouseUsed === 1) { this.selectDrawingTool(this.previousTool) }
                 this.currentLayer.globalCompositeOperation = "source-over";
             }
             this.bttMouseUsed = this.toolSizeBar.clicked = this.toolOpacityBar.clicked = this.toolHardnessBar.clicked = false;
