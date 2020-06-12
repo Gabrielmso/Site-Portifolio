@@ -30,14 +30,9 @@ function drawingToolsObject() {
                 this.visible = true;
             },
             wheel(e) {
-                const velocity = 7;
                 if (!hotKeys.shiftPressed) {
-                    if (e.deltaY < 0) { contentTelas.scrollTop -= contentTelas.offsetHeight / velocity; }
-                    else { contentTelas.scrollTop += contentTelas.offsetHeight / velocity; }
-                } else {
-                    if (e.deltaY < 0) { contentTelas.scrollLeft -= contentTelas.offsetWidth / velocity; }
-                    else { contentTelas.scrollLeft += contentTelas.offsetWidth / velocity; }
-                }
+                    contentTelas.scrollTop += e.deltaY < 0 ? -contentTelas.offsetHeight / 7 : contentTelas.offsetHeight / 7;
+                } else { contentTelas.scrollLeft += e.deltaY < 0 ? -contentTelas.offsetWidth / 7 : contentTelas.offsetWidth / 7; }
             }
         },
         currentLayer: null, selectedTool: 0, previousTool: null, clickToCurve: false, showChangesCursor: true,
@@ -107,25 +102,18 @@ function drawingToolsObject() {
             const mouse = getMousePosition(project.screen, e);
             this.mousePosition.x = +((project.properties.resolution.width / project.screen.offsetWidth) * mouse.x).toFixed(1);
             this.mousePosition.y = +((project.properties.resolution.height / project.screen.offsetHeight) * mouse.y).toFixed(1);
+            const posX = e.pageX + document.body.scrollLeft, posY = e.pageY + document.body.scrollTop;
             if (this.cursorTool.visible) {
                 this.txtPositionCursor.value = Math.ceil(this.mousePosition.x) + ", " + Math.ceil(this.mousePosition.y);
                 if (!this.painting) {
-                    const contentPosition = contentTelas.getBoundingClientRect();
-                    if (e.pageX < contentPosition.left || e.pageX > contentPosition.left + contentPosition.width ||
-                        e.pageY < contentPosition.top || e.pageY > contentPosition.top + contentPosition.height) {
+                    const { left, top, width, height } = contentTelas.getBoundingClientRect();
+                    if (e.pageX < left || e.pageX > left + width || e.pageY < top || e.pageY > top + height) {
                         this.cursorTool.cursor.style.display = "none";
                         this.txtPositionCursor.value = "";
-                    } else if (!hotKeys.spacePressed) {
-                        this.cursorTool.cursor.style.display = "block";
-                    }
+                    } else if (!hotKeys.spacePressed) { this.cursorTool.cursor.style.display = "block"; }
                 }
-                const posX = e.pageX + document.body.scrollLeft, posY = e.pageY + document.body.scrollTop;
                 this.cursorTool.changeCursorPosition(posX, posY);
-            } else if (this.selectedTool === this.arrayTools.length - 1) {
-                this.cursorTool.eyeDropper.position = {
-                    x: e.pageX + document.body.scrollLeft, y: posY = e.pageY + document.body.scrollTop
-                };
-            }
+            } else if (this.selectedTool === this.arrayTools.length - 1) { this.cursorTool.eyeDropper.position = { x: posX, y: posY }; }
         },
         storeStrokeCoordinates() {
             const lastIndex = this.strokeCoordinates.x.length - 1;
@@ -282,14 +270,16 @@ function drawingToolsObject() {
             project.eventLayer.strokeStyle = project.eventLayer.fillStyle = "rgba(" + color.r + ", " + color.g + ", " + color.b + ", " + this.toolProperties.opacity + ")";
         },
         showChangeTool() {
+            const { width, height, left, top } = contentTelas.getBoundingClientRect(), midWidth = width / 2, midHeight = height / 2
+            this.cursorTool.changeCursorPosition(Math.round(left + midWidth), Math.round(top + midHeight));
+            this.changeCursorTool();
             if (!this.showChangesCursor) { return; }
-            const { width, height } = contentTelas.getBoundingClientRect(), color = project.selectedColors.primary;
             this.strokeCoordinates = {
-                x: [(project.properties.resolution.width / project.screen.offsetWidth) * ((width / 2 - project.screen.offsetLeft) + contentTelas.scrollLeft)],
-                y: [(project.properties.resolution.height / project.screen.offsetHeight) * ((height / 2 - project.screen.offsetTop) + contentTelas.scrollTop)]
+                x: [(project.properties.resolution.width / project.screen.offsetWidth) * ((midWidth - project.screen.offsetLeft) + contentTelas.scrollLeft)],
+                y: [(project.properties.resolution.height / project.screen.offsetHeight) * ((midHeight - project.screen.offsetTop) + contentTelas.scrollTop)]
             }
             this.applyToolChanges();
-            project.eventLayer.strokeStyle = "rgba(" + color.r + ", " + color.g + ", " + color.b + ", " + this.toolProperties.opacity + ")";
+            project.eventLayer.strokeStyle = "rgba(0, 0, 255, " + this.toolProperties.opacity + ")";
             this.brush(false);
             this.strokeCoordinates = { x: [], y: [] }
         },
@@ -311,8 +301,8 @@ function drawingToolsObject() {
                 if (size < 15) {
                     this.cursorTool.cursor.classList.remove("bordaCursor");
                     this.cursorTool.cursor.style.backgroundImage = "url('/colorPaint/imagens/cursor/crossHair.png')";
-                    this.cursorTool.cursor.style.width = this.cursorTool.cursor.style.height = "52.5px";
-                    this.cursorTool.halfSize = 26;
+                    this.cursorTool.cursor.style.width = this.cursorTool.cursor.style.height = "52px";
+                    this.cursorTool.halfSize = 27;
                 } else {
                     this.cursorTool.cursor.classList.add("bordaCursor");
                     this.cursorTool.halfSize = size / 2;
