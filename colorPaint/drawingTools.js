@@ -40,7 +40,7 @@ function drawingToolsObject() {
                 }
             }
         },
-        currentLayer: null, selectedTool: 0, previousTool: null, clickToCurve: false,
+        currentLayer: null, selectedTool: 0, previousTool: null, clickToCurve: false, showChangesCursor: true,
         txtPositionCursor: document.getElementById("txtPosicaoCursor"),
         mousePosition: { x: 0, y: 0 }, strokeCoordinates: { x: [], y: [] },
         painting: false, bttMouseUsed: false,
@@ -89,9 +89,15 @@ function drawingToolsObject() {
             for (let i = 0; i < this.toolProperties.elements.length; i++) {
                 let el = this.toolProperties.elements[i];
                 el.property.addEventListener("mouseenter", () => {
-                    if (!this.painting && !this.clickToCurve) { el.contentBar.style.height = "36px"; }
+                    if (!this.painting && !this.clickToCurve) {
+                        el.contentBar.style.height = "36px";
+                        this.cursorTool.invisibleCursor();
+                    }
                 });
-                el.property.addEventListener("mouseleave", () => el.contentBar.style.height = "0px");
+                el.property.addEventListener("mouseleave", () => {
+                    el.contentBar.style.height = "0px";
+                    this.changeCursorTool();
+                });
             }
             for (let i = 0; i < this.arrayTools.length; i++) {
                 this.arrayTools[i].tool.addEventListener("mousedown", () => this.selectDrawingTool(i));
@@ -166,15 +172,14 @@ function drawingToolsObject() {
         },
         mouseDownEventDrawing(e) {
             preventDefaultAction(e);
-            this.bttMouseUsed = e.button;
             if (!project.arrayLayers[project.selectedLayer].visible || hotKeys.spacePressed || this.painting) { return; }
+            this.bttMouseUsed = e.button;
             if (this.bttMouseUsed === 0) { this.toolProperties.color = project.selectedColors.primary; }
             else if (this.bttMouseUsed === 2) { this.toolProperties.color = project.selectedColors.secondary; }
             else { this.selectDrawingTool(4); }
             this.painting = true;
             this.storeStrokeCoordinates();
             this.applyToolChanges();
-            project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
             this.currentLayer.globalCompositeOperation = "source-over";
             this[this.arrayTools[this.selectedTool].name](false);
             if (this.cursorTool.visible) { janelaPrincipal.style.cursor = "none"; }
@@ -243,7 +248,7 @@ function drawingToolsObject() {
             this.toolSizeBar.cursor.style.left = Math.floor(left - 7) + "px";
             this.toolSizeBar.txt.value = size + "px";
             this.toolProperties.size = size;
-            this.changeCursorTool();
+            this.showChangeTool();
         },
         changeToolOpacity(e) {
             const mousePos = getMousePosition(this.toolOpacityBar.bar, e), width = this.toolOpacityBar.bar.offsetWidth;
@@ -252,6 +257,7 @@ function drawingToolsObject() {
             this.toolOpacityBar.txt.value = percentage + "%";
             this.toolProperties.opacity = +((percentage / 100).toFixed(2));
             this.toolOpacityBar.cursor.style.left = mousePos.x - 7 + "px";
+            this.showChangeTool();
         },
         changeToolHardness(e) {
             const mousePos = getMousePosition(this.toolHardnessBar.bar, e), width = this.toolHardnessBar.bar.offsetWidth;
@@ -260,6 +266,7 @@ function drawingToolsObject() {
             this.toolHardnessBar.txt.value = percentage + "%";
             this.toolProperties.hardness = +((percentage / 100).toFixed(2));
             this.toolHardnessBar.cursor.style.left = mousePos.x - 7 + "px";
+            this.showChangeTool();
         },
         applyToolChanges() {
             const maximoBlur = this.toolProperties.size / 6.2, color = this.toolProperties.color;
@@ -268,10 +275,23 @@ function drawingToolsObject() {
                 const proporcao = ((100 - this.toolProperties.size) / 180);
                 dureza += (dureza * proporcao);
             }
+            project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
             project.eventLayer.lineJoin = project.eventLayer.lineCap = "round";
             project.eventLayer.filter = "blur(" + dureza + "px)";
             project.eventLayer.lineWidth = (this.toolProperties.size - dureza);
             project.eventLayer.strokeStyle = project.eventLayer.fillStyle = "rgba(" + color.r + ", " + color.g + ", " + color.b + ", " + this.toolProperties.opacity + ")";
+        },
+        showChangeTool() {
+            if (!this.showChangesCursor) { return; }
+            const { width, height } = contentTelas.getBoundingClientRect(), color = project.selectedColors.primary;
+            this.strokeCoordinates = {
+                x: [(project.properties.resolution.width / project.screen.offsetWidth) * ((width / 2 - project.screen.offsetLeft) + contentTelas.scrollLeft)],
+                y: [(project.properties.resolution.height / project.screen.offsetHeight) * ((height / 2 - project.screen.offsetTop) + contentTelas.scrollTop)]
+            }
+            this.applyToolChanges();
+            project.eventLayer.strokeStyle = "rgba(" + color.r + ", " + color.g + ", " + color.b + ", " + this.toolProperties.opacity + ")";
+            this.brush(false);
+            this.strokeCoordinates = { x: [], y: [] }
         },
         changeCursorTool() {
             if (this.selectedTool === this.arrayTools.length - 1) {

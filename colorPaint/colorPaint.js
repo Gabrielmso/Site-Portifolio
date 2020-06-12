@@ -44,6 +44,10 @@ function colorPaint() {
         e.currentTarget.getElementsByTagName("span")[0].innerText = drawingTools.cursorTool.show ? "Padrão" : "Simples";
         drawingTools.changeCursorTool();
     });
+    document.getElementById("bttMostrarAlteracaoPincel").addEventListener("mousedown", (e) => {
+        drawingTools.showChangesCursor = !drawingTools.showChangesCursor;
+        e.currentTarget.getElementsByTagName("span")[0].innerText = drawingTools.showChangesCursor ? "Sim" : "Não";
+    });
     document.getElementById("bttSalvarDesenho").addEventListener("mousedown", () => {
         if (project.created) { project.saveDraw(); }
         else {
@@ -196,9 +200,9 @@ function criarOuAbrirProjeto() {
     }
 }
 
-function getMousePosition(elemento, e) {
-    const pos = elemento.getBoundingClientRect();
-    return { x: e.clientX - pos.left, y: e.clientY - pos.top }
+function getMousePosition(element, e) {
+    const rect = element.getBoundingClientRect();
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top }
 }
 
 function cloneReplaceElement(oldElement) {
