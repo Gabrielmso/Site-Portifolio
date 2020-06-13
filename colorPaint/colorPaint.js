@@ -201,8 +201,8 @@ function criarOuAbrirProjeto() {
 }
 
 function getMousePosition(element, e) {
-    const rect = element.getBoundingClientRect();
-    return { x: e.clientX - rect.left, y: e.clientY - rect.top }
+    const { left, top } = element.getBoundingClientRect();
+    return { x: e.clientX - left, y: e.clientY - top }
 }
 
 function cloneReplaceElement(oldElement) {

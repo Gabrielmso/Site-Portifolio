@@ -103,7 +103,7 @@ function hotKeysObject() {
             let pos = drawingTools.toolSizeBar.cursor.offsetLeft + 7;
             if (increase === true) { pos += 1; } //Aumenta o tamanho da ferramenta.
             else { pos -= 1; }//Diminui o tamanho da ferramenta.
-            drawingTools.applyToolSize(pos)
+            drawingTools.changeToolSize(pos)
         },
         hotKeysWithCtrl: {
             Digit0() {
