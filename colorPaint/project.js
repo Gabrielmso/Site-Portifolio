@@ -12,7 +12,6 @@ function projectObject() {
         created: false,//Saber se um projeto foi criado.
         drawComplete: document.getElementById("desenho").getContext("2d"),
         screen: document.getElementById("telasCanvas"),
-        eventLayer: document.getElementById("pintar").getContext("2d"),
         selectedLayer: 0,
         arrayLayers: [],
         cursorInBttLook: false,
@@ -155,8 +154,8 @@ function projectObject() {
             }
             this.drawComplete.canvas.width = this.properties.resolution.width;
             this.drawComplete.canvas.height = this.properties.resolution.height;
-            this.eventLayer.canvas.width = this.properties.resolution.width;
-            this.eventLayer.canvas.height = this.properties.resolution.height;
+            drawingTools.eventLayer.canvas.width = this.properties.resolution.width;
+            drawingTools.eventLayer.canvas.height = this.properties.resolution.height;
             txtResolucao.value = this.properties.resolution.width + ", " + this.properties.resolution.height;
             while (this.properties.numberLayers > this.arrayLayers.length) { this.createElements(color); }
             document.getElementById("nomeDoProjeto").innerText = this.properties.name;
@@ -280,14 +279,11 @@ function projectObject() {
                 this.arrayLayers[num].ctx.canvas.style.display = "none";
                 this.arrayLayers[num].previewLayer.canvas.style.display = "none";
                 this.arrayLayers[num].bttLook.classList.replace("iconVer", "iconNaoVer");
-                if (this.properties.numberLayers === 1) {
-                    this.arrayLayers[num].icon.classList.replace("camadaSelecionada", "camadas");
-                } else {
-                    for (let i = 0; i < this.properties.numberLayers; i++) {
-                        if (i != num && num === this.selectedLayer && this.arrayLayers[i].visible) {
-                            this.clickIconLayer(i);
-                            i = this.properties.numberLayers;
-                        }
+                this.arrayLayers[num].icon.classList.replace("camadaSelecionada", "camadas");
+                for (let i = 0; i < this.properties.numberLayers; i++) {
+                    if (i != num && num === this.selectedLayer && this.arrayLayers[i].visible) {
+                        this.clickIconLayer(i);
+                        i = this.properties.numberLayers;
                     }
                 }
             }
@@ -297,7 +293,7 @@ function projectObject() {
             for (let i = 0; i < this.properties.numberLayers; i++) {
                 if (i === num) {
                     this.selectedLayer = num;
-                    this.eventLayer.canvas.style.zIndex = ((num + 1) * 2) + 1;
+                    drawingTools.eventLayer.canvas.style.zIndex = ((num + 1) * 2) + 1;
                     this.arrayLayers[i].icon.classList.replace("camadas", "camadaSelecionada");
                 } else { this.arrayLayers[i].icon.classList.replace("camadaSelecionada", "camadas"); }
             }
@@ -314,17 +310,15 @@ function projectObject() {
             }
             for (let i = 0; i < this.properties.numberLayers; i++) {
                 if (this.arrayLayers[i].visible) {
-                    this.drawComplete.beginPath();
                     this.drawComplete.globalAlpha = this.arrayLayers[i].opacity;
                     this.drawComplete.drawImage(this.arrayLayers[i].ctx.canvas, 0, 0, this.properties.resolution.width, this.properties.resolution.height);
-                    this.drawComplete.closePath();
                 };
             }
         },
         drawInLayer() {
             undoRedoChange.saveChanges();
-            this.arrayLayers[this.selectedLayer].ctx.drawImage(this.eventLayer.canvas, 0, 0, this.properties.resolution.width, this.properties.resolution.height);
-            this.eventLayer.clearRect(0, 0, this.properties.resolution.width, this.properties.resolution.height);
+            this.arrayLayers[this.selectedLayer].ctx.drawImage(drawingTools.eventLayer.canvas, 0, 0, this.properties.resolution.width, this.properties.resolution.height);
+            drawingTools.eventLayer.clearRect(0, 0, this.properties.resolution.width, this.properties.resolution.height);
             this.drawInPreview(this.arrayLayers[this.selectedLayer]);
         },
         drawInPreview(layer) {

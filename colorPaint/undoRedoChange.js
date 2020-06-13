@@ -39,7 +39,7 @@ function undoRedoChangeObject() {
                     return;
                 }
                 this.changes.redone.push({ numLayer: camada, change: this.createCopyLayer(project.arrayLayers[camada].ctx.canvas) });
-                project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
+                drawingTools.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
                 project.arrayLayers[camada].ctx.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
                 project.arrayLayers[camada].ctx.drawImage(this.changes.undone[ultimoIndice].change.canvas, 0, 0);
                 this.changes.undone.pop();
@@ -62,7 +62,7 @@ function undoRedoChangeObject() {
                 const ultimoIndice = this.changes.redone.length - 1, camada = this.changes.redone[ultimoIndice].numLayer;
                 if (project.selectedLayer != camada) { project.clickIconLayer(camada); }
                 this.changes.undone.push({ numLayer: camada, change: this.createCopyLayer(project.arrayLayers[camada].ctx.canvas) });
-                project.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
+                drawingTools.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
                 project.arrayLayers[camada].ctx.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
                 project.arrayLayers[camada].ctx.drawImage(this.changes.redone[ultimoIndice].change.canvas, 0, 0);
                 this.changes.redone.pop();

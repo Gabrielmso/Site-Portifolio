@@ -58,8 +58,7 @@ function hotKeysObject() {
         },
         keyUpControl() {
             this.ctrlPressed = false;
-            if (drawingTools.previousTool === 0 && drawingTools.selectedTool === drawingTools.arrayTools.length - 1) {
-                drawingTools.cursorTool.eyeDropper.cursor.style.display = "none";
+            if (drawingTools.previousTool === 0 && drawingTools.mouseFunctionName === "eyeDropper") {
                 drawingTools.selectDrawingTool(0);//Volta para a ferramenta pincel.                
             }
         },
@@ -74,7 +73,7 @@ function hotKeysObject() {
             this.spacePressed = false;
             document.removeEventListener("mousemove", hotKeys.mouseMoveMoveDraw);
             project.screen.style.cursor = "";
-            if (drawingTools.cursorTool.show) { drawingTools.cursorTool.cursor.style.display = "block"; }
+            drawingTools.selectDrawingTool(drawingTools.selectedTool);
         },
         moveDrawWithSpace(mousePosition) {
             const newScrollLeft = this.infoMoveDrawWithSpace.scrollLeft + this.infoMoveDrawWithSpace.startCoordinate.x - mousePosition.x;
@@ -100,10 +99,8 @@ function hotKeysObject() {
             }
         },
         changeToolSizeHotKey(increase) {
-            let pos = drawingTools.toolSizeBar.cursor.offsetLeft + 7;
-            if (increase === true) { pos += 1; } //Aumenta o tamanho da ferramenta.
-            else { pos -= 1; }//Diminui o tamanho da ferramenta.
-            drawingTools.changeToolSize(pos)
+            const pos = increase ? drawingTools.toolSizeBar.cursor.offsetLeft + 8 : drawingTools.toolSizeBar.cursor.offsetLeft + 6;
+            drawingTools.changeToolSize(pos);
         },
         hotKeysWithCtrl: {
             Digit0() {
