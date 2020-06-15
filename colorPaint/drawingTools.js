@@ -358,10 +358,7 @@ function drawingToolsObject() {
         eraser(move) {
             if (!move) {
                 undoRedoChange.saveChanges();
-                this.toolProperties.brushCanvas = document.createElement("canvas").getContext("2d");
-                this.toolProperties.brushCanvas.canvas.width = project.properties.resolution.width;
-                this.toolProperties.brushCanvas.canvas.height = project.properties.resolution.height;
-                this.toolProperties.brushCanvas.drawImage(this.currentLayer.canvas, 0, 0);
+                this.toolProperties.brushCanvas = undoRedoChange.createCopyLayer(this.currentLayer.canvas);
                 this.eventLayer.strokeStyle = "rgba(0, 0, 0, " + this.toolProperties.opacity + ")";
             }
             this.brush(move);
@@ -573,8 +570,8 @@ function drawingToolsObject() {
                 camada.data[pixelPos + 2] = clearCanvas.data[pixelPos + 2] = cor.b;
                 camada.data[pixelPos + 3] = clearCanvas.data[pixelPos + 3] = cor.a;
             }
-            this.strokeCoordinates.x[0] = Math.floor(this.strokeCoordinates.x.shift());
-            this.strokeCoordinates.y[0] = Math.floor(this.strokeCoordinates.y.shift());
+            this.strokeCoordinates.x[0] = Math.floor(this.strokeCoordinates.x.pop());
+            this.strokeCoordinates.y[0] = Math.floor(this.strokeCoordinates.y.pop());
             pintar(this.strokeCoordinates.x[0], this.strokeCoordinates.y[0]);
         },
         setBrushBackground(x, y) {
