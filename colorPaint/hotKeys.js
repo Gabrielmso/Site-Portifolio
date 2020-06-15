@@ -1,13 +1,11 @@
 function hotKeysObject() {
     return {
-        ctrlPressed: false, spacePressed: false, shiftPressed: false,
+        ctrlPressed: false, shiftPressed: false,
         infoMoveDrawWithSpace: { startCoordinate: null, scroolTop: null, scrollLeft: null },
         infoTraceUsedShift: { sizeX: 0, sizeY: 0 },
         addEventsToElements() {
             document.addEventListener("keydown", (e) => this.keyDownEvent(e));
             document.addEventListener("keyup", (e) => this.keyUpEvent(e));
-            document.addEventListener("mouseup", (e) => this.mouseUpMoveDraw(e));
-            project.screen.addEventListener("mousedown", (e) => this.mouseDownMoveDraw(e));
         },
         keyDownEvent(e) {
             if (drawingTools.painting) { e.preventDefault(); return; }
@@ -63,40 +61,13 @@ function hotKeysObject() {
             }
         },
         keyDownSpace() {
-            if (!this.spacePressed) {
-                this.spacePressed = true;
-                project.screen.style.cursor = "grab";
-                drawingTools.cursorTool.cursor.style.display = "none";
-            }
+            contentTelas.style.cursor = "grab";
+            drawingTools.mouseFunctionName = "moveScreen";
+            drawingTools.cursorTool.invisibleCursor();
         },
         keyUpSpace() {
-            this.spacePressed = false;
-            document.removeEventListener("mousemove", hotKeys.mouseMoveMoveDraw);
-            project.screen.style.cursor = "";
+            drawingTools.moveScreen("mouseup");
             drawingTools.selectDrawingTool(drawingTools.selectedTool);
-        },
-        moveDrawWithSpace(mousePosition) {
-            const newScrollLeft = this.infoMoveDrawWithSpace.scrollLeft + this.infoMoveDrawWithSpace.startCoordinate.x - mousePosition.x;
-            const newScrollTop = this.infoMoveDrawWithSpace.scroolTop + this.infoMoveDrawWithSpace.startCoordinate.y - mousePosition.y;
-            contentTelas.scrollLeft = newScrollLeft;
-            contentTelas.scrollTop = newScrollTop;
-        },
-        mouseDownMoveDraw(e) {
-            if (this.spacePressed) {
-                document.addEventListener("mousemove", hotKeys.mouseMoveMoveDraw);
-                this.infoMoveDrawWithSpace = { startCoordinate: getMousePosition(contentTelas, e), scroolTop: contentTelas.scrollTop, scrollLeft: contentTelas.scrollLeft };
-                e.currentTarget.style.cursor = "grabbing";
-            }
-        },
-        mouseMoveMoveDraw(e) {
-            hotKeys.moveDrawWithSpace(getMousePosition(contentTelas, e));
-        },
-        mouseUpMoveDraw(e) {
-            if (this.spacePressed) {
-                document.removeEventListener("mousemove", hotKeys.mouseMoveMoveDraw);
-                this.infoMoveDrawWithSpace = { startCoordinate: null, scroolTop: null, scrollLeft: null };
-                project.screen.style.cursor = "grab";
-            }
         },
         changeToolSizeHotKey(increase) {
             const pos = increase ? drawingTools.toolSizeBar.cursor.offsetLeft + 8 : drawingTools.toolSizeBar.cursor.offsetLeft + 6;

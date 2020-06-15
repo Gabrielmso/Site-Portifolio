@@ -2,10 +2,7 @@ mudarMenu = false;
 let corPrincipal, corSecundaria;
 let createProjectWindow, project, drawingTools, previewFunctions, undoRedoChange, hotKeys, createGridWindow, colorSelectionWindow,
     notification;
-let janelaPrincipal;
-let contentTelas;//Elemento onde ficará a "tela" para desenhar.
-let txtCorEscolhida;//Recebe a string da cor do primeiro plano no formato RGB para informar ao usuário.
-let txtPorcentagemZoom;//Recebe a string com a porcentagem de zoom no "project.screen".
+let janelaPrincipal, contentTelas, txtCorEscolhida, txtPorcentagemZoom;
 function colorPaint() {
     createProjectWindow = createProjectWindowObject();
     project = projectObject();
