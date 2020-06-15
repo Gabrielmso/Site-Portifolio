@@ -144,7 +144,7 @@ function colorSelectionWindowObject() {
             this.buttons.cancel.addEventListener("mousedown", () => this.close());
             this.primaryOrSecondary = num;
             this.cursors.spectrum.clicked = this.cursors.gradient.clicked = this.clickMoveWindow = false;
-            const color = this.primaryOrSecondary === 1 ? project.selectedColors.primary : project.selectedColors.secondary;
+            const color = project.selectedColors.get(this.primaryOrSecondary);
             drawingTools.selectDrawingTool(drawingTools.arrayTools.length - 1);//Mudar para a ferramenta Conta-gotas.
             this.window.style.display = "block";
             this.opened = true;
@@ -158,7 +158,7 @@ function colorSelectionWindowObject() {
             this.window.style.display = "none";
         },
         selectColor() {
-            applySelectedColorPlane(this.primaryOrSecondary, this.selectedColor);
+            project.selectedColors.set(this.primaryOrSecondary, this.selectedColor);
             this.close();
             for (let i = 0; i < project.savedColors.length; i++) {
                 project.savedColors[i].selected = false;

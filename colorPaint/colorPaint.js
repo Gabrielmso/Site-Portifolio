@@ -2,7 +2,7 @@ mudarMenu = false;
 let corPrincipal, corSecundaria;
 let createProjectWindow, project, drawingTools, previewFunctions, undoRedoChange, hotKeys, createGridWindow, colorSelectionWindow,
     notification;
-let janelaPrincipal, contentTelas, txtCorEscolhida, txtPorcentagemZoom;
+let janelaPrincipal, contentTelas, txtPorcentagemZoom;
 function colorPaint() {
     createProjectWindow = createProjectWindowObject();
     project = projectObject();
@@ -22,13 +22,11 @@ function colorPaint() {
     contentTelas = document.getElementById("contentTelas");
     corPrincipal = document.getElementById("corPrincipal");
     corSecundaria = document.getElementById("corSecundaria");
-    txtCorEscolhida = document.getElementById("txtCorEscolhida");
     txtPorcentagemZoom = document.getElementById("txtPorcentagemZoom");
     menu.style.transition = "none";
     menuPadrao();
     ajustarContents();
     criarOuAbrirProjeto();
-    txtCorEscolhida.value = "rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
 
     project.addEventsToElements();
     colorSelectionWindow.addEventsToElements();
@@ -75,16 +73,16 @@ function colorPaint() {
 
     document.getElementById("bttCoresPrincipais").addEventListener("mousedown", () => {//Coloca preto na corPrincipalEcolhida e branco na corSecundariaEscolhida.
         if (!colorSelectionWindow.opened) {
-            applySelectedColorPlane(1, { r: 0, g: 0, b: 0 });
-            applySelectedColorPlane(2, { r: 255, g: 255, b: 255 });
+            project.selectedColors.set(1, { r: 0, g: 0, b: 0 });
+            project.selectedColors.set(2, { r: 255, g: 255, b: 255 });
         }
     });
 
     document.getElementById("bttAlternaCor").addEventListener("mousedown", () => {
         if (!colorSelectionWindow.opened) {
-            const cor = project.selectedColors.primary;
-            applySelectedColorPlane(1, project.selectedColors.secondary);
-            applySelectedColorPlane(2, cor);
+            const color = project.selectedColors.get(1);
+            project.selectedColors.set(1, project.selectedColors.get(2));
+            project.selectedColors.set(2, color);
         }
     });
 
@@ -147,21 +145,6 @@ function colorPaint() {
     }
 }
 // ==========================================================================================================================================================================================================================================
-
-function applySelectedColorPlane(plane, rgbColor) {
-    const apply = {
-        color1(rgb) {
-            project.selectedColors.primary = rgb;
-            txtCorEscolhida.value = corPrincipal.style.backgroundColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
-        },
-        color2(rgb) {
-            project.selectedColors.secondary = rgb;
-            corSecundaria.style.backgroundColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
-        }
-    }
-    plane = plane === 0 ? 1 : plane > 2 ? 1 : plane;
-    apply["color" + plane](rgbColor);
-}
 
 function criarOuAbrirProjeto() {
     const carregar = document.getElementById("carregamento");

@@ -182,9 +182,8 @@ function drawingToolsObject() {
             preventDefaultAction(e);
             if (!project.arrayLayers[project.selectedLayer].visible || this.painting) { return; }
             this.bttMouseUsed = e.button;
-            if (this.bttMouseUsed === 0) { this.toolProperties.color = project.selectedColors.primary; }
-            else if (this.bttMouseUsed === 2) { this.toolProperties.color = project.selectedColors.secondary; }
-            else { this.selectDrawingTool(4); }
+            this.toolProperties.color = project.selectedColors.get(this.bttMouseUsed);
+            if (this.bttMouseUsed === 1) { this.selectDrawingTool(4); }
             this.painting = true;
             this.storeStrokeCoordinates();
             this.applyToolChanges();
@@ -414,15 +413,15 @@ function drawingToolsObject() {
             const cursorEyeDropper = this.cursorTool.eyeDropper.cursor, compareColors = this.cursorTool.eyeDropper.compareColors;
             if (!move) {
                 cursorEyeDropper.style.display = "block";
-                const corAtual = "25px solid rgb(" + project.selectedColors.primary.r + ", " + project.selectedColors.primary.g + ", " + project.selectedColors.primary.b + ")";
-                compareColors.style.borderBottom = compareColors.style.borderLeft = corAtual;
+                const color = this.toolProperties.color, current = "25px solid rgb(" + color.r + ", " + color.g + ", " + color.b + ")";
+                compareColors.style.borderBottom = compareColors.style.borderLeft = current;
                 project.createDrawComplete();
                 project.screen.style.imageRendering = "pixelated";
             }
-            this.cursorTool.changeEyeDropperPosition(getMousePosition(janelaPrincipal, e))
-            const pixel = project.drawComplete.getImageData(this.mousePosition.x, this.mousePosition.y, 1, 1).data;
-            let novaCor = pixel[3] === 0 ? "25px solid rgba(0, 0, 0, 0)" : "25px solid rgb(" + pixel[0] + ", " + pixel[1] + ", " + pixel[2] + ")";
-            compareColors.style.borderTop = compareColors.style.borderRight = novaCor;
+            this.cursorTool.changeEyeDropperPosition(getMousePosition(janelaPrincipal, e));
+            const pixel = project.drawComplete.getImageData(this.mousePosition.x, this.mousePosition.y, 1, 1).data,
+                newColor = pixel[3] === 0 ? "25px solid rgba(0, 0, 0, 0)" : "25px solid rgb(" + pixel[0] + ", " + pixel[1] + ", " + pixel[2] + ")";
+            compareColors.style.borderTop = compareColors.style.borderRight = newColor;
             if (move === "mouseup") {
                 this.strokeCoordinates = { x: [], y: [] };
                 cursorEyeDropper.style.display = "none";
@@ -434,7 +433,7 @@ function drawingToolsObject() {
                     return;
                 }
                 if (colorSelectionWindow.opened) { colorSelectionWindow.findColor({ r: pixel[0], g: pixel[1], b: pixel[2] }); }
-                else { applySelectedColorPlane(this.bttMouseUsed, { r: pixel[0], g: pixel[1], b: pixel[2] }); }
+                else { project.selectedColors.set(this.bttMouseUsed, { r: pixel[0], g: pixel[1], b: pixel[2] }); }
             }
         },
         smudge(move) {
@@ -634,28 +633,6 @@ function drawingToolsObject() {
                     pos: [x, y], plus: [deltaX / counter, deltaY / counter],
                     counter: counter, endPnt: counter, u: 0,
                 };
-            };
-        },
-        updateBlur(x, y, endX, endY) {
-            const line = setupLine();
-            for (let more = true; more;) {
-                this.currentLayer.drawImage(this.toolProperties.brushCanvas.canvas,
-                    line.pos[0] - this.toolProperties.halfSize,
-                    line.pos[1] - this.toolProperties.halfSize);
-                this.setBrushBackground(line.pos[0], line.pos[1]);
-                more = nextPosLine(line);
-            }
-            this.currentLayer.globalAlpha = 1;
-            function nextPosLine(line) {
-                --line.counter;
-                line.u = 1 - line.counter / line.endPnt;
-                if (line.counter <= 0) { return false; }
-                return true;
-            }
-            function setupLine() {
-                const deltaX = endX - x, deltaY = endY - y;
-                const counter = +(((deltaX ** 2) + (deltaY ** 2)) ** 0.5).toFixed(2);
-                return { pos: [x, y], counter: counter, endPnt: counter, u: 0 };
             };
         },
         moveScreen(move, e) {

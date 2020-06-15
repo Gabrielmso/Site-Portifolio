@@ -6,7 +6,28 @@ function projectObject() {
             background: null,
             numberLayers: 0
         },
-        selectedColors: { primary: { r: 0, g: 0, b: 0 }, secondary: { r: 255, g: 255, b: 255 } },
+        selectedColors: {
+            firstPlane: { r: 0, g: 0, b: 0 }, backgroundPlane: { r: 255, g: 255, b: 255 }, 
+            txtFirstPlane: document.getElementById("txtCorEscolhida"),
+            set(plane, color) {
+                const apply = {
+                    color1(rgb) {
+                        this.firstPlane = rgb;
+                        this.txtFirstPlane.value = corPrincipal.style.backgroundColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+                    },
+                    color2(rgb) {
+                        this.backgroundPlane = rgb;
+                        corSecundaria.style.backgroundColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+                    }
+                }
+                plane = plane === 0 ? 1 : plane > 2 ? 1 : plane;
+                apply["color" + plane].call(this, color);
+            },
+            get(plane) {
+                plane = plane === 0 ? 1 : plane > 2 ? 1 : plane;
+                return plane === 1 ? this.firstPlane : this.backgroundPlane;
+            }
+        },
         contentSavedColors: document.getElementById("coresSalvas"),
         savedColors: [],
         created: false,//Saber se um projeto foi criado.
@@ -22,6 +43,7 @@ function projectObject() {
             mousedown: false,
         },
         addEventsToElements() {
+            this.selectedColors.set(1, this.selectedColors.get(1));
             this.layerOpacityBar.content.addEventListener("mousemove", (e) => this.changeOpacityLayer(e));
             this.layerOpacityBar.bar.addEventListener("mousedown", (e) => {
                 this.layerOpacityBar.mousedown = true;
@@ -54,7 +76,7 @@ function projectObject() {
                     if (!colorSelectionWindow.opened) {
                         this.savedColors[numSavedColor].selected = true;
                         this.savedColors[numSavedColor].element.style.boxShadow = "0px 0px 4px rgb(255, 255, 255)";
-                        applySelectedColorPlane(e.button, this.savedColors[numSavedColor].color);
+                        this.selectedColors.set(e.button, this.savedColors[numSavedColor].color);
                         for (let i = 0; i < this.savedColors.length; i++) {
                             if (i != numSavedColor) {
                                 this.savedColors[i].selected = false;
