@@ -493,65 +493,66 @@ function drawingToolsObject() {
                 selectedColor = {
                     r: this.toolProperties.color.r, g: this.toolProperties.color.g,
                     b: this.toolProperties.color.b, a: Math.round(this.toolProperties.opacity * 255)
-                };
-            const pintar = (posX, posY) => {
-                const pixelPos = (posY * project.properties.resolution.width + posX) * 4,
-                    cor = {
-                        r: camada.data[pixelPos], g: camada.data[pixelPos + 1],
-                        b: camada.data[pixelPos + 2], a: camada.data[pixelPos + 3]
-                    }
-                if (cor.r === selectedColor.r && cor.g === selectedColor.g &&
-                    cor.b === selectedColor.b && cor.a === 255) {
-                    this.painting = false;
-                    return;
-                }
-                preencher(posX, posY, cor);
-            }
-            function preencher(posClickX, posClickY, cor) {
-                let pixelsVerificados = [[posClickX, posClickY]];
-                while (pixelsVerificados.length > 0) {
-                    const novaPosicao = pixelsVerificados.pop();
-                    let x = novaPosicao[0], y = novaPosicao[1];
-                    let posicaoPixel = (y * project.properties.resolution.width + x) * 4;
-                    while (y >= 0 && compararCorInicial(posicaoPixel, cor)) {
-                        y -= 1;
-                        posicaoPixel -= project.properties.resolution.width * 4;
-                    }
-                    pintarPixel(posicaoPixel, selectedColor);
-                    posicaoPixel += project.properties.resolution.width * 4;
-                    y += 1;
-                    let ladoEsquerdo = false, ladoDireito = false;
-                    while (y < project.properties.resolution.height - 1 && compararCorInicial(posicaoPixel, cor)) {
+                },
+                preencher = (posClickX, posClickY, cor) => {
+                    let pixelsVerificados = [[posClickX, posClickY]];
+                    while (pixelsVerificados.length > 0) {
+                        const novaPosicao = pixelsVerificados.pop();
+                        let x = novaPosicao[0], y = novaPosicao[1];
+                        let posicaoPixel = (y * project.properties.resolution.width + x) * 4;
+                        while (y >= 0 && compararCorInicial(posicaoPixel, cor)) {
+                            y -= 1;
+                            posicaoPixel -= project.properties.resolution.width * 4;
+                        }
                         pintarPixel(posicaoPixel, selectedColor);
-                        y += 1;
-                        if (x > 0) {
-                            if (compararCorInicial(posicaoPixel - 4, cor) === true) {
-                                if (!ladoEsquerdo) {
-                                    ladoEsquerdo = true;
-                                    pixelsVerificados.push([x - 1, y]);
-                                }
-                            } else {
-                                pintarPixel(posicaoPixel - 4, selectedColor);
-                                if (ladoEsquerdo) { ladoEsquerdo = false; }
-                            }
-                        }
-                        if (x < project.properties.resolution.width - 1) {
-                            if (compararCorInicial(posicaoPixel + 4, cor) === true) {
-                                if (!ladoDireito) {
-                                    ladoDireito = true;
-                                    pixelsVerificados.push([x + 1, y]);
-                                }
-                            } else {
-                                pintarPixel(posicaoPixel + 4, selectedColor);
-                                if (ladoDireito) { ladoDireito = false; }
-                            }
-                        }
                         posicaoPixel += project.properties.resolution.width * 4;
+                        y += 1;
+                        let ladoEsquerdo = false, ladoDireito = false;
+                        while (y < project.properties.resolution.height - 1 && compararCorInicial(posicaoPixel, cor)) {
+                            pintarPixel(posicaoPixel, selectedColor);
+                            y += 1;
+                            if (x > 0) {
+                                if (compararCorInicial(posicaoPixel - 4, cor) === true) {
+                                    if (!ladoEsquerdo) {
+                                        ladoEsquerdo = true;
+                                        pixelsVerificados.push([x - 1, y]);
+                                    }
+                                } else {
+                                    pintarPixel(posicaoPixel - 4, selectedColor);
+                                    if (ladoEsquerdo) { ladoEsquerdo = false; }
+                                }
+                            }
+                            if (x < project.properties.resolution.width - 1) {
+                                if (compararCorInicial(posicaoPixel + 4, cor) === true) {
+                                    if (!ladoDireito) {
+                                        ladoDireito = true;
+                                        pixelsVerificados.push([x + 1, y]);
+                                    }
+                                } else {
+                                    pintarPixel(posicaoPixel + 4, selectedColor);
+                                    if (ladoDireito) { ladoDireito = false; }
+                                }
+                            }
+                            posicaoPixel += project.properties.resolution.width * 4;
+                        }
+                        pintarPixel(posicaoPixel, selectedColor);
                     }
-                    pintarPixel(posicaoPixel, selectedColor);
+                    this.eventLayer.putImageData(clearCanvas, 0, 0);
+                },
+                pintar = (posX, posY) => {
+                    const pixelPos = (posY * project.properties.resolution.width + posX) * 4,
+                        cor = {
+                            r: camada.data[pixelPos], g: camada.data[pixelPos + 1],
+                            b: camada.data[pixelPos + 2], a: camada.data[pixelPos + 3]
+                        }
+                    if (cor.r === selectedColor.r && cor.g === selectedColor.g &&
+                        cor.b === selectedColor.b && cor.a === 255) {
+                        this.painting = false;
+                        return;
+                    }
+                    preencher(posX, posY, cor);
                 }
-                this.eventLayer.putImageData(clearCanvas, 0, 0);
-            }
+
             function compararCorInicial(pixelPos, cor) {
                 const r = camada.data[pixelPos], g = camada.data[pixelPos + 1], b = camada.data[pixelPos + 2],
                     a = camada.data[pixelPos + 3];
@@ -577,9 +578,7 @@ function drawingToolsObject() {
             pintar(this.strokeCoordinates.x[0], this.strokeCoordinates.y[0]);
         },
         setBrushBackground(x, y) {
-            const size = this.toolProperties.size, pos = {
-                x: x - this.toolProperties.halfSize, y: y - this.toolProperties.halfSize
-            },
+            const size = this.toolProperties.size, pos = { x: x - this.toolProperties.halfSize, y: y - this.toolProperties.halfSize },
                 ctx = this.toolProperties.brushCanvas;
             ctx.clearRect(0, 0, size, size);
             ctx.filter = "blur(" + (this.toolProperties.size / 6.2) - ((this.toolProperties.size / 6.2) * this.toolProperties.hardness) + "px)";
