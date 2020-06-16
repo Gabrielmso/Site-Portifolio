@@ -342,7 +342,7 @@ function drawingToolsObject() {
             let point1, point2;
             this.eventLayer.beginPath();
             this.eventLayer.moveTo(this.strokeCoordinates.x[0], this.strokeCoordinates.y[0]);
-            for (let i = 0; i < this.strokeCoordinates.x.length; i++) {
+            for (let i = 0, n = this.strokeCoordinates.x.length; i < n; i++) {
                 point1 = { x: this.strokeCoordinates.x[i], y: this.strokeCoordinates.y[i] };
                 point2 = { x: this.strokeCoordinates.x[i + 1], y: this.strokeCoordinates.y[i + 1] };
                 const dis = { x: (point2.x - point1.x) ** 2, y: (point2.y - point1.y) ** 2 };

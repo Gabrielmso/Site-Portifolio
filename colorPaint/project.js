@@ -7,7 +7,7 @@ function projectObject() {
             numberLayers: 0
         },
         selectedColors: {
-            firstPlane: { r: 0, g: 0, b: 0 }, backgroundPlane: { r: 255, g: 255, b: 255 }, 
+            firstPlane: { r: 0, g: 0, b: 0 }, backgroundPlane: { r: 255, g: 255, b: 255 },
             txtFirstPlane: document.getElementById("txtCorEscolhida"),
             set(plane, color) {
                 const apply = {
@@ -20,17 +20,17 @@ function projectObject() {
                         corSecundaria.style.backgroundColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
                     }
                 }
-                plane = plane === 0 ? 1 : plane > 2 ? 1 : plane;
+                plane = plane < 1 ? 1 : plane > 2 ? 1 : plane;
                 apply["color" + plane].call(this, color);
             },
             get(plane) {
-                plane = plane === 0 ? 1 : plane > 2 ? 1 : plane;
+                plane = plane < 1 ? 1 : plane > 2 ? 1 : plane;
                 return plane === 1 ? this.firstPlane : this.backgroundPlane;
             }
         },
         contentSavedColors: document.getElementById("coresSalvas"),
         savedColors: [],
-        created: false,//Saber se um projeto foi criado.
+        created: false,
         drawComplete: document.getElementById("desenho").getContext("2d"),
         screen: document.getElementById("telasCanvas"),
         selectedLayer: 0,
@@ -100,41 +100,33 @@ function projectObject() {
                 if (this.savedColors.length === 0) { document.getElementById("bttRemoverCorSalva").style.display = "none"; }
             }
         },
-        zoom(zoom, centralize, quanto) {
+        zoom(zoom, centralize, value) {
             if (!this.created) { return; }
-            const larguraAnterior = this.screen.offsetWidth;
-            let larguraAtual, alturaAtual;
-            if (zoom === "porcentagem") { larguraAtual = this.properties.resolution.width * (quanto / 100); }
-            else if (zoom) { larguraAtual = (larguraAnterior * quanto); }
-            else if (!zoom) { larguraAtual = (larguraAnterior / quanto); }
-            if (larguraAtual <= 25) { larguraAtual = 25; }
-            else if (larguraAtual >= this.properties.resolution.width * 32) { larguraAtual = this.properties.resolution.width * 32; }
-            alturaAtual = (larguraAtual / this.properties.resolution.proportion);
+            const previousWidth = this.screen.offsetWidth, { width, proportion } = this.properties.resolution;
+            let larguraAtual = zoom === "porcentagem" ? width * value / 100 : zoom ? previousWidth * value : previousWidth / value;
+            larguraAtual = larguraAtual <= 25 ? 25 : larguraAtual >= width * 32 ? width * 32 : larguraAtual;
+            const alturaAtual = (larguraAtual / proportion), { offsetWidth, offsetHeight } = contentTelas
             this.screen.style.width = larguraAtual + "px";
             this.screen.style.height = alturaAtual + "px";
-            if (larguraAtual >= (contentTelas.offsetWidth - 12)) { this.screen.style.left = "6px"; }
-            else { this.screen.style.left = (contentTelas.offsetWidth / 2) - (larguraAtual / 2) + "px"; }
-            if (alturaAtual >= (contentTelas.offsetHeight - 12)) { this.screen.style.top = "6px"; }
-            else { this.screen.style.top = (contentTelas.offsetHeight / 2) - (alturaAtual / 2) + "px"; }
-            if (centralize === true) {
-                contentTelas.scrollTop = ((alturaAtual / 2) + 12) - (contentTelas.offsetHeight / 2);
-                contentTelas.scrollLeft = ((larguraAtual / 2) + 12) - (contentTelas.offsetWidth / 2);
+            this.screen.style.left = larguraAtual >= (offsetWidth - 12) ? "6px" : (offsetWidth / 2) - (larguraAtual / 2) + "px";
+            this.screen.style.top = alturaAtual >= (offsetHeight - 12) ? "6px" : (offsetHeight / 2) - (alturaAtual / 2) + "px";
+            if (centralize) {
+                contentTelas.scrollTop = ((alturaAtual / 2) + 12) - (offsetHeight / 2);
+                contentTelas.scrollLeft = ((larguraAtual / 2) + 12) - (offsetWidth / 2);
             }
-            txtPorcentagemZoom.value = ((larguraAtual * 100) / this.properties.resolution.width).toFixed(2).replace(".", ",") + "%";
+            txtPorcentagemZoom.value = ((larguraAtual * 100) / width).toFixed(2).replace(".", ",") + "%";
             previewFunctions.changeMoverScrollSizeZoom();
             drawingTools.changeCursorTool();
         },
         adjustInVisualizationScreen() {
-            const larguraMax = contentTelas.offsetWidth - 12, alturaMax = contentTelas.offsetHeight - 12, proporcaoContent = larguraMax / alturaMax;
-            let zoomTelasCanvas;
-            if (this.properties.resolution.proportion >= proporcaoContent) {
-                zoomTelasCanvas = parseFloat(((larguraMax * 100) / this.properties.resolution.width).toFixed(2));
-            } else { zoomTelasCanvas = parseFloat(((alturaMax * 100) / this.properties.resolution.height).toFixed(2)); }
-            this.zoom("porcentagem", false, zoomTelasCanvas);
+            const { width, height, proportion } = this.properties.resolution, maxWidth = contentTelas.offsetWidth - 12,
+                maxHeight = contentTelas.offsetHeight - 12, proportionContent = maxWidth / maxHeight,
+                zoomAdjusted = proportion >= proportionContent ? +(((maxWidth * 100) / width).toFixed(2)) : +(((maxHeight * 100) / height).toFixed(2));
+            this.zoom("porcentagem", false, zoomAdjusted);
         },
         adjustScreen() {
-            const larguraMax = contentTelas.offsetWidth - 12, alturaMax = contentTelas.offsetHeight - 12;
-            if (this.properties.resolution.width >= larguraMax || this.properties.resolution.height >= alturaMax) {
+            const maxWidth = contentTelas.offsetWidth - 12, maxHeight = contentTelas.offsetHeight - 12;
+            if (this.properties.resolution.width >= maxWidth || this.properties.resolution.height >= maxHeight) {
                 this.adjustInVisualizationScreen();
             } else { this.zoom("porcentagem", false, 100); }
         },
@@ -145,15 +137,15 @@ function projectObject() {
         },
         changeOpacityLayer(e) {
             if (!this.layerOpacityBar.mousedown) { return; }
-            const mouse = getMousePosition(this.layerOpacityBar.bar, e);
-            let porcentagem = Math.round((mouse.x * 100) / this.layerOpacityBar.bar.offsetWidth);
-            if (mouse.x <= 1) {
+            const mouse = getMousePosition(this.layerOpacityBar.bar, e).x;
+            let porcentagem = Math.round((mouse * 100) / this.layerOpacityBar.bar.offsetWidth);
+            if (mouse <= 1) {
                 porcentagem = 1;
                 cursorOpacidadeCamada.style.left = "-7px";
-            } else if (mouse.x >= 200) {
+            } else if (mouse >= 200) {
                 porcentagem = 100;
                 cursorOpacidadeCamada.style.left = "193px";
-            } else { cursorOpacidadeCamada.style.left = mouse.x - 7 + "px"; }
+            } else { cursorOpacidadeCamada.style.left = mouse - 7 + "px"; }
             this.arrayLayers[this.selectedLayer].txtOpacity.value = porcentagem + "%";
             let opacidade = porcentagem / 100;
             this.arrayLayers[this.selectedLayer].opacity = opacidade;
@@ -390,10 +382,8 @@ function projectObject() {
                 },
                 numeroDeCamadas: this.properties.numberLayers, camadas: dadosCamadas
             }
-            const data = encode(JSON.stringify(objProjeto));
-            const blob = new Blob([data], { type: "application/octet-stream;charset=utf-8" });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
+            const data = encode(JSON.stringify(objProjeto)), blob = new Blob([data], { type: "application/octet-stream;charset=utf-8" }),
+                url = URL.createObjectURL(blob), link = document.createElement("a");
             link.setAttribute("href", url);
             link.setAttribute("download", this.properties.name + ".gm");
             link.click();
