@@ -3,6 +3,7 @@ function hotKeysObject() {
         ctrlPressed: false, shiftPressed: false,
         infoMoveDrawWithSpace: { startCoordinate: null, scroolTop: null, scrollLeft: null },
         infoTraceUsedShift: { sizeX: 0, sizeY: 0 },
+        infoShift: null,
         addEventsToElements() {
             document.addEventListener("keydown", (e) => this.keyDownEvent(e));
             document.addEventListener("keyup", (e) => this.keyUpEvent(e));
@@ -11,6 +12,12 @@ function hotKeysObject() {
             if (drawingTools.painting) { e.preventDefault(); return; }
             if (this.ctrlPressed) {//Teclas de atalho com o ctrl.
                 const keyFunction = this.hotKeysWithCtrl[e.code];
+                if (keyFunction) {
+                    e.preventDefault();
+                    keyFunction();
+                }
+            } else if (this.shiftPressed) {
+                const keyFunction = this.hotKeysWithShift[e.code];
                 if (keyFunction) {
                     e.preventDefault();
                     keyFunction();
@@ -29,7 +36,7 @@ function hotKeysObject() {
             }
             if (e.code === "ShiftLeft") {
                 e.preventDefault();
-                this.shiftPressed = true;
+                this.keyDownShift();
             }
         },
         keyUpEvent(e) {
@@ -44,8 +51,7 @@ function hotKeysObject() {
             }
             if (e.code === "ShiftLeft") {
                 e.preventDefault();
-                this.infoTraceUsedShift = { sizeX: 0, sizeY: 0 };
-                this.shiftPressed = false;
+                this.keyUpShift();
             }
         },
         keyDownControl() {
@@ -69,29 +75,30 @@ function hotKeysObject() {
             drawingTools.moveScreen("mouseup");
             drawingTools.selectDrawingTool(drawingTools.selectedTool);
         },
+        keyDownShift() {
+            this.shiftPressed = true;
+        },
+        keyUpShift() {
+            this.infoTraceUsedShift = { sizeX: 0, sizeY: 0 };
+            this.shiftPressed = false;
+            drawingTools.selectDrawingTool(drawingTools.selectedTool);
+        },
         changeToolSizeHotKey(increase) {
             const pos = increase ? drawingTools.toolSizeBar.cursor.offsetLeft + 8 : drawingTools.toolSizeBar.cursor.offsetLeft + 6;
             drawingTools.changeToolSize(pos);
         },
+        hotKeysWithShift: {
+            KeyA: () => drawingTools.mouseFunctionName = "changeToolSizeCursor",
+            KeyS: () => drawingTools.mouseFunctionName = "changeToolOpacityCursor",
+            KeyD: () => drawingTools.mouseFunctionName = "changeToolHardnessCursor"
+        },
         hotKeysWithCtrl: {
-            Digit0() {
-                project.adjustInVisualizationScreen();
-            },
-            Digit1() {
-                project.zoom("porcentagem", true, 100);
-            },
-            Minus() {
-                project.zoom(false, true, 1.25);
-            },
-            Equal() {
-                project.zoom(true, true, 1.25);
-            },
-            KeyZ() {
-                undoRedoChange.undoChange();
-            },
-            KeyY() {
-                undoRedoChange.redoChange();
-            },
+            Digit0: () => project.adjustInVisualizationScreen(),
+            Digit1: () => project.zoom("porcentagem", true, 100),
+            Minus: () => project.zoom(false, true, 1.25),
+            Equal: () => project.zoom(true, true, 1.25),
+            KeyZ: () => undoRedoChange.undoChange(),
+            KeyY: () => undoRedoChange.redoChange(),
         },
     }
 }
