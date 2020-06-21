@@ -190,7 +190,7 @@ function drawingToolsObject() {
             this.applyToolChanges();
             this.currentLayer.globalCompositeOperation = "source-over";
             this[this.mouseFunctionName](false, e);
-            if (this.cursorTool.visible) { janelaPrincipal.style.cursor = "none"; }
+            if (this.cursorTool.show) { janelaPrincipal.style.cursor = "none"; }
         },
         mouseMoveEventDrawing(e) {
             this.getCursorPosition(e);
@@ -651,22 +651,35 @@ function drawingToolsObject() {
             this.chan
         },
         changeToolSizeCursor(move, e) {
-            // if (!move) { return; }
-            // if (this.cursorTool.show) {
-            //     this.cursorTool.changeCursorPosition(this.cursorTool.position);
-            // }
-            // if (move === "mouseup") {
-            //     this.selectDrawingTool(this.selectedTool);
-            // }
+            if (!move) {
+                this.cursorTool.visible = false;
+                hotKeys.infoShifth = this.toolProperties.size;
+                this.brush(false);
+                return;
+            } else if (move === "mouseup") {
+                this.strokeCoordinates = { x: [], y: [] };
+                this.selectDrawingTool(this.selectedTool);
+                hotKeys.infoShifth = null;
+                return;
+            }
+            const { start, end } = this.getStartEndStrokeCoordinates(), res = project.properties.resolution,
+                distance = end.x - start.x < 0 ? -this.getDistanceCoordinates(start, end) : this.getDistanceCoordinates(start, end);
+            let newSize = hotKeys.infoShifth + distance, maxSize = res.proportion > 1 ? res.width + 50 : res.height + 50;
+            this.toolProperties.size = newSize < 1 ? 0.5 : newSize > maxSize ? maxSize : Math.round(newSize);
+            this.toolSizeBar.txt.value = this.toolProperties.size + "px";
+            this.changeCursorTool();
+            this.cursorTool.visible = false;
+            this.applyToolChanges();
+            this.strokeCoordinates = { x: [start.x], y: [start.y] };
+            this.brush(false);
         },
         changeToolOpacityCursor(move, e) {
             if (!move) {
-                hotKeys.shiftPressed = this.cursorTool.visible = false;
+                this.cursorTool.visible = false;
                 hotKeys.infoShifth = this.toolOpacityBar.cursor.offsetLeft + 7;
                 this.brush(false);
                 return;
             } else if (move === "mouseup") {
-                hotKeys.shiftPressed = true;
                 this.strokeCoordinates = { x: [], y: [] };
                 this.selectDrawingTool(this.selectedTool);
                 hotKeys.infoShifth = null;
@@ -678,16 +691,14 @@ function drawingToolsObject() {
             this.applyToolChanges();
             this.strokeCoordinates = { x: [start.x], y: [start.y] };
             this.brush(false);
-
         },
         changeToolHardnessCursor(move, e) {
             if (!move) {
-                hotKeys.shiftPressed = this.cursorTool.visible = false;
+                this.cursorTool.visible = false;
                 hotKeys.infoShifth = this.toolHardnessBar.cursor.offsetLeft + 7;
                 this.brush(false);
                 return;
             } else if (move === "mouseup") {
-                hotKeys.shiftPressed = true;
                 this.strokeCoordinates = { x: [], y: [] };
                 this.selectDrawingTool(this.selectedTool);
                 hotKeys.infoShifth = null;
