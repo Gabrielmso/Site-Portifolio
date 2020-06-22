@@ -11,7 +11,8 @@ function traduSilent() {
     const sessao = [
         { slide: document.getElementById("sessao1") },
         {
-            slide: document.getElementById("sessao2"), comparacao: {
+            slide: document.getElementById("sessao2"),
+            comparacao: {
                 abre: document.getElementById("compararthereareviolent"),
                 fecha: document.getElementById("fecharfundo1"),
                 fundo: document.getElementById("fundocomparacao"),
@@ -24,7 +25,8 @@ function traduSilent() {
             }
         },
         {
-            slide: document.getElementById("sessao3"), comparacao: {
+            slide: document.getElementById("sessao3"), imagem: document.getElementById("fundo3"),
+            comparacao: {
                 abre: document.getElementById("omedodesangue"),
                 fecha: document.getElementById("fecharcomparacg"),
                 fundo: document.getElementById("fundocomparacg"),
@@ -36,7 +38,8 @@ function traduSilent() {
             }
         },
         {
-            slide: document.getElementById("sessao4"), comparacao: {
+            slide: document.getElementById("sessao4"), imagem: document.getElementById("fundo4"),
+            comparacao: {
                 abre: document.getElementById("compararMapaAntigaSilent"),
                 fecha: document.getElementById("fecharantigasilenthill"),
                 fundo: document.getElementById("fundoantigasilenthill"),
@@ -44,7 +47,8 @@ function traduSilent() {
             }
         },
         {
-            slide: document.getElementById("sessao5"), comparacao: {
+            slide: document.getElementById("sessao5"), imagem: document.getElementById("fundo5"),
+            comparacao: {
                 abre: document.getElementById("compararFolhasCaderno"),
                 fecha: document.getElementById("fecharfolhas"),
                 fundo: document.getElementById("fundocomparafolhas"),
@@ -60,7 +64,8 @@ function traduSilent() {
             }
         },
         {
-            slide: document.getElementById("sessao6"), comparacao: {
+            slide: document.getElementById("sessao6"), imagem: document.getElementById("fundo6"),
+            comparacao: {
                 abre: document.getElementById("compararChavesEclipse"),
                 fecha: document.getElementById("fecharchavesparaoeclipse"),
                 fundo: document.getElementById("fundochavesparaoeclipse"),
@@ -68,7 +73,8 @@ function traduSilent() {
             }
         },
         {
-            slide: document.getElementById("sessao7"), comparacao: {
+            slide: document.getElementById("sessao7"), imagem: document.getElementById("fundo7"),
+            comparacao: {
                 abre: document.getElementById("compararEscola"),
                 fecha: document.getElementById("fecharfundoescola"),
                 fundo: document.getElementById("fundomapaescola"),
@@ -89,7 +95,7 @@ function traduSilent() {
         },
     ];
 
-    window.addEventListener("resize", function () {
+    window.addEventListener("resize", () => {
         larguraJanela = window.innerWidth;
         alturaJanela = window.innerHeight;
         if (larguraJanela <= 650) { traprogress.style.marginTop = "13px"; }
@@ -100,7 +106,7 @@ function traduSilent() {
         mudarMenu();
     });
 
-    logoBlack.addEventListener("click", function () {
+    logoBlack.addEventListener("click", () => {
         if (numSlide > 0) { voltaPrimeiroSlide(); }
         else { window.location.href = "index.html"; }
     });
@@ -289,9 +295,10 @@ function traduSilent() {
     }
 
     function slideUp(numSlideAtual) {
-        if (numSlide === sessao.length - 1 || fundoComparacaoAberto === true) { return; }
+        if (numSlide === sessao.length - 1 || fundoComparacaoAberto) { return; }
         document.removeEventListener("wheel", mudarSlideScroll);
         numSlide++;
+        if (sessao[numSlide + 1]) { carregarImagemFundo(sessao[numSlide + 1].imagem); }
         const numProximoSlide = numSlideAtual + 1, conteudoSlideAtual = sessao[numSlideAtual].slide.getElementsByClassName("mycontainer")[0],
             conteudoProximoSlide = sessao[numProximoSlide].slide.getElementsByClassName("mycontainer")[0];
         bttverdetalhes.removeEventListener("click", mudarslidebttverdetalhes);
@@ -412,6 +419,12 @@ function traduSilent() {
                 slides[i].style.height = larguraJanela / proporcao4por3 + "px";
             }
         }
+    }
+
+    function carregarImagemFundo(fundo) {
+        const imagem = new Image();
+        imagem.src = "/imagens/imgs_ContTraduSilent/fundo/fundo" + (numSlide + 2) + ".jpg";
+        imagem.onload = (e) => fundo.style.backgroundImage = "url('" + e.currentTarget.src + "')";
     }
 
     function compararImagens() {
