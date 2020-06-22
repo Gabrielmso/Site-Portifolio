@@ -648,7 +648,6 @@ function drawingToolsObject() {
             const mousePosition = getMousePosition(contentTelas, e);
             contentTelas.scrollLeft = this.infoMoveScreenWithSpace.scrollLeft + this.infoMoveScreenWithSpace.startCoordinate.x - mousePosition.x;
             contentTelas.scrollTop = this.infoMoveScreenWithSpace.scroolTop + this.infoMoveScreenWithSpace.startCoordinate.y - mousePosition.y;
-            this.chan
         },
         changeToolSizeCursor(move, e) {
             if (!move) {
