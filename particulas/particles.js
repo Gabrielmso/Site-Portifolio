@@ -1,5 +1,5 @@
 function particles() {
-   const ctx = document.getElementById("particulas").getContext("2d"), lineDistance = 220;
+   const ctx = document.getElementById("particulas").getContext("2d"), lineDistance = 200;
    let arrayParticles, startAnimation;
    window.addEventListener("resize", () => {
       start();
@@ -76,12 +76,12 @@ function particles() {
    function animation() {
       now = performance.now();
       const deltaTime = now - before;
-      if (deltaTime >= 58) {
+      if (deltaTime >= 55) {
          before = now;
          ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
          moveParticles();
       }
-      startAnimation = requestAnimationFrame(animation, ctx.canvas);
+      setTimeout(() => startAnimation = requestAnimationFrame(animation, ctx.canvas), 25);
    }
 
    function setResolutionCtx(width, height) {
@@ -119,7 +119,7 @@ function createParticles(numParticles) {
    const particles = [];
    for (let i = 0; i < numParticles; i++) { particles.push(getParticle()); }
    function getParticle() {
-      const radius = randomNumber(2, 10), circle = drawCircle(),
+      const radius = randomNumber(1.4, 9), circle = drawCircle(),
          posX = randomNumber(radius, window.innerWidth - radius),
          posY = randomNumber(radius, window.innerHeight - radius),
          velX = randomNumber(-0.6, 0.6), velY = randomNumber(-0.6, 0.6);
