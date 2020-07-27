@@ -266,6 +266,7 @@ function drawingToolsObject() {
             this.toolSizeBar.txt.value = size + "px";
             this.toolProperties.size = size;
             if (mouseUse) { this.showChangeTool(); }
+            this.changeCursorTool();
         },
         changeToolOpacity(pos) {
             const mouseUse = isNaN(pos);

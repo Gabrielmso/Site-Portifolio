@@ -75,10 +75,7 @@ function createProjectWindowObject() {
                 if (el.value === "") {
                     campoInvalido(el);
                     return;
-                } else {
-                    el.style.boxShadow = "";
-                    el.style.border = "";
-                }
+                } else { el.style.border = el.style.boxShadow = ""; }
             }
             const nomeProjeto = (arrayProperties[0].value).replace(/ /g, "-"),
                 larguraProjeto = parseInt(arrayProperties[1].value),
@@ -98,11 +95,8 @@ function createProjectWindowObject() {
                 campoInvalido(arrayProperties[4]);
                 return;
             }
-            let color;
-            if (valueCor === 1) { color = { r: 255, g: 255, b: 255 }; }
-            else if (valueCor === 2) { color = { r: 0, g: 0, b: 0 }; }
-            else if (valueCor === 3) { color = false; }
-            else { color = project.selectedColors.firstPlane; }
+            const color = valueCor === 1 ? { r: 255, g: 255, b: 255 } : valueCor === 2 ? { r: 0, g: 0, b: 0 } :
+                valueCor === 3 ? false : project.selectedColors.firstPlane;
             for (let i = 0; i < arrayProperties.length; i++) { arrayProperties[i].style.backgroundColor = "rgb(37, 37, 37)"; }
             project.create(nomeProjeto, { width: larguraProjeto, height: alturaProjeto }, color, numeroCamadas);
             this.conclude();
