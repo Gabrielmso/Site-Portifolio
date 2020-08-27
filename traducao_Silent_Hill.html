@@ -20,9 +20,10 @@
     <script src="topoMenu/topoMenu.js"></script>
     <script src="ContTraduSilent/traduSilent.js"></script>
     <script>
-        window.onload = function () {
+        window.onload = () => {
             topoMenu();
             traduSilent();
+            fadeOutLoading();
         };
     </script>
 </head>
@@ -358,8 +359,7 @@
                 <div id="compararFolhasCaderno" class="comparar cursor noSelection">
                     <img class="thereareviolent" src="./imagens/imgs_ContTraduSilent/imagens_originais/toschool.png"
                         alt="Para a escola">
-                    <img class="thereareviolent"
-                        src="./imagens/imgs_ContTraduSilent/imagens_originais/doghouse.png"
+                    <img class="thereareviolent" src="./imagens/imgs_ContTraduSilent/imagens_originais/doghouse.png"
                         alt="Casa de cachorro, Rua Levin">
                 </div>
                 <div class="texto">
@@ -400,9 +400,11 @@
             <div class="content">
                 <h2>"Chaves para o Eclipse"</h2>
                 <div id="compararChavesEclipse" class="comparar cursor noSelection">
-                    <img class="thereareviolent" src="./imagens/imgs_ContTraduSilent/imagens_originais/keysforeclipse.png"
+                    <img class="thereareviolent"
+                        src="./imagens/imgs_ContTraduSilent/imagens_originais/keysforeclipse.png"
                         alt="Keys for Eclipse">
-                    <img class="thereareviolent" src="./imagens/imgs_ContTraduSilent/imagens_traduzidas/chavesparaoeclipse.png"
+                    <img class="thereareviolent"
+                        src="./imagens/imgs_ContTraduSilent/imagens_traduzidas/chavesparaoeclipse.png"
                         alt="Chaves para o Eclipse">
                 </div>
                 <div class="texto">
@@ -582,7 +584,8 @@
                         src="./imagens/imgs_ContTraduSilent/imagens_originais/school2f.png" alt="2º Andar."
                         title="2º Andar.">
                     <img id="iconmapaescolat" class="imgicons cursor noSelection"
-                        src="./imagens/imgs_ContTraduSilent/imagens_originais/schoolr.png" alt="Telhado." title="Telhado.">
+                        src="./imagens/imgs_ContTraduSilent/imagens_originais/schoolr.png" alt="Telhado."
+                        title="Telhado.">
                 </div>
                 <div id="mapaescolabtnRight" class="iconRight cursor">
                     <div class="tracosetaright1"></div>
@@ -601,6 +604,7 @@
             <div id="imgchavekgordon" class="imgtrad"></div>
         </div>
     </div>
+    <div id="carregamento"></div>
 </body>
 
 </html>

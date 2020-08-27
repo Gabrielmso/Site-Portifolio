@@ -18,9 +18,10 @@
     <script src="topoMenu/topoMenu.js"></script>
     <script src="particulas/particles.js"></script>
     <script>
-        window.onload = function () {
+        window.onload = () => {
             topoMenu();
             particles();
+            fadeOutLoading();
         };
     </script>
 </head>
@@ -120,6 +121,7 @@
                     GitHub</a>.</p>
         </div>
     </div>
+    <div id="carregamento"></div>
 </body>
 
 </html>

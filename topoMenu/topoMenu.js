@@ -107,7 +107,7 @@ function topoMenu() {
             traco1.classList.replace("iniciotraco1", "movertraco1");
             traco2.classList.add("movertraco2");
             traco3.classList.replace("iniciotraco3", "movertraco3");
-        } 
+        }
         else {
             fundomenu.classList.replace("abrefundomenu", "fechafundomenu")
             traco1.classList.replace("movertraco1", "iniciotraco1");
@@ -141,20 +141,12 @@ function topoMenu() {
         fundomenu.style.height = (window.innerHeight * 2) + "px";
     };
 };
-// function debounce(func, wait, immediate) {
-//     let timeout;
-//     return function () {
-//         let context = this, args = arguments;
-//         let later = function () {
-//             timeout = null;
-//             if (!immediate) func.apply(context, args);
-//         };
-//         let callNow = immediate && !timeout;
-//         clearTimeout(timeout);
-//         timeout = setTimeout(later, wait);
-//         if (callNow) func.apply(context, args);
-//     };
-// };
+
+function fadeOutLoading() {
+    const content = document.getElementById("carregamento");
+    content.style.opacity = 0;
+    setTimeout(() => content.remove(), 800);
+}
 
 function throttle(func, wait, immediate) {
     let timeout = null
