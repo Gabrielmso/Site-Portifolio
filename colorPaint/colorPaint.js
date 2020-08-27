@@ -62,12 +62,12 @@ function colorPaint() {
     document.getElementById("bttcarregarProjeto").addEventListener("mousedown", () => createProjectWindow.open("load"));
 
     corPrincipal.addEventListener("mousedown", () => {
-        if (colorSelectionWindow.opened) { colorSelectionWindow.findColor(project.selectedColors.primary); }
+        if (colorSelectionWindow.opened) { colorSelectionWindow.findColor(project.selectedColors.firstPlane); }
         else { colorSelectionWindow.open(1); }
     });
 
     corSecundaria.addEventListener("mousedown", () => {
-        if (colorSelectionWindow.opened) { colorSelectionWindow.findColor(project.selectedColors.secondary); }
+        if (colorSelectionWindow.opened) { colorSelectionWindow.findColor(project.selectedColors.backgroundPlane); }
         else { colorSelectionWindow.open(2); }
     });
 
@@ -211,6 +211,12 @@ document.addEventListener("keydown", function (e) {
         return false;
     }
 });
+
+function getImage(url) {
+    const image = new Image();
+    image.src = url;
+    return image;
+}
 
 function backgroundBlur(blur) {
     if (blur) {

@@ -14,6 +14,13 @@ function drawingToolsObject() {
         ],
         cursorTool: {
             cursor: document.getElementById("cursorFerramenta"), show: true, visible: false, halfSize: 20, position: { x: 0, y: 0 },
+            imgsCursor: {
+                paintBucket: getImage("/colorPaint/imagens/cursor/cursorBaldeDeTinta.png"),
+                eyeDropper: getImage("/colorPaint/imagens/cursor/cursorContaGotas.png"),
+                crossHair: getImage("/colorPaint/imagens/cursor/crossHair.png"),
+                centerCrossHair: getImage("/colorPaint/imagens/cursor/centerCrossHair.png"),
+                circle: getImage("/colorPaint/imagens/cursor/circle.png")
+            },
             eyeDropper: {
                 cursor: document.getElementById("cursorComparaContaGotas"), compareColors: document.getElementById("comparaCoresContaGotas"),
                 position: null
@@ -321,11 +328,11 @@ function drawingToolsObject() {
             this.cursorTool.eyeDropper.cursor.style.display = "none";
             contentTelas.style.cursor = "";
             if (this.selectedTool === this.arrayTools.length - 1) {
-                contentTelas.style.cursor = "url('/colorPaint/imagens/cursor/cursorContaGotas.png') 0 20, pointer";
+                contentTelas.style.cursor = "url('" + this.cursorTool.imgsCursor.eyeDropper.src + "') 0 20, pointer";
                 this.cursorTool.invisibleCursor();
                 return;
             } else if (this.selectedTool === 6) {
-                contentTelas.style.cursor = "url('/colorPaint/imagens/cursor/cursorBaldeDeTinta.png') 0 0, pointer";
+                contentTelas.style.cursor = "url('" + this.cursorTool.imgsCursor.paintBucket.src + "') 0 0, pointer";
                 this.cursorTool.invisibleCursor();
                 return;
             }
@@ -336,8 +343,8 @@ function drawingToolsObject() {
                 this.cursorTool.changeSize(size);
             } else {
                 this.cursorTool.invisibleCursor();
-                contentTelas.style.cursor = size < 20 ? "url('/colorPaint/imagens/cursor/crossHair.png') 12.5 12.5 , pointer" :
-                    "url('/colorPaint/imagens/cursor/circle.png') 10 10 , pointer";
+                contentTelas.style.cursor = size < 20 ? "url('" + this.cursorTool.imgsCursor.crossHair.src + "') 12.5 12.5 , pointer" :
+                    "url('" + this.cursorTool.imgsCursor.circle.src + "') 10 10 , pointer";
             }
         },
         brush(move) {
