@@ -111,12 +111,15 @@ function traduSilent() {
     });
 
     info.addEventListener("mouseenter", () => mouseTexto = true);
-    traprogress.addEventListener("mouseenter", () => mouseTexto = true);
     info.addEventListener("mouseleave", () => mouseTexto = false);
+    info.addEventListener("wheel", scrollTextoMudarSlide, { passive: true });
+    traprogress.addEventListener("mouseenter", () => mouseTexto = true);
     traprogress.addEventListener("mouseleave", () => mouseTexto = false);
+    traprogress.addEventListener("wheel", scrollTextoMudarSlide, { passive: true });
     for (let i = 0; i < textos.length; i++) {
         textos[i].addEventListener("mouseenter", () => mouseTexto = true);
         textos[i].addEventListener("mouseleave", () => mouseTexto = false);
+        textos[i].addEventListener("wheel", scrollTextoMudarSlide, { passive: true });
     }
 
     for (let i = 0; i < imgTrad.length; i++) { imgTrad[i].addEventListener("mousedown", compararImagens); }
@@ -427,6 +430,12 @@ function traduSilent() {
     function ajustarBlurFundo() {
         const num = (larguraJanela > alturaJanela ? larguraJanela : alturaJanela) / 333;
         for (let i = 0; i < sessao.length; i++) { sessao[i].imagem.style.filter = "blur(" + num + "px)"; }
+    }
+    function scrollTextoMudarSlide(e) {
+        const el = e.currentTarget;
+        if (e.deltaY > 0) {
+            mouseTexto = el.scrollTop + el.offsetHeight === el.scrollHeight ? false : true;
+        } else { mouseTexto = el.scrollTop === 0 ? false : true; }
     }
     ajustarimgscomparacao();
     setTimeout(carregamento, 900);

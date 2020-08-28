@@ -105,7 +105,7 @@ function drawingToolsObject() {
             this.cursorTool.cursor.addEventListener("mousedown", (e) => this.mouseDownEventDrawing(e));
             document.addEventListener("mousemove", throttle((e) => this.mouseMoveEventDrawing(e), 12));
             document.addEventListener("mouseup", (e) => this.mouseUpEventDrawing(e));
-            this.cursorTool.cursor.addEventListener("wheel", (e) => this.cursorTool.wheel(e));
+            this.cursorTool.cursor.addEventListener("wheel", (e) => this.cursorTool.wheel(e), { passive: true });
             this.toolOpacityBar.bar.addEventListener("mousedown", (e) => this.mouseDownToolOpacityBar(e));
             this.toolSizeBar.bar.addEventListener("mousedown", (e) => this.mouseDownToolSizeBar(e));
             this.toolHardnessBar.bar.addEventListener("mousedown", (e) => this.mouseDownToolHardnessBar(e));
