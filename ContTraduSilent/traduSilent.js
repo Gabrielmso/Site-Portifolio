@@ -1,5 +1,5 @@
 const proporcao4por3 = 4 / 3;
-let numSlide = 0, contSlideCarrosel = 0, fundoComparacaoAberto = false, mouseTexto, imgVisivel = false, mudarCarrosel = true;
+let numSlide = 0, contCarrosel = 0, fundoComparacaoAberto = false, mouseTexto, imgVisivel = false, mudarCarrosel = true;
 function traduSilent() {
     const titulo = document.getElementById("titulo"), info = document.getElementById("info"),
         traprogress = document.getElementById("traprogress"), textos = document.getElementsByClassName("texto"),
@@ -9,9 +9,9 @@ function traduSilent() {
     let larguraJanela = window.innerWidth;
     let alturaJanela = window.innerHeight;
     const sessao = [
-        { slide: document.getElementById("sessao1") },
+        { slide: document.getElementById("sessao1"), imagem: document.getElementById("fundo1") },
         {
-            slide: document.getElementById("sessao2"),
+            slide: document.getElementById("sessao2"), imagem: document.getElementById("fundo2"),
             comparacao: {
                 abre: document.getElementById("compararthereareviolent"),
                 fecha: document.getElementById("fecharfundo1"),
@@ -98,8 +98,7 @@ function traduSilent() {
     window.addEventListener("resize", () => {
         larguraJanela = window.innerWidth;
         alturaJanela = window.innerHeight;
-        if (larguraJanela <= 650) { traprogress.style.marginTop = "13px"; }
-        else { traprogress.style.marginTop = "0px"; }
+        traprogress.style.marginTop = larguraJanela <= 650 ? "13px" : "0px";
         ajustarElementos();
         ajustarimgscomparacao();
         ajustarBlurFundo();
@@ -129,30 +128,28 @@ function traduSilent() {
                 fundoFadeIn(sessao[i].comparacao.fundo);
             })
             comparacao.fecha.addEventListener("click", () => {
-                if (fundoComparacaoAberto === false) { return; }
-                contSlideCarrosel = 0;
+                if (!fundoComparacaoAberto) { return; }
+                contCarrosel = 0;
                 imgVisivel = false;
                 fundoFadeOut(sessao[i].comparacao.fundo);
             })
             if (comparacao.carrosel) {
                 for (let e = 0; e < comparacao.carrosel.icones.length; e++) {
                     comparacao.carrosel.icones[e].addEventListener("mousedown", () => {
-                        if (mudarCarrosel === false) { return; }
-                        contSlideCarrosel = e;
+                        if (!mudarCarrosel) { return; }
+                        contCarrosel = e;
                         mudarSlideCarrosel(e, i);
                     });
                 }
                 comparacao.carrosel.bttEsquerda.addEventListener("mousedown", () => {
-                    if (mudarCarrosel === false) { return; }
-                    if (contSlideCarrosel === 0) { contSlideCarrosel = comparacao.carrosel.icones.length - 1; }
-                    else { contSlideCarrosel--; }
-                    mudarSlideCarrosel(contSlideCarrosel, i);
+                    if (!mudarCarrosel) { return; }
+                    contCarrosel = contCarrosel === 0 ? comparacao.carrosel.icones.length - 1 : contCarrosel - 1;
+                    mudarSlideCarrosel(contCarrosel, i);
                 });
                 comparacao.carrosel.bttDireita.addEventListener("mousedown", () => {
-                    if (mudarCarrosel === false) { return; }
-                    if (contSlideCarrosel === comparacao.carrosel.icones.length - 1) { contSlideCarrosel = 0; }
-                    else { contSlideCarrosel++; }
-                    mudarSlideCarrosel(contSlideCarrosel, i);
+                    if (!mudarCarrosel) { return; }
+                    contCarrosel = contCarrosel === comparacao.carrosel.icones.length - 1 ? 0 : contCarrosel + 1;
+                    mudarSlideCarrosel(contCarrosel, i);
                 });
                 mudarSlideCarrosel(0, i);
             }
@@ -201,11 +198,10 @@ function traduSilent() {
         ajustarBlurFundo();
         info.style.display = "block";
         traprogress.style.display = "block";
-        tmp = setInterval(brilhotitulo, 1500);
+        tmp = setInterval(brilhotitulo, 1250);
         setTimeout(() => {//Fazer a "traprogress" e a "info" aparecerem.
             traprogress.style.opacity = "1";
-            if (larguraJanela <= 650) { traprogress.style.marginTop = "13px"; }
-            else { traprogress.style.marginTop = "0px"; }
+            traprogress.style.marginTop = larguraJanela <= 650 ? "13px" : "0px";
             info.style.opacity = "1";
             info.style.marginTop = "0px";
             bttdownload.style.display = "block";
@@ -220,6 +216,7 @@ function traduSilent() {
                 particles();
                 bttdownload.style.opacity = "1";
                 bttverdetalhes.style.display = "block";
+                for (let i = 0; i < sessao.length; i++) { carregarImagemFundo(sessao[i].imagem, i + 1); }
                 setTimeout(() => {//Fazer o "bttverdetalhes" aparecer.
                     bttverdetalhes.style.opacity = "1";
                     bttverdetalhes.addEventListener("click", mudarslidebttverdetalhes);
@@ -230,12 +227,12 @@ function traduSilent() {
     };
 
     function brilhotitulo() {
-        if (titulo.classList.contains("brilho") === true) { titulo.classList.remove("brilho"); }
+        if (titulo.classList.contains("brilho")) { titulo.classList.remove("brilho"); }
         else { titulo.classList.add("brilho"); }
     }
 
     function mudarSlideScroll(e) {
-        if (mouseTexto === true) { return; }
+        if (mouseTexto) { return; }
         if (e.deltaY < 0) { slideDown(numSlide); }
         else { slideUp(numSlide); }
     };
@@ -248,7 +245,7 @@ function traduSilent() {
 
     function voltaPrimeiroSlide() {
         numSlide = 0;
-        tmp = setInterval(brilhotitulo, 1200);
+        tmp = setInterval(brilhotitulo, 1250);
         const conteudoSlides = document.getElementsByClassName("mycontainer");
         for (let i = 0; i < sessao.length; i++) {
             sessao[i].slide.style.webkitTransition = styletransicao;
@@ -268,7 +265,7 @@ function traduSilent() {
     }
 
     function slideDown(numSlideAtual) {
-        if (numSlide === 0 || fundoComparacaoAberto === true) { return; }
+        if (numSlide === 0 || fundoComparacaoAberto) { return; }
         document.removeEventListener("wheel", mudarSlideScroll);
         bttverdetalhes.removeEventListener("click", mudarslidebttverdetalhes);
         numSlide--;
@@ -276,16 +273,14 @@ function traduSilent() {
             conteudoSlideAnterior = sessao[numSlideAnterior].slide.getElementsByClassName("mycontainer")[0];
         sessao[numSlideAnterior].slide.style.webkitTransition = styletransicao;
         sessao[numSlideAnterior].slide.style.transition = styletransicao;
-        conteudoSlideAtual.style.overflow = "hidden";
-        conteudoSlideAnterior.style.overflow = "hidden";
+        conteudoSlideAnterior.style.overflow = conteudoSlideAtual.style.overflow = "hidden";
         sessao[numSlideAnterior].slide.style.height = "";
         setTimeout(function () {
             if (numSlideAtual === 1) {
                 mudarMenu();
-                tmp = setInterval(brilhotitulo, 1200);
+                tmp = setInterval(brilhotitulo, 1250);
             }
-            conteudoSlideAtual.style.overflow = "";
-            conteudoSlideAnterior.style.overflow = "";
+            conteudoSlideAnterior.style.overflow = conteudoSlideAtual.style.overflow = "";
             sessao[numSlideAnterior].slide.style.webkitTransition = "";
             sessao[numSlideAnterior].slide.style.transition = "";
             document.addEventListener("wheel", mudarSlideScroll);
@@ -298,19 +293,16 @@ function traduSilent() {
         if (numSlide === sessao.length - 1 || fundoComparacaoAberto) { return; }
         document.removeEventListener("wheel", mudarSlideScroll);
         numSlide++;
-        if (sessao[numSlide + 1]) { carregarImagemFundo(sessao[numSlide + 1].imagem); }
         const numProximoSlide = numSlideAtual + 1, conteudoSlideAtual = sessao[numSlideAtual].slide.getElementsByClassName("mycontainer")[0],
             conteudoProximoSlide = sessao[numProximoSlide].slide.getElementsByClassName("mycontainer")[0];
         bttverdetalhes.removeEventListener("click", mudarslidebttverdetalhes);
-        conteudoSlideAtual.style.overflow = "hidden";
-        conteudoProximoSlide.style.overflow = "hidden";
+        conteudoProximoSlide.style.overflow = conteudoSlideAtual.style.overflow = "hidden";
         clearInterval(tmp);
         sessao[numSlideAtual].slide.style.webkitTransition = styletransicao;
         sessao[numSlideAtual].slide.style.transition = styletransicao;
         sessao[numSlideAtual].slide.style.height = "0px";
         setTimeout(function () {
-            conteudoProximoSlide.style.overflow = "";
-            conteudoSlideAtual.style.overflow = "";
+            conteudoSlideAtual.style.overflow = conteudoProximoSlide.style.overflow = "";
             sessao[numSlideAtual].slide.style.webkitTransition = "";
             sessao[numSlideAtual].slide.style.transition = "";
             bttverdetalhes.addEventListener("click", mudarslidebttverdetalhes);
@@ -338,10 +330,7 @@ function traduSilent() {
             setTimeout(function () {
                 icones[numSlide].style.opacity = "1";
                 for (let i = 0; i < icones.length; i++) {
-                    if (i != numSlide) {
-                        icones[i].style.border = "";
-                        icones[i].style.opacity = "";
-                    }
+                    if (i != numSlide) { icones[i].style.opacity = icones[i].style.border = ""; }
                     slides[i].style.transition = "";
                 }
                 contentIcones.style.transition = "";
@@ -403,7 +392,7 @@ function traduSilent() {
         }
         for (let i = 0; i < sessao.length; i++) {
             if (sessao[i].comparacao && sessao[i].comparacao.carrosel) {
-                sessao[i].comparacao.carrosel.contentIcons.style.left = ((larguraJanela / 2) - 44) - (88 * contSlideCarrosel) + "px";
+                sessao[i].comparacao.carrosel.contentIcons.style.left = ((larguraJanela / 2) - 44) - (88 * contCarrosel) + "px";
             }
         }
         for (let i = 0; i < telaSlideCarrosel.length; i++) { telaSlideCarrosel[i].style.height = alturaJanela - 68 + "px"; }
@@ -420,35 +409,25 @@ function traduSilent() {
             }
         }
     }
-
-    function carregarImagemFundo(fundo) {
+    function carregarImagemFundo(fundo, i) {
         const imagem = new Image();
-        imagem.src = "/imagens/imgs_ContTraduSilent/fundo/fundo" + (numSlide + 2) + ".jpg";
         imagem.onload = (e) => fundo.style.backgroundImage = "url('" + e.currentTarget.src + "')";
+        imagem.src = "/imagens/imgs_ContTraduSilent/fundo/fundo" + i + ".jpg";
     }
-
     function compararImagens() {
-        if (imgVisivel === false) { this.style.opacity = "1"; }
-        else { this.style.opacity = "0"; }
+        this.style.opacity = imgVisivel ? "0" : "1";
         imgVisivel = !imgVisivel;
     }
     function ajustarElementos() {
-        let largura = "55%";
-        if (larguraJanela <= alturaJanela) { largura = "90%"; }
+        const largura = larguraJanela <= alturaJanela ? "90%" : "55%";
         for (let i = 0; i < sessao.length; i++) {
             if (sessao[i].comparacao) { sessao[i].comparacao.abre.style.width = largura; }
         }
     }
-
     function ajustarBlurFundo() {
-        const fundos = document.getElementsByClassName("fundo");
-        let relacao;
-        if (larguraJanela > alturaJanela) { relacao = larguraJanela; }
-        else { relacao = alturaJanela; }
-        const pLargura = 1000 / relacao;
-        let numBlur = 3 / pLargura;
-        for (let i = 0; i < fundos.length; i++) { fundos[i].style.filter = "blur(" + numBlur + "px)"; }
+        const num = (larguraJanela > alturaJanela ? larguraJanela : alturaJanela) / 333;
+        for (let i = 0; i < sessao.length; i++) { sessao[i].imagem.style.filter = "blur(" + num + "px)"; }
     }
     ajustarimgscomparacao();
-    setTimeout(carregamento, 850);
+    setTimeout(carregamento, 900);
 }

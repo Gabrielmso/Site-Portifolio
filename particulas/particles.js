@@ -68,7 +68,6 @@ function particles() {
       setResolutionCtx(window.innerWidth, window.innerHeight);
       ctx.lineWidth = 0.95;
       arrayParticles = createParticles(Math.round(window.innerWidth * window.innerHeight / 26500));
-      console.log(arrayParticles)
       startAnimation = requestAnimationFrame(animation, ctx.canvas);;
    }
 
@@ -76,12 +75,12 @@ function particles() {
    function animation() {
       now = performance.now();
       const deltaTime = now - before;
-      if (deltaTime >= 55) {
+      if (deltaTime >= 62) {
          before = now;
          ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
          moveParticles();
       }
-      setTimeout(() => startAnimation = requestAnimationFrame(animation, ctx.canvas), 25);
+      setTimeout(() => startAnimation = requestAnimationFrame(animation, ctx.canvas), 27);
    }
 
    function setResolutionCtx(width, height) {
@@ -141,6 +140,4 @@ function createParticles(numParticles) {
    return particles;
 }
 
-function randomNumber(min, max) {
-   return Math.random() * (max - min) + min;
-}
+function randomNumber(min, max) { return Math.random() * (max - min) + min; }

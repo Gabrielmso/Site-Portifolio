@@ -16,10 +16,6 @@ html, body {
     background-image: url("../imagens/imgs_ContTraduSilent/fundo/fundo1.jpg");
 }
 
-#fundo2 {
-    background-image: url("../imagens/imgs_ContTraduSilent/fundo/fundo2.jpg");
-}
-
 h1 {
     font-size: 50px;
     text-align: center;
