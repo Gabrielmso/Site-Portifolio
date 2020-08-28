@@ -7,7 +7,9 @@ function projectObject() {
             numberLayers: 0
         },
         selectedColors: {
-            firstPlane: { r: 0, g: 0, b: 0 }, backgroundPlane: { r: 255, g: 255, b: 255 },
+            firstPlane: { r: 0, g: 0, b: 0 }, backgroundPlane: { r: 255, g: 255, b: 255 }, saved: {
+                selected: -1, colors: [],
+            },
             txtFirstPlane: document.getElementById("txtCorEscolhida"),
             set(plane, color) {
                 const apply = {
@@ -26,10 +28,19 @@ function projectObject() {
             get(plane) {
                 plane = plane < 1 ? 1 : plane > 2 ? 1 : plane;
                 return plane === 1 ? this.firstPlane : this.backgroundPlane;
+            },
+            deselectAllSavedColor() {
+                if (this.saved.selected === -1) { return; }
+                this.saved.colors[this.saved.selected].el.style.boxShadow = "";
+                this.saved.selected = -1;
+            },
+            selectSavedColor(numColor, plane) {
+                this.deselectAllSavedColor();
+                this.saved.selected = numColor;
+                this.saved.colors[this.saved.selected].el.style.boxShadow = "0px 0px 4px rgb(255, 255, 255)";
+                this.set(plane, this.saved.colors[numColor].rgb);
             }
         },
-        contentSavedColors: document.getElementById("coresSalvas"),
-        savedColors: [],
         created: false,
         drawComplete: document.getElementById("desenho").getContext("2d"),
         screen: document.getElementById("telasCanvas"),
@@ -54,50 +65,39 @@ function projectObject() {
             document.getElementById("bttRemoverCorSalva").addEventListener("mousedown", () => this.removeColor());
         },
         saveColor(colorToSave) {
-            let savedColor = false, numSavedColor = this.savedColors.length;
-            if (numSavedColor === 0) { document.getElementById("bttRemoverCorSalva").style.display = "block"; }
-            for (let i = 0; i < numSavedColor; i++) {
-                const color = this.savedColors[i].color;
+            const indexColor = this.selectedColors.saved.colors.length;
+            if (indexColor === 0) { document.getElementById("bttRemoverCorSalva").style.display = "block"; }
+            for (let i = 0; i < indexColor; i++) {
+                const color = this.selectedColors.saved.colors[i].rgb;
                 if (color.r === colorToSave.r && color.g === colorToSave.g && color.b === colorToSave.b) {
-                    savedColor = true;
                     notification.open({ title: "Atenção!", text: "Essa cor já está salva." }, { name: "notify", time: 1500 }, null);
+                    return;
                 }
             }
-            if (!savedColor) {
-                const styleColor = "background-color: rgb(" + colorToSave.r + ", " + colorToSave.g + ", " + colorToSave.b + ");";
-                const id = "cor" + (numSavedColor), savedColorEl = document.createElement("div");
-                savedColorEl.setAttribute("id", id);
-                savedColorEl.setAttribute("class", "corSalva cursor");
-                savedColorEl.setAttribute("style", styleColor);
-                const savedColorObject = { id: numSavedColor, element: savedColorEl, color: colorToSave, selected: false }
-                this.savedColors.push(savedColorObject);
-                this.contentSavedColors.appendChild(savedColorEl);
-                this.savedColors[numSavedColor].element.addEventListener("mousedown", (e) => {
-                    if (!colorSelectionWindow.opened) {
-                        this.savedColors[numSavedColor].selected = true;
-                        this.savedColors[numSavedColor].element.style.boxShadow = "0px 0px 4px rgb(255, 255, 255)";
-                        this.selectedColors.set(e.button, this.savedColors[numSavedColor].color);
-                        for (let i = 0; i < this.savedColors.length; i++) {
-                            if (i != numSavedColor) {
-                                this.savedColors[i].selected = false;
-                                this.savedColors[i].element.style.boxShadow = "";
-                            }
-                        }
-                    } else { colorSelectionWindow.findColor(this.savedColors[numSavedColor].color); }
-                });
-                this.savedColors[numSavedColor].element.addEventListener("contextmenu", preventDefaultAction);
-            }
+            const styleColor = "rgb(" + colorToSave.r + ", " + colorToSave.g + ", " + colorToSave.b + ")";
+            const savedColorEl = document.createElement("div");
+            savedColorEl.setAttribute("title", styleColor);
+            savedColorEl.setAttribute("class", "corSalva cursor");
+            savedColorEl.setAttribute("style", "background-color: " + styleColor + ";");
+            this.selectedColors.saved.colors.push({ el: savedColorEl, rgb: colorToSave });
+            document.getElementById("coresSalvas").appendChild(savedColorEl);
+            this.selectedColors.saved.colors[indexColor].el.addEventListener("mousedown", (e) => {
+                if (!colorSelectionWindow.opened) { this.selectedColors.selectSavedColor(indexColor, e.button); }
+                else { colorSelectionWindow.findColor(this.selectedColors.saved.colors[indexColor].rgb); }
+            });
+            this.selectedColors.saved.colors[indexColor].el.addEventListener("contextmenu", preventDefaultAction);
         },
         removeColor() {
-            if (!colorSelectionWindow.opened) {
-                let colorsToSave = [];
-                for (let i = 0; i < this.savedColors.length; i++) {
-                    if (!this.savedColors[i].selected) { colorsToSave.push(this.savedColors[i].color); }
-                    this.savedColors[i].element.remove();
+            if (!colorSelectionWindow.opened && this.selectedColors.saved.selected > -1) {
+                this.selectedColors.saved.colors.splice(this.selectedColors.saved.selected, 1)[0].el.remove();
+                this.selectedColors.saved.selected = -1;
+                const resave = this.selectedColors.saved.colors;
+                this.selectedColors.saved.colors = [];
+                for (let i = 0; i < resave.length; i++) {
+                    resave[i].el.remove();
+                    this.saveColor(resave[i].rgb);
                 }
-                this.savedColors = [];
-                for (let i = 0; i < colorsToSave.length; i++) { this.saveColor(colorsToSave[i]); }
-                if (this.savedColors.length === 0) { document.getElementById("bttRemoverCorSalva").style.display = "none"; }
+                if (this.selectedColors.saved.colors.length === 0) { document.getElementById("bttRemoverCorSalva").style.display = "none"; }
             }
         },
         zoom(zoom, centralize, value) {
@@ -365,14 +365,14 @@ function projectObject() {
             }
         },
         saveProject() {
-            let dadosCamadas = [], coresSalvasProjeto = [];
+            const dadosCamadas = [], coresSalvasProjeto = [];
             for (let i = 0; i < this.properties.numberLayers; i++) {
                 dadosCamadas[i] = {
                     imgDataCamada: this.arrayLayers[i].ctx.canvas.toDataURL("imagem/png"),
                     opacidade: this.arrayLayers[i].opacity, visivel: this.arrayLayers[i].visible,
                 };
             }
-            for (let i = 0; i < this.savedColors.length; i++) { coresSalvasProjeto[i] = this.savedColors[i].color; }
+            for (let i = 0; i < this.selectedColors.saved.colors.length; i++) { coresSalvasProjeto[i] = this.selectedColors.saved.colors[i].rgb; }
             const objProjeto = {
                 nomeProjeto: this.properties.name, resolucaoDoProjeto: this.properties.resolution,
                 corDeFundo: this.properties.background, coresSalvas: coresSalvasProjeto,

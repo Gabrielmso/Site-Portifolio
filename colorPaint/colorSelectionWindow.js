@@ -160,10 +160,7 @@ function colorSelectionWindowObject() {
         selectColor() {
             project.selectedColors.set(this.primaryOrSecondary, this.selectedColor);
             this.close();
-            for (let i = 0; i < project.savedColors.length; i++) {
-                project.savedColors[i].selected = false;
-                project.savedColors[i].element.style.boxShadow = "";
-            }
+            project.selectedColors.deselectAllSavedColor();
         },
         paintGradient(color) {
             const gradient = this.canvas.gradient, width = gradient.canvas.width, height = gradient.canvas.height;
