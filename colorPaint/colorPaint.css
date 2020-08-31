@@ -986,7 +986,7 @@ button, input, select {
 
 #logoCarregamento {
     position: relative;
-    background-image: url(../imagens/topoMenu/LogoGMwhite.svg);
+    background-image: url(../topoMenu/imagens/LogoGMwhite.svg);
     background-position: 50%;
     background-repeat: no-repeat;
     background-size: 72.222%;

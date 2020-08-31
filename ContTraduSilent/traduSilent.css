@@ -13,7 +13,7 @@ html, body {
 }
 
 #fundo1 {
-    background-image: url("../imagens/imgs_ContTraduSilent/fundo/fundo1.jpg");
+    background-image: url("./imagens/fundo/fundo1.jpg");
 }
 
 h1 {
@@ -265,28 +265,28 @@ p span:hover {
 }
 
 #imgviolentasorig {
-    background-image: url("../imagens/imgs_ContTraduSilent/imagens_originais/thereareviolent.png");
+    background-image: url("./imagens/imagens_originais/thereareviolent.png");
 }
 
 #imgviolentastrad {
     opacity: 0;
-    background-image: url("../imagens/imgs_ContTraduSilent/imagens_traduzidas/haimagensviolentas.png");
+    background-image: url("./imagens/imagens_traduzidas/haimagensviolentas.png");
 }
 
 #imgjap {
-    background-image: url("../imagens/imgs_ContTraduSilent/imagens_originais/thereareviolentjap.png");
+    background-image: url("./imagens/imagens_originais/thereareviolentjap.png");
 }
 
 #imglimp {
     opacity: 0;
-    background-image: url("../imagens/imgs_ContTraduSilent/imagens_traduzidas/haimagensviolentaslimp.png");
+    background-image: url("./imagens/imagens_traduzidas/haimagensviolentaslimp.png");
 }
 
 #gifcgintrovert {
     display: none;
     width: 100%;
     height: 100%;
-    background-image: url("../imagens/imgs_ContTraduSilent/miniaturas/gifcgintrovert.gif");
+    background-image: url("./imagens/miniaturas/gifcgintrovert.gif");
     border: solid 1px rgba(133, 66, 14, 0.55);
     image-rendering: pixelated;
     image-rendering: crisp-edges;
@@ -297,7 +297,7 @@ p span:hover {
     display: none;
     width: 100%;
     height: 100%;
-    background-image: url("../imagens/imgs_ContTraduSilent/miniaturas/gifcgintrohori.gif");
+    background-image: url("./imagens/miniaturas/gifcgintrohori.gif");
     border: solid 1px rgba(133, 66, 14, 0.55);
     image-rendering: pixelated;
     image-rendering: crisp-edges;
@@ -305,90 +305,90 @@ p span:hover {
 }
 
 #imgoldsilenthill {
-    background-image: url("../imagens/imgs_ContTraduSilent/imagens_originais/mapOldSilentHill.png");
+    background-image: url("./imagens/imagens_originais/mapOldSilentHill.png");
 }
 
 #imgantigasilenthill {
     opacity: 0;
-    background-image: url("../imagens/imgs_ContTraduSilent/imagens_traduzidas/mapaAntigaSilentHill.png");
+    background-image: url("./imagens/imagens_traduzidas/mapaAntigaSilentHill.png");
 }
 
 #imgtoschool {
     float: left;
     width: 100%;
-    background-image: url("../imagens/imgs_ContTraduSilent/imagens_originais/toschool.png");
+    background-image: url("./imagens/imagens_originais/toschool.png");
 }
 
 #imgparaescola {
     opacity: 0;
     width: 100%;
-    background-image: url("../imagens/imgs_ContTraduSilent/imagens_traduzidas/paraaescola.png");
+    background-image: url("./imagens/imagens_traduzidas/paraaescola.png");
 }
 
 #imgdoghouse {
     float: left;
     width: 0%;
-    background-image: url("../imagens/imgs_ContTraduSilent/imagens_originais/doghouse.png");
+    background-image: url("./imagens/imagens_originais/doghouse.png");
 }
 
 #imgcasadecachorro {
     opacity: 0;
-    background-image: url("../imagens/imgs_ContTraduSilent/imagens_traduzidas/casadecachorro.png");
+    background-image: url("./imagens/imagens_traduzidas/casadecachorro.png");
     width: 100%;
 }
 
 #imgkeysforeclipse {
     width: 100%;
-    background-image: url("../imagens/imgs_ContTraduSilent/imagens_originais/keysforeclipse.png");
+    background-image: url("./imagens/imagens_originais/keysforeclipse.png");
 }
 
 #imgchavesparaoeclipse {
     opacity: 0;
-    background-image: url("../imagens/imgs_ContTraduSilent/imagens_traduzidas/chavesparaoeclipse.png");
+    background-image: url("./imagens/imagens_traduzidas/chavesparaoeclipse.png");
     width: 100%;
 }
 
 #imgschoolp {
-    background-image: url("../imagens/imgs_ContTraduSilent/imagens_originais/schoolb.png");
+    background-image: url("./imagens/imagens_originais/schoolb.png");
     width: 100%;
 }
 
 #imgescolap {
     opacity: 0;
-    background-image: url("../imagens/imgs_ContTraduSilent/imagens_traduzidas/escolap.png");
+    background-image: url("./imagens/imagens_traduzidas/escolap.png");
     width: 100%;
 }
 
 #imgschool1a {
-    background-image: url("../imagens/imgs_ContTraduSilent/imagens_originais/school1f.png");
+    background-image: url("./imagens/imagens_originais/school1f.png");
     width: 0%;
 }
 
 #imgescola1a {
     opacity: 0;
-    background-image: url("../imagens/imgs_ContTraduSilent/imagens_traduzidas/escola1a.png");
+    background-image: url("./imagens/imagens_traduzidas/escola1a.png");
     width: 100%;
 }
 
 #imgschool2a {
-    background-image: url("../imagens/imgs_ContTraduSilent/imagens_originais/school2f.png");
+    background-image: url("./imagens/imagens_originais/school2f.png");
     width: 0%;
 }
 
 #imgescola2a {
     opacity: 0;
-    background-image: url("../imagens/imgs_ContTraduSilent/imagens_traduzidas/escola2a.png");
+    background-image: url("./imagens/imagens_traduzidas/escola2a.png");
     width: 100%;
 }
 
 #imgschoolt {
-    background-image: url("../imagens/imgs_ContTraduSilent/imagens_originais/schoolr.png");
+    background-image: url("./imagens/imagens_originais/schoolr.png");
     width: 0%;
 }
 
 #imgescolat {
     opacity: 0;
-    background-image: url("../imagens/imgs_ContTraduSilent/imagens_traduzidas/escolat.png");
+    background-image: url("./imagens/imagens_traduzidas/escolat.png");
     width: 100%;
 }
 

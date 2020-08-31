@@ -415,7 +415,7 @@ function traduSilent() {
     function carregarImagemFundo(fundo, i) {
         const imagem = new Image();
         imagem.onload = (e) => fundo.style.backgroundImage = "url('" + e.currentTarget.src + "')";
-        imagem.src = "/imagens/imgs_ContTraduSilent/fundo/fundo" + i + ".jpg";
+        imagem.src = "/ContTraduSilent/imagens/fundo/fundo" + i + ".jpg";
     }
     function compararImagens() {
         this.style.opacity = imgVisivel ? "0" : "1";

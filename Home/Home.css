@@ -20,7 +20,7 @@ body {
     height: 100%;
     opacity: 0.55;
     z-index: -1;
-    background-image: url("../imagens/imgs_Home/fundo.jpg");
+    background-image: url("./imagens/fundo.jpg");
     background-repeat: no-repeat;
     background-size: 100%;
     transition: opacity 900ms ease-in-out;
@@ -32,7 +32,7 @@ body {
     opacity: 0;
     position: fixed;
     z-index: -1;
-    background-image: url("../imagens/imgs_Home/fundoblur.jpg");
+    background-image: url("./imagens/fundoblur.jpg");
     background-repeat: no-repeat;
     background-size: 100%;
     transition: opacity 1000ms ease-in-out;
@@ -128,7 +128,7 @@ body {
     font-size: 28px;
 }
 
-#contentSobreMim{
+#contentSobreMim {
     width: 100%;
     height: 100%;
     font-family: "Fontetitulo1";
@@ -139,13 +139,13 @@ body {
     padding: 120px;
 }
 
-#contentSobreMim h1{
+#contentSobreMim h1 {
     font-size: 60px;
     border-bottom: 2px solid rgba(255, 255, 255, 0.302);
     margin-bottom: 20px;
 }
 
-#contentSobreMim p{
+#contentSobreMim p {
     font-size: 22px;
 }
 
@@ -211,12 +211,10 @@ body {
         font-size: 22.5px;
         display: inline-block;
     }
-
-    #contentSobreMim{
+    #contentSobreMim {
         padding: 50px;
     }
-    
-    #contentSobreMim h1{
+    #contentSobreMim h1 {
         font-size: 55px;
     }
 }

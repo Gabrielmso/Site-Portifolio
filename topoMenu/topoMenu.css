@@ -87,7 +87,7 @@
 #logoBlack {
     position: relative;
     display: block;
-    background-image: url("../imagens/topoMenu/LogoGMwhite.svg");
+    background-image: url("./imagens/LogoGMwhite.svg");
     background-position: 50%;
     background-repeat: no-repeat;
     opacity: 0.75;
@@ -110,30 +110,30 @@
 }
 
 #logoinsta {
-    background-image: url("../imagens/topoMenu/icones/instagramLogoWhite.svg");
+    background-image: url("./imagens/icones/instagramLogoWhite.svg");
     background-size: 35px;
     background-position: 50%;
 }
 
 #logoyoutube {
-    background-image: url("../imagens/topoMenu/icones/youtubeLogoWhite.svg");
+    background-image: url("./imagens/icones/youtubeLogoWhite.svg");
     background-size: 41px;
     background-position: 50% 25%;
 }
 
-#logoGitHub{
-    background-image: url("../imagens/topoMenu/icones/githubLogoWhite.svg");
+#logoGitHub {
+    background-image: url("./imagens/icones/githubLogoWhite.svg");
     background-size: 36px;
     background-position: 50%;
 }
 
-#logoLinkedin{
-    background-image: url("../imagens/topoMenu/icones/linkedinLogo.svg");
+#logoLinkedin {
+    background-image: url("./imagens/icones/linkedinLogo.svg");
     background-size: 34px;
     background-position: 50% 40%;
 }
 
-.iconeSociais{
+.iconeSociais {
     position: relative;
     background-repeat: no-repeat;
     width: 50px;
@@ -420,7 +420,7 @@
     max-height: 100px;
 }
 
-#opcoesmenu li ul:hover{
+#opcoesmenu li ul:hover {
     overflow-y: auto;
 }
 
@@ -468,10 +468,10 @@
 }
 
 @media screen and (max-width: 650px) {
-    #opcoesmenu{
+    #opcoesmenu {
         display: none;
     }
-    #fundomenu{
+    #fundomenu {
         display: block;
     }
     .iniciomenu {
