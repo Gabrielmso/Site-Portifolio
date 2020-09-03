@@ -530,15 +530,25 @@ button, input, select {
 }
 
 #grid {
-    opacity: 0.6;
+    opacity: 0.85;
     z-index: 50;
 }
 
 .quadrado {
+    position: relative;
     float: left;
-    border-bottom: dashed 1px rgb(0, 0, 0);
-    border-right: dashed 1px rgb(0, 0, 0);
-    box-shadow: 1px 1px 0.5px rgba(255, 255, 255, 0.5);
+    border-top: solid 1px rgb(255, 255, 255);
+    border-left: solid 1px rgb(255, 255, 255);
+}
+
+.quadrado div {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    width: 100%;
+    height: 100%;
+    border-top: dashed 1px rgb(0, 0, 0);
+    border-left: dashed 1px rgb(0, 0, 0);
 }
 
 #sobrepor {

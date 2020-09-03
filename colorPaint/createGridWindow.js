@@ -76,7 +76,7 @@ function createGridWindowObject() {
         },
         createGrid(create) {
             const screen = this.gridProprieties.screen, size = this.gridProprieties.size, pos = this.gridProprieties.position,
-                numDeQuadrados = (Math.trunc((project.properties.resolution.width / size) + 2.099)) * (Math.trunc((project.properties.resolution.height / size) + 2.099));
+                numDeQuadrados = (Math.trunc((project.properties.resolution.width / size) + 2.1)) * (Math.trunc((project.properties.resolution.height / size) + 2.1));
             if (numDeQuadrados > 5700) {
                 notification.open({
                     title: "Atenção!",
@@ -100,8 +100,8 @@ function createGridWindowObject() {
                 }
                 if (position.x < 0) { position.x += size };
                 if (position.y < 0) { position.y += size };
-                const larguraTela = (project.properties.resolution.width + (size * 2.1)),
-                    alturaTela = (project.properties.resolution.height + (size * 2.1));
+                const larguraTela = (project.properties.resolution.width + (size * 2)),
+                    alturaTela = (project.properties.resolution.height + (size * 2));
                 const larguraQuadrado = ((size / larguraTela) * 100), alturaQuadrado = ((size / alturaTela) * 100);
                 const styleQuadrado = "width: " + larguraQuadrado + "%; height: " + alturaQuadrado + "%;";
                 screen.style.top = (-100 * ((size - position.y) / project.properties.resolution.height)) + "%";
@@ -111,6 +111,7 @@ function createGridWindowObject() {
                 for (let i = 0; i < numDeQuadrados; i++) {
                     const quadrado = document.createElement("div");
                     quadrado.setAttribute("class", "quadrado");
+                    quadrado.innerHTML = "<div></div>";
                     quadrado.setAttribute("style", styleQuadrado);
                     screen.appendChild(quadrado);
                 }
