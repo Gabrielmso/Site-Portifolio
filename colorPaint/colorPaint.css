@@ -33,6 +33,7 @@ button, input, select {
     font-family: "robotoRegular";
     border: none;
     outline: none;
+    -webkit-appearance: none;
 }
 
 #colorPaintContent {
@@ -74,30 +75,18 @@ button, input, select {
     float: left;
     padding: 5px;
     height: 36px;
-    border-right: 3px solid rgb(49, 49, 49);
+    border-right: 3px solid rgb(50, 50, 50);
     list-style: none;
 }
 
-#propriedadesFerramentas li ul {
-    position: absolute;
-    display: block;
-    height: 0px;
-    overflow: hidden;
-    top: 36px;
-    list-style: none;
-    z-index: 2500;
-    border-radius: 5px;
-    box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.45);
-    transition: height 180ms ease-in-out;
+#propriedadesFerramentas li label {
+    line-height: 25px;
+    font-size: 13px;
+    color: rgb(165, 165, 165);
+    margin-left: 7px;
 }
 
-#propriedadesFerramentas li ul li {
-    width: 280px;
-    border-right: none;
-    background-color: rgb(37, 37, 37);
-}
-
-#propriedadesFerramentas input[type="text"] {
+#propriedadesFerramentas li input[type="text"] {
     width: 35px;
     display: inline-block;
     background: rgba(0, 0, 0, 0);
@@ -108,14 +97,47 @@ button, input, select {
     margin-right: 3px;
 }
 
-#propriedadesFerramentas label {
-    line-height: 25px;
-    font-size: 13px;
-    color: rgb(165, 165, 165);
-    margin-left: 7px;
+#propriedadesFerramentas li div {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 280px;
+    height: 0px;
+    overflow: hidden;
+    background-color: rgb(20, 20, 20);
+    top: 36px;
+    padding: 0px 10px;
+    z-index: 2500;
+    border-radius: 5px;
+    box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.45);
+    transition: height 160ms ease-in-out;
 }
 
-.barraPropriedade {
+#propriedadesFerramentas li div input[type="range"] {
+    width: 260px;
+    background-color: transparent;
+}
+
+#propriedadesFerramentas li div input[type="range"]::-webkit-slider-runnable-track {
+    width: 260px;
+    height: 8px;
+    border-radius: 8px;
+    background-color: rgba(213, 192, 107, 0.8)
+}
+
+#propriedadesFerramentas li div input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    margin-top: -4px;
+    border: 2px solid rgba(213, 192, 107, 0.7);
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5)
+}
+
+/* .barraPropriedade {
     position: relative;
     width: 250px;
     height: 13px;
@@ -135,9 +157,9 @@ button, input, select {
     height: 15px;
     background-color: rgb(10, 10, 10);
     border: 1px solid rgb(102, 102, 102);
-}
+} */
 
-#cursorTamanho {
+/* #cursorTamanho {
     left: -2px;
 }
 
@@ -147,7 +169,7 @@ button, input, select {
 
 #cursorDureza {
     left: 243px;
-}
+} */
 
 #menuColorPaint {
     position: relative;

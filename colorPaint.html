@@ -122,34 +122,22 @@
                     <li id="propriedadeTamanho">
                         <label>Tamanho &#9662; </label><input type="text" id="txtTamanhoFerramenta" readonly value="5px"
                             style="width: 40px;">
-                        <ul id="contentBarraTamanho">
-                            <li>
-                                <div id="barraTamanho" class="barraPropriedade">
-                                    <div id="cursorTamanho" class="cursorPropriedade cursor"></div>
-                                </div>
-                            </li>
-                        </ul>
+                        <div id="contentBarraTamanho">
+                            <input type="range" id="barraTamanho">
+                        </div>
                     </li>
                     <li id="propriedadeOpacidade">
                         <label>Opacidade &#9662; </label><input type="text" id="txtOpacidadeFerramenta" readonly
                             value="100%">
-                        <ul id="contentBarraOpacidade">
-                            <li>
-                                <div id="barraOpacidade" class="barraPropriedade">
-                                    <div id="cursorOpacidade" class="cursorPropriedade cursor"></div>
-                                </div>
-                            </li>
-                        </ul>
+                        <div id="contentBarraOpacidade">
+                            <input type="range" id="barraOpacidade" min="0.01" max="1" step="0.01" value="1">
+                        </div>
                     </li>
                     <li id="propriedadeDureza">
                         <label>Dureza &#9662; </label><input type="text" id="txtDurezaFerramenta" readonly value="100%">
-                        <ul id="contentBarraDureza">
-                            <li>
-                                <div id="barraDureza" class="barraPropriedade">
-                                    <div id="cursorDureza" class="cursorPropriedade cursor"></div>
-                                </div>
-                            </li>
-                        </ul>
+                        <div id="contentBarraDureza">
+                            <input type="range" id="barraDureza" min="0" max="1" step="0.01" value="1" id="barraDureza">
+                        </div>
                     </li>
                 </ul>
                 <ul id="menuColorPaint" class="noSelection">
