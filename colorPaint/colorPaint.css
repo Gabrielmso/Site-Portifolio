@@ -33,7 +33,6 @@ button, input, select {
     font-family: "robotoRegular";
     border: none;
     outline: none;
-    -webkit-appearance: none;
 }
 
 #colorPaintContent {
@@ -118,6 +117,8 @@ button, input, select {
 #propriedadesFerramentas li div input[type="range"] {
     width: 260px;
     background-color: transparent;
+    cursor: pointer;
+    -webkit-appearance: none;
 }
 
 #propriedadesFerramentas li div input[type="range"]::-webkit-slider-runnable-track {
@@ -134,42 +135,8 @@ button, input, select {
     margin-top: -4px;
     border: 2px solid rgba(213, 192, 107, 0.7);
     border-radius: 50%;
-    background-color: rgba(0, 0, 0, 0.5)
+    background-color: rgb(0, 0, 0)
 }
-
-/* .barraPropriedade {
-    position: relative;
-    width: 250px;
-    height: 13px;
-    border-radius: 10px;
-    border: 1px solid rgb(100, 100, 100);
-    background-color: rgb(58, 58, 58);
-    margin-left: 10px;
-    margin-top: 6px;
-}
-
-.cursorPropriedade {
-    position: absolute;
-    border-radius: 50%;
-    top: -2px;
-    left: -7px;
-    width: 15px;
-    height: 15px;
-    background-color: rgb(10, 10, 10);
-    border: 1px solid rgb(102, 102, 102);
-} */
-
-/* #cursorTamanho {
-    left: -2px;
-}
-
-#cursorOpacidade {
-    left: 243px;
-}
-
-#cursorDureza {
-    left: 243px;
-} */
 
 #menuColorPaint {
     position: relative;
@@ -223,7 +190,7 @@ button, input, select {
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    background-color: rgba(213, 192, 107, 0.85);
+    background-color: rgba(213, 192, 107, 0.95);
     color: rgb(44, 29, 0);
     border-top-right-radius: 0px;
     border-top-left-radius: 0px;
@@ -233,7 +200,7 @@ button, input, select {
 }
 
 #menuColorPaint li ul li:hover {
-    background-color: rgba(100, 68, 8, 0.85);
+    background-color: rgba(100, 68, 8, 0.95);
     color: rgb(213, 192, 107);
 }
 

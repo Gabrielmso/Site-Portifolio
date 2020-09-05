@@ -84,8 +84,8 @@ function hotKeysObject() {
             drawingTools.selectDrawingTool(drawingTools.selectedTool);
         },
         changeToolSizeHotKey(increase) {
-            const pos = increase ? drawingTools.toolSizeBar.cursor.offsetLeft + 8 : drawingTools.toolSizeBar.cursor.offsetLeft + 6;
-            drawingTools.changeToolSize(pos);
+            const value = increase ? +(drawingTools.toolSizeBar.bar.value) + 0.01 : +(drawingTools.toolSizeBar.bar.value) - 0.01;
+            drawingTools.changeToolSize(value);
         },
         hotKeysWithShift: {
             KeyA: () => drawingTools.mouseFunctionName = "changeToolSizeCursor",

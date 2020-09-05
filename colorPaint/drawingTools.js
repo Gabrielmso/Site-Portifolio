@@ -1,16 +1,16 @@
 function drawingToolsObject() {
     return {
         arrayTools: [
-            { tool: document.getElementById("pincel"), name: "brush", size: 5, opacity: 1, hardness: 1 },
-            { tool: document.getElementById("linha"), name: "line", size: 5, opacity: 1, hardness: 1 },
-            { tool: document.getElementById("retangulo"), name: "rectangle", size: 5, opacity: 1, hardness: 1 },
-            { tool: document.getElementById("elipse"), name: "ellipse", size: 5, opacity: 1, hardness: 1 },
-            { tool: document.getElementById("borracha"), name: "eraser", size: 5, opacity: 1, hardness: 1 },
-            { tool: document.getElementById("curva"), name: "curve", size: 5, opacity: 1, hardness: 1 },
-            { tool: document.getElementById("baldeDeTinta"), name: "paintBucket", size: 5, opacity: 1, hardness: 1 },
-            { tool: document.getElementById("desfoque"), name: "blur", size: 5, opacity: 1, hardness: 1 },
-            { tool: document.getElementById("borrar"), name: "smudge", size: 5, opacity: 1, hardness: 1 },
-            { tool: document.getElementById("contaGotas"), name: "eyeDropper", size: 5, opacity: 1, hardness: 1 }
+            { tool: document.getElementById("pincel"), name: "brush" },
+            { tool: document.getElementById("linha"), name: "line" },
+            { tool: document.getElementById("retangulo"), name: "rectangle" },
+            { tool: document.getElementById("elipse"), name: "ellipse" },
+            { tool: document.getElementById("borracha"), name: "eraser" },
+            { tool: document.getElementById("curva"), name: "curve" },
+            { tool: document.getElementById("baldeDeTinta"), name: "paintBucket" },
+            { tool: document.getElementById("desfoque"), name: "blur" },
+            { tool: document.getElementById("borrar"), name: "smudge" },
+            { tool: document.getElementById("contaGotas"), name: "eyeDropper", }
         ],
         cursorTool: {
             cursor: document.getElementById("cursorFerramenta"), show: true, visible: false, halfSize: 20, position: { x: 0, y: 0 },
@@ -66,7 +66,7 @@ function drawingToolsObject() {
         showChangesCursor: true, txtPositionCursor: document.getElementById("txtPosicaoCursor"),
         mousePosition: { x: 0, y: 0 }, strokeCoordinates: { x: [], y: [] },
         infoMoveScreenWithSpace: { startCoordinate: null, scroolTop: null, scrollLeft: null },
-        painting: false, bttMouseUsed: false,
+        painting: false, bttMouseUsed: false, clickPropertieBar: false,
         toolProperties: {
             elements: [{ property: document.getElementById("propriedadeTamanho"), contentBar: document.getElementById("contentBarraTamanho") },
             { property: document.getElementById("propriedadeOpacidade"), contentBar: document.getElementById("contentBarraOpacidade") },
@@ -105,7 +105,7 @@ function drawingToolsObject() {
             this.toolHardnessBar.bar.addEventListener("input", (e) => this.mouseDownToolHardnessBar(e));
             for (let i = 0; i < this.toolProperties.elements.length; i++) {
                 let el = this.toolProperties.elements[i];
-                el.property.addEventListener("mouseenter", () => {
+                el.property.addEventListener("mouseover", () => {
                     if (!this.painting && !this.clickToCurve) {
                         el.contentBar.style.height = "36px";
                         this.cursorTool.invisibleCursor();
@@ -114,6 +114,10 @@ function drawingToolsObject() {
                 el.property.addEventListener("mouseleave", () => {
                     el.contentBar.style.height = "0px";
                     this.changeCursorTool();
+                });
+                el.property.addEventListener("mouseup", () => {
+                    this.cursorTool.invisibleCursor();
+                    this.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
                 });
             }
             for (let i = 0; i < this.arrayTools.length; i++) {
@@ -199,6 +203,9 @@ function drawingToolsObject() {
                 this.storeStrokeCoordinates();
                 this.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
                 this[this.mouseFunctionName](true, e);
+            } else if (this.clickPropertieBar) {
+                const { width, height, left, top } = contentTelas.getBoundingClientRect(), midWidth = width / 2, midHeight = height / 2
+                this.cursorTool.changeCursorPosition({ x: left + midWidth, y: top + midHeight });
             }
         },
         mouseUpEventDrawing(e) {
@@ -212,7 +219,7 @@ function drawingToolsObject() {
                 if (this.bttMouseUsed === 1) { this.selectDrawingTool(this.previousTool) }
                 this.currentLayer.globalCompositeOperation = "source-over";
             }
-            this.bttMouseUsed = false;
+            this.bttMouseUsed = this.clickPropertieBar = false;
         },
         completeToolUsage(e) {
             switch (this.mouseFunctionName) {
@@ -229,13 +236,16 @@ function drawingToolsObject() {
             }
         },
         mouseDownToolSizeBar(e) {
-            this.changeToolSize(e.currentTarget.value);
+            this.clickPropertieBar = true;
+            this.changeToolSize(e);
         },
         mouseDownToolOpacityBar(e) {
-            this.changeToolOpacity(e.currentTarget.value);
+            this.clickPropertieBar = true;
+            this.changeToolOpacity(e.currentTarget.value, true);
         },
         mouseDownToolHardnessBar(e) {
-            this.changeToolHardness(e.currentTarget.value);
+            this.clickPropertieBar = true;
+            this.changeToolHardness(e.currentTarget.value, true);
         },
         selectDrawingTool(i) {
             if (colorSelectionWindow.opened) { return; }
@@ -258,23 +268,22 @@ function drawingToolsObject() {
                 size = left <= 50 ? left : Math.floor((((maxSize * ((left - 13) / (width - 13))) / 100) * ((100 * (left - 50)) / (width - 50))) + 50);
             this.toolSizeBar.txt.value = size + "px";
             this.toolProperties.size = size;
-            // if (mouseUse) { this.showChangeTool(); }
+            if (mouseUse) { this.showChangeTool(); }
             this.changeCursorTool();
         },
-        changeToolOpacity(value) {
-            value = value < 0.01 ? 0.01 : value > 1 ? 1 : value;
-            const percentage = Math.round(value * 100);
+        changeToolOpacity(value, show) {
+            value = value <= 0.01 ? 0.01 : value >= 1 ? 1 : value;
+            const percentage = Math.round((value * 100));
             this.toolOpacityBar.txt.value = percentage + "%";
-            this.toolProperties.opacity = +(value);
-            // if (mouseUse) { this.showChangeTool(); }
+            this.toolOpacityBar.bar.value = this.toolProperties.opacity = +(value);
+            if (show) { this.showChangeTool(); }
         },
-        changeToolHardness(value) {
-            value = value < 0 ? 0 : value > 1 ? 1 : value;
-            const percentage = Math.round(value * 100);
+        changeToolHardness(value, show) {
+            value = value <= 0 ? 0 : value >= 1 ? 1 : value;
+            const percentage = Math.round((value * 100));
             this.toolHardnessBar.txt.value = percentage + "%";
-            this.toolProperties.hardness = +(value);
-            console.log(this.toolProperties.hardness);
-            // if (mouseUse) { this.showChangeTool(); }
+            this.toolHardnessBar.bar.value = this.toolProperties.hardness = +(value);
+            if (show) { this.showChangeTool(); }
         },
         applyToolChanges() {
             const maximoBlur = this.toolProperties.size / 6.2, color = this.toolProperties.color;
@@ -290,10 +299,9 @@ function drawingToolsObject() {
             this.eventLayer.strokeStyle = this.eventLayer.fillStyle = "rgba(" + color.r + ", " + color.g + ", " + color.b + ", " + this.toolProperties.opacity + ")";
         },
         showChangeTool() {
-            const { width, height, left, top } = contentTelas.getBoundingClientRect(), midWidth = width / 2, midHeight = height / 2
-            this.cursorTool.changeCursorPosition({ x: left + midWidth, y: top + midHeight });
-            this.changeCursorTool();
             if (!this.showChangesCursor) { return; }
+            const { width, height } = contentTelas.getBoundingClientRect(), midWidth = width / 2, midHeight = height / 2
+            this.changeCursorTool();
             this.strokeCoordinates = {
                 x: [(project.properties.resolution.width / project.screen.offsetWidth) * ((midWidth - project.screen.offsetLeft) + contentTelas.scrollLeft)],
                 y: [(project.properties.resolution.height / project.screen.offsetHeight) * ((midHeight - project.screen.offsetTop) + contentTelas.scrollTop)]
@@ -662,7 +670,10 @@ function drawingToolsObject() {
         changeToolOpacityCursor(move, e) {
             if (!move) {
                 this.cursorTool.visible = false;
-                hotKeys.infoShifth = this.toolOpacityBar.cursor.offsetLeft + 7;
+                hotKeys.infoShift = {
+                    startCoordinate: getMousePosition(janelaPrincipal, e),
+                    beforeValue: +(this.toolOpacityBar.bar.value)
+                }
                 this.brush(false);
                 return;
             } else if (move === "mouseup") {
@@ -671,17 +682,20 @@ function drawingToolsObject() {
                 hotKeys.infoShifth = null;
                 return;
             }
-            const { start, end } = this.getStartEndStrokeCoordinates(),
+            const start = hotKeys.infoShift.startCoordinate, end = getMousePosition(janelaPrincipal, e),
                 distance = end.x - start.x < 0 ? -this.getDistanceCoordinates(start, end) : this.getDistanceCoordinates(start, end);
-            this.changeToolOpacity(Math.round(hotKeys.infoShifth + distance));
+            this.changeToolOpacity(+(hotKeys.infoShift.beforeValue + ((distance * 0.01) / 2.5)).toFixed(2), false);
             this.applyToolChanges();
-            this.strokeCoordinates = { x: [start.x], y: [start.y] };
+            this.strokeCoordinates = { x: [this.strokeCoordinates.x[0]], y: [this.strokeCoordinates.y[0]] };
             this.brush(false);
         },
         changeToolHardnessCursor(move, e) {
             if (!move) {
                 this.cursorTool.visible = false;
-                hotKeys.infoShifth = this.toolHardnessBar.cursor.offsetLeft + 7;
+                hotKeys.infoShift = {
+                    startCoordinate: getMousePosition(janelaPrincipal, e),
+                    beforeValue: +(this.toolHardnessBar.bar.value)
+                }
                 this.brush(false);
                 return;
             } else if (move === "mouseup") {
@@ -690,11 +704,11 @@ function drawingToolsObject() {
                 hotKeys.infoShifth = null;
                 return;
             }
-            const { start, end } = this.getStartEndStrokeCoordinates(),
+            const start = hotKeys.infoShift.startCoordinate, end = getMousePosition(janelaPrincipal, e),
                 distance = end.x - start.x < 0 ? -this.getDistanceCoordinates(start, end) : this.getDistanceCoordinates(start, end);
-            this.changeToolHardness(Math.round(hotKeys.infoShifth + distance));
+            this.changeToolHardness(+(hotKeys.infoShift.beforeValue + ((distance * 0.01) / 2.5)).toFixed(2), false);
             this.applyToolChanges();
-            this.strokeCoordinates = { x: [start.x], y: [start.y] };
+            this.strokeCoordinates = { x: [this.strokeCoordinates.x[0]], y: [this.strokeCoordinates.y[0]] };
             this.brush(false);
         }
     }
