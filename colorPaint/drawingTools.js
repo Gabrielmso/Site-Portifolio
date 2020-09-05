@@ -263,11 +263,10 @@ function drawingToolsObject() {
         changeToolSizeBar(value, show) {
             const res = project.properties.resolution, maxSize = res.proportion > 1 ? res.width : res.height,
                 width = +(this.toolSizeBar.bar.max), expoente = log(width - 50, maxSize);
-            value = this.toolSizeBar.bar.value = value >= width ? width : value;
+            value = this.toolSizeBar.bar.value = +(value) >= width ? width : +(value);
             const size = value < 1 ? 0.5 : value <= 50 ? Math.floor(value) : Math.floor((value - 50) ** expoente) + 50;
             this.toolSizeBar.txt.value = size + "px";
             this.toolProperties.size = size;
-            console.log(this.toolProperties.size);
             if (show) { this.showChangeTool(); }
             else { this.changeCursorTool(); }
         },
