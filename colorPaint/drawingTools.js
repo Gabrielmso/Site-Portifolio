@@ -101,7 +101,7 @@ function drawingToolsObject() {
             document.addEventListener("mouseup", (e) => this.mouseUpEventDrawing(e));
             this.cursorTool.cursor.addEventListener("wheel", (e) => this.cursorTool.wheel(e), { passive: true });
             this.toolOpacityBar.bar.addEventListener("input", (e) => this.mouseDownToolOpacityBar(e));
-            this.toolSizeBar.bar.addEventListener("mousedown", (e) => this.mouseDownToolSizeBar(e));
+            this.toolSizeBar.bar.addEventListener("input", (e) => this.mouseDownToolSizeBar(e));
             this.toolHardnessBar.bar.addEventListener("input", (e) => this.mouseDownToolHardnessBar(e));
             for (let i = 0; i < this.toolProperties.elements.length; i++) {
                 let el = this.toolProperties.elements[i];
@@ -237,7 +237,7 @@ function drawingToolsObject() {
         },
         mouseDownToolSizeBar(e) {
             this.clickPropertieBar = true;
-            this.changeToolSize(e);
+            this.changeToolSizeBar(e.currentTarget.value, true);
         },
         mouseDownToolOpacityBar(e) {
             this.clickPropertieBar = true;
@@ -260,16 +260,22 @@ function drawingToolsObject() {
             this.changeCursorTool();
             this.eventLayer.clearRect(0, 0, project.properties.resolution.width, project.properties.resolution.height);
         },
-        changeToolSize(pos) {
-            const mouseUse = isNaN(pos);
-            if (mouseUse) { pos = getMousePosition(this.toolSizeBar.bar, pos).x; }
+        changeToolSizeBar(value, show) {
             const res = project.properties.resolution, maxSize = res.proportion > 1 ? res.width : res.height,
-                width = this.toolSizeBar.bar.offsetWidth, left = pos <= 0 ? 0.5 : pos >= width ? width : pos,
-                size = left <= 50 ? left : Math.floor((((maxSize * ((left - 13) / (width - 13))) / 100) * ((100 * (left - 50)) / (width - 50))) + 50);
+                width = +(this.toolSizeBar.bar.max), expoente = log(width - 50, maxSize);
+            value = this.toolSizeBar.bar.value = value >= width ? width : value;
+            const size = value < 1 ? 0.5 : value <= 50 ? Math.floor(value) : Math.floor((value - 50) ** expoente) + 50;
             this.toolSizeBar.txt.value = size + "px";
             this.toolProperties.size = size;
-            if (mouseUse) { this.showChangeTool(); }
-            this.changeCursorTool();
+            console.log(this.toolProperties.size);
+            if (show) { this.showChangeTool(); }
+            else { this.changeCursorTool(); }
+        },
+        changeToolSize(newSize) {
+            const res = project.properties.resolution,
+                expoente = log(+(this.toolSizeBar.bar.max) - 50, res.proportion > 1 ? res.width : res.height),
+                value = newSize <= 50 ? newSize : 50 + Math.pow(newSize - 50, 1 / expoente);
+            this.changeToolSizeBar(value, false)
         },
         changeToolOpacity(value, show) {
             value = value <= 0.01 ? 0.01 : value >= 1 ? 1 : value;
@@ -656,15 +662,12 @@ function drawingToolsObject() {
                 hotKeys.infoShifth = null;
                 return;
             }
-            const { start, end } = this.getStartEndStrokeCoordinates(), res = project.properties.resolution,
+            const { start, end } = this.getStartEndStrokeCoordinates(),
                 distance = end.x - start.x < 0 ? -this.getDistanceCoordinates(start, end) : this.getDistanceCoordinates(start, end);
-            let newSize = hotKeys.infoShifth + distance, maxSize = res.proportion > 1 ? res.width + 50 : res.height + 50;
-            this.toolProperties.size = newSize < 1 ? 0.5 : newSize > maxSize ? maxSize : Math.round(newSize);
-            this.toolSizeBar.txt.value = this.toolProperties.size + "px";
-            this.changeCursorTool();
+            this.changeToolSize(hotKeys.infoShifth + distance);
             this.cursorTool.visible = false;
             this.applyToolChanges();
-            this.strokeCoordinates = { x: [start.x], y: [start.y] };
+            this.strokeCoordinates = { x: [this.strokeCoordinates.x[0]], y: [this.strokeCoordinates.y[0]] };
             this.brush(false);
         },
         changeToolOpacityCursor(move, e) {
@@ -713,3 +716,5 @@ function drawingToolsObject() {
         }
     }
 }
+
+function log(base, log) { return Math.log(log) / Math.log(base); }

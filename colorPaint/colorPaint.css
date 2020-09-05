@@ -133,7 +133,7 @@ button, input, select {
     width: 16px;
     height: 16px;
     margin-top: -4px;
-    border: 2px solid rgba(213, 192, 107, 0.7);
+    border: 2px solid rgba(213, 192, 107, 0.6);
     border-radius: 50%;
     background-color: rgb(0, 0, 0)
 }

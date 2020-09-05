@@ -84,7 +84,7 @@ function hotKeysObject() {
             drawingTools.selectDrawingTool(drawingTools.selectedTool);
         },
         changeToolSizeHotKey(increase) {
-            const value = increase ? +(drawingTools.toolSizeBar.bar.value) + 0.01 : +(drawingTools.toolSizeBar.bar.value) - 0.01;
+            const value = increase ? drawingTools.toolProperties.size + 1 : drawingTools.toolProperties.size - 1;
             drawingTools.changeToolSize(value);
         },
         hotKeysWithShift: {
