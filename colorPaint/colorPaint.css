@@ -1,3 +1,12 @@
+:root {
+    --COR_PRIMARIA: rgb(20, 20, 20);
+    --COR_SECUNDARIA: rgb(28, 28, 28);
+    --COR_TERCIARIA: rgb(37, 37, 37);
+    --COR_QUARTENARIA: rgb(51, 51, 51);
+    --COR_BOTAO: rgba(255, 255, 255, 0.1);
+    --COR_BORDA: rgb(37, 37, 37);
+}
+
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -59,7 +68,7 @@ input[type="range"]::-webkit-slider-thumb {
     width: 100%;
     height: 100%;
     min-width: 1000px;
-    min-height: 630px;
+    min-height: 623px;
     overflow: hidden;
 }
 
@@ -74,8 +83,8 @@ input[type="range"]::-webkit-slider-thumb {
     width: 100%;
     height: 90px;
     padding-top: 50px;
-    border-bottom: 4px solid rgb(37, 37, 37);
-    background-color: rgb(28, 28, 28);
+    border-bottom: 4px solid var(--COR_BORDA);
+    background-color: var(--COR_SECUNDARIA);
 }
 
 #propriedadesFerramentas {
@@ -93,7 +102,7 @@ input[type="range"]::-webkit-slider-thumb {
     float: left;
     padding: 5px;
     height: 36px;
-    border-right: 3px solid rgb(50, 50, 50);
+    border-right: 3px solid var(--COR_TERCIARIA);
     list-style: none;
 }
 
@@ -124,7 +133,7 @@ input[type="range"]::-webkit-slider-thumb {
     width: 280px;
     height: 0px;
     overflow: hidden;
-    background-color: rgb(20, 20, 20);
+    background-color: var(--COR_PRIMARIA);
     top: 36px;
     padding: 0px 10px;
     z-index: 2500;
@@ -230,7 +239,7 @@ input[type="range"]::-webkit-slider-thumb {
     min-width: 85px;
     margin-right: 5px;
     border-radius: 25px;
-    background-color: rgba(255, 255, 255, 0.12);
+    background-color: var(--COR_BOTAO);
     color: rgba(255, 255, 255, 0.4);
     text-transform: uppercase;
     padding: 0px 10px;
@@ -254,25 +263,25 @@ input[type="range"]::-webkit-slider-thumb {
     position: relative;
     width: 100%;
     height: 545px;
-    background-color: rgb(20, 20, 20);
+    background-color: var(--COR_PRIMARIA);
 }
 
 #barraLateralEsquerda {
     position: relative;
     float: left;
     overflow: hidden;
-    width: 100px;
+    width: 96px;
     height: 100%;
-    border-right: 4px solid rgb(37, 37, 37);
-    background-color: rgb(51, 51, 51);
+    border-right: 4px solid var(--COR_BORDA);
+    background-color: var(--COR_QUARTENARIA);
 }
 
 #ferramentas {
     position: relative;
     overflow: hidden;
-    width: 100px;
-    height: 272px;
-    padding: 12px;
+    width: 94px;
+    height: 267px;
+    padding: 10px;
 }
 
 /* ===================================== FERRAMENTAS ========================================= */
@@ -352,10 +361,11 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .bttFerramentas {
+    position: relative;
     width: 35px;
     height: 31px;
     display: inline-block;
-    background-color: rgb(37, 37, 37);
+    background-color: var(--COR_TERCIARIA);
     border-radius: 5px;
     margin-bottom: -2px;
 }
@@ -371,20 +381,22 @@ input[type="range"]::-webkit-slider-thumb {
 
 #coresSelecionadas {
     position: relative;
-    width: 100%;
-    height: 48px;
+    width: 56px;
+    height: 46px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 #corPrincipal {
-    top: 2px;
-    left: 25px;
+    top: 0px;
+    left: 6px;
     background-color: rgb(0, 0, 0);
     z-index: 2;
 }
 
 #corSecundaria {
-    top: 17px;
-    left: 41px;
+    top: 15px;
+    left: 22px;
     background-color: rgb(255, 255, 255);
     z-index: 1;
 }
@@ -408,8 +420,8 @@ input[type="range"]::-webkit-slider-thumb {
     position: absolute;
     width: 12px;
     height: 13px;
-    top: 36px;
-    left: 23px;
+    top: 34px;
+    left: 4px;
     background-image: url("/colorPaint/imagens/spriteIcons.png");
     background-position: -505px -1px;
 }
@@ -418,21 +430,21 @@ input[type="range"]::-webkit-slider-thumb {
     position: absolute;
     width: 12px;
     height: 13px;
-    top: 0px;
-    left: 60px;
+    top: -2px;
+    left: 42px;
     background-image: url("/colorPaint/imagens/spriteIcons.png");
     background-position: -490px 1px;
 }
 
 #coresSalvas {
     position: relative;
-    width: 85px;
+    width: 72px;
     height: auto;
-    padding: 7px;
+    padding: 10px;
     max-height: 134px;
     overflow-x: auto;
     scrollbar-width: thin;
-    background-color: rgb(37, 37, 37);
+    background-color: var(--COR_TERCIARIA);
     border-radius: 7px;
     left: 50%;
     transform: translateX(-50%);
@@ -443,7 +455,7 @@ input[type="range"]::-webkit-slider-thumb {
 #bttRemoverCorSalva {
     position: relative;
     display: none;
-    width: 85px;
+    width: 72px;
     height: 25px;
     left: 50%;
     transform: translateX(-50%);
@@ -466,7 +478,7 @@ input[type="range"]::-webkit-slider-thumb {
     padding: 0px 10px;
     transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
     height: 25px;
-    min-width: 85px;
+    min-width: 72px;
     text-align: center;
 }
 
@@ -478,7 +490,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 #bttAtalhos:hover {
-    background-color: rgb(37, 37, 37);
+    background-color: var(--COR_TERCIARIA);
     color: rgb(110, 110, 110);
 }
 
@@ -490,7 +502,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 #bttRemoverCorSalva:hover {
-    background-color: rgb(37, 37, 37);
+    background-color: var(--COR_TERCIARIA);
     color: rgb(110, 110, 110);
 }
 
@@ -565,14 +577,14 @@ input[type="range"]::-webkit-slider-thumb {
     display: block;
     width: 100%;
     height: 15px;
-    background-color: rgb(37, 37, 37);
+    background-color: var(--COR_TERCIARIA);
 }
 
 #barraInferior input {
     width: 70px;
     height: 15px;
     float: left;
-    background: rgb(27, 27, 27);
+    background: var(--COR_SECUNDARIA);
     color: rgb(131, 131, 131);
     border-right: 2px solid rgb(60, 60, 60);
     text-align: center;
@@ -599,8 +611,8 @@ input[type="range"]::-webkit-slider-thumb {
     width: 300px;
     height: 100%;
     padding: 10px;
-    border-left: 4px solid rgb(37, 37, 37);
-    background-color: rgb(51, 51, 51);
+    border-left: 4px solid var(--COR_BORDA);
+    background-color: var(--COR_QUARTENARIA);
 }
 
 #janelaPreview {
@@ -680,10 +692,6 @@ input[type="range"]::-webkit-slider-thumb {
     margin-right: 5px;
 }
 
-#janelaCamadas {
-    height: 200px;
-}
-
 #contentIconeCamadas {
     position: relative;
     width: 100%;
@@ -695,12 +703,7 @@ input[type="range"]::-webkit-slider-thumb {
 
 #contentBarraOpacidadeCamada {
     display: none;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    float: left;
-    height: 40px;
-    width: 278px;
+    height: 33px;
 }
 
 .propriedadesCamada label {
@@ -711,7 +714,8 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 #contentBarraOpacidadeCamada input[type="range"] {
-    width: 200px;
+    position: relative;
+    width: 100%;
 }
 
 #contentBarraOpacidadeCamada input[type="range"]::-webkit-slider-runnable-track {
@@ -737,33 +741,39 @@ input[type="range"]::-webkit-slider-thumb {
 .janelasBarraLateralDireita {
     position: relative;
     width: 100%;
-    background-color: rgb(37, 37, 37);
+    background-color: var(--COR_TERCIARIA);
     border-radius: 10px;
-    margin-top: 5px;
+    margin-bottom: 11px;
     padding: 10px;
-    margin-bottom: 15px;
+}
+
+.janelasBarraLateralDireita:first-child {
+    margin-top: 1px;
 }
 
 .titulosBarraDireita {
     position: absolute;
-    z-index: 5;
     text-align: center;
-    background-color: rgb(37, 37, 37);
+    background-color: var(--COR_TERCIARIA);
     padding-left: 10px;
     padding-right: 10px;
-    top: -9px;
+    top: -7px;
     border-radius: 5px;
     left: 10px;
 }
 
 .corSalva {
     position: relative;
-    display: inline-block;
+    float: left;
     width: 21px;
     height: 20px;
+    margin-bottom: 4px;
     border-radius: 50%;
     border: 1px solid rgb(0, 0, 0);
-    margin-left: 9px;
+}
+
+.corSalva:nth-child(odd) {
+    margin-right: 4px;
 }
 
 .corSalva div {
@@ -792,7 +802,7 @@ input[type="range"]::-webkit-slider-thumb {
     left: 50%;
     transform: translate(-50%, -50%);
     width: 270px;
-    background-color: rgb(37, 37, 37);
+    background-color: var(--COR_TERCIARIA);
     border-radius: 10px;
     padding: 10px;
     box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.45);
@@ -807,7 +817,7 @@ input[type="range"]::-webkit-slider-thumb {
     top: 150px;
     left: 140px;
     border-top: 1px solid rgba(255, 255, 255, 0.22);
-    background-color: rgb(37, 37, 37);
+    background-color: var(--COR_TERCIARIA);
     width: 560px;
     height: 380px;
     border-radius: 10px;
@@ -1082,6 +1092,10 @@ input[type="range"]::-webkit-slider-thumb {
     border-radius: 5px;
 }
 
+.camadaSelecionada:last-child {
+    margin-bottom: 0px;
+}
+
 .camadas input[type=text] {
     color: rgb(104, 104, 104);
 }
@@ -1091,7 +1105,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .camadas:hover {
-    background-color: rgb(20, 20, 20);
+    background-color: var(--COR_PRIMARIA);
 }
 
 .camadas label {
@@ -1130,7 +1144,7 @@ input[type="range"]::-webkit-slider-thumb {
     position: relative;
     float: left;
     border-radius: 5px;
-    border: 1px solid rgb(20, 20, 20);
+    border: 1px solid var(--COR_PRIMARIA);
     background-color: rgb(91, 91, 91);
     height: 20px;
     width: 20px;
@@ -1190,7 +1204,7 @@ input[type="range"]::-webkit-slider-thumb {
 .janelas {
     position: relative;
     overflow: hidden;
-    background-color: rgb(37, 37, 37);
+    background-color: var(--COR_TERCIARIA);
     width: 350px;
     height: auto;
     border-radius: 10px;
@@ -1215,7 +1229,7 @@ input[type="range"]::-webkit-slider-thumb {
     justify-content: center;
     align-items: center;
     text-transform: uppercase;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.14);
+    border-bottom: 2px solid var(--COR_BOTAO);
     height: 36px;
     color: rgba(255, 255, 255, 0.4);
 }
@@ -1250,7 +1264,7 @@ input[type="range"]::-webkit-slider-thumb {
     font-size: 14px;
     padding: 2px;
     text-align: center;
-    background-color: rgb(37, 37, 37);
+    background-color: var(--COR_TERCIARIA);
     color: rgb(200, 200, 200);
     margin-left: 8px;
     border: 2px solid rgba(255, 255, 255, 0.22);
@@ -1267,7 +1281,7 @@ input[type="range"]::-webkit-slider-thumb {
     flex-direction: row;
     justify-content: center;
     height: 36px;
-    border-top: 2px solid rgba(255, 255, 255, 0.12);
+    border-top: 2px solid var(--COR_BOTAO);
 }
 
 .atalhos ul li {
