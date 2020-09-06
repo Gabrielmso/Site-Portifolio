@@ -4,16 +4,20 @@ let scrollposicao;
 let mudarMenu = true;
 let iconemenublack, iconesetablack, opcoesmenu2, fundomenu, menu, submenu, socials, traco1, traco2, traco3;
 
-function topoMenu() {
-    const request = new XMLHttpRequest();
-    request.open("GET", "/menuTopo.html", false);
-    request.send(null);
-    if (request.status === 200) {
-        document.body.insertAdjacentHTML("afterbegin", request.responseText);
-        addEventsMenu();
-        return true;
-    }
-    return false;
+async function topoMenu() {
+    return new Promise((resolve) => {
+        const request = new XMLHttpRequest();
+        request.onload = () => {
+            if (request.status === 200) {
+                document.body.insertAdjacentHTML("afterbegin", request.responseText);
+                addEventsMenu();
+                resolve(true);
+            }
+            resolve(false);
+        }
+        request.open("GET", "/menuTopo.html", true);
+        request.send(null);
+    });
 }
 
 function addEventsMenu() {

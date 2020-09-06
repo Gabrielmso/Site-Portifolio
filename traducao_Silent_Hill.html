@@ -20,8 +20,8 @@
     <script src="topoMenu/topoMenu.js"></script>
     <script src="ContTraduSilent/traduSilent.js"></script>
     <script>
-        window.onload = () => {
-            if (!topoMenu()) { return; }
+        window.onload = async () => {
+            if (!(await topoMenu())) { return; }
             traduSilent();
             fadeOutLoading();
         };

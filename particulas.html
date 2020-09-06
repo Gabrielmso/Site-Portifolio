@@ -19,7 +19,7 @@
     <script src="particulas/particles.js"></script>
     <script>
         window.onload = async () => {
-            if (!topoMenu()) { return; }
+            if (!(await topoMenu())) { return; }
             particles();
             fadeOutLoading();
         };
