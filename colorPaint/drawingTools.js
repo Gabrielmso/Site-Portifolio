@@ -126,8 +126,8 @@ function drawingToolsObject() {
         },
         getCursorPosition(e) {
             const mouse = getMousePosition(project.screen, e);
-            this.mousePosition.x = +((project.properties.resolution.width / project.screen.offsetWidth) * mouse.x).toFixed(1);
-            this.mousePosition.y = +((project.properties.resolution.height / project.screen.offsetHeight) * mouse.y).toFixed(1);
+            this.mousePosition.x = +(((project.properties.resolution.width / project.screen.offsetWidth) * mouse.x).toFixed(1));
+            this.mousePosition.y = +(((project.properties.resolution.height / project.screen.offsetHeight) * mouse.y).toFixed(1));
             if (this.cursorTool.visible) {
                 this.txtPositionCursor.value = Math.ceil(this.mousePosition.x) + ", " + Math.ceil(this.mousePosition.y);
                 if (!this.painting) {
@@ -237,15 +237,15 @@ function drawingToolsObject() {
         },
         mouseDownToolSizeBar(e) {
             this.clickPropertieBar = true;
-            this.changeToolSizeBar(e.currentTarget.value, true);
+            this.changeToolSizeBar(+((+(e.currentTarget.value)).toFixed(2)), true);
         },
         mouseDownToolOpacityBar(e) {
             this.clickPropertieBar = true;
-            this.changeToolOpacity(e.currentTarget.value, true);
+            this.changeToolOpacity(+((+(e.currentTarget.value)).toFixed(2)), true);
         },
         mouseDownToolHardnessBar(e) {
             this.clickPropertieBar = true;
-            this.changeToolHardness(e.currentTarget.value, true);
+            this.changeToolHardness(+((+(e.currentTarget.value)).toFixed(2)), true);
         },
         selectDrawingTool(i) {
             if (colorSelectionWindow.opened) { return; }
@@ -263,7 +263,7 @@ function drawingToolsObject() {
         changeToolSizeBar(value, show) {
             const res = project.properties.resolution, maxSize = res.proportion > 1 ? res.width : res.height,
                 width = +(this.toolSizeBar.bar.max), expoente = log(width - 50, maxSize);
-            value = this.toolSizeBar.bar.value = +(value) >= width ? width : +(value);
+            value = this.toolSizeBar.bar.value = value >= width ? width : value;
             const size = value < 1 ? 0.5 : value <= 50 ? Math.floor(value) : Math.floor((value - 50) ** expoente) + 50;
             this.toolSizeBar.txt.value = size + "px";
             this.toolProperties.size = size;
@@ -628,7 +628,7 @@ function drawingToolsObject() {
             }
             function setupLine() {
                 const deltaX = endX - x, deltaY = endY - y;
-                const counter = +(((deltaX ** 2) + (deltaY ** 2)) ** 0.5).toFixed(2);
+                const counter = +((((deltaX ** 2) + (deltaY ** 2)) ** 0.5).toFixed(2));
                 return {
                     pos: [x, y], plus: [deltaX / counter, deltaY / counter],
                     counter: counter, endPnt: counter, u: 0,
@@ -686,7 +686,7 @@ function drawingToolsObject() {
             }
             const start = hotKeys.infoShift.startCoordinate, end = getMousePosition(janelaPrincipal, e),
                 distance = end.x - start.x < 0 ? -this.getDistanceCoordinates(start, end) : this.getDistanceCoordinates(start, end);
-            this.changeToolOpacity(+(hotKeys.infoShift.beforeValue + ((distance * 0.01) / 2.5)).toFixed(2), false);
+            this.changeToolOpacity(+((hotKeys.infoShift.beforeValue + ((distance * 0.01) / 2.5)).toFixed(2)), false);
             this.applyToolChanges();
             this.strokeCoordinates = { x: [this.strokeCoordinates.x[0]], y: [this.strokeCoordinates.y[0]] };
             this.brush(false);
@@ -708,7 +708,7 @@ function drawingToolsObject() {
             }
             const start = hotKeys.infoShift.startCoordinate, end = getMousePosition(janelaPrincipal, e),
                 distance = end.x - start.x < 0 ? -this.getDistanceCoordinates(start, end) : this.getDistanceCoordinates(start, end);
-            this.changeToolHardness(+(hotKeys.infoShift.beforeValue + ((distance * 0.01) / 2.5)).toFixed(2), false);
+            this.changeToolHardness(+((hotKeys.infoShift.beforeValue + ((distance * 0.01) / 2.5)).toFixed(2)), false);
             this.applyToolChanges();
             this.strokeCoordinates = { x: [this.strokeCoordinates.x[0]], y: [this.strokeCoordinates.y[0]] };
             this.brush(false);

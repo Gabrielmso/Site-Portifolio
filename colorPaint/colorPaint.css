@@ -35,6 +35,25 @@ button, input, select {
     outline: none;
 }
 
+input[type="range"] {
+    -webkit-appearance: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+    height: 8px;
+    border-radius: 8px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-top: -4px;
+}
+
 #colorPaintContent {
     position: relative;
     width: 100%;
@@ -116,25 +135,14 @@ button, input, select {
 
 #propriedadesFerramentas li div input[type="range"] {
     width: 260px;
-    background-color: transparent;
-    cursor: pointer;
-    -webkit-appearance: none;
 }
 
 #propriedadesFerramentas li div input[type="range"]::-webkit-slider-runnable-track {
-    width: 260px;
-    height: 8px;
-    border-radius: 8px;
     background-color: rgba(213, 192, 107, 0.8)
 }
 
 #propriedadesFerramentas li div input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 16px;
-    height: 16px;
-    margin-top: -4px;
     border: 2px solid rgba(213, 192, 107, 0.6);
-    border-radius: 50%;
     background-color: rgb(0, 0, 0)
 }
 
@@ -688,6 +696,7 @@ button, input, select {
 #contentBarraOpacidadeCamada {
     display: none;
     flex-direction: row;
+    justify-content: center;
     align-items: center;
     float: left;
     height: 40px;
@@ -701,14 +710,17 @@ button, input, select {
     margin-left: 3px;
 }
 
-.barraPropriedadeCamada {
-    position: relative;
+#contentBarraOpacidadeCamada input[type="range"] {
     width: 200px;
-    height: 10px;
-    border-radius: 10px;
-    border: 1px solid rgb(100, 100, 100);
-    background-color: rgb(20, 20, 20);
-    margin-left: 10px;
+}
+
+#contentBarraOpacidadeCamada input[type="range"]::-webkit-slider-runnable-track {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+#contentBarraOpacidadeCamada input[type="range"]::-webkit-slider-thumb {
+    border: 2px solid rgba(0, 0, 0, 0.9);
+    background-color: rgb(153, 138, 76);
 }
 
 .cursorPropriedadeCamada {

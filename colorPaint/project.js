@@ -50,18 +50,11 @@ function projectObject() {
         layerOpacityBar: {
             content: document.getElementById("contentBarraOpacidadeCamada"),
             bar: document.getElementById("barraOpacidadeCamada"),
-            cursor: document.getElementById("cursorOpacidadeCamada"),
             mousedown: false,
         },
         addEventsToElements() {
             this.selectedColors.set(1, this.selectedColors.get(1));
-            this.layerOpacityBar.content.addEventListener("mousemove", (e) => this.changeOpacityLayer(e));
-            this.layerOpacityBar.bar.addEventListener("mousedown", (e) => {
-                this.layerOpacityBar.mousedown = true;
-                this.changeOpacityLayer(e);
-            });
-            this.layerOpacityBar.content.addEventListener("mouseup", () => this.applyOpacityLayer());
-            this.layerOpacityBar.content.addEventListener("mouseleave", () => this.applyOpacityLayer());
+            this.layerOpacityBar.bar.addEventListener("input", (e) => { this.changeOpacityLayer(+((+(e.currentTarget.value)).toFixed(2))) });
             document.getElementById("bttRemoverCorSalva").addEventListener("mousedown", () => this.removeColor());
         },
         saveColor(colorToSave) {
@@ -130,26 +123,10 @@ function projectObject() {
                 this.adjustInVisualizationScreen();
             } else { this.zoom("porcentagem", false, 100); }
         },
-        applyOpacityLayer() {
-            if (!this.layerOpacityBar.mousedown) { return; }
-            this.layerOpacityBar.mousedown = false;
+        changeOpacityLayer(value) {
+            this.arrayLayers[this.selectedLayer].txtOpacity.value = Math.floor((value * 100)) + "%";
+            this.arrayLayers[this.selectedLayer].ctx.canvas.style.opacity = this.arrayLayers[this.selectedLayer].opacity = value;
             this.drawInPreview(this.arrayLayers[this.selectedLayer]);
-        },
-        changeOpacityLayer(e) {
-            if (!this.layerOpacityBar.mousedown) { return; }
-            const mouse = getMousePosition(this.layerOpacityBar.bar, e).x;
-            let porcentagem = Math.round((mouse * 100) / this.layerOpacityBar.bar.offsetWidth);
-            if (mouse <= 1) {
-                porcentagem = 1;
-                cursorOpacidadeCamada.style.left = "-7px";
-            } else if (mouse >= 200) {
-                porcentagem = 100;
-                cursorOpacidadeCamada.style.left = "193px";
-            } else { cursorOpacidadeCamada.style.left = mouse - 7 + "px"; }
-            this.arrayLayers[this.selectedLayer].txtOpacity.value = porcentagem + "%";
-            let opacidade = porcentagem / 100;
-            this.arrayLayers[this.selectedLayer].opacity = opacidade;
-            this.arrayLayers[this.selectedLayer].ctx.canvas.style.opacity = opacidade;
         },
         create(name, resolution, background, numberLayers) {
             const corFundo = document.getElementById("corFundo"), fundoPreview = document.getElementById("fundoPreview"),
@@ -312,7 +289,7 @@ function projectObject() {
                 } else { this.arrayLayers[i].icon.classList.replace("camadaSelecionada", "camadas"); }
             }
             const opacidade = this.arrayLayers[this.selectedLayer].opacity;
-            this.layerOpacityBar.cursor.style.left = (200 * opacidade) - 7 + "px";
+            this.layerOpacityBar.bar.value = opacidade;
             drawingTools.currentLayer = this.arrayLayers[this.selectedLayer].ctx;
         },
         createDrawComplete() {

@@ -4,15 +4,15 @@ let createProjectWindow, project, drawingTools, previewFunctions, undoRedoChange
     notification;
 let janelaPrincipal, contentTelas, txtPorcentagemZoom;
 function colorPaint() {
-    createProjectWindow = createProjectWindowObject();
-    project = projectObject();
-    colorSelectionWindow = colorSelectionWindowObject();
-    drawingTools = drawingToolsObject();
-    previewFunctions = previewFunctionsObject();
-    undoRedoChange = undoRedoChangeObject();
-    hotKeys = hotKeysObject();
-    createGridWindow = createGridWindowObject();
-    notification = notificationsObject();
+    createProjectWindow = new createProjectWindowObject();
+    project = new projectObject();
+    colorSelectionWindow = new colorSelectionWindowObject();
+    drawingTools = new drawingToolsObject();
+    previewFunctions = new previewFunctionsObject();
+    undoRedoChange = new undoRedoChangeObject();
+    hotKeys = new hotKeysObject();
+    createGridWindow = new createGridWindowObject();
+    notification = new notificationsObject();
     const contentJanelaAtalhos = document.getElementById("contentJanelaAtalhos");
     const contentTools = document.getElementById("contentTools");
     const barraLateralEsquerda = document.getElementById("barraLateralEsquerda");
