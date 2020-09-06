@@ -18,7 +18,7 @@
     <script src="Home/Home.js"></script>
     <script>
         window.onload = () => {
-            topoMenu();
+            if (!topoMenu()) { return; }
             home();
             fadeOutLoading();
         };
@@ -26,88 +26,6 @@
 </head>
 
 <body>
-    <nav id="menu" class="iniciomenu">
-        <div id="larguramenu">
-            <div id="iconemenublack" class="cursor inicioiconeblack">
-                <div class="tracos">
-                    <div id="traco1" class="traco iniciotraco1"></div>
-                    <div id="traco2" class="traco iniciotraco2"></div>
-                    <div id="traco3" class="traco iniciotraco3"></div>
-                </div>
-            </div>
-            <div id="fundomenu" class="fechafundomenu">
-                <ul id="opcoesmenu2">
-                    <li class="cursor noSelection">
-                        <a>JavaScript &#9662;</a>
-                        <ul>
-                            <li class="cursor noSelection"><a href="colorPaint.html">ColorPaint (Beta)</a>
-                            </li>
-                            <li class="cursor noSelection"><a href="particulas.html">Colisão de partículas</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="cursor noSelection"><a href="#">HTML/CSS</a></li>
-                    <li class="cursor noSelection"><a href="#">C Sharp</a></li>
-                    <li class="cursor noSelection">
-                        <a>Projetos &#9662;</a>
-                        <ul>
-                            <li class="cursor noSelection"><a href="traducao_Silent_Hill.html">Tradução Silent Hill
-                                    (PS1)</a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-            <div id="submenu">
-                <div id="iconesetablack" class="cursor inicioiconeblack">
-                    <div class="tracos">
-                        <div id="tracoseta1" class="tracoseta iniciotracoseta0"></div>
-                        <div id="tracoseta2" class="tracoseta iniciotracoseta1"></div>
-                        <div id="tracoseta3" class="tracoseta iniciotracoseta2"></div>
-                        <div id="tracoseta4" class="tracoseta iniciotracoseta3"></div>
-                    </div>
-                </div>
-                <div id="socials">
-                    <div id="logoGitHub" class="iconeSociais cursor" title="Perfil do GitHub">
-                        <a class="link cursor" target="_blank" href="https://github.com/Gabrielmso"></a>
-                    </div>
-                    <div id="logoLinkedin" class="iconeSociais cursor" title="Perfil do Linkedin">
-                        <a class="link cursor" target="_blank"
-                            href="https://www.linkedin.com/in/gabriel-martins-soares-de-oliveira-0ab907196"></a>
-                    </div>
-                    <div id="logoinsta" class="iconeSociais cursor" title="Perfil do Instagram">
-                        <a class="link cursor" target="_blank" href="https://www.instagram.com/gabriel.mso"></a>
-                    </div>
-                    <div id="logoyoutube" class="iconeSociais cursor" title="Canal do Youtube">
-                        <a class="link cursor" target="_blank"
-                            href="https://www.youtube.com/channel/UCnAK3Ri_dHs3sk0aF9VuR-w?view_as=subscriber"></a>
-                    </div>
-                </div>
-            </div>
-            <div id="logoBlack" class="cursor iniciologoBlack"></div>
-            <ul id="opcoesmenu">
-                <li class="cursor noSelection">
-                    <a id="op1" class="inicioopcoes">JavaScript &#9662;</a>
-                    <ul>
-                        <li class="cursor noSelection"><a href="colorPaint.html">ColorPaint (Beta)</a>
-                        </li>
-                        <li class="cursor noSelection"><a href="particulas.html">Colisão de partículas</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="cursor noSelection"><a id="op2" class="inicioopcoes" href="#">HTML/CSS</a></li>
-                <li class="cursor noSelection"><a id="op3" class="inicioopcoes" href="#">C Sharp</a></li>
-                <li class="cursor noSelection">
-                    <a id="op4" class="inicioopcoes">Projetos &#9662;</a>
-                    <ul>
-                        <li class="cursor noSelection"><a href="traducao_Silent_Hill.html">Tradução Silent Hill
-                                (PS1)</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </nav>
     <header id="topoApresentacao" style="display: none">
         <div id="imgFundo">
             <div id="imgFundoBlur"></div>

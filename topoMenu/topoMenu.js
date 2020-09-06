@@ -3,13 +3,26 @@ let logoBlack;
 let scrollposicao;
 let mudarMenu = true;
 let iconemenublack, iconesetablack, opcoesmenu2, fundomenu, menu, submenu, socials, traco1, traco2, traco3;
+
 function topoMenu() {
+    const request = new XMLHttpRequest();
+    request.open("GET", "/menuTopo.html", false);
+    request.send(null);
+    if (request.status === 200) {
+        document.body.insertAdjacentHTML("afterbegin", request.responseText);
+        addEventsMenu();
+        return true;
+    }
+    return false;
+}
+
+function addEventsMenu() {
     iconemenublack = document.getElementById("iconemenublack");
     iconesetablack = document.getElementById("iconesetablack");
     opcoesmenu2 = document.getElementById("opcoesmenu2");
     fundomenu = document.getElementById("fundomenu");
-    menu = document.getElementById("menu");
     submenu = document.getElementById("submenu");
+    menu = document.getElementById("menu");
     socials = document.getElementById("socials");
     traco1 = document.getElementById("traco1");
     traco2 = document.getElementById("traco2");
