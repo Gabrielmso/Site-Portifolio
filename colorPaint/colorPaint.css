@@ -1096,6 +1096,10 @@ input[type="range"]::-webkit-slider-thumb {
     margin-bottom: 0px;
 }
 
+.camadas:last-child {
+    margin-bottom: 0px;
+}
+
 .camadas input[type=text] {
     color: rgb(104, 104, 104);
 }
