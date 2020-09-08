@@ -28,13 +28,14 @@ h2 {
     font-family: "Fontetitulo1";
 }
 
-p span {
-    color: #d5c06b;
+p span, p a, li a {
+    color: rgb(213, 192, 107);
+    text-decoration: none;
     transition: color 0.2s linear;
 }
 
-p span:hover {
-    color: #866c03;
+p span:hover, p a:hover, li a:hover {
+    color: rgb(134, 108, 3);
 }
 
 #titulo {
