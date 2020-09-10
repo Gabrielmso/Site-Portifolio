@@ -9,11 +9,10 @@
     <meta name="keywords" content="ColorPaint, GM">
     <meta name="description" content="ColorPaint, Aplicativo Web gratuito para criação desenhos.">
     <meta name="Author" content="Gabriel Martins Soares de Oliveira">
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico">
     <link rel="stylesheet" href="css/styleGeral.css">
     <link rel="stylesheet" href="topoMenu/topoMenu.css">
     <link rel="stylesheet" href="colorPaint/colorPaint.css">
-    <script src="topoMenu/topoMenu.js"></script>
     <script src="colorPaint/colorPaint.js"></script>
     <script src="colorPaint/createProjectWindow.js"></script>
     <script src="colorPaint/project.js"></script>
@@ -24,9 +23,13 @@
     <script src="colorPaint/hotKeys.js"></script>
     <script src="colorPaint/createGridWindow.js"></script>
     <script src="colorPaint/notifications.js"></script>
-    <script>
+    <script type="module">
+        import loadTopoMenu from "./topoMenu/topoMenu.js";
         window.onload = async () => {
-            if (!(await topoMenu())) { return; }
+            const topoMenu = await loadTopoMenu();
+            if (!topoMenu) { return; }
+            topoMenu.changeTheme(false);
+            topoMenu.changeMenu = false;
             colorPaint();
         };
     </script>

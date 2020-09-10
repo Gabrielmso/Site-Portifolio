@@ -1,4 +1,10 @@
+html {
+    height: 100%;
+    /* scroll-behavior: smooth; */
+}
+
 body {
+    height: 100%;
     overflow: hidden;
 }
 
@@ -22,7 +28,8 @@ body {
     z-index: -1;
     background-image: url("./imagens/fundo.jpg");
     background-repeat: no-repeat;
-    background-size: 100%;
+    background-size: cover;
+    background-position: center;
     transition: opacity 900ms ease-in-out;
 }
 
@@ -34,7 +41,8 @@ body {
     z-index: -1;
     background-image: url("./imagens/fundoblur.jpg");
     background-repeat: no-repeat;
-    background-size: 100%;
+    background-size: cover;
+    background-position: center;
     transition: opacity 1000ms ease-in-out;
 }
 

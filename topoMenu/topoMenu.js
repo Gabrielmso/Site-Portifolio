@@ -1,186 +1,132 @@
-let arrayop = [];
-let logoBlack;
-let scrollposicao;
-let mudarMenu = true;
-let iconemenublack, iconesetablack, opcoesmenu2, fundomenu, menu, submenu, socials, traco1, traco2, traco3;
+import { throttle } from "../js/geral.js";
 
-async function topoMenu() {
+function topMenuObject() {
+    return {
+        changeMenu: true,
+        scrollBody: 0,
+        menu: document.getElementById("menu"),
+        logo: document.getElementById("logoBlack"),
+        categories: document.getElementsByClassName("opcaomenu"),
+        menuIcon: {
+            btt: document.getElementById("iconemenublack"),
+            traces: [document.getElementById("traco1"),
+            document.getElementById("traco2"),
+            document.getElementById("traco3")],
+            lateralMenu: document.getElementById("fundomenu"),
+            focus: false,
+            actionAnimation() {
+                const oldClass = this.focus ? "movertraco" : "iniciotraco",
+                    newClass = this.focus ? "iniciotraco" : "movertraco";
+                for (let i = 1; i <= this.traces.length; i++) {
+                    const oldClassName = oldClass + i, newClassName = newClass + i;
+                    this.traces[i - 1].classList.replace(oldClassName, newClassName);
+                }
+                const oldClassMenu = this.focus ? "abrefundomenu" : "fechafundomenu",
+                    newClassMenu = this.focus ? "fechafundomenu" : "abrefundomenu";
+                this.lateralMenu.classList.replace(oldClassMenu, newClassMenu);
+                this.focus = !this.focus;
+            },
+            resizeMenu() {
+                this.lateralMenu.style.height = window.innerHeight + "px";
+            }
+        },
+        downArrow: {
+            btt: document.getElementById("submenu"),
+            icon: document.getElementById("iconesetablack"),
+            traces: [document.getElementById("tracoseta1"),
+            document.getElementById("tracoseta2"),
+            document.getElementById("tracoseta3"),
+            document.getElementById("tracoseta4")],
+            contentDrop: document.getElementById("socials"),
+            focus: false,
+            actionAnimation() {
+                const oldClass = this.focus ? "movertracoseta" : "iniciotracoseta",
+                    newClass = this.focus ? "iniciotracoseta" : "movertracoseta";
+                for (let i = 0; i < this.traces.length; i++) {
+                    const oldClassName = oldClass + i, newClassName = newClass + i;
+                    this.traces[i].classList.replace(oldClassName, newClassName);
+                }
+                const newHeight = this.focus ? "0px" : "200px";
+                this.contentDrop.style.height = newHeight;
+                this.focus = !this.focus;
+            },
+        },
+        changeTheme(top) {
+            if (this.downArrow.focus) { this.downArrow.actionAnimation(); }
+            if (this.menuIcon.focus) { this.menuIcon.actionAnimation(); }
+            if (!this.changeMenu) { return; }
+            if (!top) {
+                this.menu.classList.replace("iniciomenu", "mudamenu");
+                this.logo.classList.replace("iniciologoBlack", "mudalogoBlack");
+                this.downArrow.icon.classList.remove("inicioiconeblack");
+                for (let i = 0; i < this.categories.length; i++) {
+                    this.categories[i].classList.replace("inicioopcoes", "mudaopcoes");
+                }
+            } else {
+                this.menu.classList.replace("mudamenu", "iniciomenu");
+                this.logo.classList.replace("mudalogoBlack", "iniciologoBlack");
+                this.downArrow.icon.classList.add("inicioiconeblack");
+                for (let i = 0; i < this.categories.length; i++) {
+                    this.categories[i].classList.replace("mudaopcoes", "inicioopcoes");
+                }
+            }
+        },
+        scrollMenu() {
+            this.scrollBody = document.body.scrollTop || document.documentElement.scrollTop;
+            if (this.scrollBody > 5) { this.changeTheme(false); }
+            else { this.changeTheme(true); }
+        },
+        screenResize() {
+            this.menuIcon.resizeMenu();
+            if (!this.changeMenu) { return; }
+            if (this.scrollBody > 5) {
+                this.menu.classList.replace("iniciomenu", "mudamenu");
+                this.logo.classList.replace("iniciologoBlack", "mudalogoBlack");
+            } else {
+                this.menu.classList.replace("mudamenu", "iniciomenu");
+                this.logo.classList.replace("mudalogoBlack", "iniciologoBlack");
+            }
+            if (window.innerWidth > 650) {
+                if (this.menuIcon.focus) { this.menuIcon.actionAnimation(); }
+            }
+        },
+        addEventsToElements() {
+            this.menuIcon.btt.addEventListener("mousedown", () => this.menuIcon.actionAnimation());
+            this.downArrow.btt.addEventListener("mousedown", () => this.downArrow.actionAnimation());
+            this.downArrow.btt.addEventListener("mouseleave", () => { if (this.downArrow.focus) { this.downArrow.actionAnimation(); } });
+            window.addEventListener("resize", () => this.screenResize());
+            window.addEventListener("scroll", throttle(() => this.scrollMenu(), 110, true));
+        },
+        init() {
+            this.addEventsToElements();
+            this.screenResize();
+        },
+    }
+}
+
+function callTopMenuObject() {
+    const topMenu = new topMenuObject();
+    topMenu.init();
+    return topMenu;
+}
+
+function loadFile(url) {
     return new Promise((resolve) => {
         const request = new XMLHttpRequest();
-        request.onload = () => {
-            if (request.status === 200) {
-                document.body.insertAdjacentHTML("afterbegin", request.responseText);
-                addEventsMenu();
-                resolve(true);
-            }
+        request.onload = function () {
+            if (this.status === 200) { resolve(this.response); }
             resolve(false);
         }
-        request.open("GET", "/menuTopo.html", true);
+        request.open("GET", url, true);
         request.send(null);
     });
 }
 
-function addEventsMenu() {
-    iconemenublack = document.getElementById("iconemenublack");
-    iconesetablack = document.getElementById("iconesetablack");
-    opcoesmenu2 = document.getElementById("opcoesmenu2");
-    fundomenu = document.getElementById("fundomenu");
-    submenu = document.getElementById("submenu");
-    menu = document.getElementById("menu");
-    socials = document.getElementById("socials");
-    traco1 = document.getElementById("traco1");
-    traco2 = document.getElementById("traco2");
-    traco3 = document.getElementById("traco3");
-    logoBlack = document.getElementById("logoBlack");//Cada pagina terá de conter um arquivo de script com o evento click individual.
-
-    const arraytracoseta = [document.getElementById("tracoseta1"),
-    document.getElementById("tracoseta2"),
-    document.getElementById("tracoseta3"),
-    document.getElementById("tracoseta4")];
-
-    let clickSocials = false;
-
-    arrayop = [document.getElementById("op1"),
-    document.getElementById("op2"),
-    document.getElementById("op3"),
-    document.getElementById("op4")];
-
-    scrollposicao = document.body.scrollTop || document.documentElement.scrollTop;
-
-    redimencionarjanela();
-    telamenor651px();
-
-    window.addEventListener("resize", function () {
-        if (clickSocials === true) {
-            clickSocials = false;
-            socials.style.height = "0px";
-            iconesetablacknormal();
-        }
-        redimencionarjanela();
-        telamenor651px();
-    });
-
-    window.addEventListener("scroll", throttle(function () {
-        scrollposicao = document.body.scrollTop || document.documentElement.scrollTop;
-        if (clickSocials === true) {
-            clickSocials = false;
-            socials.style.height = "0px";
-            iconesetablacknormal();
-        }
-        if (scrollposicao > 5 && mudarMenu === true) {
-            menu.classList.replace("iniciomenu", "mudamenu");
-            logoBlack.classList.replace("iniciologoBlack", "mudalogoBlack");
-            iconesetablack.classList.replace("inicioiconeblack", "mudaiconeblack");
-            iconemenublack.classList.replace("inicioiconeblack", "mudaiconeblack");
-            for (let i = 0; i < arrayop.length; i++) { arrayop[i].classList.replace("inicioopcoes", "mudaopcoes"); }
-        }
-        else {
-            menu.classList.replace("mudamenu", "iniciomenu");
-            logoBlack.classList.replace("mudalogoBlack", "iniciologoBlack");
-            iconesetablack.classList.replace("mudaiconeblack", "inicioiconeblack");
-            iconemenublack.classList.replace("mudaiconeblack", "inicioiconeblack");
-            for (let i = 0; i < arrayop.length; i++) { arrayop[i].classList.replace("mudaopcoes", "inicioopcoes"); }
-        }
-    }, 110, true));
-
-    iconesetablack.addEventListener("click", function () {
-        if (clickSocials === true) {
-            clickSocials = false;
-            socials.style.height = "0px";
-            iconesetablacknormal();
-        }
-        else {
-            clickSocials = true;
-            socials.style.height = "200px";
-            for (let i = 0; i < arraytracoseta.length; i++) {
-                let nomeclasseinicio = "iniciotracoseta" + i;
-                let nomeclassemuda = "movertracoseta" + i;
-                arraytracoseta[i].classList.replace(nomeclasseinicio, nomeclassemuda);
-            }
-        }
-    });
-
-    submenu.addEventListener("mouseleave", function () {
-        if (clickSocials === true) {
-            clickSocials = false;
-            socials.style.height = "0px";
-            iconesetablacknormal();
-        }
-    });
-
-    iconemenublack.addEventListener("click", acaobotaomenu);
-
-    function iconesetablacknormal() {
-        for (let i = 0; i < arraytracoseta.length; i++) {
-            let nomeclasseinicio = "iniciotracoseta" + i;
-            let nomeclassemuda = "movertracoseta" + i;
-            arraytracoseta[i].classList.replace(nomeclassemuda, nomeclasseinicio);
-        }
+export default async function loadTopoMenu() {
+    const HTMLcontent = await loadFile("./menuTopo.html");
+    if (HTMLcontent) {
+        document.body.insertAdjacentHTML("afterbegin", HTMLcontent.toString());
+        return callTopMenuObject();
     }
-
-    function acaobotaomenu() {//Abrir o menu e fazer a "animação" do "iconemenublack".
-        if (fundomenu.classList.contains("fechafundomenu") === true) {
-            fundomenu.classList.replace("fechafundomenu", "abrefundomenu")
-            traco1.classList.replace("iniciotraco1", "movertraco1");
-            traco2.classList.add("movertraco2");
-            traco3.classList.replace("iniciotraco3", "movertraco3");
-        }
-        else {
-            fundomenu.classList.replace("abrefundomenu", "fechafundomenu")
-            traco1.classList.replace("movertraco1", "iniciotraco1");
-            traco2.classList.remove("movertraco2");
-            traco3.classList.replace("movertraco3", "iniciotraco3");
-        }
-    };
-
-    function telamenor651px() {
-        if (mudarMenu === true) {
-            if (scrollposicao > 5) {
-                menu.classList.replace("iniciomenu", "mudamenu");
-                logoBlack.classList.replace("iniciologoBlack", "mudalogoBlack");
-            }
-            else {
-                menu.classList.replace("mudamenu", "iniciomenu");
-                logoBlack.classList.replace("mudalogoBlack", "iniciologoBlack");
-            }
-
-            if (window.innerWidth > 650) {
-                logoBlack.style.left = "0px";
-                fundomenu.classList.replace("abrefundomenu", "fechafundomenu")
-                traco1.classList.replace("movertraco1", "iniciotraco1");
-                traco2.classList.remove("movertraco2");
-                traco3.classList.replace("movertraco3", "iniciotraco3");
-            }
-        }
-    };
-    function redimencionarjanela() {
-        opcoesmenu2.style.height = (window.innerHeight - 50) + "px";
-        fundomenu.style.height = (window.innerHeight * 2) + "px";
-    };
-};
-
-function fadeOutLoading() {
-    const content = document.getElementById("carregamento");
-    content.style.opacity = 0;
-    setTimeout(() => content.remove(), 800);
-}
-
-function throttle(func, wait, immediate) {
-    let timeout = null
-    let initialCall = true
-
-    return function () {
-        const callNow = immediate && initialCall
-        const next = function () {
-            func.apply(this, arguments)
-            timeout = null
-        }
-        if (callNow) {
-            initialCall = false
-            next()
-        }
-        if (!timeout) {
-            timeout = setTimeout(next, wait)
-        }
-    }
+    return false;
 }

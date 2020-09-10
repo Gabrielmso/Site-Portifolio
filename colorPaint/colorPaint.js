@@ -1,4 +1,3 @@
-mudarMenu = false;
 let corPrincipal, corSecundaria;
 let createProjectWindow, project, drawingTools, previewFunctions, undoRedoChange, hotKeys, createGridWindow, colorSelectionWindow,
     notification;
@@ -24,7 +23,6 @@ function colorPaint() {
     corSecundaria = document.getElementById("corSecundaria");
     txtPorcentagemZoom = document.getElementById("txtPorcentagemZoom");
     menu.style.transition = "none";
-    menuPadrao();
     ajustarContents();
     criarOuAbrirProjeto();
 
@@ -127,14 +125,6 @@ function colorPaint() {
         setTimeout(() => ajustarContents(), 120);
         if (project.created) { project.adjustInVisualizationScreen(); };
     });
-
-    function menuPadrao() {
-        menu.classList.replace("iniciomenu", "mudamenu");
-        logoBlack.classList.replace("iniciologoBlack", "mudalogoBlack");
-        iconesetablack.classList.replace("inicioiconeblack", "mudaiconeblack");
-        iconemenublack.classList.replace("inicioiconeblack", "mudaiconeblack");
-        for (let i = 0; i < arrayop.length; i++) { arrayop[i].classList.replace("inicioopcoes", "mudaopcoes"); }
-    }
 
     function ajustarContents() {
         contentTools.style.height = (janelaPrincipal.offsetHeight - 90) + "px";

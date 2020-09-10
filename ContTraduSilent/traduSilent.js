@@ -1,13 +1,16 @@
-const proporcao4por3 = 4 / 3;
-let numSlide = 0, contCarrosel = 0, fundoComparacaoAberto = false, mouseTexto, imgVisivel = false, mudarCarrosel = true;
-function traduSilent() {
+import loadTopoMenu from "../topoMenu/topoMenu.js";
+import particles from "../particulas/particles.js";
+
+let topoMenu;
+function traduSilentFunctions() {
     const titulo = document.getElementById("titulo"), info = document.getElementById("info"),
         traprogress = document.getElementById("traprogress"), textos = document.getElementsByClassName("texto"),
         bttverdetalhes = document.getElementById("bttverdetalhes"), telaSlideCarrosel = document.getElementsByClassName("telaslide"),
         imgTrad = document.getElementsByClassName("imgtrad"), slides = document.getElementsByClassName("slides"),
         tempoTransicao = 700, styletransicao = "height " + tempoTransicao + "ms ease-in-out";//Armazena a configuração da transição dos slides.
-    let larguraJanela = window.innerWidth;
-    let alturaJanela = window.innerHeight;
+    const proporcao4por3 = 4 / 3;
+    let numSlide = 0, contCarrosel = 0, fundoComparacaoAberto = false, mouseTexto = false, imgVisivel = false, mudarCarrosel = true;
+    let tmp, larguraJanela = window.innerWidth, alturaJanela = window.innerHeight;
     const sessao = [
         { slide: document.getElementById("sessao1"), imagem: document.getElementById("fundo1") },
         {
@@ -345,19 +348,8 @@ function traduSilent() {
     }
 
     function mudarMenu() {
-        if (numSlide === 0) {
-            menu.classList.replace("mudamenu", "iniciomenu");
-            logoBlack.classList.replace("mudalogoBlack", "iniciologoBlack");
-            iconesetablack.classList.replace("mudaiconeblack", "inicioiconeblack");
-            iconemenublack.classList.replace("mudaiconeblack", "inicioiconeblack");
-            for (let i = 0; i < arrayop.length; i++) { arrayop[i].classList.replace("mudaopcoes", "inicioopcoes"); }
-        } else {
-            menu.classList.replace("iniciomenu", "mudamenu");
-            logoBlack.classList.replace("iniciologoBlack", "mudalogoBlack");
-            iconesetablack.classList.replace("inicioiconeblack", "mudaiconeblack");
-            iconemenublack.classList.replace("inicioiconeblack", "mudaiconeblack");
-            for (let i = 0; i < arrayop.length; i++) { arrayop[i].classList.replace("inicioopcoes", "mudaopcoes"); }
-        }
+        if (numSlide === 0) { topoMenu.changeTheme(true) }
+        else { topoMenu.changeTheme(false); }
     }
 
     function ajustarimgscomparacao() {
@@ -439,4 +431,13 @@ function traduSilent() {
     }
     ajustarimgscomparacao();
     setTimeout(carregamento, 900);
+}
+
+export default async function traduSilent() {
+    topoMenu = await loadTopoMenu();
+    if (topoMenu) {
+        traduSilentFunctions();
+        return true;
+    }
+    return false;
 }
