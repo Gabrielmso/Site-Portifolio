@@ -1,9 +1,18 @@
-// let corPrincipal, corSecundaria;
-// let createProjectWindow, project, drawingTools, previewFunctions, undoRedoChange, hotKeys, createGridWindow, colorSelectionWindow,
-//     notification;
-// let janelaPrincipal, contentTelas, txtPorcentagemZoom;
-let menu, janelaPrincipal, colorSelectionWindow, notification;
-function colorPaint() {
+import loadTopoMenu from "../topoMenu/topoMenu.js";
+import createProjectWindowObject from "./createProjectWindow.js";
+import projectObject from "./project.js";
+import drawingToolsObject from "./drawingTools.js";
+import previewFunctionsObject from "./previewFunctions.js";
+import undoRedoChangeObject from "./undoRedoChange.js";
+import hotKeysObject from "./hotKeys.js";
+import createGridWindowObject from "./createGridWindow.js";
+import colorSelectionWindowObject from "./colorSelectionWindow.js";
+import notificationsObject from "./notifications.js";
+import { preventDefaultAction, getMousePosition } from "../js/geral.js";
+
+let topoMenu, janelaPrincipal, colorSelectionWindow, notification;
+
+function loadApp() {
     const createProjectWindow = createProjectWindowObject(),
         project = projectObject(),
         drawingTools = drawingToolsObject(),
@@ -23,8 +32,6 @@ function colorPaint() {
         corSecundaria = document.getElementById("corSecundaria"),
         txtPorcentagemZoom = document.getElementById("txtPorcentagemZoom");
     janelaPrincipal = document.getElementById("colorPaintContent");
-    menu = document.getElementById("menu");
-    menu.style.transition = "none";
     ajustarContents();
     criarOuAbrirProjeto();
 
@@ -186,32 +193,18 @@ function colorPaint() {
         }
     }
 }
-// ==========================================================================================================================================================================================================================================
-
-function getMousePosition(element, e) {
-    const { left, top } = element.getBoundingClientRect();
-    return { x: e.clientX - left, y: e.clientY - top }
-}
-
-function cloneReplaceElement(oldElement) {
-    const newElement = oldElement.cloneNode(true);
-    oldElement.parentNode.insertBefore(newElement, oldElement);
-    oldElement.remove();
-    return newElement;
-}
-
-function throttle(func, limit) {
-    let inThrottle;
-    return function () {
-        const args = arguments;
-        const context = this;
-        if (!inThrottle) {
-            func.apply(context, args);
-            inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
-        }
+export default async function colorPaint() {
+    topoMenu = await loadTopoMenu();
+    if (topoMenu) {
+        topoMenu.changeTheme(false);
+        topoMenu.changeMenu = false;
+        topoMenu.menu.style.transition = "none";
+        loadApp();
+        return true;
     }
+    return false;
 }
+// ==========================================================================================================================================================================================================================================
 
 document.addEventListener("keydown", function (e) {
     if (e.code === "F5" && project.created) {
@@ -220,27 +213,16 @@ document.addEventListener("keydown", function (e) {
     }
 });
 
-function getImage(url) {
-    const image = new Image();
-    image.src = url;
-    return image;
-}
-
-function backgroundBlur(blur) {
+export function backgroundBlur(blur) {
     if (blur) {
-        menu.style.filter = "blur(9px)"
+        topoMenu.menu.style.filter = "blur(9px)"
         janelaPrincipal.style.filter = "blur(9px)";
         colorSelectionWindow.window.style.filter = "blur(9px)";
         notification.window.style.filter = "blur(9px)";
     } else {
-        menu.style.filter = ""
+        topoMenu.menu.style.filter = ""
         janelaPrincipal.style.filter = "";
         colorSelectionWindow.window.style.filter = "";
         notification.window.style.filter = "";
     }
-}
-
-function preventDefaultAction(e) {
-    e.preventDefault();
-    e.stopPropagation();
 }

@@ -1,4 +1,4 @@
-function hotKeysObject() {
+export default function hotKeysObject() {
     const observers = {};
     return {
         ctrlPressed: false, shiftPressed: false,

@@ -1,4 +1,6 @@
-function projectObject() {
+import { preventDefaultAction } from "../js/geral.js";
+
+export default function projectObject() {
     const observers = {};
     return {
         properties: {

@@ -1,5 +1,6 @@
-// let project, createGridWindow, notification, contentTelas, txtPorcentagemZoom;
-function createGridWindowObject() {
+import { cloneReplaceElement, getMousePosition } from "../js/geral.js";
+
+export default function createGridWindowObject() {
     const observers = {};
     return {
         gridProprieties: { screen: document.getElementById("grid"), size: 80, position: { x: 0, y: 0 }, visible: false, },
@@ -143,14 +144,14 @@ function createGridWindowObject() {
             } else {
                 this.mousePositionMoveWindow = mousePosition;
                 this.contentWindow.addEventListener("mousemove", observers.createGridWindow.mouseMoveEvent);
-                this.contentWindow.addEventListener("mouseup", createGridWindow.mouseUpEvent);
+                this.contentWindow.addEventListener("mouseup", observers.createGridWindow.mouseUpEvent);
             }
         },
         mouseMoveEvent(e) {
             observers.createGridWindow.moveWindow(getMousePosition(observers.createGridWindow.contentWindow, e), true);
         },
         mouseUpEvent() {
-            observers.createGridWindow.contentWindow.removeEventListener("mousemove", createGridWindow.mouseMoveEvent);
+            observers.createGridWindow.contentWindow.removeEventListener("mousemove", observers.createGridWindow.mouseMoveEvent);
             observers.createGridWindow.contentWindow.addEventListener("mouseup", observers.createGridWindow.mouseUpEvent);
             observers.createGridWindow.mousePositionMoveWindow = null;
         },

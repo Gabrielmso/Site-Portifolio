@@ -1,4 +1,6 @@
-function notificationsObject() {
+import { cloneReplaceElement } from "../js/geral.js";
+
+export default function notificationsObject() {
     return {
         opened: false,
         contentWindow: document.getElementById("contentNotificacao"),

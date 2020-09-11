@@ -1,4 +1,4 @@
-function undoRedoChangeObject() {
+export default function undoRedoChangeObject() {
     const observers = {};
     return {
         buttons: { undo: document.getElementById("bttDesfazer"), redo: document.getElementById("bttRefazer") },

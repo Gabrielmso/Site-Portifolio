@@ -1,4 +1,6 @@
-function createProjectWindowObject() {
+import { backgroundBlur } from "./colorPaint.js"
+
+export default function createProjectWindowObject() {
     const observers = {};
     return {
         content: document.getElementById("contentCriarAbrirProjeto"),

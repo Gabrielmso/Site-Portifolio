@@ -1,4 +1,6 @@
-function colorSelectionWindowObject() {
+import { getMousePosition, cloneReplaceElement } from "../js/geral.js";
+
+export default function colorSelectionWindowObject() {
     const observers = {};
     return {
         opened: false,

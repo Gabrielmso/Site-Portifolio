@@ -1,4 +1,6 @@
-function previewFunctionsObject() {
+import { getMousePosition } from "../js/geral.js";
+
+export default function previewFunctionsObject() {
     const observers = {};
     return {
         contentTelaPreview: document.getElementById("contentTelaPreview"),
@@ -14,12 +16,12 @@ function previewFunctionsObject() {
             this.moverScrollPreview = true;
             this.moverScroll.style.cursor = "grabbing";
             this.mouseMoveMoverScroll(getMousePosition(this.contentTelaPreview, e));
-            document.addEventListener("mouseup", previewFunctions.mouseUpPreview);
+            document.addEventListener("mouseup", observers.previewFunctions.mouseUpPreview);
         },
         mouseUpPreview(e) {
-            previewFunctions.moverScrollPreview = false;
-            previewFunctions.moverScroll.style.cursor = "grab";
-            document.removeEventListener("mouseup", previewFunctions.mouseUpPreview);
+            observers.previewFunctions.moverScrollPreview = false;
+            observers.previewFunctions.moverScroll.style.cursor = "grab";
+            document.removeEventListener("mouseup", observers.previewFunctions.mouseUpPreview);
         },
         mouseMovePreview(e) {
             if (!this.moverScrollPreview) { return; }

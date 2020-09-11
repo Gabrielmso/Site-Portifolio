@@ -1,4 +1,6 @@
-function drawingToolsObject() {
+import { getImage, preventDefaultAction, throttle, getMousePosition } from "../js/geral.js";
+
+export default function drawingToolsObject() {
     const observers = {}
     return {
         arrayTools: [
