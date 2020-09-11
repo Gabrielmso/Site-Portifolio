@@ -1,11 +1,12 @@
 function previewFunctionsObject() {
+    const observers = {};
     return {
         contentTelaPreview: document.getElementById("contentTelaPreview"),
         ctxTelaPreview: document.getElementById("telaPreview").getContext("2d"),
         moverScroll: document.getElementById("moverScroll"),
         moverScrollPreview: false,//Saber se o mouse está pressionado na "contentTelaPreview".
         addEventsToElements() {
-            contentTelas.addEventListener("scroll", (e) => this.scrollContentTelas(e));
+            observers.contentTelas.addEventListener("scroll", (e) => this.scrollContentTelas(e));
             this.contentTelaPreview.addEventListener("mousedown", (e) => this.mouseDownPreview(e));
             document.getElementById("janelaPreview").addEventListener("mousemove", (e) => this.mouseMovePreview(e));
         },
@@ -25,10 +26,10 @@ function previewFunctionsObject() {
             this.mouseMoveMoverScroll(getMousePosition(this.contentTelaPreview, e));
         },
         scrollContentTelas() {
-            const mult = (contentTelas.scrollHeight - 12) / this.contentTelaPreview.offsetHeight;
-            const mult2 = (contentTelas.scrollWidth - 12) / this.contentTelaPreview.offsetWidth;
-            moverScroll.style.top = (contentTelas.scrollTop / mult) + "px";
-            moverScroll.style.left = (contentTelas.scrollLeft / mult2) + "px";
+            const mult = (observers.contentTelas.scrollHeight - 12) / this.contentTelaPreview.offsetHeight;
+            const mult2 = (observers.contentTelas.scrollWidth - 12) / this.contentTelaPreview.offsetWidth;
+            moverScroll.style.top = (observers.contentTelas.scrollTop / mult) + "px";
+            moverScroll.style.left = (observers.contentTelas.scrollLeft / mult2) + "px";
         },
         adjustPreview(proportion) {
             const proporcaoEspaco = 256 / 150;
@@ -45,8 +46,8 @@ function previewFunctionsObject() {
             this.ctxTelaPreview.canvas.height = Math.round(this.contentTelaPreview.offsetHeight * 1.5);
         },
         changeMoverScrollSizeZoom() {//De acordo com o zoom que é dado muda o tamanho do "moverScroll".
-            const tamanhoTelasCanvas = { x: project.screen.offsetWidth, y: project.screen.offsetHeight },
-                tamanhoContentTelas = { x: contentTelas.offsetWidth, y: contentTelas.offsetHeight },
+            const tamanhoTelasCanvas = { x: observers.project.screen.offsetWidth, y: observers.project.screen.offsetHeight },
+                tamanhoContentTelas = { x: observers.contentTelas.offsetWidth, y: observers.contentTelas.offsetHeight },
                 tamanhoContentTelaPreview = { x: this.contentTelaPreview.offsetWidth, y: this.contentTelaPreview.offsetHeight };
             this.moverScroll.style.display = "block";
             if (tamanhoTelasCanvas.x <= (tamanhoContentTelas.x - 10) && tamanhoTelasCanvas.y <= (tamanhoContentTelas.y - 10)) {
@@ -78,8 +79,11 @@ function previewFunctionsObject() {
             this.changeScrollsContentTelas(top, left);
         },
         changeScrollsContentTelas(top, left) {//Mudar o valor dos Scroll's do contentTelas movendo o "moverScroll". 
-            contentTelas.scrollTop = top * ((contentTelas.scrollHeight) / this.contentTelaPreview.offsetHeight);
-            contentTelas.scrollLeft = left * ((contentTelas.scrollWidth) / this.contentTelaPreview.offsetWidth);
+            observers.contentTelas.scrollTop = top * ((observers.contentTelas.scrollHeight) / this.contentTelaPreview.offsetHeight);
+            observers.contentTelas.scrollLeft = left * ((observers.contentTelas.scrollWidth) / this.contentTelaPreview.offsetWidth);
+        },
+        addObserver(newobservers) {
+            for (const prop in newobservers) { observers[prop] = newobservers[prop]; }
         }
     }
 }

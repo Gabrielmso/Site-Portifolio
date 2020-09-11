@@ -1,10 +1,9 @@
 function projectObject() {
+    const observers = {};
     return {
         properties: {
-            name: null,
-            resolution: { width: null, height: null, proportion: null },
-            background: null,
-            numberLayers: 0
+            name: null, resolution: { width: null, height: null, proportion: null },
+            background: null, numberLayers: 0
         },
         selectedColors: {
             firstPlane: { r: 0, g: 0, b: 0 }, backgroundPlane: { r: 255, g: 255, b: 255 }, saved: {
@@ -15,11 +14,11 @@ function projectObject() {
                 const apply = {
                     color1(rgb) {
                         this.firstPlane = rgb;
-                        this.txtFirstPlane.value = corPrincipal.style.backgroundColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+                        this.txtFirstPlane.value = observers.corPrincipal.style.backgroundColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
                     },
                     color2(rgb) {
                         this.backgroundPlane = rgb;
-                        corSecundaria.style.backgroundColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+                        observers.corSecundaria.style.backgroundColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
                     }
                 }
                 plane = plane < 1 ? 1 : plane > 2 ? 1 : plane;
@@ -63,7 +62,7 @@ function projectObject() {
             for (let i = 0; i < indexColor; i++) {
                 const color = this.selectedColors.saved.colors[i].rgb;
                 if (color.r === colorToSave.r && color.g === colorToSave.g && color.b === colorToSave.b) {
-                    notification.open({ title: "Atenção!", text: "Essa cor já está salva." }, { name: "notify", time: 1500 }, null);
+                    observers.notification.open({ title: "Atenção!", text: "Essa cor já está salva." }, { name: "notify", time: 1500 }, null);
                     return;
                 }
             }
@@ -75,13 +74,13 @@ function projectObject() {
             this.selectedColors.saved.colors.push({ el: savedColorEl, rgb: colorToSave });
             document.getElementById("coresSalvas").appendChild(savedColorEl);
             this.selectedColors.saved.colors[indexColor].el.addEventListener("mousedown", (e) => {
-                if (!colorSelectionWindow.opened) { this.selectedColors.selectSavedColor(indexColor, e.button); }
-                else { colorSelectionWindow.findColor(this.selectedColors.saved.colors[indexColor].rgb); }
+                if (!observers.colorSelectionWindow.opened) { this.selectedColors.selectSavedColor(indexColor, e.button); }
+                else { observers.colorSelectionWindow.findColor(this.selectedColors.saved.colors[indexColor].rgb); }
             });
             this.selectedColors.saved.colors[indexColor].el.addEventListener("contextmenu", preventDefaultAction);
         },
         removeColor() {
-            if (!colorSelectionWindow.opened && this.selectedColors.saved.selected > -1) {
+            if (!observers.colorSelectionWindow.opened && this.selectedColors.saved.selected > -1) {
                 this.selectedColors.saved.colors.splice(this.selectedColors.saved.selected, 1)[0].el.remove();
                 this.selectedColors.saved.selected = -1;
                 const resave = this.selectedColors.saved.colors;
@@ -98,27 +97,27 @@ function projectObject() {
             const previousWidth = this.screen.offsetWidth, { width, proportion } = this.properties.resolution;
             let larguraAtual = zoom === "porcentagem" ? width * value / 100 : zoom ? previousWidth * value : previousWidth / value;
             larguraAtual = larguraAtual <= 25 ? 25 : larguraAtual >= width * 32 ? width * 32 : larguraAtual;
-            const alturaAtual = (larguraAtual / proportion), { offsetWidth, offsetHeight } = contentTelas
+            const alturaAtual = (larguraAtual / proportion), { offsetWidth, offsetHeight } = observers.contentTelas
             this.screen.style.width = larguraAtual + "px";
             this.screen.style.height = alturaAtual + "px";
             this.screen.style.left = larguraAtual >= (offsetWidth - 12) ? "6px" : (offsetWidth / 2) - (larguraAtual / 2) + "px";
             this.screen.style.top = alturaAtual >= (offsetHeight - 12) ? "6px" : (offsetHeight / 2) - (alturaAtual / 2) + "px";
             if (centralize) {
-                contentTelas.scrollTop = ((alturaAtual / 2) + 12) - (offsetHeight / 2);
-                contentTelas.scrollLeft = ((larguraAtual / 2) + 12) - (offsetWidth / 2);
+                observers.contentTelas.scrollTop = ((alturaAtual / 2) + 12) - (offsetHeight / 2);
+                observers.contentTelas.scrollLeft = ((larguraAtual / 2) + 12) - (offsetWidth / 2);
             }
-            txtPorcentagemZoom.value = ((larguraAtual * 100) / width).toFixed(2).replace(".", ",") + "%";
-            previewFunctions.changeMoverScrollSizeZoom();
-            drawingTools.changeCursorTool();
+            observers.txtPorcentagemZoom.value = ((larguraAtual * 100) / width).toFixed(2).replace(".", ",") + "%";
+            observers.previewFunctions.changeMoverScrollSizeZoom();
+            observers.drawingTools.changeCursorTool();
         },
         adjustInVisualizationScreen() {
-            const { width, height, proportion } = this.properties.resolution, maxWidth = contentTelas.offsetWidth - 12,
-                maxHeight = contentTelas.offsetHeight - 12, proportionContent = maxWidth / maxHeight,
+            const { width, height, proportion } = this.properties.resolution, maxWidth = observers.contentTelas.offsetWidth - 12,
+                maxHeight = observers.contentTelas.offsetHeight - 12, proportionContent = maxWidth / maxHeight,
                 zoomAdjusted = proportion >= proportionContent ? +(((maxWidth * 100) / width).toFixed(2)) : +(((maxHeight * 100) / height).toFixed(2));
             this.zoom("porcentagem", false, zoomAdjusted);
         },
         adjustScreen() {
-            const maxWidth = contentTelas.offsetWidth - 12, maxHeight = contentTelas.offsetHeight - 12;
+            const maxWidth = observers.contentTelas.offsetWidth - 12, maxHeight = observers.contentTelas.offsetHeight - 12;
             if (this.properties.resolution.width >= maxWidth || this.properties.resolution.height >= maxHeight) {
                 this.adjustInVisualizationScreen();
             } else { this.zoom("porcentagem", false, 100); }
@@ -145,19 +144,19 @@ function projectObject() {
             }
             this.drawComplete.canvas.width = this.properties.resolution.width;
             this.drawComplete.canvas.height = this.properties.resolution.height;
-            drawingTools.eventLayer.canvas.width = this.properties.resolution.width;
-            drawingTools.eventLayer.canvas.height = this.properties.resolution.height;
+            observers.drawingTools.eventLayer.canvas.width = this.properties.resolution.width;
+            observers.drawingTools.eventLayer.canvas.height = this.properties.resolution.height;
             txtResolucao.value = this.properties.resolution.width + ", " + this.properties.resolution.height;
             while (this.properties.numberLayers > this.arrayLayers.length) { this.createElements(color); }
             document.getElementById("nomeDoProjeto").innerText = this.properties.name;
             this.layerOpacityBar.content.style.display = "flex";
             this.created = true;
             this.adjustScreen();
-            previewFunctions.adjustPreview(this.properties.resolution.proportion);
-            drawingTools.addEventsToElements();
-            previewFunctions.addEventsToElements();
-            undoRedoChange.addEventsToElements();
-            hotKeys.addEventsToElements();
+            observers.previewFunctions.adjustPreview(this.properties.resolution.proportion);
+            observers.drawingTools.addEventsToElements();
+            observers.previewFunctions.addEventsToElements();
+            observers.undoRedoChange.addEventsToElements();
+            observers.hotKeys.addEventsToElements();
             setTimeout(() => this.clickIconLayer(0), 3);
         },
         createElements(color) {
@@ -239,9 +238,9 @@ function projectObject() {
             elPreviewCamada.setAttribute("id", idPreviewCamada);
             elPreviewCamada.setAttribute("class", "preview");
             elPreviewCamada.setAttribute("style", camadaStyle);
-            elPreviewCamada.setAttribute("height", Math.round(previewFunctions.ctxTelaPreview.canvas.height));
-            elPreviewCamada.setAttribute("width", Math.round(previewFunctions.ctxTelaPreview.canvas.width));
-            previewFunctions.contentTelaPreview.appendChild(elPreviewCamada);
+            elPreviewCamada.setAttribute("height", Math.round(observers.previewFunctions.ctxTelaPreview.canvas.height));
+            elPreviewCamada.setAttribute("width", Math.round(observers.previewFunctions.ctxTelaPreview.canvas.width));
+            observers.previewFunctions.contentTelaPreview.appendChild(elPreviewCamada);
             if (document.getElementById(idicone) != null && document.getElementById(idBttVisivel) != null &&
                 document.getElementById(idNome) != null && document.getElementById(idPocentagem) != null &&
                 document.getElementById(idIconTela) != null && document.getElementById(idCamada) != null &&
@@ -284,13 +283,13 @@ function projectObject() {
             for (let i = 0; i < this.properties.numberLayers; i++) {
                 if (i === num) {
                     this.selectedLayer = num;
-                    drawingTools.eventLayer.canvas.style.zIndex = ((num + 1) * 2) + 1;
+                    observers.drawingTools.eventLayer.canvas.style.zIndex = ((num + 1) * 2) + 1;
                     this.arrayLayers[i].icon.classList.replace("camadas", "camadaSelecionada");
                 } else { this.arrayLayers[i].icon.classList.replace("camadaSelecionada", "camadas"); }
             }
             const opacidade = this.arrayLayers[this.selectedLayer].opacity;
             this.layerOpacityBar.bar.value = opacidade;
-            drawingTools.currentLayer = this.arrayLayers[this.selectedLayer].ctx;
+            observers.drawingTools.currentLayer = this.arrayLayers[this.selectedLayer].ctx;
         },
         createDrawComplete() {
             this.drawComplete.clearRect(0, 0, this.properties.resolution.width, this.properties.resolution.height);
@@ -307,9 +306,9 @@ function projectObject() {
             }
         },
         drawInLayer() {
-            undoRedoChange.saveChanges();
-            this.arrayLayers[this.selectedLayer].ctx.drawImage(drawingTools.eventLayer.canvas, 0, 0, this.properties.resolution.width, this.properties.resolution.height);
-            drawingTools.eventLayer.clearRect(0, 0, this.properties.resolution.width, this.properties.resolution.height);
+            observers.undoRedoChange.saveChanges();
+            this.arrayLayers[this.selectedLayer].ctx.drawImage(observers.drawingTools.eventLayer.canvas, 0, 0, this.properties.resolution.width, this.properties.resolution.height);
+            observers.drawingTools.eventLayer.clearRect(0, 0, this.properties.resolution.width, this.properties.resolution.height);
             this.drawInPreview(this.arrayLayers[this.selectedLayer]);
         },
         drawInPreview(layer) {
@@ -354,8 +353,8 @@ function projectObject() {
                 nomeProjeto: this.properties.name, resolucaoDoProjeto: this.properties.resolution,
                 corDeFundo: this.properties.background, coresSalvas: coresSalvasProjeto,
                 grid: {
-                    size: createGridWindow.gridProprieties.size, position: createGridWindow.gridProprieties.position,
-                    visible: createGridWindow.gridProprieties.visible
+                    size: observers.createGridWindow.gridProprieties.size, position: observers.createGridWindow.gridProprieties.position,
+                    visible: observers.createGridWindow.gridProprieties.visible
                 },
                 numeroDeCamadas: this.properties.numberLayers, camadas: dadosCamadas
             }
@@ -390,18 +389,21 @@ function projectObject() {
                     }
                 }
                 for (let i = 0; i < objProjeto.coresSalvas.length; i++) { this.saveColor(objProjeto.coresSalvas[i]); }
-                createGridWindow.gridProprieties.size = objProjeto.grid.size;
-                createGridWindow.gridProprieties.position = objProjeto.grid.position;
-                if (objProjeto.grid.visible) { createGridWindow.createGrid(true); }
+                observers.createGridWindow.gridProprieties.size = objProjeto.grid.size;
+                observers.createGridWindow.gridProprieties.position = objProjeto.grid.position;
+                if (objProjeto.grid.visible) { observers.createGridWindow.createGrid(true); }
             }
             const reader = new FileReader();
             reader.onload = (e) => {
                 if (e.currentTarget.result === "") {
-                    notification.open({ title: "Erro!", text: "Este arquivo não possui projeto salvo." },
+                    observers.notification.open({ title: "Erro!", text: "Este arquivo não possui projeto salvo." },
                         { name: "notify", time: 2000 }, null);
                 } else { createSavedProject(JSON.parse(e.currentTarget.result)); }
             };
             reader.readAsText(file, "ISO-8859-1");
+        },
+        addObserver(newobservers) {
+            for (const prop in newobservers) { observers[prop] = newobservers[prop]; }
         }
     }
 }

@@ -1,30 +1,48 @@
-let corPrincipal, corSecundaria;
-let createProjectWindow, project, drawingTools, previewFunctions, undoRedoChange, hotKeys, createGridWindow, colorSelectionWindow,
-    notification;
-let janelaPrincipal, contentTelas, txtPorcentagemZoom;
+// let corPrincipal, corSecundaria;
+// let createProjectWindow, project, drawingTools, previewFunctions, undoRedoChange, hotKeys, createGridWindow, colorSelectionWindow,
+//     notification;
+// let janelaPrincipal, contentTelas, txtPorcentagemZoom;
+let menu, janelaPrincipal, colorSelectionWindow, notification;
 function colorPaint() {
-    createProjectWindow = new createProjectWindowObject();
-    project = new projectObject();
-    colorSelectionWindow = new colorSelectionWindowObject();
-    drawingTools = new drawingToolsObject();
-    previewFunctions = new previewFunctionsObject();
-    undoRedoChange = new undoRedoChangeObject();
-    hotKeys = new hotKeysObject();
-    createGridWindow = new createGridWindowObject();
-    notification = new notificationsObject();
-    const contentJanelaAtalhos = document.getElementById("contentJanelaAtalhos");
-    const contentTools = document.getElementById("contentTools");
-    const barraLateralEsquerda = document.getElementById("barraLateralEsquerda");
-    const barraLateralDireita = document.getElementById("barraLateralDireita");
-    const contentCentro = document.getElementById("contentCentro");
+    const createProjectWindow = createProjectWindowObject(),
+        project = projectObject(),
+        drawingTools = drawingToolsObject(),
+        previewFunctions = previewFunctionsObject(),
+        undoRedoChange = undoRedoChangeObject(),
+        hotKeys = hotKeysObject(),
+        createGridWindow = createGridWindowObject();
+    colorSelectionWindow = colorSelectionWindowObject();
+    notification = notificationsObject();
+    const contentJanelaAtalhos = document.getElementById("contentJanelaAtalhos"),
+        contentTools = document.getElementById("contentTools"),
+        barraLateralEsquerda = document.getElementById("barraLateralEsquerda"),
+        barraLateralDireita = document.getElementById("barraLateralDireita"),
+        contentCentro = document.getElementById("contentCentro"),
+        contentTelas = document.getElementById("contentTelas"),
+        corPrincipal = document.getElementById("corPrincipal"),
+        corSecundaria = document.getElementById("corSecundaria"),
+        txtPorcentagemZoom = document.getElementById("txtPorcentagemZoom");
     janelaPrincipal = document.getElementById("colorPaintContent");
-    contentTelas = document.getElementById("contentTelas");
-    corPrincipal = document.getElementById("corPrincipal");
-    corSecundaria = document.getElementById("corSecundaria");
-    txtPorcentagemZoom = document.getElementById("txtPorcentagemZoom");
+    menu = document.getElementById("menu");
     menu.style.transition = "none";
     ajustarContents();
     criarOuAbrirProjeto();
+
+    createProjectWindow.addObserver({ createProjectWindow, project, notification });
+    project.addObserver({
+        corPrincipal, corSecundaria, drawingTools, previewFunctions,
+        hotKeys, createGridWindow, colorSelectionWindow, notification,
+        contentTelas, txtPorcentagemZoom, undoRedoChange, janelaPrincipal
+    });
+    colorSelectionWindow.addObserver({ project, drawingTools, colorSelectionWindow, janelaPrincipal });
+    drawingTools.addObserver({
+        project, undoRedoChange, hotKeys, colorSelectionWindow,
+        notification, janelaPrincipal, contentTelas
+    });
+    previewFunctions.addObserver({ project, previewFunctions, contentTelas });
+    undoRedoChange.addObserver({ project, drawingTools });
+    hotKeys.addObserver({ project, drawingTools, undoRedoChange, contentTelas });
+    createGridWindow.addObserver({ project, createGridWindow, notification, contentTelas, txtPorcentagemZoom });
 
     project.addEventsToElements();
     colorSelectionWindow.addEventsToElements();
@@ -133,42 +151,42 @@ function colorPaint() {
         contentTelas.style.height = (contentCentro.offsetHeight - 15) + "px";
         document.getElementById("janelaCamadas").style.height = (barraLateralEsquerda.offsetHeight - 336) + "px";
     }
+
+    function criarOuAbrirProjeto() {
+        const carregar = document.getElementById("carregamento");
+        if (sessionStorage.getItem("load") === "true") {
+            fadeOut();
+            createProjectWindow.open("load");
+            sessionStorage.removeItem("load");
+        } else if (sessionStorage.getItem("create") === "true") {
+            fadeOut();
+            createProjectWindow.open("create");
+            sessionStorage.removeItem("create");
+        } else { carregamento(); }
+        function carregamento() {
+            const logoCarregamento = document.getElementById("logoCarregamento");
+            logoCarregamento.style.transition = "opacity 1.5s linear";
+            setTimeout(() => {
+                logoCarregamento.style.opacity = "1";
+                setTimeout(() => {
+                    const posLogo = logoBlack.getBoundingClientRect();
+                    logoCarregamento.style.transition = "width 500ms ease-out, height 500ms ease-out, opacity 500ms ease-out, top 500ms ease-out, left 500ms ease-out";
+                    logoCarregamento.style.height = "50px";
+                    logoCarregamento.style.width = "90px";
+                    logoCarregamento.style.opacity = "0.75";
+                    logoCarregamento.style.left = posLogo.left + 45 + "px";
+                    logoCarregamento.style.top = posLogo.top + 25 + "px";
+                    setTimeout(fadeOut, 350);
+                }, 1550);
+            }, 150);
+        }
+        function fadeOut() {
+            carregar.style.opacity = "0";
+            setTimeout(() => carregar.remove(), 700);
+        }
+    }
 }
 // ==========================================================================================================================================================================================================================================
-
-function criarOuAbrirProjeto() {
-    const carregar = document.getElementById("carregamento");
-    if (sessionStorage.getItem("load") === "true") {
-        fadeOut();
-        createProjectWindow.open("load");
-        sessionStorage.removeItem("load");
-    } else if (sessionStorage.getItem("create") === "true") {
-        fadeOut();
-        createProjectWindow.open("create");
-        sessionStorage.removeItem("create");
-    } else { carregamento(); }
-    function carregamento() {
-        const logoCarregamento = document.getElementById("logoCarregamento");
-        logoCarregamento.style.transition = "opacity 1.5s linear";
-        setTimeout(() => {
-            logoCarregamento.style.opacity = "1";
-            setTimeout(() => {
-                const posLogo = logoBlack.getBoundingClientRect();
-                logoCarregamento.style.transition = "width 500ms ease-out, height 500ms ease-out, opacity 500ms ease-out, top 500ms ease-out, left 500ms ease-out";
-                logoCarregamento.style.height = "50px";
-                logoCarregamento.style.width = "90px";
-                logoCarregamento.style.opacity = "0.75";
-                logoCarregamento.style.left = posLogo.left + 45 + "px";
-                logoCarregamento.style.top = posLogo.top + 25 + "px";
-                setTimeout(fadeOut, 350);
-            }, 1550);
-        }, 150);
-    }
-    function fadeOut() {
-        carregar.style.opacity = "0";
-        setTimeout(() => carregar.remove(), 700);
-    }
-}
 
 function getMousePosition(element, e) {
     const { left, top } = element.getBoundingClientRect();

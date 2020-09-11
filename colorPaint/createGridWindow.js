@@ -1,4 +1,6 @@
+// let project, createGridWindow, notification, contentTelas, txtPorcentagemZoom;
 function createGridWindowObject() {
+    const observers = {};
     return {
         gridProprieties: { screen: document.getElementById("grid"), size: 80, position: { x: 0, y: 0 }, visible: false, },
         previousVisualization: { scrollX: 0, scrollY: 0, zoom: 0 },
@@ -46,21 +48,21 @@ function createGridWindowObject() {
             this.barMoveWindow.addEventListener("mousedown", (e) => this.moveWindow(getMousePosition(e.currentTarget, e), false));
         },
         open() {
-            if (project.created) {
+            if (observers.project.created) {
                 this.previousVisualization = {
-                    scrollX: contentTelas.scrollLeft, scrollY: contentTelas.scrollTop,
-                    zoom: parseFloat(((txtPorcentagemZoom.value).replace("%", "")).replace(",", "."))
+                    scrollX: observers.contentTelas.scrollLeft, scrollY: observers.contentTelas.scrollTop,
+                    zoom: parseFloat(((observers.txtPorcentagemZoom.value).replace("%", "")).replace(",", "."))
                 };
                 this.inputs.size.value = this.gridProprieties.size;
                 this.inputs.horizontalPosition.value = this.gridProprieties.position.x;
                 this.inputs.verticalPosition.value = this.gridProprieties.position.y;
                 this.contentWindow.style.display = "block";
                 this.addEventsToElements();
-                project.adjustInVisualizationScreen();
+                observers.project.adjustInVisualizationScreen();
                 if (!this.gridProprieties.visible) { this.createGrid(true); }
             }
             else {
-                notification.open({ title: "Atenção!", text: "Crie um novo projeto para visualizar a grade." },
+                observers.notification.open({ title: "Atenção!", text: "Crie um novo projeto para visualizar a grade." },
                     { name: "notify", time: 2000 }, null);
             }
         },
@@ -76,15 +78,15 @@ function createGridWindowObject() {
         },
         createGrid(create) {
             const screen = this.gridProprieties.screen, size = this.gridProprieties.size, pos = this.gridProprieties.position,
-                numDeQuadrados = (Math.trunc((project.properties.resolution.width / size) + 2.1)) * (Math.trunc((project.properties.resolution.height / size) + 2.1));
+                numDeQuadrados = (Math.trunc((observers.project.properties.resolution.width / size) + 2.1)) * (Math.trunc((observers.project.properties.resolution.height / size) + 2.1));
             if (numDeQuadrados > 5700) {
-                notification.open({
+                observers.notification.open({
                     title: "Atenção!",
                     text: "Aumente o tamanho da grade."
                 }, { name: "notify", time: 1400 }, null);
                 return;
             } else if (numDeQuadrados > 1100) {
-                notification.open({
+                observers.notification.open({
                     title: "Atenção!",
                     text: "O tamanho da grade está muito baixo, isso pode acarretar problemas de performance!"
                 }, { name: "notify", time: 2600 }, null);
@@ -100,14 +102,14 @@ function createGridWindowObject() {
                 }
                 if (position.x < 0) { position.x += size };
                 if (position.y < 0) { position.y += size };
-                const larguraTela = (project.properties.resolution.width + (size * 2)),
-                    alturaTela = (project.properties.resolution.height + (size * 2));
+                const larguraTela = (observers.project.properties.resolution.width + (size * 2)),
+                    alturaTela = (observers.project.properties.resolution.height + (size * 2));
                 const larguraQuadrado = ((size / larguraTela) * 100), alturaQuadrado = ((size / alturaTela) * 100);
                 const styleQuadrado = "width: " + larguraQuadrado + "%; height: " + alturaQuadrado + "%;";
-                screen.style.top = (-100 * ((size - position.y) / project.properties.resolution.height)) + "%";
-                screen.style.left = (-100 * ((size - position.x) / project.properties.resolution.width)) + "%";
-                screen.style.width = ((larguraTela / project.properties.resolution.width) * 100) + "%";
-                screen.style.height = ((alturaTela / project.properties.resolution.height) * 100) + "%";
+                screen.style.top = (-100 * ((size - position.y) / observers.project.properties.resolution.height)) + "%";
+                screen.style.left = (-100 * ((size - position.x) / observers.project.properties.resolution.width)) + "%";
+                screen.style.width = ((larguraTela / observers.project.properties.resolution.width) * 100) + "%";
+                screen.style.height = ((alturaTela / observers.project.properties.resolution.height) * 100) + "%";
                 for (let i = 0; i < numDeQuadrados; i++) {
                     const quadrado = document.createElement("div");
                     quadrado.setAttribute("class", "quadrado");
@@ -119,9 +121,9 @@ function createGridWindowObject() {
             this.gridProprieties.visible = create;
         },
         applyPreviousVisualization() {
-            project.zoom("porcentagem", false, this.previousVisualization.zoom);
-            contentTelas.scrollTop = this.previousVisualization.scrollY;
-            contentTelas.scrollLeft = this.previousVisualization.scrollX;
+            observers.project.zoom("porcentagem", false, this.previousVisualization.zoom);
+            observers.contentTelas.scrollTop = this.previousVisualization.scrollY;
+            observers.contentTelas.scrollLeft = this.previousVisualization.scrollX;
         },
         moveWindow(mousePosition, move) {
             if (move) {
@@ -140,17 +142,20 @@ function createGridWindowObject() {
                 this.window.style.top = newPositionY + "px";
             } else {
                 this.mousePositionMoveWindow = mousePosition;
-                this.contentWindow.addEventListener("mousemove", createGridWindow.mouseMoveEvent);
+                this.contentWindow.addEventListener("mousemove", observers.createGridWindow.mouseMoveEvent);
                 this.contentWindow.addEventListener("mouseup", createGridWindow.mouseUpEvent);
             }
         },
         mouseMoveEvent(e) {
-            createGridWindow.moveWindow(getMousePosition(createGridWindow.contentWindow, e), true);
+            observers.createGridWindow.moveWindow(getMousePosition(observers.createGridWindow.contentWindow, e), true);
         },
         mouseUpEvent() {
-            createGridWindow.contentWindow.removeEventListener("mousemove", createGridWindow.mouseMoveEvent);
-            createGridWindow.contentWindow.addEventListener("mouseup", createGridWindow.mouseUpEvent);
-            createGridWindow.mousePositionMoveWindow = null;
+            observers.createGridWindow.contentWindow.removeEventListener("mousemove", createGridWindow.mouseMoveEvent);
+            observers.createGridWindow.contentWindow.addEventListener("mouseup", observers.createGridWindow.mouseUpEvent);
+            observers.createGridWindow.mousePositionMoveWindow = null;
+        },
+        addObserver(newobservers) {
+            for (const prop in newobservers) { observers[prop] = newobservers[prop]; }
         }
     }
 }

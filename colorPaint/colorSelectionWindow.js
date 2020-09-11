@@ -1,4 +1,5 @@
 function colorSelectionWindowObject() {
+    const observers = {};
     return {
         opened: false,
         primaryOrSecondary: 1,
@@ -49,25 +50,25 @@ function colorSelectionWindowObject() {
             if (move) {
                 let newPositionX = mousePosition.x - this.mousePositionMoveWindow.x,
                     newPositionY = mousePosition.y - this.mousePositionMoveWindow.y;
-                newPositionX = newPositionX < 0 ? 0 : newPositionX + this.window.offsetWidth > janelaPrincipal.offsetWidth ?
-                    janelaPrincipal.offsetWidth - this.window.offsetWidth : newPositionX;
-                newPositionY = newPositionY < 50 ? 50 : newPositionY + this.window.offsetHeight > janelaPrincipal.offsetHeight ?
-                    janelaPrincipal.offsetHeight - this.window.offsetHeight : newPositionY;
+                newPositionX = newPositionX < 0 ? 0 : newPositionX + this.window.offsetWidth > observers.janelaPrincipal.offsetWidth ?
+                    observers.janelaPrincipal.offsetWidth - this.window.offsetWidth : newPositionX;
+                newPositionY = newPositionY < 50 ? 50 : newPositionY + this.window.offsetHeight > observers.janelaPrincipal.offsetHeight ?
+                    observers.janelaPrincipal.offsetHeight - this.window.offsetHeight : newPositionY;
                 this.window.style.left = newPositionX + "px";
                 this.window.style.top = newPositionY + "px";
             } else {
                 this.mousePositionMoveWindow = mousePosition;
-                document.addEventListener("mousemove", colorSelectionWindow.mouseMoveEvent);
-                document.addEventListener("mouseup", colorSelectionWindow.mouseUpEvent);
+                document.addEventListener("mousemove", observers.colorSelectionWindow.mouseMoveEvent);
+                document.addEventListener("mouseup", observers.colorSelectionWindow.mouseUpEvent);
             }
         },
         mouseMoveEvent(e) {
-            colorSelectionWindow.moveWindow(getMousePosition(janelaPrincipal, e), true);
+            observers.colorSelectionWindow.moveWindow(getMousePosition(observers.janelaPrincipal, e), true);
         },
         mouseUpEvent(e) {
-            document.removeEventListener("mousemove", colorSelectionWindow.mouseMoveEvent);
-            document.removeEventListener("mouseup", colorSelectionWindow.mouseUpEvent);
-            colorSelectionWindow.mousePositionMoveWindow = null;
+            document.removeEventListener("mousemove", observers.colorSelectionWindow.mouseMoveEvent);
+            document.removeEventListener("mouseup", observers.colorSelectionWindow.mouseUpEvent);
+            observers.colorSelectionWindow.mousePositionMoveWindow = null;
         },
         findColor(color) {
             this.paintSpectrum();
@@ -140,12 +141,12 @@ function colorSelectionWindowObject() {
             this.inputs.txtRgb.addEventListener("keyup", (e) => this.txtRgbKeyUp(e));
             this.inputs.txtHex.addEventListener("keyup", (e) => this.txtHexKeyUp(e));
             this.buttons.ok.addEventListener("mousedown", () => this.selectColor())
-            this.buttons.saveColor.addEventListener("mousedown", () => project.saveColor(this.selectedColor));
+            this.buttons.saveColor.addEventListener("mousedown", () => observers.project.saveColor(this.selectedColor));
             this.buttons.cancel.addEventListener("mousedown", () => this.close());
             this.primaryOrSecondary = num;
             this.cursors.spectrum.clicked = this.cursors.gradient.clicked = this.clickMoveWindow = false;
-            const color = project.selectedColors.get(this.primaryOrSecondary);
-            drawingTools.selectDrawingTool(drawingTools.arrayTools.length - 1);//Mudar para a ferramenta Conta-gotas.
+            const color = observers.project.selectedColors.get(this.primaryOrSecondary);
+            observers.drawingTools.selectDrawingTool(observers.drawingTools.arrayTools.length - 1);//Mudar para a ferramenta Conta-gotas.
             this.window.style.display = "block";
             this.opened = true;
             this.compareColors.current.style.backgroundColor = "rgb(" + color.r + ", " + color.g + ", " + color.b + ")";
@@ -154,13 +155,13 @@ function colorSelectionWindowObject() {
         close() {
             this.removeEventsToElements();
             this.opened = false;
-            drawingTools.selectDrawingTool(drawingTools.previousTool);
+            observers.drawingTools.selectDrawingTool(observers.drawingTools.previousTool);
             this.window.style.display = "none";
         },
         selectColor() {
-            project.selectedColors.set(this.primaryOrSecondary, this.selectedColor);
+            observers.project.selectedColors.set(this.primaryOrSecondary, this.selectedColor);
             this.close();
-            project.selectedColors.deselectAllSavedColor();
+            observers.project.selectedColors.deselectAllSavedColor();
         },
         paintGradient(color) {
             const gradient = this.canvas.gradient, width = gradient.canvas.width, height = gradient.canvas.height;
@@ -273,6 +274,9 @@ function colorSelectionWindowObject() {
                     b = q;
             }
             return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
+        },
+        addObserver(newobservers) {
+            for (const prop in newobservers) { observers[prop] = newobservers[prop]; }
         }
     }
 }
