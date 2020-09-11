@@ -1,14 +1,14 @@
 import { getMousePosition } from "../js/geral.js";
 
 export default function previewFunctionsObject() {
-    const observers = {};
+    const D = {};
     return {
         contentTelaPreview: document.getElementById("contentTelaPreview"),
         ctxTelaPreview: document.getElementById("telaPreview").getContext("2d"),
         moverScroll: document.getElementById("moverScroll"),
         moverScrollPreview: false,//Saber se o mouse está pressionado na "contentTelaPreview".
         addEventsToElements() {
-            observers.contentTelas.addEventListener("scroll", (e) => this.scrollContentTelas(e));
+            D.contentTelas.addEventListener("scroll", (e) => this.scrollContentTelas(e));
             this.contentTelaPreview.addEventListener("mousedown", (e) => this.mouseDownPreview(e));
             document.getElementById("janelaPreview").addEventListener("mousemove", (e) => this.mouseMovePreview(e));
         },
@@ -16,22 +16,22 @@ export default function previewFunctionsObject() {
             this.moverScrollPreview = true;
             this.moverScroll.style.cursor = "grabbing";
             this.mouseMoveMoverScroll(getMousePosition(this.contentTelaPreview, e));
-            document.addEventListener("mouseup", observers.previewFunctions.mouseUpPreview);
+            document.addEventListener("mouseup", D.previewFunctions.mouseUpPreview);
         },
         mouseUpPreview(e) {
-            observers.previewFunctions.moverScrollPreview = false;
-            observers.previewFunctions.moverScroll.style.cursor = "grab";
-            document.removeEventListener("mouseup", observers.previewFunctions.mouseUpPreview);
+            D.previewFunctions.moverScrollPreview = false;
+            D.previewFunctions.moverScroll.style.cursor = "grab";
+            document.removeEventListener("mouseup", D.previewFunctions.mouseUpPreview);
         },
         mouseMovePreview(e) {
             if (!this.moverScrollPreview) { return; }
             this.mouseMoveMoverScroll(getMousePosition(this.contentTelaPreview, e));
         },
         scrollContentTelas() {
-            const mult = (observers.contentTelas.scrollHeight - 12) / this.contentTelaPreview.offsetHeight;
-            const mult2 = (observers.contentTelas.scrollWidth - 12) / this.contentTelaPreview.offsetWidth;
-            moverScroll.style.top = (observers.contentTelas.scrollTop / mult) + "px";
-            moverScroll.style.left = (observers.contentTelas.scrollLeft / mult2) + "px";
+            const mult = (D.contentTelas.scrollHeight - 12) / this.contentTelaPreview.offsetHeight;
+            const mult2 = (D.contentTelas.scrollWidth - 12) / this.contentTelaPreview.offsetWidth;
+            moverScroll.style.top = (D.contentTelas.scrollTop / mult) + "px";
+            moverScroll.style.left = (D.contentTelas.scrollLeft / mult2) + "px";
         },
         adjustPreview(proportion) {
             const proporcaoEspaco = 256 / 150;
@@ -48,8 +48,8 @@ export default function previewFunctionsObject() {
             this.ctxTelaPreview.canvas.height = Math.round(this.contentTelaPreview.offsetHeight * 1.5);
         },
         changeMoverScrollSizeZoom() {//De acordo com o zoom que é dado muda o tamanho do "moverScroll".
-            const tamanhoTelasCanvas = { x: observers.project.screen.offsetWidth, y: observers.project.screen.offsetHeight },
-                tamanhoContentTelas = { x: observers.contentTelas.offsetWidth, y: observers.contentTelas.offsetHeight },
+            const tamanhoTelasCanvas = { x: D.project.screen.offsetWidth, y: D.project.screen.offsetHeight },
+                tamanhoContentTelas = { x: D.contentTelas.offsetWidth, y: D.contentTelas.offsetHeight },
                 tamanhoContentTelaPreview = { x: this.contentTelaPreview.offsetWidth, y: this.contentTelaPreview.offsetHeight };
             this.moverScroll.style.display = "block";
             if (tamanhoTelasCanvas.x <= (tamanhoContentTelas.x - 10) && tamanhoTelasCanvas.y <= (tamanhoContentTelas.y - 10)) {
@@ -81,11 +81,11 @@ export default function previewFunctionsObject() {
             this.changeScrollsContentTelas(top, left);
         },
         changeScrollsContentTelas(top, left) {//Mudar o valor dos Scroll's do contentTelas movendo o "moverScroll". 
-            observers.contentTelas.scrollTop = top * ((observers.contentTelas.scrollHeight) / this.contentTelaPreview.offsetHeight);
-            observers.contentTelas.scrollLeft = left * ((observers.contentTelas.scrollWidth) / this.contentTelaPreview.offsetWidth);
+            D.contentTelas.scrollTop = top * ((D.contentTelas.scrollHeight) / this.contentTelaPreview.offsetHeight);
+            D.contentTelas.scrollLeft = left * ((D.contentTelas.scrollWidth) / this.contentTelaPreview.offsetWidth);
         },
-        addObserver(newobservers) {
-            for (const prop in newobservers) { observers[prop] = newobservers[prop]; }
+        addDependencies(dependencies) {
+            for (const prop in dependencies) { D[prop] = dependencies[prop]; }
         }
     }
 }

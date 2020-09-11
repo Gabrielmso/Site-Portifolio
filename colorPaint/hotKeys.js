@@ -1,5 +1,5 @@
 export default function hotKeysObject() {
-    const observers = {};
+    const D = {};
     return {
         ctrlPressed: false, shiftPressed: false,
         infoMoveDrawWithSpace: { startCoordinate: null, scroolTop: null, scrollLeft: null },
@@ -10,7 +10,7 @@ export default function hotKeysObject() {
             document.addEventListener("keyup", (e) => this.keyUpEvent(e));
         },
         keyDownEvent(e) {
-            if (observers.drawingTools.painting) { e.preventDefault(); return; }
+            if (D.drawingTools.painting) { e.preventDefault(); return; }
             if (this.ctrlPressed) {//Teclas de atalho com o ctrl.
                 const keyFunction = this.hotKeysWithCtrl[e.code];
                 if (keyFunction) {
@@ -57,24 +57,24 @@ export default function hotKeysObject() {
         },
         keyDownControl() {
             this.ctrlPressed = true;
-            if (observers.drawingTools.selectedTool === 0) {
-                observers.drawingTools.selectDrawingTool(observers.drawingTools.arrayTools.length - 1);//Muda para a ferramenta conta gotas.
+            if (D.drawingTools.selectedTool === 0) {
+                D.drawingTools.selectDrawingTool(D.drawingTools.arrayTools.length - 1);//Muda para a ferramenta conta gotas.
             }
         },
         keyUpControl() {
             this.ctrlPressed = false;
-            if (observers.drawingTools.previousTool === 0 && observers.drawingTools.mouseFunctionName === "eyeDropper") {
-                observers.drawingTools.selectDrawingTool(0);//Volta para a ferramenta pincel.                
+            if (D.drawingTools.previousTool === 0 && D.drawingTools.mouseFunctionName === "eyeDropper") {
+                D.drawingTools.selectDrawingTool(0);//Volta para a ferramenta pincel.                
             }
         },
         keyDownSpace() {
-            observers.contentTelas.style.cursor = "grab";
-            observers.drawingTools.mouseFunctionName = "moveScreen";
-            observers.drawingTools.cursorTool.invisibleCursor();
+            D.contentTelas.style.cursor = "grab";
+            D.drawingTools.mouseFunctionName = "moveScreen";
+            D.drawingTools.cursorTool.invisibleCursor();
         },
         keyUpSpace() {
-            observers.drawingTools.moveScreen("mouseup");
-            observers.drawingTools.selectDrawingTool(observers.drawingTools.selectedTool);
+            D.drawingTools.moveScreen("mouseup");
+            D.drawingTools.selectDrawingTool(D.drawingTools.selectedTool);
         },
         keyDownShift() {
             this.shiftPressed = true;
@@ -82,27 +82,27 @@ export default function hotKeysObject() {
         keyUpShift() {
             this.infoTraceUsedShift = { sizeX: 0, sizeY: 0 };
             this.shiftPressed = false;
-            observers.drawingTools.selectDrawingTool(observers.drawingTools.selectedTool);
+            D.drawingTools.selectDrawingTool(D.drawingTools.selectedTool);
         },
         changeToolSizeHotKey(increase) {
-            const value = increase ? observers.drawingTools.toolProperties.size + 1.01 : observers.drawingTools.toolProperties.size - 0.9;
-            observers.drawingTools.changeToolSize(value);
+            const value = increase ? D.drawingTools.toolProperties.size + 1.01 : D.drawingTools.toolProperties.size - 0.9;
+            D.drawingTools.changeToolSize(value);
         },
         hotKeysWithShift: {
-            KeyA: () => observers.drawingTools.mouseFunctionName = "changeToolSizeCursor",
-            KeyS: () => observers.drawingTools.mouseFunctionName = "changeToolOpacityCursor",
-            KeyD: () => observers.drawingTools.mouseFunctionName = "changeToolHardnessCursor"
+            KeyA: () => D.drawingTools.mouseFunctionName = "changeToolSizeCursor",
+            KeyS: () => D.drawingTools.mouseFunctionName = "changeToolOpacityCursor",
+            KeyD: () => D.drawingTools.mouseFunctionName = "changeToolHardnessCursor"
         },
         hotKeysWithCtrl: {
-            Digit0: () => observers.project.adjustInVisualizationScreen(),
-            Digit1: () => observers.project.zoom("porcentagem", true, 100),
-            Minus: () => observers.project.zoom(false, true, 1.25),
-            Equal: () => observers.project.zoom(true, true, 1.25),
-            KeyZ: () => observers.undoRedoChange.undoChange(),
-            KeyY: () => observers.undoRedoChange.redoChange(),
+            Digit0: () => D.project.adjustInVisualizationScreen(),
+            Digit1: () => D.project.zoom("porcentagem", true, 100),
+            Minus: () => D.project.zoom(false, true, 1.25),
+            Equal: () => D.project.zoom(true, true, 1.25),
+            KeyZ: () => D.undoRedoChange.undoChange(),
+            KeyY: () => D.undoRedoChange.redoChange(),
         },
-        addObserver(newobservers) {
-            for (const prop in newobservers) { observers[prop] = newobservers[prop]; }
+        addDependencies(dependencies) {
+            for (const prop in dependencies) { D[prop] = dependencies[prop]; }
         }
     }
 }

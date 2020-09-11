@@ -1,7 +1,5 @@
-import { backgroundBlur } from "./colorPaint.js"
-
 export default function createProjectWindowObject() {
-    const observers = {};
+    const D = {};
     return {
         content: document.getElementById("contentCriarAbrirProjeto"),
         windows: {
@@ -30,7 +28,7 @@ export default function createProjectWindowObject() {
         },
         open(type) {
             this.content.style.display = "flex";
-            backgroundBlur(true);
+            D.backgroundBlur(true);
             if (type === "create") {
                 this.windows.load.style.display = "none";
                 this.windows.create.style.display = "block";
@@ -50,14 +48,14 @@ export default function createProjectWindowObject() {
         },
         close() {
             this.content.style.display = "none";
-            backgroundBlur(false);
+            D.backgroundBlur(false);
         },
         conclude() {
             this.close();
             this.content.remove();
             for (const prop in this) { delete this[prop]; }
             this.open = (type) => {
-                observers.notification.open({
+                D.notification.open({
                     title: "Projeto em andamento!",
                     text: "Todo o progresso não salvo será perdido, deseja continuar?"
                 }, { name: "confirm", time: null }, () => {
@@ -98,9 +96,9 @@ export default function createProjectWindowObject() {
                 return;
             }
             const color = valueCor === 1 ? { r: 255, g: 255, b: 255 } : valueCor === 2 ? { r: 0, g: 0, b: 0 } :
-                valueCor === 3 ? false : observers.project.selectedColors.firstPlane;
+                valueCor === 3 ? false : D.project.selectedColors.firstPlane;
             for (let i = 0; i < arrayProperties.length; i++) { arrayProperties[i].style.backgroundColor = "rgb(37, 37, 37)"; }
-            observers.project.create(nomeProjeto, { width: larguraProjeto, height: alturaProjeto }, color, numeroCamadas);
+            D.project.create(nomeProjeto, { width: larguraProjeto, height: alturaProjeto }, color, numeroCamadas);
             this.conclude();
             function campoInvalido(campo) {
                 campo.focus();
@@ -118,21 +116,21 @@ export default function createProjectWindowObject() {
             if (file) {
                 const extencao = file.name.split('.').pop().toLowerCase();
                 if (extencao === "gm") {
-                    observers.project.loadProject(file);
+                    D.project.loadProject(file);
                     this.conclude();
                 } else {
-                    observers.notification.open({ title: "Erro!", text: "Arquivo selecionado inválido!" },
+                    D.notification.open({ title: "Erro!", text: "Arquivo selecionado inválido!" },
                         { name: "notify", time: 2000 }, null);
                     this.close();
                 }
             } else {
-                observers.notification.open({ title: "Erro!", text: "Falha ao carregar projeto, tente novamente." },
+                D.notification.open({ title: "Erro!", text: "Falha ao carregar projeto, tente novamente." },
                     { name: "notify", time: 2000 }, null);
                 this.close();
             }
         },
-        addObserver(newobservers) {
-            for (const prop in newobservers) { observers[prop] = newobservers[prop]; }
+        addDependencies(dependencies) {
+            for (const prop in dependencies) { D[prop] = dependencies[prop]; }
         }
     }
 }

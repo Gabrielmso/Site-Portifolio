@@ -10,8 +10,7 @@ import colorSelectionWindowObject from "./colorSelectionWindow.js";
 import notificationsObject from "./notifications.js";
 import { preventDefaultAction, getMousePosition } from "../js/geral.js";
 
-let topoMenu, janelaPrincipal, colorSelectionWindow, notification;
-
+let topoMenu;
 function loadApp() {
     const createProjectWindow = createProjectWindowObject(),
         project = projectObject(),
@@ -19,41 +18,43 @@ function loadApp() {
         previewFunctions = previewFunctionsObject(),
         undoRedoChange = undoRedoChangeObject(),
         hotKeys = hotKeysObject(),
-        createGridWindow = createGridWindowObject();
-    colorSelectionWindow = colorSelectionWindowObject();
-    notification = notificationsObject();
-    const contentJanelaAtalhos = document.getElementById("contentJanelaAtalhos"),
-        contentTools = document.getElementById("contentTools"),
+        createGridWindow = createGridWindowObject(),
+        colorSelectionWindow = colorSelectionWindowObject(),
+        notification = notificationsObject();
+
+    const contentTools = document.getElementById("contentTools"),
         barraLateralEsquerda = document.getElementById("barraLateralEsquerda"),
         barraLateralDireita = document.getElementById("barraLateralDireita"),
         contentCentro = document.getElementById("contentCentro"),
         contentTelas = document.getElementById("contentTelas"),
         corPrincipal = document.getElementById("corPrincipal"),
         corSecundaria = document.getElementById("corSecundaria"),
-        txtPorcentagemZoom = document.getElementById("txtPorcentagemZoom");
-    janelaPrincipal = document.getElementById("colorPaintContent");
-    ajustarContents();
-    criarOuAbrirProjeto();
+        txtPorcentagemZoom = document.getElementById("txtPorcentagemZoom"),
+        janelaPrincipal = document.getElementById("colorPaintContent"),
+        contentBlur = document.getElementById("contentBlur");
 
-    createProjectWindow.addObserver({ createProjectWindow, project, notification });
-    project.addObserver({
+    createProjectWindow.addDependencies({ createProjectWindow, project, notification, backgroundBlur });
+    project.addDependencies({
         corPrincipal, corSecundaria, drawingTools, previewFunctions,
         hotKeys, createGridWindow, colorSelectionWindow, notification,
         contentTelas, txtPorcentagemZoom, undoRedoChange, janelaPrincipal
     });
-    colorSelectionWindow.addObserver({ project, drawingTools, colorSelectionWindow, janelaPrincipal });
-    drawingTools.addObserver({
+    colorSelectionWindow.addDependencies({ project, drawingTools, colorSelectionWindow, janelaPrincipal });
+    drawingTools.addDependencies({
         project, undoRedoChange, hotKeys, colorSelectionWindow,
         notification, janelaPrincipal, contentTelas
     });
-    previewFunctions.addObserver({ project, previewFunctions, contentTelas });
-    undoRedoChange.addObserver({ project, drawingTools });
-    hotKeys.addObserver({ project, drawingTools, undoRedoChange, contentTelas });
-    createGridWindow.addObserver({ project, createGridWindow, notification, contentTelas, txtPorcentagemZoom });
+    previewFunctions.addDependencies({ project, previewFunctions, contentTelas });
+    undoRedoChange.addDependencies({ project, drawingTools });
+    hotKeys.addDependencies({ project, drawingTools, undoRedoChange, contentTelas });
+    createGridWindow.addDependencies({ project, createGridWindow, notification, contentTelas, txtPorcentagemZoom });
 
     project.addEventsToElements();
     colorSelectionWindow.addEventsToElements();
     notification.addEventsToElements();
+
+    ajustarContents();
+    criarOuAbrirProjeto();
 
     document.getElementById("bttCriarNovoProjeto").addEventListener("mousedown", () => createProjectWindow.open("create"));
     document.getElementById("bttCriarGrade").addEventListener("mousedown", () => createGridWindow.open());
@@ -119,26 +120,23 @@ function loadApp() {
         }
     });
 
-    document.getElementById("bttAtalhos").addEventListener("click", () => {
-        contentJanelaAtalhos.style.display = "flex";
-        backgroundBlur(true);
-    });
-    document.getElementById("bttOkAtalhos").addEventListener("click", () => {
-        contentJanelaAtalhos.style.display = "none";
-        backgroundBlur(false);
-    });
+    document.getElementById("bttAtalhos").addEventListener("click", () => openHotKeysWindow(true));
+    document.getElementById("bttOkAtalhos").addEventListener("click", () => openHotKeysWindow(false));
+    function openHotKeysWindow(open) {
+        document.getElementById("contentJanelaAtalhos").style.display = open ? "flex" : "none";
+        backgroundBlur(open);
+    }
 
     document.getElementById("colorPaintContent").addEventListener("wheel", (e) => {//Zoom com o scroll do mouse.
-        if (hotKeys.ctrlPressed) {
-            preventDefaultAction(e);
-            if (e.deltaY < 0) { project.zoom(true, false, 1.10); }
-            else { project.zoom(false, false, 1.10); }
-            const posContentTelas = getMousePosition(contentTelas, e);
-            const proporcaoPosY = drawingTools.mousePosition.y / project.properties.resolution.height;
-            const proporcaoPosX = drawingTools.mousePosition.x / project.properties.resolution.width;
-            contentTelas.scrollTop = (contentTelas.scrollHeight * proporcaoPosY) - posContentTelas.y;
-            contentTelas.scrollLeft = (contentTelas.scrollWidth * proporcaoPosX) - posContentTelas.x;
-        }
+        if (!hotKeys.ctrlPressed) { return; }
+        preventDefaultAction(e);
+        if (e.deltaY < 0) { project.zoom(true, false, 1.10); }
+        else { project.zoom(false, false, 1.10); }
+        const posContentTelas = getMousePosition(contentTelas, e);
+        const proporcaoPosY = drawingTools.mousePosition.y / project.properties.resolution.height;
+        const proporcaoPosX = drawingTools.mousePosition.x / project.properties.resolution.width;
+        contentTelas.scrollTop = (contentTelas.scrollHeight * proporcaoPosY) - posContentTelas.y;
+        contentTelas.scrollLeft = (contentTelas.scrollWidth * proporcaoPosX) - posContentTelas.x;
     });
 
     document.addEventListener("dragover", preventDefaultAction);
@@ -148,15 +146,26 @@ function loadApp() {
     window.addEventListener("resize", () => {
         ajustarContents();
         setTimeout(() => ajustarContents(), 120);
-        if (project.created) { project.adjustInVisualizationScreen(); };
+        if (project.created) { previewFunctions.changeMoverScrollSizeZoom(); };
     });
 
+    document.addEventListener("keydown", function (e) {
+        if (e.code === "F5" && project.created) {
+            preventDefaultAction(e);
+            return false;
+        }
+    });
     function ajustarContents() {
         contentTools.style.height = (janelaPrincipal.offsetHeight - 90) + "px";
         contentCentro.style.width = contentTools.offsetWidth - barraLateralEsquerda.offsetWidth - barraLateralDireita.offsetWidth - 0.5 + "px";
         contentCentro.style.height = contentTools.style.height;
         contentTelas.style.height = (contentCentro.offsetHeight - 15) + "px";
         document.getElementById("janelaCamadas").style.height = (barraLateralEsquerda.offsetHeight - 336) + "px";
+    }
+
+    function backgroundBlur(applyBlur) {
+        const blur = applyBlur ? "blur(9px)" : "";
+        contentBlur.style.filter = topoMenu.menu.style.filter = blur;
     }
 
     function criarOuAbrirProjeto() {
@@ -193,6 +202,7 @@ function loadApp() {
         }
     }
 }
+
 export default async function colorPaint() {
     topoMenu = await loadTopoMenu();
     if (topoMenu) {
@@ -205,24 +215,3 @@ export default async function colorPaint() {
     return false;
 }
 // ==========================================================================================================================================================================================================================================
-
-document.addEventListener("keydown", function (e) {
-    if (e.code === "F5" && project.created) {
-        preventDefaultAction(e);
-        return false;
-    }
-});
-
-export function backgroundBlur(blur) {
-    if (blur) {
-        topoMenu.menu.style.filter = "blur(9px)"
-        janelaPrincipal.style.filter = "blur(9px)";
-        colorSelectionWindow.window.style.filter = "blur(9px)";
-        notification.window.style.filter = "blur(9px)";
-    } else {
-        topoMenu.menu.style.filter = ""
-        janelaPrincipal.style.filter = "";
-        colorSelectionWindow.window.style.filter = "";
-        notification.window.style.filter = "";
-    }
-}

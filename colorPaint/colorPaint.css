@@ -63,6 +63,11 @@ input[type="range"]::-webkit-slider-thumb {
     margin-top: -4px;
 }
 
+
+#contentBlur{
+    width: 100%;
+    height: 100%;
+}
 #colorPaintContent {
     position: relative;
     width: 100%;

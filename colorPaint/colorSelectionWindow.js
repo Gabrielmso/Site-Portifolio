@@ -1,7 +1,7 @@
 import { getMousePosition, cloneReplaceElement } from "../js/geral.js";
 
 export default function colorSelectionWindowObject() {
-    const observers = {};
+    const D = {};
     return {
         opened: false,
         primaryOrSecondary: 1,
@@ -52,25 +52,25 @@ export default function colorSelectionWindowObject() {
             if (move) {
                 let newPositionX = mousePosition.x - this.mousePositionMoveWindow.x,
                     newPositionY = mousePosition.y - this.mousePositionMoveWindow.y;
-                newPositionX = newPositionX < 0 ? 0 : newPositionX + this.window.offsetWidth > observers.janelaPrincipal.offsetWidth ?
-                    observers.janelaPrincipal.offsetWidth - this.window.offsetWidth : newPositionX;
-                newPositionY = newPositionY < 50 ? 50 : newPositionY + this.window.offsetHeight > observers.janelaPrincipal.offsetHeight ?
-                    observers.janelaPrincipal.offsetHeight - this.window.offsetHeight : newPositionY;
+                newPositionX = newPositionX < 0 ? 0 : newPositionX + this.window.offsetWidth > D.janelaPrincipal.offsetWidth ?
+                    D.janelaPrincipal.offsetWidth - this.window.offsetWidth : newPositionX;
+                newPositionY = newPositionY < 50 ? 50 : newPositionY + this.window.offsetHeight > D.janelaPrincipal.offsetHeight ?
+                    D.janelaPrincipal.offsetHeight - this.window.offsetHeight : newPositionY;
                 this.window.style.left = newPositionX + "px";
                 this.window.style.top = newPositionY + "px";
             } else {
                 this.mousePositionMoveWindow = mousePosition;
-                document.addEventListener("mousemove", observers.colorSelectionWindow.mouseMoveEvent);
-                document.addEventListener("mouseup", observers.colorSelectionWindow.mouseUpEvent);
+                document.addEventListener("mousemove", D.colorSelectionWindow.mouseMoveEvent);
+                document.addEventListener("mouseup", D.colorSelectionWindow.mouseUpEvent);
             }
         },
         mouseMoveEvent(e) {
-            observers.colorSelectionWindow.moveWindow(getMousePosition(observers.janelaPrincipal, e), true);
+            D.colorSelectionWindow.moveWindow(getMousePosition(D.janelaPrincipal, e), true);
         },
         mouseUpEvent(e) {
-            document.removeEventListener("mousemove", observers.colorSelectionWindow.mouseMoveEvent);
-            document.removeEventListener("mouseup", observers.colorSelectionWindow.mouseUpEvent);
-            observers.colorSelectionWindow.mousePositionMoveWindow = null;
+            document.removeEventListener("mousemove", D.colorSelectionWindow.mouseMoveEvent);
+            document.removeEventListener("mouseup", D.colorSelectionWindow.mouseUpEvent);
+            D.colorSelectionWindow.mousePositionMoveWindow = null;
         },
         findColor(color) {
             this.paintSpectrum();
@@ -143,12 +143,12 @@ export default function colorSelectionWindowObject() {
             this.inputs.txtRgb.addEventListener("keyup", (e) => this.txtRgbKeyUp(e));
             this.inputs.txtHex.addEventListener("keyup", (e) => this.txtHexKeyUp(e));
             this.buttons.ok.addEventListener("mousedown", () => this.selectColor())
-            this.buttons.saveColor.addEventListener("mousedown", () => observers.project.saveColor(this.selectedColor));
+            this.buttons.saveColor.addEventListener("mousedown", () => D.project.saveColor(this.selectedColor));
             this.buttons.cancel.addEventListener("mousedown", () => this.close());
             this.primaryOrSecondary = num;
             this.cursors.spectrum.clicked = this.cursors.gradient.clicked = this.clickMoveWindow = false;
-            const color = observers.project.selectedColors.get(this.primaryOrSecondary);
-            observers.drawingTools.selectDrawingTool(observers.drawingTools.arrayTools.length - 1);//Mudar para a ferramenta Conta-gotas.
+            const color = D.project.selectedColors.get(this.primaryOrSecondary);
+            D.drawingTools.selectDrawingTool(D.drawingTools.arrayTools.length - 1);//Mudar para a ferramenta Conta-gotas.
             this.window.style.display = "block";
             this.opened = true;
             this.compareColors.current.style.backgroundColor = "rgb(" + color.r + ", " + color.g + ", " + color.b + ")";
@@ -157,13 +157,13 @@ export default function colorSelectionWindowObject() {
         close() {
             this.removeEventsToElements();
             this.opened = false;
-            observers.drawingTools.selectDrawingTool(observers.drawingTools.previousTool);
+            D.drawingTools.selectDrawingTool(D.drawingTools.previousTool);
             this.window.style.display = "none";
         },
         selectColor() {
-            observers.project.selectedColors.set(this.primaryOrSecondary, this.selectedColor);
+            D.project.selectedColors.set(this.primaryOrSecondary, this.selectedColor);
             this.close();
-            observers.project.selectedColors.deselectAllSavedColor();
+            D.project.selectedColors.deselectAllSavedColor();
         },
         paintGradient(color) {
             const gradient = this.canvas.gradient, width = gradient.canvas.width, height = gradient.canvas.height;
@@ -277,8 +277,8 @@ export default function colorSelectionWindowObject() {
             }
             return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
         },
-        addObserver(newobservers) {
-            for (const prop in newobservers) { observers[prop] = newobservers[prop]; }
+        addDependencies(dependencies) {
+            for (const prop in dependencies) { D[prop] = dependencies[prop]; }
         }
     }
 }
