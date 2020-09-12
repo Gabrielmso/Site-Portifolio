@@ -206,13 +206,13 @@ export default function projectObject() {
             const idIconTela = "iconTela" + num;
             const iconTela = document.createElement("canvas");
             iconTela.setAttribute("id", idIconTela);
-            let styleIconTela;
-            if (this.properties.resolution.proportion >= 1) {
+            let styleIconTela, proportioIcon = 80 / 60;
+            if (this.properties.resolution.proportion >= proportioIcon) {
                 const iconAltura = Math.round(80 / this.properties.resolution.proportion);
                 styleIconTela = "width: 80px; height: " + iconAltura + "px; ";
             } else {
-                const iconLargura = Math.round(80 * this.properties.resolution.proportion);
-                styleIconTela = "width: " + iconLargura + "px; height: 80px; ";
+                const iconLargura = Math.round(60 * this.properties.resolution.proportion);
+                styleIconTela = "width: " + iconLargura + "px; height: 60px; ";
             }
             if (color != false) { styleIconTela = styleIconTela + "background-color: " + color; }
             else { styleIconTela = styleIconTela + "background-image: url('colorPaint/imagens/fundoTela/transparenteMiniatura.png')"; }

@@ -110,7 +110,7 @@ export default function drawingToolsObject() {
                 let el = this.toolProperties.elements[i];
                 el.property.addEventListener("mouseover", () => {
                     if (!this.painting && !this.clickToCurve) {
-                        el.contentBar.style.height = "36px";
+                        el.contentBar.style.height = "33px";
                         this.cursorTool.invisibleCursor();
                     }
                 });

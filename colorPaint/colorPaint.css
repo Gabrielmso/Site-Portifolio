@@ -7,19 +7,9 @@
     --COR_BORDA: rgb(37, 37, 37);
 }
 
-::-webkit-scrollbar {
+*::-webkit-scrollbar {
     width: 6px;
     height: 6px;
-}
-
-*::-webkit-scrollbar-thumb {
-    background: rgb(121, 121, 121);
-    border: 1px solid rgb(91, 91, 91);
-}
-
-*::-webkit-scrollbar-track {
-    background: rgb(71, 71, 71);
-    border: 1px solid rgb(91, 91, 91);
 }
 
 body, html {
@@ -63,11 +53,11 @@ input[type="range"]::-webkit-slider-thumb {
     margin-top: -4px;
 }
 
-
-#contentBlur{
+#contentBlur {
     width: 100%;
     height: 100%;
 }
+
 #colorPaintContent {
     position: relative;
     width: 100%;
@@ -95,7 +85,7 @@ input[type="range"]::-webkit-slider-thumb {
 #propriedadesFerramentas {
     position: relative;
     display: block;
-    left: 90px;
+    left: 92px;
     float: left;
     height: 36px;
     width: auto;
@@ -140,9 +130,10 @@ input[type="range"]::-webkit-slider-thumb {
     overflow: hidden;
     background-color: var(--COR_PRIMARIA);
     top: 36px;
+    left: 0px;
     padding: 0px 10px;
     z-index: 2500;
-    border-radius: 5px;
+    border-radius: 10px;
     box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.45);
     transition: height 160ms ease-in-out;
 }
@@ -371,7 +362,7 @@ input[type="range"]::-webkit-slider-thumb {
     height: 31px;
     display: inline-block;
     background-color: var(--COR_TERCIARIA);
-    border-radius: 5px;
+    border-radius: 10px;
     margin-bottom: -2px;
 }
 
@@ -380,7 +371,7 @@ input[type="range"]::-webkit-slider-thumb {
     height: 31px;
     display: inline-block;
     background-color: rgb(13, 13, 13);
-    border-radius: 5px;
+    border-radius: 10px;
     margin-bottom: -2px;
 }
 
@@ -450,7 +441,7 @@ input[type="range"]::-webkit-slider-thumb {
     overflow-x: auto;
     scrollbar-width: thin;
     background-color: var(--COR_TERCIARIA);
-    border-radius: 7px;
+    border-radius: 10px;
     left: 50%;
     transform: translateX(-50%);
     top: 10px;
@@ -1074,27 +1065,25 @@ input[type="range"]::-webkit-slider-thumb {
 .camadas {
     position: relative;
     width: 100%;
-    height: 80px;
+    height: 60px;
     padding: 0px;
-    border-top: 1px solid rgb(65, 65, 65);
     font-weight: bold;
     margin-bottom: 7px;
     background-color: rgb(0, 0, 0);
     color: rgb(104, 104, 104);
-    border-radius: 5px;
+    border-radius: 10px;
 }
 
 .camadaSelecionada {
     position: relative;
     width: 100%;
-    height: 80px;
+    height: 60px;
     padding: 0px;
-    border-top: 1px solid rgb(10, 10, 10);
     margin-bottom: 7px;
     font-weight: bold;
     background-color: rgba(115, 99, 35, 0.8);
     color: rgb(0, 0, 0);
-    border-radius: 5px;
+    border-radius: 10px;
 }
 
 .camadaSelecionada:last-child {
@@ -1119,16 +1108,16 @@ input[type="range"]::-webkit-slider-thumb {
 
 .camadas label {
     position: absolute;
-    top: 20px;
-    left: 47px;
+    top: 10px;
+    left: 50px;
     text-align: center;
     background-color: rgba(0, 0, 0, 0);
 }
 
 .camadaSelecionada label {
     position: absolute;
-    top: 20px;
-    left: 47px;
+    top: 10px;
+    left: 50px;
     text-align: center;
     background-color: rgba(0, 0, 0, 0);
 }
@@ -1136,7 +1125,8 @@ input[type="range"]::-webkit-slider-thumb {
 .contentIcon {
     position: relative;
     width: 80px;
-    height: 80px;
+    height: 60px;
+    margin-right: 10px;
     float: right;
 }
 
@@ -1152,25 +1142,25 @@ input[type="range"]::-webkit-slider-thumb {
 .iconVer {
     position: relative;
     float: left;
-    border-radius: 5px;
+    border-radius: 10px;
     border: 1px solid var(--COR_PRIMARIA);
     background-color: rgb(91, 91, 91);
-    height: 20px;
-    width: 20px;
-    top: 30px;
-    left: 15px;
+    height: 25px;
+    width: 25px;
+    top: 17px;
+    left: 10px;
 }
 
 .iconNaoVer {
     position: relative;
     float: left;
+    border-radius: 10px;
     border: 1px solid rgb(91, 91, 91);
     background-color: rgb(15, 15, 15);
-    height: 20px;
-    width: 20px;
-    border-radius: 5px;
-    top: 30px;
-    left: 15px;
+    height: 25px;
+    width: 25px;
+    top: 17px;
+    left: 10px;
 }
 
 .nomeCamada {
@@ -1191,9 +1181,8 @@ input[type="range"]::-webkit-slider-thumb {
 .iconTela {
     position: relative;
     top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    float: right;
+    transform: translateY(-50%);
 }
 
 .contentJanelas {

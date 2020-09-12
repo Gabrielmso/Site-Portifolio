@@ -25,20 +25,16 @@
 }
 
 *::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
 }
 
 *::-webkit-scrollbar-thumb {
-    min-height: 28px;
-    background: rgb(78, 78, 78);
+    background: rgb(55, 55, 55);
 }
 
 *::-webkit-scrollbar-track {
-    background: rgb(30, 30, 30);
-    border-width: 1px;
-    border-style: solid;
-    border-color: rgb(37, 37, 37);
+    background: rgb(20, 20, 20);
 }
 
 * {
