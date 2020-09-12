@@ -96,7 +96,6 @@ export default function createProjectWindowObject() {
             }
             const color = valueCor === 1 ? { r: 255, g: 255, b: 255 } : valueCor === 2 ? { r: 0, g: 0, b: 0 } :
                 valueCor === 3 ? false : D.project.selectedColors.firstPlane;
-            // for (let i = 0; i < arrayProperties.length; i++) { arrayProperties[i].style.backgroundColor = "rgb(37, 37, 37)"; }
             D.project.create(nomeProjeto, { width: larguraProjeto, height: alturaProjeto }, color, numeroCamadas);
             this.conclude();
             function campoInvalido(campo) {

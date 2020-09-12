@@ -336,7 +336,7 @@ export default function projectObject() {
                 const BASE64_MARKER = ";base64,", base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length,
                     base64 = dataURI.substring(base64Index), raw = window.atob(base64), rawLength = raw.length;
                 let array = new Uint8Array(rawLength);
-                for (i = 0; i < rawLength; i++) { array[i] = raw.charCodeAt(i); }
+                for (let i = 0; i < rawLength; i++) { array[i] = raw.charCodeAt(i); }
                 const blob = new Blob([array], { type: "image/png" });
                 return blob;
             }
