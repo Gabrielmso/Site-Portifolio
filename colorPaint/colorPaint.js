@@ -30,10 +30,9 @@ function loadApp() {
         corPrincipal = document.getElementById("corPrincipal"),
         corSecundaria = document.getElementById("corSecundaria"),
         txtPorcentagemZoom = document.getElementById("txtPorcentagemZoom"),
-        janelaPrincipal = document.getElementById("colorPaintContent"),
-        contentBlur = document.getElementById("contentBlur");
+        janelaPrincipal = document.getElementById("colorPaintContent");
 
-    createProjectWindow.addDependencies({ createProjectWindow, project, notification, backgroundBlur });
+    createProjectWindow.addDependencies({ createProjectWindow, project, notification, openWindowbackgroundBlur });
     project.addDependencies({
         corPrincipal, corSecundaria, drawingTools, previewFunctions,
         hotKeys, createGridWindow, colorSelectionWindow, notification,
@@ -123,8 +122,7 @@ function loadApp() {
     document.getElementById("bttAtalhos").addEventListener("click", () => openHotKeysWindow(true));
     document.getElementById("bttOkAtalhos").addEventListener("click", () => openHotKeysWindow(false));
     function openHotKeysWindow(open) {
-        document.getElementById("contentJanelaAtalhos").style.display = open ? "flex" : "none";
-        backgroundBlur(open);
+        openWindowbackgroundBlur(document.getElementById("contentJanelaAtalhos"), open);
     }
 
     document.getElementById("colorPaintContent").addEventListener("wheel", (e) => {//Zoom com o scroll do mouse.
@@ -163,9 +161,24 @@ function loadApp() {
         document.getElementById("janelaCamadas").style.height = (barraLateralEsquerda.offsetHeight - 336) + "px";
     }
 
-    function backgroundBlur(applyBlur) {
-        const blur = applyBlur ? "blur(9px)" : "";
-        contentBlur.style.filter = topoMenu.menu.style.filter = blur;
+    function openWindowbackgroundBlur(window, open) {
+        return new Promise((resolve) => {
+            if (open) {
+                window.style.display = "flex";
+                setTimeout(() => {
+                    window.style.opacity = "1";
+                    window.classList.add("applyBackDropBlur");
+                    resolve();
+                }, 2);
+            } else {
+                window.style.opacity = "0";
+                window.classList.remove("applyBackDropBlur");
+                setTimeout(() => {
+                    window.style.display = "none";
+                    resolve();
+                }, 340);
+            }
+        });
     }
 
     function criarOuAbrirProjeto() {

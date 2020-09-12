@@ -20,216 +20,206 @@
 </head>
 
 <body>
-    <section id="contentBlur">
-        <section id="colorPaintContent">
-            <section id="janelaPrincipal">
-                <header id="barraSuperior">
-                    <ul id="propriedadesFerramentas" class="noSelection">
-                        <li id="propriedadeTamanho">
-                            <label>Tamanho &#9662; </label><input type="text" id="txtTamanhoFerramenta" readonly
-                                value="5px" style="width: 40px;">
-                            <div id="contentBarraTamanho">
-                                <input type="range" id="barraTamanho" min="0" max="260" step="0.01" value="5">
-                            </div>
-                        </li>
-                        <li id="propriedadeOpacidade">
-                            <label>Opacidade &#9662; </label><input type="text" id="txtOpacidadeFerramenta" readonly
-                                value="100%">
-                            <div id="contentBarraOpacidade">
-                                <input type="range" id="barraOpacidade" min="0.01" max="1" step="0.01" value="1">
-                            </div>
-                        </li>
-                        <li id="propriedadeDureza">
-                            <label>Dureza &#9662; </label><input type="text" id="txtDurezaFerramenta" readonly
-                                value="100%">
-                            <div id="contentBarraDureza">
-                                <input type="range" id="barraDureza" min="0" max="1" step="0.01" value="1"
-                                    id="barraDureza">
-                            </div>
-                        </li>
-                    </ul>
-                    <ul id="menuColorPaint" class="noSelection">
-                        <li><label>Visualizar <span style="font-size: 15px; line-height: 33px;">&#9662;</span></label>
-                            <ul>
-                                <li id="bttCriarGrade"
-                                    title="Adiciona linhas guias de acordo com as preferências listadas.">
-                                    <label class="cursor">Grade</label>
-                                </li>
-                                <li id="bttModoCursor" title="Altera a aparência do cursor para melhor performance.">
-                                    <label class="cursor">Cursor : <span>Padrão</span></label>
-                                </li>
-                                <li id="bttMostrarAlteracaoPincel"
-                                    title="Mostra um exemplo do pincel a partir das propriedades das ferramentas.">
-                                    <label class="cursor" style="margin: 6px 0px; line-height: 19px;">Exibir amostra do
-                                        pincel : <span>Sim</span></label>
-                                </li>
-                            </ul>
-                        </li>
-                        <li><label>Arquivo <span style="font-size: 15px; line-height: 33px;">&#9662;</span></label>
-                            <ul>
-                                <li id="bttSalvarDesenho" title="Salva o desenho em um arquivo no formato PNG.">
-                                    <label class="cursor">Salvar</label>
-                                </li>
-                                <li id="bttSalvarProjeto"
-                                    title="Salva as propriedades do projeto, o conteúdo das camadas, em um arquivo no formato GM.">
-                                    <label class="cursor">Salvar projeto</label>
-                                </li>
-                                <li id="bttcarregarProjeto">
-                                    <label class="cursor">Carregar projeto</label>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <button id="bttCriarNovoProjeto" class="bttColorPaint noSelection cursor"
-                        style="top:5px; margin:0px">
-                        Criar novo projeto
-                    </button>
-                </header>
-                <div id="contentTools" class="noSelection">
-                    <aside id="barraLateralEsquerda">
-                        <div id="ferramentas">
-                            <div id="pincel" class="bttFerramentasEscolhida cursor" title="Ferramenta Pincel"></div>
-                            <div id="borracha" class="bttFerramentas cursor" title="Ferramenta Borracha"></div>
-                            <div id="linha" class="bttFerramentas cursor" title="Ferramenta Linha"></div>
-                            <div id="curva" class="bttFerramentas cursor" title="Ferramenta Curva"></div>
-                            <div id="retangulo" class="bttFerramentas cursor" title="Ferramenta Retângulo"></div>
-                            <div id="elipse" class="bttFerramentas cursor" title="Ferramenta Elipse"></div>
-                            <div id="baldeDeTinta" class="bttFerramentas cursor" title="Ferramenta Balde de tinta">
-                            </div>
-                            <div id="contaGotas" class="bttFerramentas cursor" title="Ferramenta Conta-gotas"></div>
-                            <div id="borrar" class="bttFerramentas cursor" title="Ferramenta Borrar (Beta)"></div>
-                            <div id="desfoque" class="bttFerramentas cursor" title="Ferramenta Desfoque (Beta)"></div>
-                            <div id="bttZoomMenos" class="bttFerramentas bttHover noSelection cursor"
-                                title="Menos zoom">
-                            </div>
-                            <div id="bttZoomMais" class="bttFerramentas bttHover noSelection cursor" title="Mais zoom">
-                            </div>
-                            <div id="bttDesfazer" class="bttFerramentas" style="opacity: 0.5;"
-                                title="Desfazer (Ctrl + Z)">
-                            </div>
-                            <div id="bttRefazer" class="bttFerramentas" style="opacity: 0.5;"
-                                title="Refazer (Ctrl + Y)">
-                            </div>
+    <section id="colorPaintContent">
+        <section id="janelaPrincipal">
+            <header id="barraSuperior">
+                <ul id="propriedadesFerramentas" class="noSelection">
+                    <li id="propriedadeTamanho">
+                        <label>Tamanho &#9662; </label><input type="text" id="txtTamanhoFerramenta" readonly value="5px"
+                            style="width: 40px;">
+                        <div id="contentBarraTamanho">
+                            <input type="range" id="barraTamanho" min="0" max="260" step="0.01" value="5">
                         </div>
-                        <div id="coresSelecionadas">
-                            <div id="corPrincipal" class="corEscolhida cursor">
-                                <div></div>
-                            </div>
-                            <div id="corSecundaria" class="corEscolhida cursor">
-                                <div></div>
-                            </div>
-                            <div id="bttAlternaCor"></div>
-                            <div id="bttCoresPrincipais"></div>
+                    </li>
+                    <li id="propriedadeOpacidade">
+                        <label>Opacidade &#9662; </label><input type="text" id="txtOpacidadeFerramenta" readonly
+                            value="100%">
+                        <div id="contentBarraOpacidade">
+                            <input type="range" id="barraOpacidade" min="0.01" max="1" step="0.01" value="1">
                         </div>
-                        <div id="coresSalvas"></div>
-                        <div id="bttRemoverCorSalva" class="cursor noSelection" title="Deletar cor">
-                            <p>x</p>
+                    </li>
+                    <li id="propriedadeDureza">
+                        <label>Dureza &#9662; </label><input type="text" id="txtDurezaFerramenta" readonly value="100%">
+                        <div id="contentBarraDureza">
+                            <input type="range" id="barraDureza" min="0" max="1" step="0.01" value="1" id="barraDureza">
                         </div>
-                        <div id="bttAtalhos" class="noSelection cursor">
-                            <p>Atalhos</p>
+                    </li>
+                </ul>
+                <ul id="menuColorPaint" class="noSelection">
+                    <li><label>Visualizar <span style="font-size: 15px; line-height: 33px;">&#9662;</span></label>
+                        <ul>
+                            <li id="bttCriarGrade"
+                                title="Adiciona linhas guias de acordo com as preferências listadas.">
+                                <label class="cursor">Grade</label>
+                            </li>
+                            <li id="bttModoCursor" title="Altera a aparência do cursor para melhor performance.">
+                                <label class="cursor">Cursor : <span>Padrão</span></label>
+                            </li>
+                            <li id="bttMostrarAlteracaoPincel"
+                                title="Mostra um exemplo do pincel a partir das propriedades das ferramentas.">
+                                <label class="cursor" style="margin: 6px 0px; line-height: 19px;">Exibir amostra do
+                                    pincel : <span>Sim</span></label>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><label>Arquivo <span style="font-size: 15px; line-height: 33px;">&#9662;</span></label>
+                        <ul>
+                            <li id="bttSalvarDesenho" title="Salva o desenho em um arquivo no formato PNG.">
+                                <label class="cursor">Salvar</label>
+                            </li>
+                            <li id="bttSalvarProjeto"
+                                title="Salva as propriedades do projeto, o conteúdo das camadas, em um arquivo no formato GM.">
+                                <label class="cursor">Salvar projeto</label>
+                            </li>
+                            <li id="bttcarregarProjeto">
+                                <label class="cursor">Carregar projeto</label>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <button id="bttCriarNovoProjeto" class="bttColorPaint noSelection cursor" style="top:5px; margin:0px">
+                    Criar novo projeto
+                </button>
+            </header>
+            <div id="contentTools" class="noSelection">
+                <aside id="barraLateralEsquerda">
+                    <div id="ferramentas">
+                        <div id="pincel" class="bttFerramentasEscolhida cursor" title="Ferramenta Pincel"></div>
+                        <div id="borracha" class="bttFerramentas cursor" title="Ferramenta Borracha"></div>
+                        <div id="linha" class="bttFerramentas cursor" title="Ferramenta Linha"></div>
+                        <div id="curva" class="bttFerramentas cursor" title="Ferramenta Curva"></div>
+                        <div id="retangulo" class="bttFerramentas cursor" title="Ferramenta Retângulo"></div>
+                        <div id="elipse" class="bttFerramentas cursor" title="Ferramenta Elipse"></div>
+                        <div id="baldeDeTinta" class="bttFerramentas cursor" title="Ferramenta Balde de tinta">
                         </div>
-                    </aside>
-                    <div id="contentCentro">
-                        <div id="contentTelas">
-                            <div id="telasCanvas">
-                                <canvas id="desenho" class="telaCanvas"></canvas>
-                                <div id="corFundo" class="telaCanvas"></div>
-                                <canvas id="pintar" class="telaCanvas"></canvas>
-                                <div id="grid" class="telaCanvas"></div>
-                                <div id="sobrepor" class="telaCanvas"></div>
-                            </div>
+                        <div id="contaGotas" class="bttFerramentas cursor" title="Ferramenta Conta-gotas"></div>
+                        <div id="borrar" class="bttFerramentas cursor" title="Ferramenta Borrar (Beta)"></div>
+                        <div id="desfoque" class="bttFerramentas cursor" title="Ferramenta Desfoque (Beta)"></div>
+                        <div id="bttZoomMenos" class="bttFerramentas bttHover noSelection cursor" title="Menos zoom">
                         </div>
-                        <div id="barraInferior">
-                            <input id="txtPorcentagemZoom" type="text">
-                            <label id="nomeDoProjeto"></label>
+                        <div id="bttZoomMais" class="bttFerramentas bttHover noSelection cursor" title="Mais zoom">
+                        </div>
+                        <div id="bttDesfazer" class="bttFerramentas" style="opacity: 0.5;" title="Desfazer (Ctrl + Z)">
+                        </div>
+                        <div id="bttRefazer" class="bttFerramentas" style="opacity: 0.5;" title="Refazer (Ctrl + Y)">
                         </div>
                     </div>
-                    <aside id="barraLateralDireita" class="noSelection">
-                        <div id="janelaPreview" class="janelasBarraLateralDireita">
-                            <label class="titulosBarraDireita">Preview:</label>
-                            <div id="contentPreview">
-                                <div id="contentTelaPreview">
-                                    <canvas id="telaPreview" class="preview"></canvas>
-                                    <div id="fundoPreview" class="preview"></div>
-                                    <div id="moverScroll" style="cursor: grab">
-                                        <div></div>
-                                    </div>
+                    <div id="coresSelecionadas">
+                        <div id="corPrincipal" class="corEscolhida cursor">
+                            <div></div>
+                        </div>
+                        <div id="corSecundaria" class="corEscolhida cursor">
+                            <div></div>
+                        </div>
+                        <div id="bttAlternaCor"></div>
+                        <div id="bttCoresPrincipais"></div>
+                    </div>
+                    <div id="coresSalvas"></div>
+                    <div id="bttRemoverCorSalva" class="cursor noSelection" title="Deletar cor">
+                        <p>x</p>
+                    </div>
+                    <div id="bttAtalhos" class="noSelection cursor">
+                        <p>Atalhos</p>
+                    </div>
+                </aside>
+                <div id="contentCentro">
+                    <div id="contentTelas">
+                        <div id="telasCanvas">
+                            <canvas id="desenho" class="telaCanvas"></canvas>
+                            <div id="corFundo" class="telaCanvas"></div>
+                            <canvas id="pintar" class="telaCanvas"></canvas>
+                            <div id="grid" class="telaCanvas"></div>
+                            <div id="sobrepor" class="telaCanvas"></div>
+                        </div>
+                    </div>
+                    <div id="barraInferior">
+                        <input id="txtPorcentagemZoom" type="text">
+                        <label id="nomeDoProjeto"></label>
+                    </div>
+                </div>
+                <aside id="barraLateralDireita" class="noSelection">
+                    <div id="janelaPreview" class="janelasBarraLateralDireita">
+                        <label class="titulosBarraDireita">Preview:</label>
+                        <div id="contentPreview">
+                            <div id="contentTelaPreview">
+                                <canvas id="telaPreview" class="preview"></canvas>
+                                <div id="fundoPreview" class="preview"></div>
+                                <div id="moverScroll" style="cursor: grab">
+                                    <div></div>
                                 </div>
                             </div>
                         </div>
-                        <div id="janelaInfo" class="janelasBarraLateralDireita">
-                            <label class="titulosBarraDireita">Info:</label>
-                            <div id="contentInfo">
-                                <label>Posição do cursor: </label><input id="txtPosicaoCursor" type="text" readonly><br>
-                                <label>Resolução: </label><input id="txtResolucao" type="text" readonly><br>
-                                <label>Cor do primeiro plano: </label><input id="txtCorEscolhida" type="text"
-                                    readonly><br>
-                            </div>
-                        </div>
-                        <div id="janelaCamadas" class="janelasBarraLateralDireita">
-                            <label class="titulosBarraDireita">Camadas:</label>
-                            <div id="contentIconeCamadas">
-                            </div>
-                        </div>
-                        <div id="contentBarraOpacidadeCamada" class="janelasBarraLateralDireita noSelection">
-                            <label class="titulosBarraDireita">Opacidade:</label>
-                            <input id="barraOpacidadeCamada" type="range" min="0.01" max="1" step="0.01">
-                        </div>
-                    </aside>
-                </div>
-            </section>
-            <section id="janelaSelecionarCor">
-                <div id="moverJanelaSelecionarCor" class="barraMoverJanela noSelection"></div>
-                <div>
-                    <div id="comparaCorAtualEEscolhida">
-                        <div id="corSelecionada" class="noSelection"></div>
-                        <div id="corAtual" class="noSelection"></div>
                     </div>
-                    <div id="contentGradienteCor" class="noSelection">
-                        <canvas id="gradienteCor" class="canvasSelecionarCor" width="440" height="255"></canvas>
-                        <div id="cursorGradiente" class="cursorSeletor">
-                            <div></div>
+                    <div id="janelaInfo" class="janelasBarraLateralDireita">
+                        <label class="titulosBarraDireita">Info:</label>
+                        <div id="contentInfo">
+                            <label>Posição do cursor: </label><input id="txtPosicaoCursor" type="text" readonly><br>
+                            <label>Resolução: </label><input id="txtResolucao" type="text" readonly><br>
+                            <label>Cor do primeiro plano: </label><input id="txtCorEscolhida" type="text" readonly><br>
                         </div>
                     </div>
-                    <div id="contentBarraeEspectroCor" class="noSelection">
-                        <canvas id="barraeEspectroCor" class="canvasSelecionarCor" width="540" height="20"></canvas>
-                        <div id="cursorBarra" class="cursorSeletor">
-                            <div></div>
+                    <div id="janelaCamadas" class="janelasBarraLateralDireita">
+                        <label class="titulosBarraDireita">Camadas:</label>
+                        <div id="contentIconeCamadas">
                         </div>
                     </div>
-                    <div id="InputsjanelaSelecionarCor">
-                        <label class="noSelection">RGB:</label><input id="codRGB" type="text"
-                            style="margin-right: 18px;">
-                        <label class="noSelection">HEX:</label><input id="codHEX" type="text">
+                    <div id="contentBarraOpacidadeCamada" class="janelasBarraLateralDireita noSelection">
+                        <label class="titulosBarraDireita">Opacidade:</label>
+                        <input id="barraOpacidadeCamada" type="range" min="0.01" max="1" step="0.01">
                     </div>
-                    <div class="bttsJanela">
-                        <button id="bttOkSelecionaCor" class="bttColorPaint cursor noSelection">Ok</button>
-                        <button id="bttSalvarCor" class="bttColorPaint cursor noSelection">Salvar cor</button>
-                        <button id="bttCancelarSelecionaCor" class="bttColorPaint cursor noSelection">Cancelar</button>
-                    </div>
-                </div>
-            </section>
-            <div id="cursorComparaContaGotas" style="display: none;">
-                <div id="comparaCoresContaGotas"></div>
-            </div>
-            <div id="cursorFerramenta" class="bordaCursor noSelection">
-                <div></div>
+                </aside>
             </div>
         </section>
-        <section id="contentNotificacao" class="noSelection">
-            <div id="notificacao">
-                <div class="tituloJanela noSelection">
-                    <p id="tituloNotificacao" style="font-weight: bold;"></p>
+        <section id="janelaSelecionarCor">
+            <div id="moverJanelaSelecionarCor" class="barraMoverJanela noSelection"></div>
+            <div>
+                <div id="comparaCorAtualEEscolhida">
+                    <div id="corSelecionada" class="noSelection"></div>
+                    <div id="corAtual" class="noSelection"></div>
                 </div>
-                <div class="conteudoJanela">
-                    <p id="textoNotificacao" class="noSelection"></p>
+                <div id="contentGradienteCor" class="noSelection">
+                    <canvas id="gradienteCor" class="canvasSelecionarCor" width="440" height="255"></canvas>
+                    <div id="cursorGradiente" class="cursorSeletor">
+                        <div></div>
+                    </div>
+                </div>
+                <div id="contentBarraeEspectroCor" class="noSelection">
+                    <canvas id="barraeEspectroCor" class="canvasSelecionarCor" width="540" height="20"></canvas>
+                    <div id="cursorBarra" class="cursorSeletor">
+                        <div></div>
+                    </div>
+                </div>
+                <div id="InputsjanelaSelecionarCor">
+                    <label class="noSelection">RGB:</label><input id="codRGB" type="text" style="margin-right: 18px;">
+                    <label class="noSelection">HEX:</label><input id="codHEX" type="text">
                 </div>
                 <div class="bttsJanela">
-                    <button id="bttNotificacao1" class="bttColorPaint cursor noSelection"></button>
-                    <button id="bttNotificacao2" class="bttColorPaint cursor noSelection"></button>
+                    <button id="bttOkSelecionaCor" class="bttColorPaint cursor noSelection">Ok</button>
+                    <button id="bttSalvarCor" class="bttColorPaint cursor noSelection">Salvar cor</button>
+                    <button id="bttCancelarSelecionaCor" class="bttColorPaint cursor noSelection">Cancelar</button>
                 </div>
             </div>
         </section>
+        <div id="cursorComparaContaGotas" style="display: none;">
+            <div id="comparaCoresContaGotas"></div>
+        </div>
+        <div id="cursorFerramenta" class="bordaCursor noSelection">
+            <div></div>
+        </div>
+    </section>
+    <section id="contentNotificacao" class="noSelection">
+        <div id="notificacao">
+            <div class="tituloJanela noSelection">
+                <p id="tituloNotificacao" style="font-weight: bold;"></p>
+            </div>
+            <div class="conteudoJanela">
+                <p id="textoNotificacao" class="noSelection"></p>
+            </div>
+            <div class="bttsJanela">
+                <button id="bttNotificacao1" class="bttColorPaint cursor noSelection"></button>
+                <button id="bttNotificacao2" class="bttColorPaint cursor noSelection"></button>
+            </div>
+        </div>
     </section>
     <section id="contentCriarAbrirProjeto" class="contentJanelas">
         <section id="janelaCriarProjeto">
