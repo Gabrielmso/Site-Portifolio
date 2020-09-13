@@ -1,4 +1,4 @@
-import { getImage, preventDefaultAction, throttle, getMousePosition } from "../js/geral.js";
+import { getImage, preventDefaultAction, throttle, getMousePosition, logarithm } from "../js/geral.js";
 
 export default function drawingToolsObject() {
     const D = {}
@@ -275,7 +275,7 @@ export default function drawingToolsObject() {
             }
             this.applyToolChanges();
             this.eventLayer.strokeStyle = "rgba(0, 0, 255, " + this.toolProperties.opacity + ")";
-            this.brush(false);
+            this.brush("down");
             this.strokeCoordinates = { x: [], y: [] }
         },
         changeCursorTool() {
@@ -311,8 +311,8 @@ export default function drawingToolsObject() {
             this.storeStrokeCoordinates();
             this.applyToolChanges();
             this.currentLayer.globalCompositeOperation = "source-over";
-            this[this.mouseFunctionName]("down", e);
             if (this.cursorTool.show) { D.janelaPrincipal.style.cursor = "none"; }
+            this[this.mouseFunctionName]("down", e);
         },
         mouseMoveEventDrawing(e) {
             this.getCursorPosition(e);
@@ -326,6 +326,7 @@ export default function drawingToolsObject() {
             }
         },
         mouseUpEventDrawing(e) {
+            D.janelaPrincipal.style.cursor = "";
             if (this.painting) {
                 this.painting = false;
                 if (!this.completeToolUsage(e)) { return; };
@@ -335,7 +336,6 @@ export default function drawingToolsObject() {
                 if (this.bttMouseUsed === 1) { this.selectDrawingTool(this.previousTool) }
                 this.currentLayer.globalCompositeOperation = "source-over";
             }
-            D.janelaPrincipal.style.cursor = "";
             this.bttMouseUsed = this.clickPropertieBar = false;
         },
         completeToolUsage(e) {
@@ -649,87 +649,94 @@ export default function drawingToolsObject() {
             };
         },
         moveScreen(eventName, e) {
-            if (eventName === "down") {
-                this.infoMoveScreenWithSpace = { startCoordinate: getMousePosition(D.contentTelas, e), scroolTop: D.contentTelas.scrollTop, scrollLeft: D.contentTelas.scrollLeft };
-                D.contentTelas.style.cursor = "grabbing";
-                return;
-            } else if (eventName === "up") {
-                this.infoMoveScreenWithSpace = { startCoordinate: null, scroolTop: null, scrollLeft: null };
-                contentTelas.style.cursor = "grab";
-                return;
+            const eventFunction = {
+                down: () => {
+                    this.infoMoveScreenWithSpace = { startCoordinate: getMousePosition(D.contentTelas, e), scroolTop: D.contentTelas.scrollTop, scrollLeft: D.contentTelas.scrollLeft };
+                    D.janelaPrincipal.style.cursor = D.contentTelas.style.cursor = "grabbing";
+                },
+                move: () => {
+                    const mousePosition = getMousePosition(D.contentTelas, e);
+                    D.contentTelas.scrollLeft = this.infoMoveScreenWithSpace.scrollLeft + this.infoMoveScreenWithSpace.startCoordinate.x - mousePosition.x;
+                    D.contentTelas.scrollTop = this.infoMoveScreenWithSpace.scroolTop + this.infoMoveScreenWithSpace.startCoordinate.y - mousePosition.y;
+                },
+                up: () => {
+                    this.infoMoveScreenWithSpace = { startCoordinate: null, scroolTop: null, scrollLeft: null };
+                    contentTelas.style.cursor = "grab";
+                }
             }
-            const mousePosition = getMousePosition(D.contentTelas, e);
-            D.contentTelas.scrollLeft = this.infoMoveScreenWithSpace.scrollLeft + this.infoMoveScreenWithSpace.startCoordinate.x - mousePosition.x;
-            D.contentTelas.scrollTop = this.infoMoveScreenWithSpace.scroolTop + this.infoMoveScreenWithSpace.startCoordinate.y - mousePosition.y;
+            eventFunction[eventName]();
         },
         changeToolSizeCursor(eventName, e) {
-            if (eventName === "down") {
-                this.cursorTool.visible = false;
-                D.hotKeys.infoShifth = this.toolProperties.size;
-                this.brush(false);
-                return;
-            } else if (eventName === "up") {
-                this.strokeCoordinates = { x: [], y: [] };
-                this.selectDrawingTool(this.selectedTool);
-                D.hotKeys.infoShifth = null;
-                return;
-            }
-            const { start, end } = this.getStartEndStrokeCoordinates(),
-                distance = end.x - start.x < 0 ? -this.getDistanceCoordinates(start, end) : this.getDistanceCoordinates(start, end);
-            this.changeToolSize(D.hotKeys.infoShifth + distance);
-            this.cursorTool.visible = false;
-            this.applyToolChanges();
-            this.strokeCoordinates = { x: [this.strokeCoordinates.x[0]], y: [this.strokeCoordinates.y[0]] };
-            this.brush(false);
+            const eventFunction = {
+                down: () => {
+                    this.cursorTool.visible = false;
+                    D.hotKeys.infoShifth = this.toolProperties.size;
+                    this.brush("down");
+                },
+                move: () => {
+                    const { start, end } = this.getStartEndStrokeCoordinates(),
+                        distance = end.x - start.x < 0 ? -this.getDistanceCoordinates(start, end) : this.getDistanceCoordinates(start, end);
+                    this.changeToolSize(D.hotKeys.infoShifth + distance);
+                    this.cursorTool.visible = false;
+                    this.applyToolChanges();
+                    this.strokeCoordinates = { x: [this.strokeCoordinates.x[0]], y: [this.strokeCoordinates.y[0]] };
+                    this.brush("down");
+                },
+                up: () => this.defaultFunctionChangeToolPropertieCursor(),
+            };
+            eventFunction[eventName]();
         },
         changeToolOpacityCursor(eventName, e) {
-            if (eventName === "down") {
-                this.cursorTool.visible = false;
-                D.hotKeys.infoShift = {
-                    startCoordinate: getMousePosition(D.janelaPrincipal, e),
-                    beforeValue: +(this.toolOpacityBar.bar.value)
-                }
-                this.brush(false);
-                return;
-            } else if (eventName === "up") {
-                this.strokeCoordinates = { x: [], y: [] };
-                this.selectDrawingTool(this.selectedTool);
-                D.hotKeys.infoShifth = null;
-                return;
-            }
-            const start = D.hotKeys.infoShift.startCoordinate, end = getMousePosition(D.janelaPrincipal, e),
-                distance = end.x - start.x < 0 ? -this.getDistanceCoordinates(start, end) : this.getDistanceCoordinates(start, end);
-            this.changeToolOpacity(+((D.hotKeys.infoShift.beforeValue + ((distance * 0.01) / 2.5)).toFixed(2)), false);
-            this.applyToolChanges();
-            this.strokeCoordinates = { x: [this.strokeCoordinates.x[0]], y: [this.strokeCoordinates.y[0]] };
-            this.brush(false);
+            const eventFunction = {
+                down: () => {
+                    this.cursorTool.visible = false;
+                    D.hotKeys.infoShift = {
+                        startCoordinate: getMousePosition(D.janelaPrincipal, e),
+                        beforeValue: +(this.toolOpacityBar.bar.value)
+                    }
+                    this.brush("down");
+                },
+                move: () => {
+                    const start = D.hotKeys.infoShift.startCoordinate, end = getMousePosition(D.janelaPrincipal, e),
+                        distance = end.x - start.x < 0 ? -this.getDistanceCoordinates(start, end) : this.getDistanceCoordinates(start, end);
+                    this.changeToolOpacity(+((D.hotKeys.infoShift.beforeValue + ((distance * 0.01) / 2.5)).toFixed(2)), false);
+                    this.applyToolChanges();
+                    this.strokeCoordinates = { x: [this.strokeCoordinates.x[0]], y: [this.strokeCoordinates.y[0]] };
+                    this.brush("down");
+                },
+                up: () => this.defaultFunctionChangeToolPropertieCursor()
+            };
+            eventFunction[eventName]();
         },
         changeToolHardnessCursor(eventName, e) {
-            if (eventName === "down") {
-                this.cursorTool.visible = false;
-                D.hotKeys.infoShift = {
-                    startCoordinate: getMousePosition(D.janelaPrincipal, e),
-                    beforeValue: +(this.toolHardnessBar.bar.value)
-                }
-                this.brush(false);
-                return;
-            } else if (eventName === "up") {
-                this.strokeCoordinates = { x: [], y: [] };
-                this.selectDrawingTool(this.selectedTool);
-                D.hotKeys.infoShifth = null;
-                return;
-            }
-            const start = D.hotKeys.infoShift.startCoordinate, end = getMousePosition(D.janelaPrincipal, e),
-                distance = end.x - start.x < 0 ? -this.getDistanceCoordinates(start, end) : this.getDistanceCoordinates(start, end);
-            this.changeToolHardness(+((D.hotKeys.infoShift.beforeValue + ((distance * 0.01) / 2.5)).toFixed(2)), false);
-            this.applyToolChanges();
-            this.strokeCoordinates = { x: [this.strokeCoordinates.x[0]], y: [this.strokeCoordinates.y[0]] };
-            this.brush(false);
+            const eventFunction = {
+                down: () => {
+                    this.cursorTool.visible = false;
+                    D.hotKeys.infoShift = {
+                        startCoordinate: getMousePosition(D.janelaPrincipal, e),
+                        beforeValue: +(this.toolHardnessBar.bar.value)
+                    }
+                    this.brush("down");
+                },
+                move: () => {
+                    const start = D.hotKeys.infoShift.startCoordinate, end = getMousePosition(D.janelaPrincipal, e),
+                        distance = end.x - start.x < 0 ? -this.getDistanceCoordinates(start, end) : this.getDistanceCoordinates(start, end);
+                    this.changeToolHardness(+((D.hotKeys.infoShift.beforeValue + ((distance * 0.01) / 2.5)).toFixed(2)), false);
+                    this.applyToolChanges();
+                    this.strokeCoordinates = { x: [this.strokeCoordinates.x[0]], y: [this.strokeCoordinates.y[0]] };
+                    this.brush("down");
+                },
+                up: () => this.defaultFunctionChangeToolPropertieCursor()
+            };
+            eventFunction[eventName]();
+        },
+        defaultFunctionChangeToolPropertieCursor() {
+            this.strokeCoordinates = { x: [], y: [] };
+            this.selectDrawingTool(this.selectedTool);
+            D.hotKeys.infoShifth = null;
         },
         addDependencies(dependencies) {
             for (const prop in dependencies) { D[prop] = dependencies[prop]; }
         }
     }
 }
-
-function logarithm(base, log) { return Math.log(log) / Math.log(base); }

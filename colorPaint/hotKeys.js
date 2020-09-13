@@ -73,7 +73,7 @@ export default function hotKeysObject() {
             D.drawingTools.cursorTool.invisibleCursor();
         },
         keyUpSpace() {
-            D.drawingTools.moveScreen("mouseup");
+            D.drawingTools.moveScreen("up");
             D.drawingTools.selectDrawingTool(D.drawingTools.selectedTool);
         },
         keyDownShift() {

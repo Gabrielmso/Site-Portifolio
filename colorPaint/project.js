@@ -13,17 +13,17 @@ export default function projectObject() {
             txtFirstPlane: document.getElementById("txtCorEscolhida"),
             set(plane, color) {
                 const apply = {
-                    color1(rgb) {
+                    color1: (rgb) => {
                         this.firstPlane = rgb;
                         this.txtFirstPlane.value = D.corPrincipal.style.backgroundColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
                     },
-                    color2(rgb) {
+                    color2: (rgb) => {
                         this.backgroundPlane = rgb;
                         D.corSecundaria.style.backgroundColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
                     }
                 }
                 plane = plane < 1 ? 1 : plane > 2 ? 1 : plane;
-                apply["color" + plane].call(this, color);
+                apply["color" + plane](color);
             },
             get(plane) {
                 plane = plane < 1 ? 1 : plane > 2 ? 1 : plane;

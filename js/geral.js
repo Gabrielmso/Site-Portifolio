@@ -39,3 +39,5 @@ export function preventDefaultAction(e) {
     e.preventDefault();
     e.stopPropagation();
 }
+
+export function logarithm(base, log) { return Math.log(log) / Math.log(base); }
