@@ -2,6 +2,7 @@ import { cloneReplaceElement } from "../js/geral.js";
 
 export default function notificationsObject() {
     return {
+        timeTransition: 360,
         opened: false,
         contentWindow: document.getElementById("contentNotificacao"),
         window: document.getElementById("notificacao"),
@@ -28,25 +29,28 @@ export default function notificationsObject() {
             this.text.innerText = content.text;
             this.opened = true;
             this.contentWindow.style.display = "block";
+            setTimeout(() => this.contentWindow.classList.add("applyBackDropBlur"), 5);
             this.showTransition();
             this.type = type.name;
             if (this.type === "confirm") {
+                this.window.style.backgroundColor = "rgba(25, 5, 125, 0.9)";
                 this.buttons.btt2.style.display = "block";
                 this.buttons.btt1.innerText = "Sim";
                 this.buttons.btt2.innerText = "Não";
                 this.buttons.btt1.addEventListener("mousedown", () => {
                     this.close();
-                    setTimeout(() => func(), 400);
+                    setTimeout(func, this.timeTransition);
                 });
                 this.buttons.btt2.addEventListener("mousedown", () => this.close());
             } else if (this.type === "notify") {
+                this.window.style.backgroundColor = "rgba(145, 5, 5, 0.9)";
                 this.buttons.btt2.style.display = "none";
                 this.buttons.btt1.innerText = "Ok";
                 this.buttons.btt1.addEventListener("mousedown", () => {
                     this.type = null;
                     this.close();
                 })
-                setTimeout(() => this.close(), type.time + 400);
+                setTimeout(() => this.close(), type.time + this.timeTransition);
             }
         },
         close() {
@@ -64,12 +68,15 @@ export default function notificationsObject() {
                 this.window.style.transition = "";
                 this.window.style.opacity = "1";
                 this.window.style.bottom = "10px";
-            }, 5);
+            }, 3);
         },
         hideTransition() {
             this.window.style.opacity = "0";
             this.window.style.bottom = "-" + (this.window.offsetHeight + 10) + "px";
-            setTimeout(() => this.contentWindow.style.display = "none", 400);
+            this.contentWindow.classList.remove("applyBackDropBlur");
+            setTimeout(() => {
+                this.contentWindow.style.display = "none";
+            }, this.timeTransition);
         }
     }
 }

@@ -134,7 +134,7 @@ input[type="range"]::-webkit-slider-thumb {
     padding: 0px 10px;
     z-index: 2500;
     border-radius: 10px;
-    box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.45);
+    box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.4);
     transition: height 160ms ease-in-out;
 }
 
@@ -231,7 +231,7 @@ input[type="range"]::-webkit-slider-thumb {
     position: relative;
     float: right;
     border: none;
-    top: 9px;
+    top: 10px;
     min-width: 85px;
     margin-right: 5px;
     border-radius: 25px;
@@ -801,7 +801,7 @@ input[type="range"]::-webkit-slider-thumb {
     background-color: var(--COR_TERCIARIA);
     border-radius: 10px;
     padding: 10px;
-    box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.45);
+    box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.4);
     border-top: 1px solid rgba(255, 255, 255, 0.22);
 }
 
@@ -815,10 +815,9 @@ input[type="range"]::-webkit-slider-thumb {
     border-top: 1px solid rgba(255, 255, 255, 0.22);
     background-color: var(--COR_TERCIARIA);
     width: 560px;
-    height: 380px;
     border-radius: 10px;
     padding: 10px;
-    box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.45);
+    box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.4);
     z-index: 9998;
 }
 
@@ -885,7 +884,7 @@ input[type="range"]::-webkit-slider-thumb {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    height: 40px;
+    height: 45px;
 }
 
 .cursorSeletor {
@@ -931,7 +930,7 @@ input[type="range"]::-webkit-slider-thumb {
 #contentCriarAbrirProjeto p {
     margin-bottom: 16px;
     text-align: center;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.65);
 }
 
 #contentCriarAbrirProjeto button {
@@ -1184,7 +1183,7 @@ input[type="range"]::-webkit-slider-thumb {
     top: 0px;
     left: 0px;
     z-index: 10000002;
-    background-color: rgba(0, 0, 0, 0.35);
+    background-color: rgba(0, 0, 0, 0.55);
     transition: backdrop-filter 330ms ease-in-out, opacity 330ms ease-in-out;
 }
 
@@ -1201,7 +1200,7 @@ input[type="range"]::-webkit-slider-thumb {
     border-radius: 10px;
     padding: 10px;
     border-top: 1px solid rgba(255, 255, 255, 0.22);
-    box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.45);
+    box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.4);
 }
 
 .barraMoverJanela {
@@ -1248,7 +1247,7 @@ input[type="range"]::-webkit-slider-thumb {
 .conteudoJanela ul li label, .conteudoJanela p {
     font-size: 14px;
     text-align: center;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.55);
 }
 
 .conteudoJanela ul li input, select {
@@ -1271,7 +1270,7 @@ input[type="range"]::-webkit-slider-thumb {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    height: 36px;
+    height: 38px;
     border-top: 2px solid var(--COR_BOTAO);
 }
 
@@ -1288,6 +1287,7 @@ input[type="range"]::-webkit-slider-thumb {
     top: 0px;
     left: 0px;
     overflow: hidden;
+    transition: backdrop-filter 350ms ease-in-out;
 }
 
 #notificacao {
@@ -1297,9 +1297,7 @@ input[type="range"]::-webkit-slider-thumb {
     min-width: 276px;
     max-width: 350px;
     padding: 10px;
-    background-color: rgba(129, 7, 6, 0.97);
     border-radius: 10px;
-    box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.45);
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    transition: bottom 400ms ease-in-out, opacity 500ms ease-in-out;
+    box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.4);
+    transition: bottom 350ms ease-in-out, opacity 450ms ease-in-out;
 }

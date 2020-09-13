@@ -49,7 +49,7 @@ export default function createProjectWindowObject() {
             await D.openWindowbackgroundBlur(this.content, false);
         },
         async conclude() {
-            await new Promise((resolve) => setTimeout(resolve, 250))
+            await new Promise((resolve) => setTimeout(resolve, 100));
             await this.close();
             this.content.remove();
             for (const prop in this) { delete this[prop]; }
