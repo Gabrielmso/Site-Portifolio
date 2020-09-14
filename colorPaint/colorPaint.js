@@ -169,7 +169,7 @@ function loadApp() {
                     window.style.opacity = "1";
                     window.classList.add("applyBackDropBlur");
                     resolve();
-                }, 2);
+                }, 5);
             } else {
                 window.style.opacity = "0";
                 window.classList.remove("applyBackDropBlur");

@@ -903,6 +903,28 @@ input[type="range"]::-webkit-slider-thumb {
     border: 1px solid rgb(255, 255, 255);
 }
 
+/* ==========================================Janela de amostra da camada============================================= */
+
+#janelaDeAmostraDaCamada {
+    position: absolute;
+    display: none;
+    opacity: 0;
+    top: 150px;
+    right: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.22);
+    background-color: var(--COR_TERCIARIA);
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.4);
+    z-index: 9997;
+    transition: opacity 210ms ease-in-out;
+}
+
+#janelaDeAmostraDaCamada canvas{
+    background-image: url("/colorPaint/imagens/fundoTela/transparenteMiniatura.png");
+    position: relative;
+}
+
 /* ============================================= Criar/abrir projeto ============================================= */
 
 #contentCriarAbrirProjeto section {

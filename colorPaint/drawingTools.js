@@ -100,7 +100,7 @@ export default function drawingToolsObject() {
             D.contentTelas.addEventListener("mousemove", () => this.txtPositionCursor.value = Math.ceil(this.mousePosition.x) + ", " + Math.ceil(this.mousePosition.y));
             D.contentTelas.addEventListener("mouseleave", () => { if (!this.cursorTool.visible) { this.txtPositionCursor.value = "" } });
             this.cursorTool.cursor.addEventListener("mousedown", (e) => this.mouseDownEventDrawing(e));
-            D.janelaPrincipal.addEventListener("mousemove", throttle((e) => this.mouseMoveEventDrawing(e), 12));
+            D.janelaPrincipal.addEventListener("mousemove", throttle((e) => this.mouseMoveEventDrawing(e), 13));
             D.janelaPrincipal.addEventListener("mouseup", (e) => this.mouseUpEventDrawing(e));
             this.cursorTool.cursor.addEventListener("wheel", (e) => this.cursorTool.wheel(e), { passive: true });
             this.toolOpacityBar.bar.addEventListener("input", (e) => this.mouseDownToolOpacityBar(e));

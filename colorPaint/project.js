@@ -44,9 +44,27 @@ export default function projectObject() {
         created: false,
         drawComplete: document.getElementById("desenho").getContext("2d"),
         screen: document.getElementById("telasCanvas"),
-        selectedLayer: 0,
-        arrayLayers: [],
-        cursorInBttLook: false,
+        selectedLayer: 0, arrayLayers: [], cursorInIconLayer: false, cursorInBttLook: false,
+        layerSampleWindow: {
+            window: document.getElementById("janelaDeAmostraDaCamada"), ctx: document.getElementById("canvasAmostraDacamada").getContext("2d"),
+            timeTransition: 220,
+            open(layer) {
+                this.ctx.canvas.style.width = this.ctx.canvas.width + "px";
+                this.ctx.canvas.style.height = this.ctx.canvas.height + "px";
+                this.window.style.display = "block";
+                this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+                this.ctx.drawImage(layer, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+                setTimeout(() => {
+                    this.window.style.opacity = 1;
+                }, 10);
+            },
+            close() {
+                this.window.style.opacity = 0;
+                setTimeout(() => {
+                    this.window.style.display = "";
+                }, this.timeTransition);
+            },
+        },
         layerOpacityBar: {
             content: document.getElementById("contentBarraOpacidadeCamada"),
             bar: document.getElementById("barraOpacidadeCamada"),
@@ -158,6 +176,8 @@ export default function projectObject() {
             D.previewFunctions.addEventsToElements();
             D.undoRedoChange.addEventsToElements();
             D.hotKeys.addEventsToElements();
+            this.layerSampleWindow.ctx.canvas.width = D.previewFunctions.ctxTelaPreview.canvas.offsetWidth * 2;
+            this.layerSampleWindow.ctx.canvas.height = D.previewFunctions.ctxTelaPreview.canvas.offsetHeight * 2;
             setTimeout(() => this.clickIconLayer(0), 3);
         },
         createElements(color) {
@@ -239,8 +259,8 @@ export default function projectObject() {
             elPreviewCamada.setAttribute("id", idPreviewCamada);
             elPreviewCamada.setAttribute("class", "preview");
             elPreviewCamada.setAttribute("style", camadaStyle);
-            elPreviewCamada.setAttribute("height", Math.round(D.previewFunctions.ctxTelaPreview.canvas.height));
-            elPreviewCamada.setAttribute("width", Math.round(D.previewFunctions.ctxTelaPreview.canvas.width));
+            elPreviewCamada.setAttribute("height", D.previewFunctions.ctxTelaPreview.canvas.height);
+            elPreviewCamada.setAttribute("width", D.previewFunctions.ctxTelaPreview.canvas.width);
             D.previewFunctions.contentTelaPreview.appendChild(elPreviewCamada);
             if (document.getElementById(idicone) != null && document.getElementById(idBttVisivel) != null &&
                 document.getElementById(idNome) != null && document.getElementById(idPocentagem) != null &&
@@ -253,44 +273,58 @@ export default function projectObject() {
                 };
                 this.arrayLayers[num - 1] = objCamada;
                 this.arrayLayers[num - 1].icon.addEventListener("mousedown", () => this.clickIconLayer(num - 1));
+                this.arrayLayers[num - 1].icon.addEventListener("mouseenter", () => this.showLayerSample(num - 1));
+                this.arrayLayers[num - 1].icon.addEventListener("mouseleave", () => this.closeLayerSample());
                 this.arrayLayers[num - 1].bttLook.addEventListener("mousedown", () => this.clickBttLook(num - 1));
-                this.arrayLayers[num - 1].bttLook.addEventListener("mouseenter", () => this.cursorInBttLook = true);
+                this.arrayLayers[num - 1].bttLook.addEventListener("mouseover", () => this.cursorInBttLook = true);
                 this.arrayLayers[num - 1].bttLook.addEventListener("mouseleave", () => this.cursorInBttLook = false);
             }
         },
-        clickBttLook(num) {
-            this.arrayLayers[num].visible = !this.arrayLayers[num].visible;
+        clickBttLook(numLayer) {
+            this.arrayLayers[numLayer].visible = !this.arrayLayers[numLayer].visible;
             this.cursorInBttLook = false;
-            if (this.arrayLayers[num].visible) {
-                this.arrayLayers[num].ctx.canvas.style.display = "block";
-                this.arrayLayers[num].previewLayer.canvas.style.display = "block";
-                this.arrayLayers[num].bttLook.classList.replace("iconNaoVer", "iconVer");
-                this.clickIconLayer(num);
+            if (this.arrayLayers[numLayer].visible) {
+                this.arrayLayers[numLayer].ctx.canvas.style.display = "block";
+                this.arrayLayers[numLayer].previewLayer.canvas.style.display = "block";
+                this.arrayLayers[numLayer].bttLook.classList.replace("iconNaoVer", "iconVer");
+                this.clickIconLayer(numLayer);
             } else {
-                this.arrayLayers[num].ctx.canvas.style.display = "none";
-                this.arrayLayers[num].previewLayer.canvas.style.display = "none";
-                this.arrayLayers[num].bttLook.classList.replace("iconVer", "iconNaoVer");
-                this.arrayLayers[num].icon.classList.replace("camadaSelecionada", "camadas");
+                this.arrayLayers[numLayer].ctx.canvas.style.display = "none";
+                this.arrayLayers[numLayer].previewLayer.canvas.style.display = "none";
+                this.arrayLayers[numLayer].bttLook.classList.replace("iconVer", "iconNaoVer");
+                this.arrayLayers[numLayer].icon.classList.replace("camadaSelecionada", "camadas");
                 for (let i = 0; i < this.properties.numberLayers; i++) {
-                    if (i != num && num === this.selectedLayer && this.arrayLayers[i].visible) {
+                    if (i != numLayer && numLayer === this.selectedLayer && this.arrayLayers[i].visible) {
                         this.clickIconLayer(i);
                         i = this.properties.numberLayers;
                     }
                 }
             }
         },
-        clickIconLayer(num) {
-            if (this.cursorInBttLook || !this.arrayLayers[num].visible) { return; }
+        clickIconLayer(numLayer) {
+            if (this.cursorInBttLook || !this.arrayLayers[numLayer].visible) { return; }
             for (let i = 0; i < this.properties.numberLayers; i++) {
-                if (i === num) {
-                    this.selectedLayer = num;
-                    D.drawingTools.eventLayer.canvas.style.zIndex = ((num + 1) * 2) + 1;
+                if (i === numLayer) {
+                    this.selectedLayer = numLayer;
+                    D.drawingTools.eventLayer.canvas.style.zIndex = ((numLayer + 1) * 2) + 1;
                     this.arrayLayers[i].icon.classList.replace("camadas", "camadaSelecionada");
                 } else { this.arrayLayers[i].icon.classList.replace("camadaSelecionada", "camadas"); }
             }
             const opacidade = this.arrayLayers[this.selectedLayer].opacity;
             this.layerOpacityBar.bar.value = opacidade;
             D.drawingTools.currentLayer = this.arrayLayers[this.selectedLayer].ctx;
+        },
+        showLayerSample(numLayer) {
+            this.cursorInIconLayer = true;
+            setTimeout(() => {
+                if (!this.cursorInIconLayer || this.cursorInBttLook) { return; }
+                this.cursorInIconLayer = false;
+                this.layerSampleWindow.open(this.arrayLayers[numLayer].ctx.canvas);
+            }, 800)
+        },
+        closeLayerSample() {
+            this.cursorInIconLayer = false;
+            this.layerSampleWindow.close();
         },
         createDrawComplete() {
             this.drawComplete.clearRect(0, 0, this.properties.resolution.width, this.properties.resolution.height);
