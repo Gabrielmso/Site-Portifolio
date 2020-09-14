@@ -909,20 +909,30 @@ input[type="range"]::-webkit-slider-thumb {
     position: absolute;
     display: none;
     opacity: 0;
-    top: 150px;
-    right: 10px;
+    right: 20px;
     border-top: 1px solid rgba(255, 255, 255, 0.22);
     background-color: var(--COR_TERCIARIA);
     border-radius: 10px;
     padding: 10px;
     box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.4);
     z-index: 9997;
-    transition: opacity 210ms ease-in-out;
+    transition: opacity 200ms ease-in-out;
 }
 
 #janelaDeAmostraDaCamada canvas{
     background-image: url("/colorPaint/imagens/fundoTela/transparenteMiniatura.png");
     position: relative;
+    vertical-align: bottom;
+}
+#janelaDeAmostraDaCamada div{
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    z-index: -1;
+    background-color: var(--COR_TERCIARIA);
+    bottom: -12px;
+    right: 20px;
+    transform: rotate(45deg);
 }
 
 /* ============================================= Criar/abrir projeto ============================================= */

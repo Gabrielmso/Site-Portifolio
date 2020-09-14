@@ -47,16 +47,18 @@ export default function projectObject() {
         selectedLayer: 0, arrayLayers: [], cursorInIconLayer: false, cursorInBttLook: false,
         layerSampleWindow: {
             window: document.getElementById("janelaDeAmostraDaCamada"), ctx: document.getElementById("canvasAmostraDacamada").getContext("2d"),
-            timeTransition: 220,
-            open(layer) {
+            timeTransition: 210,
+            open(layer, icon) {
+                const { top } = icon.getBoundingClientRect();
                 this.ctx.canvas.style.width = this.ctx.canvas.width + "px";
                 this.ctx.canvas.style.height = this.ctx.canvas.height + "px";
                 this.window.style.display = "block";
+                this.window.style.top = top - (this.window.offsetHeight + 5) + "px";
                 this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
                 this.ctx.drawImage(layer, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
                 setTimeout(() => {
                     this.window.style.opacity = 1;
-                }, 10);
+                }, 5);
             },
             close() {
                 this.window.style.opacity = 0;
@@ -318,9 +320,8 @@ export default function projectObject() {
             this.cursorInIconLayer = true;
             setTimeout(() => {
                 if (!this.cursorInIconLayer || this.cursorInBttLook) { return; }
-                this.cursorInIconLayer = false;
-                this.layerSampleWindow.open(this.arrayLayers[numLayer].ctx.canvas);
-            }, 800)
+                this.layerSampleWindow.open(this.arrayLayers[numLayer].ctx.canvas, this.arrayLayers[numLayer].icon);
+            }, 850)
         },
         closeLayerSample() {
             this.cursorInIconLayer = false;
