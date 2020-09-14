@@ -44,7 +44,7 @@ export default function projectObject() {
         created: false,
         drawComplete: document.getElementById("desenho").getContext("2d"),
         screen: document.getElementById("telasCanvas"),
-        selectedLayer: 0, arrayLayers: [], cursorInIconLayer: false, cursorInBttLook: false,
+        selectedLayer: 0, arrayLayers: [], cursorInBttLook: false,
         layerSampleWindow: {
             window: document.getElementById("janelaDeAmostraDaCamada"), ctx: document.getElementById("canvasAmostraDacamada").getContext("2d"),
             timeTransition: 210,
@@ -56,15 +56,11 @@ export default function projectObject() {
                 this.window.style.top = top - (this.window.offsetHeight + 5) + "px";
                 this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
                 this.ctx.drawImage(layer, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-                setTimeout(() => {
-                    this.window.style.opacity = 1;
-                }, 5);
+                setTimeout(() => this.window.style.opacity = 1, 5);
             },
             close() {
                 this.window.style.opacity = 0;
-                setTimeout(() => {
-                    this.window.style.display = "";
-                }, this.timeTransition);
+                setTimeout(() => this.window.style.display = "", this.timeTransition);
             },
         },
         layerOpacityBar: {
@@ -271,12 +267,12 @@ export default function projectObject() {
                 const objCamada = {
                     name: nomeCamada, ctx: elCamada.getContext("2d"), icon: iconeCamada,
                     previewLayer: elPreviewCamada.getContext("2d"), miniature: iconTela.getContext("2d"),
-                    bttLook: bttVisivel, txtOpacity: txtPorcentagem, opacity: 1, visible: true
+                    bttLook: bttVisivel, txtOpacity: txtPorcentagem, opacity: 1, visible: true, cursorInIcon: false
                 };
                 this.arrayLayers[num - 1] = objCamada;
                 this.arrayLayers[num - 1].icon.addEventListener("mousedown", () => this.clickIconLayer(num - 1));
                 this.arrayLayers[num - 1].icon.addEventListener("mouseenter", () => this.showLayerSample(num - 1));
-                this.arrayLayers[num - 1].icon.addEventListener("mouseleave", () => this.closeLayerSample());
+                this.arrayLayers[num - 1].icon.addEventListener("mouseleave", () => this.closeLayerSample(num - 1));
                 this.arrayLayers[num - 1].bttLook.addEventListener("mousedown", () => this.clickBttLook(num - 1));
                 this.arrayLayers[num - 1].bttLook.addEventListener("mouseover", () => this.cursorInBttLook = true);
                 this.arrayLayers[num - 1].bttLook.addEventListener("mouseleave", () => this.cursorInBttLook = false);
@@ -317,14 +313,14 @@ export default function projectObject() {
             D.drawingTools.currentLayer = this.arrayLayers[this.selectedLayer].ctx;
         },
         showLayerSample(numLayer) {
-            this.cursorInIconLayer = true;
+            this.arrayLayers[numLayer].cursorInIcon = true;
             setTimeout(() => {
-                if (!this.cursorInIconLayer || this.cursorInBttLook) { return; }
+                if (!this.arrayLayers[numLayer].cursorInIcon || this.cursorInBttLook) { return; }
                 this.layerSampleWindow.open(this.arrayLayers[numLayer].ctx.canvas, this.arrayLayers[numLayer].icon);
             }, 850)
         },
-        closeLayerSample() {
-            this.cursorInIconLayer = false;
+        closeLayerSample(numLayer) {
+            this.arrayLayers[numLayer].cursorInIcon = false;
             this.layerSampleWindow.close();
         },
         createDrawComplete() {
