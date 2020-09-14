@@ -8,11 +8,11 @@ export default function drawingToolsObject() {
             { tool: document.getElementById("linha"), name: "line", prop: { s: 5, o: 1, h: 1 } },
             { tool: document.getElementById("retangulo"), name: "rectangle", prop: { s: 5, o: 1, h: 1 } },
             { tool: document.getElementById("elipse"), name: "ellipse", prop: { s: 5, o: 1, h: 1 } },
-            { tool: document.getElementById("borracha"), name: "eraser", prop: { s: 5, o: 1, h: 1 } },
+            { tool: document.getElementById("borracha"), name: "eraser", prop: { s: 50, o: 1, h: 1 } },
             { tool: document.getElementById("curva"), name: "curve", prop: { s: 5, o: 1, h: 1 } },
             { tool: document.getElementById("baldeDeTinta"), name: "paintBucket" },
-            { tool: document.getElementById("desfoque"), name: "blur", prop: { s: 5, o: 1, h: 1 } },
-            { tool: document.getElementById("borrar"), name: "smudge", prop: { s: 5, o: 1, h: 1 } },
+            { tool: document.getElementById("desfoque"), name: "blur", prop: { s: 30, o: 1, h: 0.8 } },
+            { tool: document.getElementById("borrar"), name: "smudge", prop: { s: 30, o: 1, h: 0.8 } },
             { tool: document.getElementById("contaGotas"), name: "eyeDropper", }
         ],
         cursorTool: {
@@ -100,7 +100,7 @@ export default function drawingToolsObject() {
             D.contentTelas.addEventListener("mousemove", () => this.txtPositionCursor.value = Math.ceil(this.mousePosition.x) + ", " + Math.ceil(this.mousePosition.y));
             D.contentTelas.addEventListener("mouseleave", () => { if (!this.cursorTool.visible) { this.txtPositionCursor.value = "" } });
             this.cursorTool.cursor.addEventListener("mousedown", (e) => this.mouseDownEventDrawing(e));
-            D.janelaPrincipal.addEventListener("mousemove", throttle((e) => this.mouseMoveEventDrawing(e), 13));
+            D.janelaPrincipal.addEventListener("mousemove", throttle((e) => this.mouseMoveEventDrawing(e), 12));
             D.janelaPrincipal.addEventListener("mouseup", (e) => this.mouseUpEventDrawing(e));
             this.cursorTool.cursor.addEventListener("wheel", (e) => this.cursorTool.wheel(e), { passive: true });
             this.toolOpacityBar.bar.addEventListener("input", (e) => this.mouseDownToolOpacityBar(e));

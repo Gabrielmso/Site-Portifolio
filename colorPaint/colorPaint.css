@@ -652,15 +652,10 @@ input[type="range"]::-webkit-slider-thumb {
     top: 0;
     left: 0;
     border: 1px solid rgb(0, 0, 0);
+    outline: 1px dashed rgb(255, 255, 255);
+    outline-offset: -1px;
     width: 30px;
     height: 30px;
-}
-
-#moverScroll div {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    border: 1px solid rgb(255, 255, 255);
 }
 
 #janelaInfo {
@@ -932,7 +927,7 @@ input[type="range"]::-webkit-slider-thumb {
     background-color: var(--COR_TERCIARIA);
     bottom: -12px;
     right: 20px;
-    transform: rotate(45deg);
+    transform: rotate(-45deg);
 }
 
 /* ============================================= Criar/abrir projeto ============================================= */
