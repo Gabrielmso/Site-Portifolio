@@ -44,22 +44,20 @@ export default function projectObject() {
         created: false,
         drawComplete: document.getElementById("desenho").getContext("2d"),
         screen: document.getElementById("telasCanvas"),
-        selectedLayer: 0, arrayLayers: [], cursorInBttLook: false,
+        selectedLayer: 0, previousLayer: 0, arrayLayers: [], cursorInBttLook: false,
         layerSampleWindow: {
             window: document.getElementById("janelaDeAmostraDaCamada"), ctx: document.getElementById("canvasAmostraDacamada").getContext("2d"),
-            timeTransition: 210,
+            timeTransition: 160,
             open(layer, icon) {
-                const { top } = icon.getBoundingClientRect();
-                this.ctx.canvas.style.width = this.ctx.canvas.width + "px";
-                this.ctx.canvas.style.height = this.ctx.canvas.height + "px";
+                const { top, height } = icon.getBoundingClientRect();
                 this.window.style.display = "block";
-                this.window.style.top = top - (this.window.offsetHeight + 5) + "px";
+                this.window.style.top = top - (this.window.offsetHeight - height) + "px";
                 this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
                 this.ctx.drawImage(layer, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-                setTimeout(() => this.window.style.opacity = 1, 5);
+                setTimeout(() => this.window.style.opacity = "1", 5);
             },
             close() {
-                this.window.style.opacity = 0;
+                this.window.style.opacity = "";
                 setTimeout(() => this.window.style.display = "", this.timeTransition);
             },
         },
@@ -176,6 +174,8 @@ export default function projectObject() {
             D.hotKeys.addEventsToElements();
             this.layerSampleWindow.ctx.canvas.width = D.previewFunctions.ctxTelaPreview.canvas.offsetWidth * 2;
             this.layerSampleWindow.ctx.canvas.height = D.previewFunctions.ctxTelaPreview.canvas.offsetHeight * 2;
+            this.layerSampleWindow.ctx.canvas.style.width = this.layerSampleWindow.ctx.canvas.width + "px";
+            this.layerSampleWindow.ctx.canvas.style.height = this.layerSampleWindow.ctx.canvas.height + "px";
             setTimeout(() => this.clickIconLayer(0), 3);
         },
         createElements(color) {
@@ -298,24 +298,22 @@ export default function projectObject() {
                     }
                 }
             }
+            this.cursorInBttLook = true;
         },
         clickIconLayer(numLayer) {
             if (this.cursorInBttLook || !this.arrayLayers[numLayer].visible) { return; }
-            for (let i = 0; i < this.properties.numberLayers; i++) {
-                if (i === numLayer) {
-                    this.selectedLayer = numLayer;
-                    D.drawingTools.eventLayer.canvas.style.zIndex = ((numLayer + 1) * 2) + 1;
-                    this.arrayLayers[i].icon.classList.replace("camadas", "camadaSelecionada");
-                } else { this.arrayLayers[i].icon.classList.replace("camadaSelecionada", "camadas"); }
-            }
-            const opacidade = this.arrayLayers[this.selectedLayer].opacity;
-            this.layerOpacityBar.bar.value = opacidade;
+            this.previousLayer = this.previousLayer === this.selectedLayer ? this.previousLayer : this.selectedLayer;
+            this.selectedLayer = numLayer;
+            D.drawingTools.eventLayer.canvas.style.zIndex = ((numLayer + 1) * 2) + 1;
+            this.arrayLayers[this.previousLayer].icon.classList.replace("camadaSelecionada", "camadas");
+            this.arrayLayers[this.selectedLayer].icon.classList.replace("camadas", "camadaSelecionada");
+            this.layerOpacityBar.bar.value = this.arrayLayers[this.selectedLayer].opacity;
             D.drawingTools.currentLayer = this.arrayLayers[this.selectedLayer].ctx;
         },
         showLayerSample(numLayer) {
             this.arrayLayers[numLayer].cursorInIcon = true;
             setTimeout(() => {
-                if (!this.arrayLayers[numLayer].cursorInIcon || this.cursorInBttLook) { return; }
+                if (this.cursorInBttLook || !this.arrayLayers[numLayer].cursorInIcon) { return; }
                 this.layerSampleWindow.open(this.arrayLayers[numLayer].ctx.canvas, this.arrayLayers[numLayer].icon);
             }, 850)
         },
