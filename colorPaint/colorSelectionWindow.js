@@ -166,7 +166,7 @@ export default function colorSelectionWindowObject() {
             D.project.selectedColors.deselectAllSavedColor();
         },
         paintGradient(color) {
-            const gradient = this.canvas.gradient, width = gradient.canvas.width, height = gradient.canvas.height;
+            const { gradient } = this.canvas, { width, height } = gradient.canvas;
             gradient.clearRect(0, 0, width, height);
             gradient.fillStyle = "rgb(" + color.r + ", " + color.g + ", " + color.b + ")";
             gradient.fillRect(0, 0, width, height);
@@ -197,11 +197,11 @@ export default function colorSelectionWindowObject() {
         },
         rgbTohex(color) {
             const rgb = color.b | (color.g << 8) | (color.r << 16);
-            return '#' + (0x1000000 + rgb).toString(16).slice(1)
+            return '#' + (0x1000000 + rgb).toString(16).slice(1);
         },
         hexToRgb(hex) {
             const resul = hex.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
-            if (resul) { return resul.slice(1, 4).map(function (x) { return parseInt(x, 16); }); }
+            if (resul) { return resul.slice(1, 4).map(x => parseInt(x, 16)); }
             return null;
         },
         rgbToHsv(color) {
@@ -228,54 +228,19 @@ export default function colorSelectionWindowObject() {
             return { h: (h * 360), s: percentRoundFn(s * 100), v: percentRoundFn(v * 100) };
         },
         hsvToRgb(hsvCode) {
-            let h = hsvCode.h, s = hsvCode.s, v = hsvCode.v, r, g, b, i, f, p, q, t;
-            h = Math.max(0, Math.min(360, h));
-            s = Math.max(0, Math.min(100, s));
-            v = Math.max(0, Math.min(100, v));
-            s = s / 100;
-            v = v / 100;
-            if (s == 0) {
-                r = g = b = v;
-                return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
+            const h = (Math.max(0, Math.min(360, hsvCode.h))) / 60,
+                s = (Math.max(0, Math.min(100, hsvCode.s))) / 100,
+                v = (Math.max(0, Math.min(100, hsvCode.v))) / 100;
+            if (s === 0) {
+                v = Math.round(v * 255);
+                return { r: v, g: v, b: v };
             }
-            h /= 60;
-            i = Math.floor(h);
-            f = h - i;
-            p = v * (1 - s);
-            q = v * (1 - s * f);
-            t = v * (1 - s * (1 - f));
-            switch (i) {
-                case 0:
-                    r = v;
-                    g = t;
-                    b = p;
-                    break;
-                case 1:
-                    r = q;
-                    g = v;
-                    b = p;
-                    break;
-                case 2:
-                    r = p;
-                    g = v;
-                    b = t;
-                    break;
-                case 3:
-                    r = p;
-                    g = q;
-                    b = v;
-                    break;
-                case 4:
-                    r = t;
-                    g = p;
-                    b = v;
-                    break;
-                case 5:
-                    r = v;
-                    g = p;
-                    b = q;
-            }
-            return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) };
+            const i = Math.floor(h), f = h - i, p = v * (1 - s), q = v * (1 - s * f), t = v * (1 - s * (1 - f)),
+                getCodeRgb = {
+                    case0: [v, t, p], case1: [q, v, p], case2: [p, v, t],
+                    case3: [p, q, v], case4: [t, p, v], case5: [v, p, q]
+                }, codeRgb = getCodeRgb["case" + i].map(value => Math.round(value * 255));
+            return { r: codeRgb[0], g: codeRgb[1], b: codeRgb[2] };
         },
         addDependencies(dependencies) {
             for (const prop in dependencies) { D[prop] = dependencies[prop]; }
