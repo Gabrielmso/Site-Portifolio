@@ -41,7 +41,7 @@ function loadApp() {
     colorSelectionWindow.addDependencies({ project, drawingTools, colorSelectionWindow, janelaPrincipal });
     drawingTools.addDependencies({
         project, undoRedoChange, hotKeys, colorSelectionWindow,
-        notification, janelaPrincipal, contentTelas
+        notification, janelaPrincipal, contentTelas, drawingTools
     });
     previewFunctions.addDependencies({ project, previewFunctions, contentTelas });
     undoRedoChange.addDependencies({ project, drawingTools });
@@ -64,7 +64,7 @@ function loadApp() {
     });
     document.getElementById("bttMostrarAlteracaoPincel").addEventListener("mousedown", (e) => {
         drawingTools.showChangesCursor = !drawingTools.showChangesCursor;
-        e.currentTarget.getElementsByTagName("span")[0].innerText = drawingTools.showChangesCursor ? "Sim" : "Não";
+        e.currentTarget.getElementsByTagName("span")[0].first.innerText = drawingTools.showChangesCursor ? "Sim" : "Não";
     });
     document.getElementById("bttSalvarDesenho").addEventListener("mousedown", () => {
         if (project.created) { project.saveDraw(); }
@@ -227,4 +227,29 @@ export default async function colorPaint() {
     }
     return false;
 }
-// ==========================================================================================================================================================================================================================================
+
+Array.prototype.clear = function () { this.length = 0; }
+
+Object.defineProperty(Array.prototype, "first", {
+    get: function () {
+        return this[0];
+    },
+    set: function (value) {
+        this[0] = value;
+    }
+});
+
+Object.defineProperty(Array.prototype, "last", {
+    get: function () {
+        return this[this.length - 1];
+    },
+    set: function (value) {
+        this[this.length - 1] = value;
+    }
+});
+
+Object.defineProperty(Array.prototype, "lastIndex", {
+    get: function () {
+        return (this.length - 1);
+    }
+});

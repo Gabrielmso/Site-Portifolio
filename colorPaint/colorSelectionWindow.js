@@ -148,7 +148,7 @@ export default function colorSelectionWindowObject() {
             this.primaryOrSecondary = num;
             this.cursors.spectrum.clicked = this.cursors.gradient.clicked = this.clickMoveWindow = false;
             const color = D.project.selectedColors.get(this.primaryOrSecondary);
-            D.drawingTools.selectDrawingTool(D.drawingTools.arrayTools.length - 1);//Mudar para a ferramenta Conta-gotas.
+            D.drawingTools.selectDrawingTool("eyeDropper");//Mudar para a ferramenta Conta-gotas.
             this.window.style.display = "block";
             this.opened = true;
             this.compareColors.current.style.backgroundColor = "rgb(" + color.r + ", " + color.g + ", " + color.b + ")";

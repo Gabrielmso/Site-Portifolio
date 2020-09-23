@@ -57,14 +57,14 @@ export default function hotKeysObject() {
         },
         keyDownControl() {
             this.ctrlPressed = true;
-            if (D.drawingTools.selectedTool === 0) {
-                D.drawingTools.selectDrawingTool(D.drawingTools.arrayTools.length - 1);//Muda para a ferramenta conta gotas.
+            if (D.drawingTools.selectedTool === "brush") {
+                D.drawingTools.selectDrawingTool("eyeDropper");//Muda para a ferramenta conta gotas.
             }
         },
         keyUpControl() {
             this.ctrlPressed = false;
-            if (D.drawingTools.previousTool === 0 && D.drawingTools.mouseFunctionName === "eyeDropper") {
-                D.drawingTools.selectDrawingTool(0);//Volta para a ferramenta pincel.                
+            if (D.drawingTools.previousTool === "brush" && D.drawingTools.mouseFunctionName === "eyeDropper") {
+                D.drawingTools.selectDrawingTool("brush");//Volta para a ferramenta pincel.                
             }
         },
         keyDownSpace() {

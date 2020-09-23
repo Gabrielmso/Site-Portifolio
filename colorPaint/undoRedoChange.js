@@ -29,7 +29,7 @@ export default function undoRedoChangeObject() {
         },
         undoChange() {
             if (D.drawingTools.clickToCurve) {
-                D.drawingTools.selectDrawingTool(5);
+                D.drawingTools.selectDrawingTool("curve");
                 return;
             }
             if (this.changes.undone.length > 0) {
@@ -59,7 +59,7 @@ export default function undoRedoChangeObject() {
         },
         redoChange() {
             if (this.changes.redone.length > 0) {
-                if (D.drawingTools.clickToCurve) { D.drawingTools.selectDrawingTool(5); }
+                if (D.drawingTools.clickToCurve) { D.drawingTools.selectDrawingTool("curve"); }
                 const ultimoIndice = this.changes.redone.length - 1, camada = this.changes.redone[ultimoIndice].numLayer;
                 if (D.project.selectedLayer != camada) { D.project.clickIconLayer(camada); }
                 this.changes.undone.push({ numLayer: camada, change: this.createCopyLayer(D.project.arrayLayers[camada].ctx.canvas) });
