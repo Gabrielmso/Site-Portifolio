@@ -1,8 +1,8 @@
 import { cloneReplaceElement } from "../js/geral.js";
 
 export default function notificationsObject() {
+    const timeTransition = 360;
     return {
-        timeTransition: 360,
         opened: false,
         contentWindow: document.getElementById("contentNotificacao"),
         window: document.getElementById("notificacao"),
@@ -39,7 +39,7 @@ export default function notificationsObject() {
                 this.buttons.btt2.innerText = "Não";
                 this.buttons.btt1.addEventListener("mousedown", () => {
                     this.close();
-                    setTimeout(func, this.timeTransition);
+                    setTimeout(func, timeTransition);
                 });
                 this.buttons.btt2.addEventListener("mousedown", () => this.close());
             } else if (this.type === "notify") {
@@ -50,7 +50,7 @@ export default function notificationsObject() {
                     this.type = null;
                     this.close();
                 })
-                setTimeout(() => this.close(), type.time + this.timeTransition);
+                setTimeout(() => this.close(), type.time + timeTransition);
             }
         },
         close() {
@@ -76,7 +76,7 @@ export default function notificationsObject() {
             this.contentWindow.classList.remove("applyBackDropBlur");
             setTimeout(() => {
                 this.contentWindow.style.display = "none";
-            }, this.timeTransition);
+            }, timeTransition);
         }
     }
 }

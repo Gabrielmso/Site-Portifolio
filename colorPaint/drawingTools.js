@@ -125,6 +125,7 @@ export default function drawingToolsObject() {
     return {
         eventLayer: document.getElementById("pintar").getContext("2d"),
         get mousePosition() { return { x: mousePosition.x, y: mousePosition.y } },
+        invisibleCursor: () => cursorTool.invisibleCursor(),
         currentLayer: null, selectedTool: "brush", mouseFunctionName: "brush", previousTool: "brush",
         clickToCurve: false, txtPositionCursor: document.getElementById("txtPosicaoCursor"),
         infoMoveScreenWithSpace: { startCoordinate: null, scroolTop: null, scrollLeft: null },

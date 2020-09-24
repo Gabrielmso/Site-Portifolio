@@ -70,7 +70,7 @@ export default function hotKeysObject() {
         keyDownSpace() {
             D.contentTelas.style.cursor = "grab";
             D.drawingTools.mouseFunctionName = "moveScreen";
-            D.drawingTools.cursorTool.invisibleCursor();
+            D.drawingTools.invisibleCursor();
         },
         keyUpSpace() {
             D.drawingTools.moveScreen("up");
