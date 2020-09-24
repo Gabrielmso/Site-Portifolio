@@ -77,16 +77,14 @@ export default function createGridWindowObject() {
             const screen = this.gridProprieties.screen, size = this.gridProprieties.size, pos = this.gridProprieties.position,
                 numDeQuadrados = (Math.trunc((D.project.properties.resolution.width / size) + 2.1)) * (Math.trunc((D.project.properties.resolution.height / size) + 2.1));
             if (numDeQuadrados > 5700) {
-                D.notification.open({
-                    title: "Atenção!",
-                    text: "Aumente o tamanho da grade."
-                }, { name: "notify", time: 1400 }, null);
+                D.notification.open({ name: "notify", time: 1400 },
+                    { title: "Atenção!", text: "Aumente o tamanho da grade." });
                 return;
             } else if (numDeQuadrados > 1100) {
-                D.notification.open({
+                D.notification.open({ name: "notify", time: 1400 }, {
                     title: "Atenção!",
                     text: "O tamanho da grade está muito baixo, isso pode acarretar problemas de performance!"
-                }, { name: "notify", time: 2600 }, null);
+                });
             }
             let el = screen.firstElementChild;
             while (el != null) {

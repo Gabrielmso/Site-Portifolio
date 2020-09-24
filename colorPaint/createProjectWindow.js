@@ -6,11 +6,13 @@ export default function createProjectWindowObject() {
         for (const prop in D.createProjectWindow) { delete D.createProjectWindow[prop]; }
         D.createProjectWindow.open = (type) => {
             D.notification.open({
+                name: "confirm", function: () => {
+                    sessionStorage.setItem(type, "true");
+                    window.location.reload();
+                }
+            }, {
                 title: "Projeto em andamento!",
                 text: "Todo o progresso não salvo será perdido, deseja continuar?"
-            }, { name: "confirm", time: null }, () => {
-                sessionStorage.setItem(type, "true");
-                window.location.reload();
             });
         }
     }, fileValidation = (file) => {
@@ -20,13 +22,13 @@ export default function createProjectWindowObject() {
                 D.project.loadProject(file);
                 conclude();
             } else {
-                D.notification.open({ title: "Erro!", text: "Arquivo selecionado inválido!" },
-                    { name: "notify", time: 2000 }, null);
+                D.notification.open({ name: "notify", time: 2000 },
+                    { title: "Erro!", text: "Arquivo selecionado inválido!" });
                 this.close();
             }
         } else {
-            D.notification.open({ title: "Erro!", text: "Falha ao carregar projeto, tente novamente." },
-                { name: "notify", time: 2000 }, null);
+            D.notification.open({ name: "notify", time: 2000 },
+                { title: "Erro!", text: "Falha ao carregar projeto, tente novamente." });
             D.createProjectWindow.close();
         }
     }, getFile = () => {

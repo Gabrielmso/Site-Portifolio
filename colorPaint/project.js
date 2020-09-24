@@ -77,7 +77,7 @@ export default function projectObject() {
             for (let i = 0; i < indexColor; i++) {
                 const color = this.selectedColors.saved.colors[i].rgb;
                 if (color.r === colorToSave.r && color.g === colorToSave.g && color.b === colorToSave.b) {
-                    D.notification.open({ title: "Atenção!", text: "Essa cor já está salva." }, { name: "notify", time: 1500 }, null);
+                    D.notification.open({ name: "notify", time: 1500 }, { title: "Atenção!", text: "Essa cor já está salva." });
                     return;
                 }
             }
@@ -425,16 +425,16 @@ export default function projectObject() {
             const reader = new FileReader();
             reader.onload = (e) => {
                 if (e.currentTarget.result === "") {
-                    D.notification.open({ title: "Erro!", text: "Este arquivo não possui projeto salvo." },
-                        { name: "notify", time: 2000 }, null);
+                    D.notification.open({ name: "notify", time: 2000 },
+                        { title: "Erro!", text: "Este arquivo não possui projeto salvo." });
                 } else { createSavedProject(JSON.parse(e.currentTarget.result)); }
             };
             reader.readAsText(file, "ISO-8859-1");
         },
         notifyAnyCreatedProjects() {
             if (!status.created) {
-                D.notification.open({ title: "Atenção!", text: "Nenhum projeto foi criado." },
-                    { name: "notify", time: 1500 }, null);
+                D.notification.open({ name: "notify", time: 1500 },
+                    { title: "Atenção!", text: "Nenhum projeto foi criado." });
             }
             return status.created;
         },
