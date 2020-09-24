@@ -1,10 +1,10 @@
-export function fadeOutLoading() {
+export const fadeOutLoading = () => {
     const content = document.getElementById("carregamento");
     content.style.opacity = 0;
     setTimeout(() => content.remove(), 800);
 }
 
-export function throttle(func, limit) {
+export const throttle = function (func, limit) {
     let inThrottle;
     return function () {
         const args = arguments;
@@ -40,6 +40,8 @@ export function preventDefaultAction(e) {
     e.stopPropagation();
 }
 
-export function logarithm(base, log) { return Math.log(log) / Math.log(base); }
+export const logarithm = (base, log) => Math.log(log) / Math.log(base);
 
 export const getDistanceCoordinates = (point1, point2) => (((point2.x - point1.x) ** 2 + (point2.y - point1.y) ** 2) ** 0.5);
+
+export const randomNumber = (min, max) => Math.random() * (max - min) + min;

@@ -1,3 +1,5 @@
+import { getDistanceCoordinates, randomNumber } from "../js/geral.js";
+
 export default function particles() {
    const ctx = document.getElementById("particulas").getContext("2d"),
       lineDistance = 250;
@@ -27,7 +29,7 @@ export default function particles() {
 
    }
 
-   function drawLine(point1, point2, opacity, backLine) {
+   function drawLine(point1, point2, opacity) {
       ctx.beginPath();
       ctx.strokeStyle = "rgba(255, 255, 255, " + (0.78 * opacity) + ')';
       ctx.moveTo(point1.x, point1.y);
@@ -55,16 +57,12 @@ export default function particles() {
       }
    }
 
-   function getDistanceCoordinates(point1, point2) {
-      return ((point2.x - point1.x) ** 2 + (point2.y - point1.y) ** 2) ** 0.5;
-   }
-
    function start() {
       cancelAnimationFrame(startAnimation);
       setResolutionCtx(window.innerWidth, window.innerHeight);
       ctx.lineWidth = 0.95;
       arrayParticles = createParticles(Math.round(window.innerWidth * window.innerHeight / 26500));
-      startAnimation = requestAnimationFrame(animation, ctx.canvas);;
+      startAnimation = requestAnimationFrame(animation, ctx.canvas);
    }
 
    let now, before = 0;
@@ -137,5 +135,3 @@ function createParticles(numParticles) {
    }
    return particles;
 }
-
-function randomNumber(min, max) { return Math.random() * (max - min) + min; }

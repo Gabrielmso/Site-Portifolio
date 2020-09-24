@@ -124,6 +124,7 @@ export default function drawingToolsObject() {
     let showDashSample = true;
     return {
         eventLayer: document.getElementById("pintar").getContext("2d"),
+        get mousePosition() { return { x: mousePosition.x, y: mousePosition.y } },
         currentLayer: null, selectedTool: "brush", mouseFunctionName: "brush", previousTool: "brush",
         clickToCurve: false, txtPositionCursor: document.getElementById("txtPosicaoCursor"),
         infoMoveScreenWithSpace: { startCoordinate: null, scroolTop: null, scrollLeft: null },
@@ -158,7 +159,7 @@ export default function drawingToolsObject() {
             D.contentTelas.addEventListener("mousemove", () => this.txtPositionCursor.value = Math.ceil(mousePosition.x) + ", " + Math.ceil(mousePosition.y));
             D.contentTelas.addEventListener("mouseleave", () => { if (!cursorTool.visible) { this.txtPositionCursor.value = "" } });
             cursorTool.cursor.addEventListener("mousedown", (e) => this.mouseDownEventDrawing(e));
-            D.janelaPrincipal.addEventListener("mousemove", throttle((e) => this.mouseMoveEventDrawing(e), 12));
+            D.janelaPrincipal.addEventListener("mousemove", throttle((e) => this.mouseMoveEventDrawing(e), 13));
             D.janelaPrincipal.addEventListener("mouseup", (e) => this.mouseUpEventDrawing(e));
             cursorTool.cursor.addEventListener("wheel", (e) => cursorTool.wheel(e), { passive: true });
             this.toolOpacityBar.bar.addEventListener("input", (e) => this.mouseDownToolOpacityBar(e));
