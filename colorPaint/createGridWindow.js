@@ -49,7 +49,7 @@ export default function createGridWindowObject() {
             this.barMoveWindow.addEventListener("mousedown", (e) => this.moveWindow(getMousePosition(e.currentTarget, e), false));
         },
         open() {
-            if (D.project.created) {
+            if (D.project.notifyAnyCreatedProjects()) {
                 this.previousVisualization = {
                     scrollX: D.contentTelas.scrollLeft, scrollY: D.contentTelas.scrollTop,
                     zoom: parseFloat(((D.txtPorcentagemZoom.value).replace("%", "")).replace(",", "."))
@@ -61,10 +61,6 @@ export default function createGridWindowObject() {
                 this.addEventsToElements();
                 D.project.adjustInVisualizationScreen();
                 if (!this.gridProprieties.visible) { this.createGrid(true); }
-            }
-            else {
-                D.notification.open({ title: "Atenção!", text: "Crie um novo projeto para visualizar a grade." },
-                    { name: "notify", time: 2000 }, null);
             }
         },
         close() {

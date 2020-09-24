@@ -41,3 +41,5 @@ export function preventDefaultAction(e) {
 }
 
 export function logarithm(base, log) { return Math.log(log) / Math.log(base); }
+
+export const getDistanceCoordinates = (point1, point2) => (((point2.x - point1.x) ** 2 + (point2.y - point1.y) ** 2) ** 0.5);

@@ -1,8 +1,9 @@
 import { preventDefaultAction } from "../js/geral.js";
 
 export default function projectObject() {
-    const D = {};
+    const D = {}, status = { created: false };
     return {
+        get created() { return status.created },
         properties: {
             name: null, resolution: { width: null, height: null, proportion: null },
             background: null, numberLayers: 0
@@ -41,7 +42,6 @@ export default function projectObject() {
                 this.set(plane, this.saved.colors[numColor].rgb);
             }
         },
-        created: false,
         drawComplete: document.getElementById("desenho").getContext("2d"),
         screen: document.getElementById("telasCanvas"),
         selectedLayer: 0, previousLayer: 0, arrayLayers: [], cursorInBttLook: false,
@@ -108,7 +108,7 @@ export default function projectObject() {
             }
         },
         zoom(zoom, centralize, value) {
-            if (!this.created) { return; }
+            if (!status.created) { return; }
             const previousWidth = this.screen.offsetWidth, { width, proportion } = this.properties.resolution;
             let larguraAtual = zoom === "porcentagem" ? width * value / 100 : zoom ? previousWidth * value : previousWidth / value;
             larguraAtual = larguraAtual <= 25 ? 25 : larguraAtual >= width * 32 ? width * 32 : larguraAtual;
@@ -165,7 +165,7 @@ export default function projectObject() {
             while (this.properties.numberLayers > this.arrayLayers.length) { this.createElements(color); }
             document.getElementById("nomeDoProjeto").innerText = this.properties.name;
             this.layerOpacityBar.content.style.display = "flex";
-            this.created = true;
+            status.created = true;
             this.adjustScreen();
             D.previewFunctions.adjustPreview(this.properties.resolution.proportion);
             D.drawingTools.addEventsToElements();
@@ -354,23 +354,22 @@ export default function projectObject() {
             miniatura.drawImage(layer.previewLayer.canvas, 0, 0, miniatura.canvas.width, miniatura.canvas.height);
         },
         saveDraw() {
+            if (!this.notifyAnyCreatedProjects()) { return; }
             this.createDrawComplete();
-            const blob = dataURLtoBlob(this.drawComplete.canvas.toDataURL("image/png"));
-            const url = URL.createObjectURL(blob);
-            const salvarImagem = document.createElement("a");
+            const dataURLtoBlob = (dataURL) => {
+                const BASE64_MARKER = ";base64,", base64Index = dataURL.indexOf(BASE64_MARKER) + BASE64_MARKER.length,
+                    base64 = dataURL.substring(base64Index), raw = window.atob(base64), rawLength = raw.length;
+                let array = new Uint8Array(rawLength);
+                for (let i = 0; i < rawLength; i++) { array[i] = raw.charCodeAt(i); }
+                return new Blob([array], { type: "image/png" });
+            }, blob = dataURLtoBlob(this.drawComplete.canvas.toDataURL("image/png")),
+                url = URL.createObjectURL(blob), salvarImagem = document.createElement("a");
             salvarImagem.setAttribute("download", this.properties.name + ".png");
             salvarImagem.setAttribute("href", url);
             salvarImagem.click();
-            function dataURLtoBlob(dataURI) {
-                const BASE64_MARKER = ";base64,", base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length,
-                    base64 = dataURI.substring(base64Index), raw = window.atob(base64), rawLength = raw.length;
-                let array = new Uint8Array(rawLength);
-                for (let i = 0; i < rawLength; i++) { array[i] = raw.charCodeAt(i); }
-                const blob = new Blob([array], { type: "image/png" });
-                return blob;
-            }
         },
         saveProject() {
+            if (!this.notifyAnyCreatedProjects()) { return; }
             const dadosCamadas = [], coresSalvasProjeto = [];
             for (let i = 0; i < this.properties.numberLayers; i++) {
                 dadosCamadas[i] = {
@@ -431,6 +430,13 @@ export default function projectObject() {
                 } else { createSavedProject(JSON.parse(e.currentTarget.result)); }
             };
             reader.readAsText(file, "ISO-8859-1");
+        },
+        notifyAnyCreatedProjects() {
+            if (!status.created) {
+                D.notification.open({ title: "Atenção!", text: "Nenhum projeto foi criado." },
+                    { name: "notify", time: 1500 }, null);
+            }
+            return status.created;
         },
         addDependencies(dependencies) {
             for (const prop in dependencies) { D[prop] = dependencies[prop]; }

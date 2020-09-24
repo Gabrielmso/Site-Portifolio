@@ -1,3 +1,4 @@
+import { addMethodsGlobalObjects } from "../js/addMethodsGlobalObjects.js";
 import loadTopoMenu from "../topoMenu/topoMenu.js";
 import createProjectWindowObject from "./createProjectWindow.js";
 import projectObject from "./project.js";
@@ -57,31 +58,10 @@ function loadApp() {
 
     document.getElementById("bttCriarNovoProjeto").addEventListener("mousedown", () => createProjectWindow.open("create"));
     document.getElementById("bttCriarGrade").addEventListener("mousedown", () => createGridWindow.open());
-    document.getElementById("bttModoCursor").addEventListener("mousedown", (e) => {
-        drawingTools.cursorTool.show = !drawingTools.cursorTool.show;
-        e.currentTarget.getElementsByTagName("span")[0].innerText = drawingTools.cursorTool.show ? "Padrão" : "Simples";
-        drawingTools.changeCursorTool();
-    });
-    document.getElementById("bttMostrarAlteracaoPincel").addEventListener("mousedown", (e) => {
-        drawingTools.showChangesCursor = !drawingTools.showChangesCursor;
-        e.currentTarget.getElementsByTagName("span")[0].first.innerText = drawingTools.showChangesCursor ? "Sim" : "Não";
-    });
-    document.getElementById("bttSalvarDesenho").addEventListener("mousedown", () => {
-        if (project.created) { project.saveDraw(); }
-        else {
-            notification.open({
-                title: "Atenção!", text: "Nenhum projeto foi criado."
-            }, { name: "notify", time: 1500 }, null);
-        }
-    });
-    document.getElementById("bttSalvarProjeto").addEventListener("mousedown", () => {
-        if (project.created) { project.saveProject(); }
-        else {
-            notification.open({
-                title: "Atenção!", text: "Nenhum projeto foi criado."
-            }, { name: "notify", time: 1500 }, null);
-        }
-    });
+    document.getElementById("bttModoCursor").addEventListener("mousedown", (e) => drawingTools.changeCursorMode(e));
+    document.getElementById("bttMostrarAlteracaoPincel").addEventListener("mousedown", (e) => drawingTools.changeShowDashSample(e));
+    document.getElementById("bttSalvarDesenho").addEventListener("mousedown", () => project.saveDraw());
+    document.getElementById("bttSalvarProjeto").addEventListener("mousedown", () => project.saveProject());
     document.getElementById("bttcarregarProjeto").addEventListener("mousedown", () => createProjectWindow.open("load"));
 
     corPrincipal.addEventListener("mousedown", () => {
@@ -169,7 +149,7 @@ function loadApp() {
                     window.style.opacity = "1";
                     window.classList.add("applyBackDropBlur");
                     resolve();
-                }, 5);
+                }, 10);
             } else {
                 window.style.opacity = "0";
                 window.classList.remove("applyBackDropBlur");
@@ -216,6 +196,8 @@ function loadApp() {
     }
 }
 
+addMethodsGlobalObjects();
+
 export default async function colorPaint() {
     topoMenu = await loadTopoMenu();
     if (topoMenu) {
@@ -227,29 +209,3 @@ export default async function colorPaint() {
     }
     return false;
 }
-
-Array.prototype.clear = function () { this.length = 0; }
-
-Object.defineProperty(Array.prototype, "first", {
-    get: function () {
-        return this[0];
-    },
-    set: function (value) {
-        this[0] = value;
-    }
-});
-
-Object.defineProperty(Array.prototype, "last", {
-    get: function () {
-        return this[this.length - 1];
-    },
-    set: function (value) {
-        this[this.length - 1] = value;
-    }
-});
-
-Object.defineProperty(Array.prototype, "lastIndex", {
-    get: function () {
-        return (this.length - 1);
-    }
-});
