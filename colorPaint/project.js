@@ -381,10 +381,7 @@ export default function projectObject() {
             const objProjeto = {
                 nomeProjeto: this.properties.name, resolucaoDoProjeto: this.properties.resolution,
                 corDeFundo: this.properties.background, coresSalvas: coresSalvasProjeto,
-                grid: {
-                    size: D.createGridWindow.gridProprieties.size, position: D.createGridWindow.gridProprieties.position,
-                    visible: D.createGridWindow.gridProprieties.visible
-                },
+                grid: D.createGridWindow.gridProperties,
                 numeroDeCamadas: this.properties.numberLayers, camadas: dadosCamadas
             }
             const data = encode(JSON.stringify(objProjeto)), blob = new Blob([data], { type: "application/octet-stream;charset=utf-8" }),
@@ -418,9 +415,7 @@ export default function projectObject() {
                     }
                 }
                 for (let i = 0; i < objProjeto.coresSalvas.length; i++) { this.saveColor(objProjeto.coresSalvas[i]); }
-                D.createGridWindow.gridProprieties.size = objProjeto.grid.size;
-                D.createGridWindow.gridProprieties.position = objProjeto.grid.position;
-                if (objProjeto.grid.visible) { D.createGridWindow.createGrid(true); }
+                D.createGridWindow.createGrid = objProjeto.grid;
             }
             const reader = new FileReader();
             reader.onload = (e) => {

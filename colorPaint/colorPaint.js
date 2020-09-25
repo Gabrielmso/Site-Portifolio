@@ -9,7 +9,7 @@ import hotKeysObject from "./hotKeys.js";
 import createGridWindowObject from "./createGridWindow.js";
 import colorSelectionWindowObject from "./colorSelectionWindow.js";
 import notificationsObject from "./notifications.js";
-import { preventDefaultAction, getMousePosition } from "../js/geral.js";
+import { preventDefaultAction, getMousePosition, elementById } from "../js/geral.js";
 
 let topoMenu;
 function loadApp() {
@@ -23,15 +23,15 @@ function loadApp() {
         colorSelectionWindow = colorSelectionWindowObject(),
         notification = notificationsObject();
 
-    const contentTools = document.getElementById("contentTools"),
-        barraLateralEsquerda = document.getElementById("barraLateralEsquerda"),
-        barraLateralDireita = document.getElementById("barraLateralDireita"),
-        contentCentro = document.getElementById("contentCentro"),
-        contentTelas = document.getElementById("contentTelas"),
-        corPrincipal = document.getElementById("corPrincipal"),
-        corSecundaria = document.getElementById("corSecundaria"),
-        txtPorcentagemZoom = document.getElementById("txtPorcentagemZoom"),
-        janelaPrincipal = document.getElementById("colorPaintContent");
+    const contentTools = elementById("contentTools"),
+        barraLateralEsquerda = elementById("barraLateralEsquerda"),
+        barraLateralDireita = elementById("barraLateralDireita"),
+        contentCentro = elementById("contentCentro"),
+        contentTelas = elementById("contentTelas"),
+        corPrincipal = elementById("corPrincipal"),
+        corSecundaria = elementById("corSecundaria"),
+        txtPorcentagemZoom = elementById("txtPorcentagemZoom"),
+        janelaPrincipal = elementById("colorPaintContent");
 
     createProjectWindow.addDependencies({ createProjectWindow, project, notification, openWindowbackgroundBlur });
     project.addDependencies({
@@ -47,7 +47,7 @@ function loadApp() {
     previewFunctions.addDependencies({ project, previewFunctions, contentTelas });
     undoRedoChange.addDependencies({ project, drawingTools });
     hotKeys.addDependencies({ project, drawingTools, undoRedoChange, contentTelas });
-    createGridWindow.addDependencies({ project, createGridWindow, notification, contentTelas, txtPorcentagemZoom });
+    createGridWindow.addDependencies({ project, notification, contentTelas, txtPorcentagemZoom });
 
     project.addEventsToElements();
     colorSelectionWindow.addEventsToElements();
@@ -56,13 +56,13 @@ function loadApp() {
     ajustarContents();
     criarOuAbrirProjeto();
 
-    document.getElementById("bttCriarNovoProjeto").addEventListener("mousedown", () => createProjectWindow.open("create"));
-    document.getElementById("bttCriarGrade").addEventListener("mousedown", () => createGridWindow.open());
-    document.getElementById("bttModoCursor").addEventListener("mousedown", (e) => drawingTools.changeCursorMode(e));
-    document.getElementById("bttMostrarAlteracaoPincel").addEventListener("mousedown", (e) => drawingTools.changeShowDashSample(e));
-    document.getElementById("bttSalvarDesenho").addEventListener("mousedown", () => project.saveDraw());
-    document.getElementById("bttSalvarProjeto").addEventListener("mousedown", () => project.saveProject());
-    document.getElementById("bttcarregarProjeto").addEventListener("mousedown", () => createProjectWindow.open("load"));
+    elementById("bttCriarNovoProjeto").addEventListener("mousedown", () => createProjectWindow.open("create"));
+    elementById("bttCriarGrade").addEventListener("mousedown", () => createGridWindow.open());
+    elementById("bttModoCursor").addEventListener("mousedown", (e) => drawingTools.changeCursorMode(e));
+    elementById("bttMostrarAlteracaoPincel").addEventListener("mousedown", (e) => drawingTools.changeShowDashSample(e));
+    elementById("bttSalvarDesenho").addEventListener("mousedown", () => project.saveDraw());
+    elementById("bttSalvarProjeto").addEventListener("mousedown", () => project.saveProject());
+    elementById("bttcarregarProjeto").addEventListener("mousedown", () => createProjectWindow.open("load"));
 
     corPrincipal.addEventListener("mousedown", () => {
         if (colorSelectionWindow.opened) { colorSelectionWindow.findColor(project.selectedColors.firstPlane); }
@@ -74,38 +74,38 @@ function loadApp() {
         else { colorSelectionWindow.open(2); }
     });
 
-    document.getElementById("bttCoresPrincipais").addEventListener("mousedown", () => {//Coloca preto na corPrincipalEcolhida e branco na corSecundariaEscolhida.
+    elementById("bttCoresPrincipais").addEventListener("mousedown", () => {//Coloca preto na corPrincipalEcolhida e branco na corSecundariaEscolhida.
         if (!colorSelectionWindow.opened) {
             project.selectedColors.set(1, { r: 0, g: 0, b: 0 });
             project.selectedColors.set(2, { r: 255, g: 255, b: 255 });
         }
     });
 
-    document.getElementById("bttAlternaCor").addEventListener("mousedown", () => {
+    elementById("bttAlternaCor").addEventListener("mousedown", () => {
         if (!colorSelectionWindow.opened) {
-            const color = project.selectedColors.get(1);
+            const color = { ...project.selectedColors.get(1) };
             project.selectedColors.set(1, project.selectedColors.get(2));
             project.selectedColors.set(2, color);
         }
     });
 
-    document.getElementById("bttZoomMais").addEventListener("mousedown", () => project.zoom(true, true, 1.25));
-    document.getElementById("bttZoomMenos").addEventListener("mousedown", () => project.zoom(false, true, 1.25));
+    elementById("bttZoomMais").addEventListener("mousedown", () => project.zoom(true, true, 1.25));
+    elementById("bttZoomMenos").addEventListener("mousedown", () => project.zoom(false, true, 1.25));
 
     txtPorcentagemZoom.addEventListener("keyup", (e) => {
-        if (e.code === "Enter" || e.keyCode === 13) {
+        if (e.code === "Enter") {
             const valor = parseFloat(((e.currentTarget.value).replace("%", "")).replace(",", "."));
             if (isNaN(valor) === false && valor >= 1) { project.zoom("porcentagem", true, valor); }
         }
     });
 
-    document.getElementById("bttAtalhos").addEventListener("click", () => openHotKeysWindow(true));
-    document.getElementById("bttOkAtalhos").addEventListener("click", () => openHotKeysWindow(false));
+    elementById("bttAtalhos").addEventListener("click", () => openHotKeysWindow(true));
+    elementById("bttOkAtalhos").addEventListener("click", () => openHotKeysWindow(false));
     function openHotKeysWindow(open) {
-        openWindowbackgroundBlur(document.getElementById("contentJanelaAtalhos"), open);
+        openWindowbackgroundBlur(elementById("contentJanelaAtalhos"), open);
     }
 
-    document.getElementById("colorPaintContent").addEventListener("wheel", (e) => {//Zoom com o scroll do mouse.
+    elementById("colorPaintContent").addEventListener("wheel", (e) => {//Zoom com o scroll do mouse.
         if (!hotKeys.ctrlPressed) { return; }
         preventDefaultAction(e);
         if (e.deltaY < 0) { project.zoom(true, false, 1.10); }
@@ -138,7 +138,7 @@ function loadApp() {
         contentCentro.style.width = contentTools.offsetWidth - barraLateralEsquerda.offsetWidth - barraLateralDireita.offsetWidth - 0.5 + "px";
         contentCentro.style.height = contentTools.style.height;
         contentTelas.style.height = (contentCentro.offsetHeight - 15) + "px";
-        document.getElementById("janelaCamadas").style.height = (barraLateralEsquerda.offsetHeight - 336) + "px";
+        elementById("janelaCamadas").style.height = (barraLateralEsquerda.offsetHeight - 336) + "px";
     }
 
     function openWindowbackgroundBlur(window, open) {
@@ -162,7 +162,7 @@ function loadApp() {
     }
 
     function criarOuAbrirProjeto() {
-        const carregar = document.getElementById("carregamento");
+        const carregar = elementById("carregamento");
         if (sessionStorage.getItem("load") === "true") {
             fadeOut();
             createProjectWindow.open("load");
@@ -173,7 +173,7 @@ function loadApp() {
             sessionStorage.removeItem("create");
         } else { carregamento(); }
         function carregamento() {
-            const logoCarregamento = document.getElementById("logoCarregamento");
+            const logoCarregamento = elementById("logoCarregamento");
             logoCarregamento.style.transition = "opacity 1.5s linear";
             setTimeout(() => {
                 logoCarregamento.style.opacity = "1";
