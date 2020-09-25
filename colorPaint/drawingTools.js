@@ -342,8 +342,13 @@ export default function drawingToolsObject() {
                 this.painting = false;
                 if (!this.completeToolUsage(e)) { return; };
                 strokeCoordinates.clear();
-                if (this.selectedTool != 4 && this.selectedTool != 7 && this.selectedTool != 8) { D.project.drawInLayer(); }
-                else { D.project.drawInPreview(D.project.arrayLayers[D.project.selectedLayer]); }
+                switch (this.selectedTool) {
+                    case "eraser": case "blur": case "smudge":
+                        D.project.drawInPreview(D.project.arrayLayers[D.project.selectedLayer]);
+                        break;
+                    default:
+                        D.project.drawInLayer();
+                }
                 if (this.bttMouseUsed === 1) { this.selectDrawingTool(this.previousTool) }
                 this.currentLayer.globalCompositeOperation = "source-over";
             }
