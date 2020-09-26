@@ -39,7 +39,7 @@ function loadApp() {
         hotKeys, createGridWindow, colorSelectionWindow, notification,
         contentTelas, txtPorcentagemZoom, undoRedoChange, janelaPrincipal
     });
-    colorSelectionWindow.addDependencies({ project, drawingTools, colorSelectionWindow, janelaPrincipal });
+    colorSelectionWindow.addDependencies({ project, drawingTools, janelaPrincipal });
     drawingTools.addDependencies({
         project, undoRedoChange, hotKeys, colorSelectionWindow,
         notification, janelaPrincipal, contentTelas, drawingTools
@@ -50,7 +50,6 @@ function loadApp() {
     createGridWindow.addDependencies({ project, notification, contentTelas, txtPorcentagemZoom });
 
     project.addEventsToElements();
-    colorSelectionWindow.addEventsToElements();
     notification.addEventsToElements();
 
     ajustarContents();
@@ -65,12 +64,12 @@ function loadApp() {
     elementById("bttcarregarProjeto").addEventListener("mousedown", () => createProjectWindow.open("load"));
 
     corPrincipal.addEventListener("mousedown", () => {
-        if (colorSelectionWindow.opened) { colorSelectionWindow.findColor(project.selectedColors.firstPlane); }
+        if (colorSelectionWindow.opened) { colorSelectionWindow.currentColor = project.selectedColors.firstPlane; }
         else { colorSelectionWindow.open(1); }
     });
 
     corSecundaria.addEventListener("mousedown", () => {
-        if (colorSelectionWindow.opened) { colorSelectionWindow.findColor(project.selectedColors.backgroundPlane); }
+        if (colorSelectionWindow.opened) { colorSelectionWindow.currentColor = project.selectedColors.backgroundPlane; }
         else { colorSelectionWindow.open(2); }
     });
 

@@ -27,7 +27,7 @@ export default function hotKeysObject() {
                 if (e.code === "BracketRight") { this.changeToolSizeHotKey(true); }//Aumentar o tamanho da ferramenta.
                 else if (e.code === "Backslash") { this.changeToolSizeHotKey(false); }//Diminuir o tamanho da ferramenta.
             }
-            if (e.code === "ControlRight" || e.code === "ControlLeft" || e.keyCode === 17) {
+            if (e.code === "ControlRight" || e.code === "ControlLeft") {
                 e.preventDefault();
                 this.keyDownControl();
             }

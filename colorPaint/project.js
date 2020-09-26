@@ -90,7 +90,7 @@ export default function projectObject() {
             document.getElementById("coresSalvas").appendChild(savedColorEl);
             this.selectedColors.saved.colors[indexColor].el.addEventListener("mousedown", (e) => {
                 if (!D.colorSelectionWindow.opened) { this.selectedColors.selectSavedColor(indexColor, e.button); }
-                else { D.colorSelectionWindow.findColor(this.selectedColors.saved.colors[indexColor].rgb); }
+                else { D.colorSelectionWindow.currentColor = this.selectedColors.saved.colors[indexColor].rgb; }
             });
             this.selectedColors.saved.colors[indexColor].el.addEventListener("contextmenu", preventDefaultAction);
         },

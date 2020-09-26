@@ -461,7 +461,7 @@ export default function drawingToolsObject() {
                     });
                     return;
                 }
-                if (D.colorSelectionWindow.opened) { D.colorSelectionWindow.findColor({ r: pixel[0], g: pixel[1], b: pixel[2] }); }
+                if (D.colorSelectionWindow.opened) { D.colorSelectionWindow.currentColor = { r: pixel[0], g: pixel[1], b: pixel[2] }; }
                 else { D.project.selectedColors.set(this.bttMouseUsed, { r: pixel[0], g: pixel[1], b: pixel[2] }); }
             }
         },

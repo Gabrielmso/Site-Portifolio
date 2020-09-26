@@ -16,7 +16,7 @@ export default function createGridWindowObject() {
             x: 0, y: 0, update({ x, y }) {
                 this.x = x;
                 this.y = y
-            }
+            }, get() { return { x: this.x, y: this.y } }
         }, createGrid = (properties, create) => {
             const screen = gridProperties.screen, size = gridProperties.size = properties.size,
                 pos = gridProperties.position = properties.position,
@@ -83,8 +83,8 @@ export default function createGridWindowObject() {
             applyPreviousVisualization();
         }, moveWindow = (mousePosition) => {
             window.style.transform = "none";
-            let newPositionX = mousePosition.x - mousePositionMoveWindow.x,
-                newPositionY = mousePosition.y - mousePositionMoveWindow.y;
+            const { x, y } = mousePositionMoveWindow.get();
+            let newPositionX = mousePosition.x - x, newPositionY = mousePosition.y - y;
             if (newPositionX < 0) { newPositionX = 0; }
             else if (newPositionX + window.offsetWidth > contentWindow.offsetWidth) {
                 newPositionX = contentWindow.offsetWidth - window.offsetWidth;

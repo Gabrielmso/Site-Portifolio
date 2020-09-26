@@ -21,9 +21,9 @@ export const getImage = (url) => {
     return image;
 }
 
-export const getMousePosition = (element, e) => {
+export const getMousePosition = (element, mouseEvent) => {
     const { left, top } = element.getBoundingClientRect();
-    return { x: e.clientX - left, y: e.clientY - top }
+    return { x: mouseEvent.clientX - left, y: mouseEvent.clientY - top }
 }
 
 export const cloneReplaceElement = (oldElement) => {
