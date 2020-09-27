@@ -33,7 +33,7 @@ function loadApp() {
         txtPorcentagemZoom = elementById("txtPorcentagemZoom"),
         janelaPrincipal = elementById("colorPaintContent");
 
-    createProjectWindow.addDependencies({ createProjectWindow, project, notification, openWindowbackgroundBlur });
+    createProjectWindow.addDependencies({ project, notification, openWindowbackgroundBlur });
     project.addDependencies({
         corPrincipal, corSecundaria, drawingTools, previewFunctions,
         hotKeys, createGridWindow, colorSelectionWindow, notification,
@@ -52,13 +52,10 @@ function loadApp() {
     project.addEventsToElements();
     notification.addEventsToElements();
 
-    ajustarContents();
-    criarOuAbrirProjeto();
-
     elementById("bttCriarNovoProjeto").addEventListener("mousedown", () => createProjectWindow.open("create"));
     elementById("bttCriarGrade").addEventListener("mousedown", () => createGridWindow.open());
-    elementById("bttModoCursor").addEventListener("mousedown", (e) => drawingTools.changeCursorMode(e));
-    elementById("bttMostrarAlteracaoPincel").addEventListener("mousedown", (e) => drawingTools.changeShowDashSample(e));
+    elementById("bttModoCursor").addEventListener("mousedown", e => drawingTools.changeCursorMode(e));
+    elementById("bttMostrarAlteracaoPincel").addEventListener("mousedown", e => drawingTools.changeShowDashSample(e));
     elementById("bttSalvarDesenho").addEventListener("mousedown", () => project.saveDraw());
     elementById("bttSalvarProjeto").addEventListener("mousedown", () => project.saveProject());
     elementById("bttcarregarProjeto").addEventListener("mousedown", () => createProjectWindow.open("load"));
@@ -73,7 +70,7 @@ function loadApp() {
         else { colorSelectionWindow.open(2); }
     });
 
-    elementById("bttCoresPrincipais").addEventListener("mousedown", () => {//Coloca preto na corPrincipalEcolhida e branco na corSecundariaEscolhida.
+    elementById("bttCoresPrincipais").addEventListener("mousedown", () => {
         if (!colorSelectionWindow.opened) {
             project.selectedColors.set(1, { r: 0, g: 0, b: 0 });
             project.selectedColors.set(2, { r: 255, g: 255, b: 255 });
@@ -91,20 +88,18 @@ function loadApp() {
     elementById("bttZoomMais").addEventListener("mousedown", () => project.zoom(true, true, 1.25));
     elementById("bttZoomMenos").addEventListener("mousedown", () => project.zoom(false, true, 1.25));
 
-    txtPorcentagemZoom.addEventListener("keyup", (e) => {
+    txtPorcentagemZoom.addEventListener("keyup", e => {
         if (e.code === "Enter") {
             const valor = parseFloat(((e.currentTarget.value).replace("%", "")).replace(",", "."));
             if (isNaN(valor) === false && valor >= 1) { project.zoom("porcentagem", true, valor); }
         }
     });
+    const openHotKeysWindow = open => openWindowbackgroundBlur(elementById("contentJanelaAtalhos"), open)
+    elementById("bttAtalhos").addEventListener("mousedown", () => openHotKeysWindow(true));
+    elementById("bttOkAtalhos").addEventListener("mousedown", () => openHotKeysWindow(false));
 
-    elementById("bttAtalhos").addEventListener("click", () => openHotKeysWindow(true));
-    elementById("bttOkAtalhos").addEventListener("click", () => openHotKeysWindow(false));
-    function openHotKeysWindow(open) {
-        openWindowbackgroundBlur(elementById("contentJanelaAtalhos"), open);
-    }
 
-    elementById("colorPaintContent").addEventListener("wheel", (e) => {//Zoom com o scroll do mouse.
+    elementById("colorPaintContent").addEventListener("wheel", e => {//Zoom com o scroll do mouse.
         if (!hotKeys.ctrlPressed) { return; }
         preventDefaultAction(e);
         if (e.deltaY < 0) { project.zoom(true, false, 1.10); }
@@ -126,7 +121,7 @@ function loadApp() {
         if (project.created) { previewFunctions.changeMoverScrollSizeZoom(); };
     });
 
-    document.addEventListener("keydown", function (e) {
+    document.addEventListener("keydown", e => {
         if (e.code === "F5" && project.created) {
             preventDefaultAction(e);
             return false;
@@ -161,38 +156,37 @@ function loadApp() {
     }
 
     function criarOuAbrirProjeto() {
-        const carregar = elementById("carregamento");
-        if (sessionStorage.getItem("load") === "true") {
-            fadeOut();
-            createProjectWindow.open("load");
-            sessionStorage.removeItem("load");
-        } else if (sessionStorage.getItem("create") === "true") {
-            fadeOut();
-            createProjectWindow.open("create");
-            sessionStorage.removeItem("create");
-        } else { carregamento(); }
-        function carregamento() {
-            const logoCarregamento = elementById("logoCarregamento");
-            logoCarregamento.style.transition = "opacity 1.5s linear";
-            setTimeout(() => {
-                logoCarregamento.style.opacity = "1";
+        const carregar = elementById("carregamento"),
+            loadMode = sessionStorage.getItem("loadMode"),
+            fadeOut = () => {
+                carregar.style.opacity = "0";
+                setTimeout(() => carregar.remove(), 700);
+            }, carregamento = () => {
+                const logoCarregamento = elementById("logoCarregamento");
+                logoCarregamento.style.transition = "opacity 1.5s linear";
                 setTimeout(() => {
-                    const posLogo = logoBlack.getBoundingClientRect();
-                    logoCarregamento.style.transition = "width 500ms ease-out, height 500ms ease-out, opacity 500ms ease-out, top 500ms ease-out, left 500ms ease-out";
-                    logoCarregamento.style.height = "50px";
-                    logoCarregamento.style.width = "90px";
-                    logoCarregamento.style.opacity = "0.75";
-                    logoCarregamento.style.left = posLogo.left + 45 + "px";
-                    logoCarregamento.style.top = posLogo.top + 25 + "px";
-                    setTimeout(fadeOut, 350);
-                }, 1550);
-            }, 150);
-        }
-        function fadeOut() {
-            carregar.style.opacity = "0";
-            setTimeout(() => carregar.remove(), 700);
-        }
+                    logoCarregamento.style.opacity = "1";
+                    setTimeout(() => {
+                        const posLogo = logoBlack.getBoundingClientRect();
+                        logoCarregamento.style.transition = "width 500ms ease-out, height 500ms ease-out, opacity 500ms ease-out, top 500ms ease-out, left 500ms ease-out";
+                        logoCarregamento.style.height = "50px";
+                        logoCarregamento.style.width = "90px";
+                        logoCarregamento.style.opacity = "0.75";
+                        logoCarregamento.style.left = posLogo.left + 45 + "px";
+                        logoCarregamento.style.top = posLogo.top + 25 + "px";
+                        setTimeout(fadeOut, 350);
+                    }, 1550);
+                }, 150);
+            }
+
+        if (loadMode) {
+            fadeOut();
+            createProjectWindow.open(loadMode);
+            sessionStorage.removeItem("loadMode");
+        } else { carregamento(); }
     }
+    ajustarContents();
+    criarOuAbrirProjeto();
 }
 
 addMethodsGlobalObjects();

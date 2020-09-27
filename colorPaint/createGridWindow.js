@@ -1,9 +1,11 @@
 import { getMousePosition, elementById } from "../js/geral.js";
 
 export default function createGridWindowObject() {
-    const D = {}, gridProperties = {
-        screen: elementById("grid"), size: 80, position: { x: 0, y: 0 }, visible: false,
-    }, previousVisualization = { scrollX: 0, scrollY: 0, zoom: 0 },
+    const D = {},
+        gridProperties = {
+            screen: elementById("grid"), size: 80, position: { x: 0, y: 0 }, visible: false,
+        },
+        previousVisualization = { scrollX: 0, scrollY: 0, zoom: 0 },
         contentWindow = elementById("contentJanelaMenuGrid"),
         window = elementById("janelaMenuGrid"), insideWindow = {
             barMoveWindow: elementById("barraMoverJanelaMenuGrid"),
@@ -12,12 +14,14 @@ export default function createGridWindowObject() {
                 verticalPosition: elementById("txtPosicaoVerticalGrid"),
             },
             buttons: { ok: elementById("bttOkGrid"), cancel: elementById("bttcancelarGrid") },
-        }, mousePositionMoveWindow = {
+        },
+        mousePositionMoveWindow = {
             x: 0, y: 0, update({ x, y }) {
                 this.x = x;
                 this.y = y
             }, get() { return { x: this.x, y: this.y } }
-        }, createGrid = (properties, create) => {
+        },
+        createGrid = (properties, create) => {
             const screen = gridProperties.screen, size = gridProperties.size = properties.size,
                 pos = gridProperties.position = properties.position,
                 numDeQuadrados = (Math.trunc((D.project.properties.resolution.width / size) + 2.1)) * (Math.trunc((D.project.properties.resolution.height / size) + 2.1));
@@ -59,29 +63,34 @@ export default function createGridWindowObject() {
                 }
             }
             gridProperties.visible = create;
-        }, applyPreviousVisualization = () => {
+        },
+        applyPreviousVisualization = () => {
             D.project.zoom("porcentagem", false, previousVisualization.zoom);
             D.contentTelas.scrollTop = previousVisualization.scrollY;
             D.contentTelas.scrollLeft = previousVisualization.scrollX;
-        }, addEventsToElements = () => {
+        },
+        addEventsToElements = () => {
             insideWindow.inputs.size.addEventListener("change", inputSizeChange);
             insideWindow.inputs.horizontalPosition.addEventListener("change", inputHorizontalPositionChange);
             insideWindow.inputs.verticalPosition.addEventListener("change", inputVerticalPositionChange);
             insideWindow.buttons.ok.addEventListener("mousedown", close);
             insideWindow.buttons.cancel.addEventListener("mousedown", bttCancelMouseDown);
             insideWindow.barMoveWindow.addEventListener("mousedown", mouseDownEventMoveWindow);
-        }, removeEventsToElements = () => {
+        },
+        removeEventsToElements = () => {
             insideWindow.buttons.ok.removeEventListener("mousedown", close);
             insideWindow.buttons.cancel.removeEventListener("mousedown", bttCancelMouseDown);
             insideWindow.inputs.size.removeEventListener("change", inputSizeChange);
             insideWindow.inputs.horizontalPosition.removeEventListener("change", inputHorizontalPositionChange);
             insideWindow.inputs.verticalPosition.removeEventListener("change", inputVerticalPositionChange);
             insideWindow.barMoveWindow.removeEventListener("mousedown", mouseDownEventMoveWindow);
-        }, close = () => {
+        },
+        close = () => {
             removeEventsToElements();
             contentWindow.style.display = "none";
             applyPreviousVisualization();
-        }, moveWindow = (mousePosition) => {
+        },
+        moveWindow = mousePosition => {
             window.style.transform = "none";
             const { x, y } = mousePositionMoveWindow.get();
             let newPositionX = mousePosition.x - x, newPositionY = mousePosition.y - y;
@@ -95,33 +104,39 @@ export default function createGridWindowObject() {
             }
             window.style.left = newPositionX + "px";
             window.style.top = newPositionY + "px";
-        }, mouseDownEventMoveWindow = (e) => {
+        },
+        mouseDownEventMoveWindow = e => {
             mousePositionMoveWindow.update(getMousePosition(e.currentTarget, e));
             contentWindow.addEventListener("mousemove", mouseMoveEventMoveWindow);
             contentWindow.addEventListener("mouseup", mouseUpEventMoveWindow);
-        }, mouseMoveEventMoveWindow = (e) => moveWindow(getMousePosition(contentWindow, e)),
+        },
+        mouseMoveEventMoveWindow = e => moveWindow(getMousePosition(contentWindow, e)),
         mouseUpEventMoveWindow = () => {
             contentWindow.removeEventListener("mousemove", mouseMoveEventMoveWindow);
             contentWindow.removeEventListener("mouseup", mouseUpEventMoveWindow);
-        }, inputSizeChange = (e) => {
+        },
+        inputSizeChange = e => {
             const num = parseInt(e.currentTarget.value);
             if (!isNaN(num) && num > 0) {
                 gridProperties.size = num;
                 createGrid(gridProperties, true);
             }
-        }, inputHorizontalPositionChange = (e) => {
+        },
+        inputHorizontalPositionChange = e => {
             const num = parseInt(e.currentTarget.value);
             if (!isNaN(num)) {
                 gridProperties.position.x = num;
                 createGrid(gridProperties, true);
             }
-        }, inputVerticalPositionChange = (e) => {
+        },
+        inputVerticalPositionChange = e => {
             const num = parseInt(e.currentTarget.value);
             if (!isNaN(num)) {
                 gridProperties.position.y = num;
                 createGrid(gridProperties, true);
             }
-        }, bttCancelMouseDown = () => {
+        },
+        bttCancelMouseDown = () => {
             createGrid(gridProperties, false);
             close();
         };
