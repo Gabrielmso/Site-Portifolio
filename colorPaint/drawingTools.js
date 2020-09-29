@@ -1,4 +1,7 @@
-import { getImage, preventDefaultAction, throttle, getMousePosition, logarithm, getDistanceCoordinates } from "../js/geral.js";
+import {
+    getImage, preventDefaultAction, throttle, setStyle,
+    getMousePosition, logarithm, getDistanceCoordinates
+} from "../js/geral.js";
 
 export default function drawingToolsObject() {
     const D = {}, tools = {
@@ -86,39 +89,41 @@ export default function drawingToolsObject() {
             position: null
         },
         changeSize(size) {
-            if (size < 15) {
+            if (size < 13) {
                 this.cursor.classList.remove("bordaCursor");
-                this.cursor.style.backgroundImage = "url('/colorPaint/imagens/cursor/crossHair.png')";
-                this.cursor.style.width = this.cursor.style.height = "26px";
+                setStyle(this.cursor, {
+                    width: "26px", height: "26px",
+                    backgroundImage: "url('/colorPaint/imagens/cursor/crossHair.png')",
+                });
                 this.halfSize = 13;
             } else {
                 this.cursor.classList.add("bordaCursor");
                 this.halfSize = size / 2;
-                this.cursor.style.width = this.cursor.style.height = size + "px";
-                this.cursor.style.backgroundImage = size <= 150 ? "none" : "";
+                setStyle(this.cursor, {
+                    width: size + "px", height: size + "px", backgroundImage: size < 200 ? "none" : "",
+                });
             }
             this.changeCursorPosition(this.position);
         },
-        changeCursorPosition(pos) {
-            this.position = pos;
-            this.cursor.style.top = this.position.y - this.halfSize + "px";
-            this.cursor.style.left = this.position.x - this.halfSize + "px";
+        changeCursorPosition({ x, y }) {
+            this.position.x = x;
+            this.position.y = y;
+            setStyle(this.cursor, { top: y - this.halfSize + "px", left: x - this.halfSize + "px" });
         },
-        changeEyeDropperPosition(pos) {
-            this.eyeDropper.cursor.style.top = pos.y - 125 + "px";
-            this.eyeDropper.cursor.style.left = pos.x - 125 + "px";
+        changeEyeDropperPosition({ x, y }) {
+            setStyle(this.eyeDropper.cursor, { top: y - 125 + "px", left: x - 125 + "px" });
         },
         invisibleCursor() {
             this.visible = false;
-            this.cursor.style.display = "none";
+            setStyle(this.cursor, { display: "none" });
         },
         visibleCursor() {
             this.visible = true;
         },
-        wheel(e) {
+        wheel({ deltaY }) {
             if (!D.hotKeys.shiftPressed) {
-                D.contentTelas.scrollTop += e.deltaY < 0 ? -D.contentTelas.offsetHeight / 7 : D.contentTelas.offsetHeight / 7;
-            } else { D.contentTelas.scrollLeft += e.deltaY < 0 ? -D.contentTelas.offsetWidth / 7 : D.contentTelas.offsetWidth / 7; }
+                D.contentTelas.scrollTop += deltaY < 0 ? -D.contentTelas.offsetHeight / 7 : D.contentTelas.offsetHeight / 7;
+            } else { D.contentTelas.scrollLeft += deltaY < 0 ? -D.contentTelas.offsetWidth / 7 : D.contentTelas.offsetWidth / 7; }
         },
     }
     let showDashSample = true;
@@ -170,12 +175,12 @@ export default function drawingToolsObject() {
                 let el = this.toolProperties.elements[i];
                 el.property.addEventListener("mouseover", () => {
                     if (!this.painting && !this.clickToCurve && tools[this.selectedTool].prop) {
-                        el.contentBar.style.height = "33px";
+                        setStyle(el.contentBar, { height: "33px" });
                         cursorTool.invisibleCursor();
                     }
                 });
                 el.property.addEventListener("mouseleave", () => {
-                    el.contentBar.style.height = "0px";
+                    setStyle(el.contentBar, { height: null });
                     this.changeCursorTool();
                 });
                 el.property.addEventListener("mouseup", () => {
@@ -196,9 +201,9 @@ export default function drawingToolsObject() {
                 if (!this.painting) {
                     const { left, top, width, height } = D.contentTelas.getBoundingClientRect();
                     if (e.pageX < left || e.pageX > left + width || e.pageY < top || e.pageY > top + height) {
-                        cursorTool.cursor.style.display = "none";
+                        setStyle(cursorTool.cursor, { display: "none" });
                         this.txtPositionCursor.value = "";
-                    } else { cursorTool.cursor.style.display = "block"; }
+                    } else { setStyle(cursorTool.cursor, { display: "block" }); }
                 }
                 cursorTool.changeCursorPosition(getMousePosition(D.janelaPrincipal, e));
             }
@@ -290,26 +295,28 @@ export default function drawingToolsObject() {
             strokeCoordinates.clear();
         },
         changeCursorTool() {
-            cursorTool.eyeDropper.cursor.style.display = "none";
-            D.contentTelas.style.cursor = "";
+            setStyle(cursorTool.eyeDropper.cursor, { display: null });
+            setStyle(D.contentTelas, { cursor: "" });
             if (this.selectedTool === "eyeDropper") {
-                D.contentTelas.style.cursor = "url('" + cursorTool.imgsCursor.eyeDropper.src + "') 0 20, pointer";
+                setStyle(D.contentTelas, { cursor: "url('" + cursorTool.imgsCursor.eyeDropper.src + "') 0 20, pointer" });
                 cursorTool.invisibleCursor();
                 return;
             } else if (this.selectedTool === "paintBucket") {
-                D.contentTelas.style.cursor = "url('" + cursorTool.imgsCursor.paintBucket.src + "') 0 0, pointer";
+                setStyle(D.contentTelas, { cursor: "url('" + cursorTool.imgsCursor.paintBucket.src + "') 0 20, pointer" });
                 cursorTool.invisibleCursor();
                 return;
             }
             const size = this.toolProperties.size * ((D.project.screen.offsetWidth) / D.project.properties.resolution.width);
             if (cursorTool.show) {
                 cursorTool.visibleCursor();
-                D.contentTelas.style.cursor = "none";
+                setStyle(D.contentTelas, { cursor: "none" });
                 cursorTool.changeSize(size);
             } else {
                 cursorTool.invisibleCursor();
-                D.contentTelas.style.cursor = size < 20 ? "url('" + cursorTool.imgsCursor.crossHair.src + "') 12.5 12.5 , pointer" :
-                    "url('" + cursorTool.imgsCursor.circle.src + "') 10 10 , pointer";
+                setStyle(D.contentTelas, {
+                    cursor: size < 20 ? "url('" + cursorTool.imgsCursor.crossHair.src + "') 12.5 12.5 , pointer" :
+                        "url('" + cursorTool.imgsCursor.circle.src + "') 10 10 , pointer"
+                });
             }
         },
         mouseDownEventDrawing(e) {
@@ -322,7 +329,7 @@ export default function drawingToolsObject() {
             strokeCoordinates.add();
             this.applyToolChanges();
             this.currentLayer.globalCompositeOperation = "source-over";
-            if (cursorTool.show) { D.janelaPrincipal.style.cursor = "none"; }
+            if (cursorTool.show) { setStyle(D.janelaPrincipal, { cursor: "none" }); }
             this[this.mouseFunctionName]("down", e);
         },
         mouseMoveEventDrawing(e) {
@@ -337,7 +344,7 @@ export default function drawingToolsObject() {
             }
         },
         mouseUpEventDrawing(e) {
-            D.janelaPrincipal.style.cursor = "";
+            setStyle(D.janelaPrincipal, { cursor: "" });
             if (this.painting) {
                 this.painting = false;
                 if (!this.completeToolUsage(e)) { return; };
@@ -440,20 +447,20 @@ export default function drawingToolsObject() {
         eyeDropper(eventName, e) {
             const cursorEyeDropper = cursorTool.eyeDropper.cursor, compareColors = cursorTool.eyeDropper.compareColors;
             if (eventName === "down") {
-                cursorEyeDropper.style.display = "block";
-                const color = this.toolProperties.color, current = "25px solid rgb(" + color.r + ", " + color.g + ", " + color.b + ")";
-                compareColors.style.borderBottom = compareColors.style.borderLeft = current;
+                setStyle(cursorEyeDropper, { display: "block" });
+                const { r, g, b } = this.toolProperties.color, current = `25px solid rgb( ${r}, ${g}, ${b})`;
+                setStyle(compareColors, { borderBottom: current, borderLeft: current });
                 D.project.createDrawComplete();
-                D.project.screen.style.imageRendering = "pixelated";
+                setStyle(D.project.screen, { imageRendering: "pixelated" });
             }
             cursorTool.changeEyeDropperPosition(getMousePosition(D.janelaPrincipal, e));
             const pixel = D.project.drawComplete.getImageData(mousePosition.x, mousePosition.y, 1, 1).data,
-                newColor = pixel[3] === 0 ? "25px solid rgba(0, 0, 0, 0)" : "25px solid rgb(" + pixel[0] + ", " + pixel[1] + ", " + pixel[2] + ")";
-            compareColors.style.borderTop = compareColors.style.borderRight = newColor;
+                newColor = pixel[3] === 0 ? "25px solid rgba(0, 0, 0, 0)" : `25px solid rgb( ${pixel[0]}, ${pixel[1]}, ${pixel[2]})`;
+            setStyle(compareColors, { borderTop: newColor, borderRight: newColor });
             if (eventName === "up") {
                 strokeCoordinates.clear();
-                cursorEyeDropper.style.display = "none";
-                D.project.screen.style.imageRendering = "auto";
+                setStyle(cursorEyeDropper, { display: null });
+                setStyle(D.project.screen, { imageRendering: "auto" });
                 if (pixel[3] === 0) {
                     D.notification.open({ name: "notify", time: 1500 }, {
                         title: "Atenção!", text: "Nenhuma cor foi selecionada."
@@ -665,7 +672,9 @@ export default function drawingToolsObject() {
             const eventFunction = {
                 down: () => {
                     this.infoMoveScreenWithSpace = { startCoordinate: getMousePosition(D.contentTelas, e), scroolTop: D.contentTelas.scrollTop, scrollLeft: D.contentTelas.scrollLeft };
-                    D.janelaPrincipal.style.cursor = D.contentTelas.style.cursor = "grabbing";
+                    const style = { cursor: "grabbing" }
+                    setStyle(D.janelaPrincipal, style);
+                    setStyle(D.contentTelas, style);
                 },
                 move: () => {
                     const { x, y } = getMousePosition(D.contentTelas, e);
@@ -674,7 +683,7 @@ export default function drawingToolsObject() {
                 },
                 up: () => {
                     this.infoMoveScreenWithSpace = { startCoordinate: null, scroolTop: null, scrollLeft: null };
-                    contentTelas.style.cursor = "grab";
+                    setStyle(D.contentTelas, { cursor: "grab" });
                 }
             }
             eventFunction[eventName]();

@@ -1,18 +1,16 @@
-import { throttle } from "../js/geral.js";
+import { throttle, elementById, setStyle } from "../js/geral.js";
 
 function topMenuObject() {
     return {
         changeMenu: true,
         scrollBody: 0,
-        menu: document.getElementById("menu"),
-        logo: document.getElementById("logoBlack"),
+        menu: elementById("menu"),
+        logo: elementById("logoBlack"),
         categories: document.getElementsByClassName("opcaomenu"),
         menuIcon: {
-            btt: document.getElementById("iconemenublack"),
-            traces: [document.getElementById("traco1"),
-            document.getElementById("traco2"),
-            document.getElementById("traco3")],
-            lateralMenu: document.getElementById("fundomenu"),
+            btt: elementById("iconemenublack"),
+            traces: [elementById("traco1"), elementById("traco2"), elementById("traco3")],
+            lateralMenu: elementById("fundomenu"),
             focus: false,
             actionAnimation() {
                 const oldClass = this.focus ? "movertraco" : "iniciotraco",
@@ -27,17 +25,15 @@ function topMenuObject() {
                 this.focus = !this.focus;
             },
             resizeMenu() {
-                this.lateralMenu.style.height = window.innerHeight + "px";
+                setStyle(this.lateralMenu, { height: window.innerHeight + "px" });
             }
         },
         downArrow: {
-            btt: document.getElementById("submenu"),
-            icon: document.getElementById("iconesetablack"),
-            traces: [document.getElementById("tracoseta1"),
-            document.getElementById("tracoseta2"),
-            document.getElementById("tracoseta3"),
-            document.getElementById("tracoseta4")],
-            contentDrop: document.getElementById("socials"),
+            btt: elementById("submenu"),
+            icon: elementById("iconesetablack"),
+            traces: [elementById("tracoseta1"), elementById("tracoseta2"), elementById("tracoseta3"),
+            elementById("tracoseta4")],
+            contentDrop: elementById("socials"),
             focus: false,
             actionAnimation() {
                 const oldClass = this.focus ? "movertracoseta" : "iniciotracoseta",
@@ -47,7 +43,7 @@ function topMenuObject() {
                     this.traces[i].classList.replace(oldClassName, newClassName);
                 }
                 const newHeight = this.focus ? "0px" : "200px";
-                this.contentDrop.style.height = newHeight;
+                setStyle(this.contentDrop, { height: newHeight });
                 this.focus = !this.focus;
             },
         },
@@ -95,7 +91,7 @@ function topMenuObject() {
             this.downArrow.btt.addEventListener("mousedown", () => this.downArrow.actionAnimation());
             this.downArrow.btt.addEventListener("mouseleave", () => { if (this.downArrow.focus) { this.downArrow.actionAnimation(); } });
             window.addEventListener("resize", () => this.screenResize());
-            window.addEventListener("scroll", throttle(() => this.scrollMenu(), 110, true));
+            window.addEventListener("scroll", throttle(() => this.scrollMenu(), 110));
         },
         init() {
             this.addEventsToElements();
@@ -112,20 +108,17 @@ function callTopMenuObject() {
 
 function loadFile(url) {
     return new Promise((resolve) => {
-        const request = new XMLHttpRequest();
-        request.onload = function () {
-            if (this.status === 200) { resolve(this.response); }
+        fetch(url).then((response) => {
+            if (response.status === 200) { resolve(response); }
             resolve(false);
-        }
-        request.open("GET", url, true);
-        request.send(null);
+        });
     });
 }
 
 export default async function loadTopoMenu() {
     const HTMLcontent = await loadFile("./menuTopo.html");
     if (HTMLcontent) {
-        document.body.insertAdjacentHTML("afterbegin", HTMLcontent.toString());
+        document.body.insertAdjacentHTML("afterbegin", await HTMLcontent.text());
         return callTopMenuObject();
     }
     return false;

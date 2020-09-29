@@ -9,7 +9,7 @@ import hotKeysObject from "./hotKeys.js";
 import createGridWindowObject from "./createGridWindow.js";
 import colorSelectionWindowObject from "./colorSelectionWindow.js";
 import notificationsObject from "./notifications.js";
-import { preventDefaultAction, getMousePosition, elementById } from "../js/geral.js";
+import { preventDefaultAction, getMousePosition, elementById, setStyle } from "../js/geral.js";
 
 let topoMenu;
 function loadApp() {
@@ -128,27 +128,29 @@ function loadApp() {
         }
     });
     function ajustarContents() {
-        contentTools.style.height = (janelaPrincipal.offsetHeight - 90) + "px";
-        contentCentro.style.width = contentTools.offsetWidth - barraLateralEsquerda.offsetWidth - barraLateralDireita.offsetWidth - 0.5 + "px";
-        contentCentro.style.height = contentTools.style.height;
-        contentTelas.style.height = (contentCentro.offsetHeight - 15) + "px";
-        elementById("janelaCamadas").style.height = (barraLateralEsquerda.offsetHeight - 336) + "px";
+        setStyle(contentTools, { height: (janelaPrincipal.offsetHeight - 90) + "px" });
+        setStyle(contentCentro, {
+            width: contentTools.offsetWidth - barraLateralEsquerda.offsetWidth - barraLateralDireita.offsetWidth - 0.5 + "px",
+            height: contentTools.offsetHeight + "px"
+        });
+        setStyle(contentTelas, { height: (contentCentro.offsetHeight - 15) + "px" });
+        setStyle(elementById("janelaCamadas"), { height: (barraLateralEsquerda.offsetHeight - 336) + "px" });
     }
 
     function openWindowbackgroundBlur(window, open) {
         return new Promise((resolve) => {
             if (open) {
-                window.style.display = "flex";
+                setStyle(window, { display: "flex" });
                 setTimeout(() => {
-                    window.style.opacity = "1";
+                    setStyle(window, { opacity: "1" });
                     window.classList.add("applyBackDropBlur");
                     resolve();
                 }, 10);
             } else {
-                window.style.opacity = "0";
+                setStyle(window, { opacity: null });
                 window.classList.remove("applyBackDropBlur");
                 setTimeout(() => {
-                    window.style.display = "none";
+                    setStyle(window, { display: null });
                     resolve();
                 }, 340);
             }
@@ -159,30 +161,30 @@ function loadApp() {
         const carregar = elementById("carregamento"),
             loadMode = sessionStorage.getItem("loadMode"),
             fadeOut = () => {
-                carregar.style.opacity = "0";
+                setStyle(carregar, { opacity: "0" })
                 setTimeout(() => carregar.remove(), 700);
-            }, carregamento = () => {
+            },
+            carregamento = () => {
                 const logoCarregamento = elementById("logoCarregamento");
-                logoCarregamento.style.transition = "opacity 1.5s linear";
+                setStyle(logoCarregamento, { transition: "opacity 1.5s linear" })
                 setTimeout(() => {
-                    logoCarregamento.style.opacity = "1";
+                    setStyle(logoCarregamento, { opacity: "1" });
                     setTimeout(() => {
-                        const posLogo = logoBlack.getBoundingClientRect();
-                        logoCarregamento.style.transition = "width 500ms ease-out, height 500ms ease-out, opacity 500ms ease-out, top 500ms ease-out, left 500ms ease-out";
-                        logoCarregamento.style.height = "50px";
-                        logoCarregamento.style.width = "90px";
-                        logoCarregamento.style.opacity = "0.75";
-                        logoCarregamento.style.left = posLogo.left + 45 + "px";
-                        logoCarregamento.style.top = posLogo.top + 25 + "px";
+                        const { left, top } = logoBlack.getBoundingClientRect();
+                        setStyle(logoCarregamento, {
+                            transition: "width 500ms ease-out, height 500ms ease-out, opacity 500ms ease-out, top 500ms ease-out, left 500ms ease-out",
+                            width: "90px", height: "50px", opacity: "0.75",
+                            left: left + 45 + "px", top: top + 25 + "px"
+                        });
                         setTimeout(fadeOut, 350);
                     }, 1550);
                 }, 150);
             }
 
-        if (loadMode) {
-            fadeOut();
+        if (loadMode) {            
             createProjectWindow.open(loadMode);
             sessionStorage.removeItem("loadMode");
+            fadeOut();
         } else { carregamento(); }
     }
     ajustarContents();
@@ -196,7 +198,7 @@ export default async function colorPaint() {
     if (topoMenu) {
         topoMenu.changeTheme(false);
         topoMenu.changeMenu = false;
-        topoMenu.menu.style.transition = "none";
+        setStyle(topoMenu.menu, { transition: "none" });
         loadApp();
         return true;
     }

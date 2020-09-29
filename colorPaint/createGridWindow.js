@@ -1,4 +1,4 @@
-import { getMousePosition, elementById } from "../js/geral.js";
+import { getMousePosition, elementById, setStyle } from "../js/geral.js";
 
 export default function createGridWindowObject() {
     const D = {},
@@ -50,17 +50,17 @@ export default function createGridWindowObject() {
                     alturaTela = (D.project.properties.resolution.height + (size * 2));
                 const larguraQuadrado = ((size / larguraTela) * 100), alturaQuadrado = ((size / alturaTela) * 100);
                 const styleQuadrado = "width: " + larguraQuadrado + "%; height: " + alturaQuadrado + "%;";
-                screen.style.top = (-100 * ((size - position.y) / D.project.properties.resolution.height)) + "%";
-                screen.style.left = (-100 * ((size - position.x) / D.project.properties.resolution.width)) + "%";
-                screen.style.width = ((larguraTela / D.project.properties.resolution.width) * 100) + "%";
-                screen.style.height = ((alturaTela / D.project.properties.resolution.height) * 100) + "%";
-                for (let i = 0; i < numDeQuadrados; i++) {
-                    const quadrado = document.createElement("div");
-                    quadrado.setAttribute("class", "quadrado");
-                    quadrado.innerHTML = "<div></div>";
-                    quadrado.setAttribute("style", styleQuadrado);
-                    screen.appendChild(quadrado);
-                }
+                setStyle(screen, {
+                    top: (-100 * ((size - position.y) / D.project.properties.resolution.height)) + "%",
+                    left: (-100 * ((size - position.x) / D.project.properties.resolution.width)) + "%",
+                    width: ((larguraTela / D.project.properties.resolution.width) * 100) + "%",
+                    height: ((alturaTela / D.project.properties.resolution.height) * 100) + "%"
+                });
+                const quadrado = document.createElement("div");
+                quadrado.setAttribute("class", "quadrado");
+                quadrado.innerHTML = "<div></div>";
+                quadrado.setAttribute("style", styleQuadrado);
+                for (let i = 0; i < numDeQuadrados; i++) { screen.appendChild(quadrado.cloneNode(true)); }
             }
             gridProperties.visible = create;
         },
@@ -87,11 +87,10 @@ export default function createGridWindowObject() {
         },
         close = () => {
             removeEventsToElements();
-            contentWindow.style.display = "none";
+            setStyle(contentWindow, { display: null });
             applyPreviousVisualization();
         },
         moveWindow = mousePosition => {
-            window.style.transform = "none";
             const { x, y } = mousePositionMoveWindow.get();
             let newPositionX = mousePosition.x - x, newPositionY = mousePosition.y - y;
             if (newPositionX < 0) { newPositionX = 0; }
@@ -102,8 +101,9 @@ export default function createGridWindowObject() {
             else if (newPositionY + window.offsetHeight > contentWindow.offsetHeight) {
                 newPositionY = contentWindow.offsetHeight - window.offsetHeight;
             }
-            window.style.left = newPositionX + "px";
-            window.style.top = newPositionY + "px";
+            setStyle(window, {
+                transform: "none", left: newPositionX + "px", top: newPositionY + "px"
+            });
         },
         mouseDownEventMoveWindow = e => {
             mousePositionMoveWindow.update(getMousePosition(e.currentTarget, e));
@@ -155,7 +155,7 @@ export default function createGridWindowObject() {
             insideWindow.inputs.size.value = gridProperties.size;
             insideWindow.inputs.horizontalPosition.value = gridProperties.position.x;
             insideWindow.inputs.verticalPosition.value = gridProperties.position.y;
-            contentWindow.style.display = "block";
+            setStyle(contentWindow, { display: "block" });
             addEventsToElements();
             D.project.adjustInVisualizationScreen();
             if (!gridProperties.visible) { createGrid(gridProperties, true); }

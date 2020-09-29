@@ -233,7 +233,7 @@ input[type="range"]::-webkit-slider-thumb {
     border: none;
     top: 10px;
     min-width: 85px;
-    margin-right: 5px;
+    margin-left: 10px;
     border-radius: 25px;
     background-color: var(--COR_BOTAO);
     color: rgba(255, 255, 255, 0.4);
@@ -244,6 +244,10 @@ input[type="range"]::-webkit-slider-thumb {
     text-align: center;
     line-height: 25px;
     font-size: 11px;
+}
+
+.bttColorPaint:first-child {
+    margin-left: 0px;
 }
 
 .bttColorPaint:hover {
@@ -1046,6 +1050,7 @@ input[type="range"]::-webkit-slider-thumb {
 
 #cursorComparaContaGotas {
     position: absolute;
+    display: none;
     width: 250px;
     height: 250px;
     z-index: 100;

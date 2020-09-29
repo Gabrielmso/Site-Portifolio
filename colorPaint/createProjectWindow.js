@@ -1,4 +1,4 @@
-import { elementById } from "../js/geral.js";
+import { elementById, setStyle } from "../js/geral.js";
 
 export default function createProjectWindowObject() {
     const D = {}, status = { neverOpened: true, mode: "create" },
@@ -71,15 +71,17 @@ export default function createProjectWindowObject() {
         validateProperties = () => {
             const campoInvalido = campo => {
                 campo.focus();
-                campo.style.boxShadow = "0px 5px 20px rgba(225, 0, 0, 0.25)";
-                campo.style.border = "2px solid rgba(225, 0, 0, 0.4)";
+                setStyle(campo, {
+                    boxShadow: "0px 5px 20px rgba(225, 0, 0, 0.25)",
+                    border: "2px solid rgba(225, 0, 0, 0.4)"
+                });
             }
             for (const prop in createProject.inputs) {
                 const el = createProject.inputs[prop];
                 if (el.value === "") {
                     campoInvalido(el);
                     return;
-                } else { el.style.border = el.style.boxShadow = ""; }
+                } else { setStyle(el, { border: null, boxShadow: null }); }
             }
             const { name, width, height, background, numLayers } = createProject.inputs;
             const nomeProjeto = (name.value).replace(/ /g, "-"),
@@ -131,14 +133,14 @@ export default function createProjectWindowObject() {
             D.openWindowbackgroundBlur(content, true);
             const typeMode = {
                 create: () => {
-                    loadProject.window.style.display = "none";
-                    createProject.window.style.display = "block";
+                    setStyle(loadProject.window, { display: "none" });
+                    setStyle(createProject.window, { display: "block" });
                     createProject.addEventsToElements();
                 },
                 load: () => {
                     loadProject.window.classList.replace("dragEnter", "dragLeave");
-                    createProject.window.style.display = "none";
-                    loadProject.window.style.display = "flex";
+                    setStyle(createProject.window, { display: "none" });
+                    setStyle(loadProject.window, { display: "flex" });
                     loadProject.addEventsToElements();
                 }
             }

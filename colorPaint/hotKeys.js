@@ -1,3 +1,5 @@
+import { setStyle } from "../js/geral.js";
+
 export default function hotKeysObject() {
     const D = {};
     return {
@@ -68,7 +70,7 @@ export default function hotKeysObject() {
             }
         },
         keyDownSpace() {
-            D.contentTelas.style.cursor = "grab";
+            setStyle(D.contentTelas, { cursor: "grab" });
             D.drawingTools.mouseFunctionName = "moveScreen";
             D.drawingTools.invisibleCursor();
         },

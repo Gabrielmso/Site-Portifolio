@@ -5,17 +5,16 @@ export const fadeOutLoading = () => {
 }
 
 export const throttle = (func, limit) => {
-    let inThrottle;
-    return function () {
-        if (!inThrottle) {
-            func.apply(this, arguments);
-            inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
-        }
+    let inThrottle = false;
+    return (...args) => {
+        if (inThrottle) { return; }
+        func(...args);
+        inThrottle = true;
+        setTimeout(() => inThrottle = false, limit);
     }
 }
 
-export const getImage = (url) => {
+export const getImage = url => {
     const image = new Image();
     image.src = url;
     return image;
@@ -26,21 +25,28 @@ export const getMousePosition = (element, mouseEvent) => {
     return { x: mouseEvent.clientX - left, y: mouseEvent.clientY - top }
 }
 
-export const cloneReplaceElement = (oldElement) => {
+export const cloneReplaceElement = oldElement => {
     const newElement = oldElement.cloneNode(true);
     oldElement.parentNode.insertBefore(newElement, oldElement);
     oldElement.remove();
     return newElement;
 }
 
-export const cloneElement = (oldElement) => oldElement.cloneNode(true);
+export const cloneElement = oldElement => oldElement.cloneNode(true);
 
-export const preventDefaultAction = (e) => {
+export const setStyle = (element, style) => {
+    for (const property in style) {
+        const value = style[property];
+        element.style[property] = value ? value : "";
+    }
+}
+
+export const preventDefaultAction = e => {
     e.preventDefault();
     e.stopPropagation();
 }
 
 export const logarithm = (base, log) => Math.log(log) / Math.log(base);
-export const getDistanceCoordinates = (point1, point2) => (((point2.x - point1.x) ** 2 + (point2.y - point1.y) ** 2) ** 0.5);
+export const getDistanceCoordinates = (p1, p2) => (((p2.x - p1.x) ** 2 + (p2.y - p1.y) ** 2) ** 0.5);
 export const randomNumber = (min, max) => (Math.random() * (max - min) + min);
 export const elementById = id => document.getElementById(id);
