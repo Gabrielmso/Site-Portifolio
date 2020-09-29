@@ -51,8 +51,8 @@ export default function undoRedoChangeObject() {
             }
         },
         saveChanges = () => {
-            if (changes.undone.length > changeLimit) { changes.undone.shift(); }
             changes.undone.push({ numLayer: D.project.selectedLayer, change: createCopyLayer(D.drawingTools.currentLayer.canvas) });
+            if (changes.undone.length > changeLimit) { changes.undone.shift(); }
             changes.redone.clear();
             enableButtons();
         }
