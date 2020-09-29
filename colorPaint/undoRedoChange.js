@@ -1,85 +1,71 @@
+import { elementById, cloneElement } from "../js/geral.js";
+
 export default function undoRedoChangeObject() {
-    const D = {};
-    return {
-        buttons: { undo: document.getElementById("bttDesfazer"), redo: document.getElementById("bttRefazer") },
-        changes: { undone: [], redone: [] },
-        addEventsToElements() {
-            this.buttons.redo.addEventListener("mousedown", () => this.redoChange());
-            this.buttons.undo.addEventListener("mousedown", () => this.undoChange());
-        },
-        createCopyLayer(layer) {
-            const ctxCanvas = document.createElement("canvas").getContext("2d");
-            ctxCanvas.canvas.width = D.project.properties.resolution.width;
-            ctxCanvas.canvas.height = D.project.properties.resolution.height;
+    const D = {}, changeLimit = 20,
+        changes = { undone: [], redone: [] },
+        buttons = { undo: elementById("bttDesfazer"), redo: elementById("bttRefazer") },
+        createCopyLayer = layer => {
+            const ctxCanvas = cloneElement(layer).getContext("2d");
             ctxCanvas.drawImage(layer, 0, 0);
-            return ctxCanvas;
+            return ctxCanvas.canvas;
         },
-        saveChanges() {
-            this.changes.undone.push({ numLayer: D.project.selectedLayer, change: this.createCopyLayer(D.drawingTools.currentLayer.canvas) });
-            if (this.changes.undone.length > 20) { this.changes.undone.shift(); }
-            if (this.changes.redone.length > 0 || this.changes.undone.length === 1) {
-                this.buttons.undo.classList.add("bttHover");
-                this.buttons.undo.classList.add("cursor");
-                this.buttons.undo.style.opacity = "1";
-                this.buttons.redo.classList.remove("bttHover");
-                this.buttons.redo.classList.remove("cursor");
-                this.buttons.redo.style.opacity = "0.5";
-            }
-            this.changes.redone = [];
+        enableButtons = () => {
+            if (changes.undone.length) { buttons.undo.classList.replace("semAlteracoes", "comAlteracoes"); }
+            else { buttons.undo.classList.replace("comAlteracoes", "semAlteracoes"); }
+            if (changes.redone.length) { buttons.redo.classList.replace("semAlteracoes", "comAlteracoes"); }
+            else { buttons.redo.classList.replace("comAlteracoes", "semAlteracoes"); }
         },
-        undoChange() {
+        applyChange = ({ numLayer, change }) => {
+            const { width, height } = D.project.properties.resolution;
+            D.drawingTools.eventLayer.clearRect(0, 0, width, height);
+            D.project.arrayLayers[numLayer].ctx.clearRect(0, 0, width, height);
+            D.project.arrayLayers[numLayer].ctx.drawImage(change, 0, 0);
+        },
+        undoChange = () => {
             if (D.drawingTools.clickToCurve) {
                 D.drawingTools.selectDrawingTool("curve");
                 return;
             }
-            if (this.changes.undone.length > 0) {
-                const ultimoIndice = this.changes.undone.length - 1, camada = this.changes.undone[ultimoIndice].numLayer;
-                if (D.project.selectedLayer != camada) { D.project.clickIconLayer(camada); }
-                if (!D.project.arrayLayers[camada].visible) {
-                    D.project.clickBttLook(camada);
+            if (changes.undone.length) {
+                const { numLayer, change } = changes.undone.pop();
+                D.project.clickIconLayer(numLayer);
+                if (!D.project.arrayLayers[numLayer].visible) {
+                    D.project.clickBttLook(numLayer);
                     return;
                 }
-                this.changes.redone.push({ numLayer: camada, change: this.createCopyLayer(D.project.arrayLayers[camada].ctx.canvas) });
-                D.drawingTools.eventLayer.clearRect(0, 0, D.project.properties.resolution.width, D.project.properties.resolution.height);
-                D.project.arrayLayers[camada].ctx.clearRect(0, 0, D.project.properties.resolution.width, D.project.properties.resolution.height);
-                D.project.arrayLayers[camada].ctx.drawImage(this.changes.undone[ultimoIndice].change.canvas, 0, 0);
-                this.changes.undone.pop();
-                if (this.changes.undone.length === 0) {
-                    this.buttons.undo.classList.remove("bttHover");
-                    this.buttons.undo.classList.remove("cursor");
-                    this.buttons.undo.style.opacity = "0.5";
-                }
-                if (this.changes.redone.length === 1) {
-                    this.buttons.redo.classList.add("bttHover");
-                    this.buttons.redo.classList.add("cursor");
-                    this.buttons.redo.style.opacity = "1";
-                }
-                D.project.drawInPreview(D.project.arrayLayers[camada]);
+                changes.redone.push({ numLayer: numLayer, change: createCopyLayer(D.project.arrayLayers[numLayer].ctx.canvas) });
+                applyChange({ numLayer, change });
+                enableButtons();
+                D.project.drawInPreview(D.project.arrayLayers[numLayer]);
             }
         },
-        redoChange() {
-            if (this.changes.redone.length > 0) {
+        redoChange = () => {
+            if (changes.redone.length) {
                 if (D.drawingTools.clickToCurve) { D.drawingTools.selectDrawingTool("curve"); }
-                const ultimoIndice = this.changes.redone.length - 1, camada = this.changes.redone[ultimoIndice].numLayer;
-                if (D.project.selectedLayer != camada) { D.project.clickIconLayer(camada); }
-                this.changes.undone.push({ numLayer: camada, change: this.createCopyLayer(D.project.arrayLayers[camada].ctx.canvas) });
-                D.drawingTools.eventLayer.clearRect(0, 0, D.project.properties.resolution.width, D.project.properties.resolution.height);
-                D.project.arrayLayers[camada].ctx.clearRect(0, 0, D.project.properties.resolution.width, D.project.properties.resolution.height);
-                D.project.arrayLayers[camada].ctx.drawImage(this.changes.redone[ultimoIndice].change.canvas, 0, 0);
-                this.changes.redone.pop();
-                if (this.changes.undone.length === 1) {
-                    this.buttons.undo.classList.add("bttHover");
-                    this.buttons.undo.classList.add("cursor");
-                    this.buttons.undo.style.opacity = "1";
-                }
-                if (this.changes.redone.length === 0) {
-                    this.buttons.redo.classList.remove("bttHover");
-                    this.buttons.redo.classList.remove("cursor");
-                    this.buttons.redo.style.opacity = "0.5";
-                }
-                D.project.drawInPreview(D.project.arrayLayers[camada]);
+                const { numLayer, change } = changes.redone.pop();
+                D.project.clickIconLayer(numLayer);
+                changes.undone.push({ numLayer: numLayer, change: createCopyLayer(D.project.arrayLayers[numLayer].ctx.canvas) });
+                applyChange({ numLayer, change });
+                enableButtons();
+                D.project.drawInPreview(D.project.arrayLayers[numLayer]);
             }
         },
+        saveChanges = () => {
+            if (changes.undone.length > changeLimit) { changes.undone.shift(); }
+            changes.undone.push({ numLayer: D.project.selectedLayer, change: createCopyLayer(D.drawingTools.currentLayer.canvas) });
+            changes.redone.clear();
+            enableButtons();
+        }
+
+    return {
+        get lastChange() { return changes.undone.last.change; },
+        addEventsToElements() {
+            buttons.redo.addEventListener("mousedown", redoChange);
+            buttons.undo.addEventListener("mousedown", undoChange);
+        },
+        saveChanges,
+        undoChange,
+        redoChange,
         addDependencies(dependencies) {
             for (const prop in dependencies) { D[prop] = dependencies[prop]; }
         }

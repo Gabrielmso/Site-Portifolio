@@ -108,11 +108,11 @@ export default function createProjectWindowObject() {
                     { title: "Erro!", text: "Falha ao criar projeto, tente novamente." });
             }
         },
-        clickContentToClose = (e) => { if (e.currentTarget === e.target) { close(); } },
+        clickContentToClose = e => { if (e.currentTarget === e.target) { close(); } },
         mouseLeaveWindowLoad = () => loadProject.window.classList.replace("dragEnter", "dragLeave"),
         dragEnterWindowLoad = () => loadProject.window.classList.replace("dragLeave", "dragEnter"),
         dragLeaveWindowLoad = () => loadProject.window.classList.replace("dragEnter", "dragLeave"),
-        dropFileWindowLoad = (e) => fileValidation(e.dataTransfer.files[0]);
+        dropFileWindowLoad = e => fileValidation(e.dataTransfer.files[0]);
 
     return {
         open(mode) {

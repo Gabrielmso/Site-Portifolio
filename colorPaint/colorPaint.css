@@ -364,6 +364,7 @@ input[type="range"]::-webkit-slider-thumb {
     background-color: var(--COR_TERCIARIA);
     border-radius: 10px;
     margin-bottom: -2px;
+    transition: background-color 200ms ease-in-out;
 }
 
 .bttFerramentasEscolhida {
@@ -373,6 +374,18 @@ input[type="range"]::-webkit-slider-thumb {
     background-color: rgb(13, 13, 13);
     border-radius: 10px;
     margin-bottom: -2px;
+}
+
+.semAlteracoes {
+    opacity: 0.5;
+}
+
+.comAlteracoes {
+    cursor: pointer;
+}
+
+.comAlteracoes:hover {
+    background-color: rgb(13, 13, 13);
 }
 
 #coresSelecionadas {
@@ -914,12 +927,13 @@ input[type="range"]::-webkit-slider-thumb {
     transition: opacity 150ms ease-in-out;
 }
 
-#janelaDeAmostraDaCamada canvas{
-    background-image: url("/colorPaint/imagens/fundoTela/transparenteMiniatura.png");
+#janelaDeAmostraDaCamada canvas {
+    background-image: url("/colorPaint/imagens/fundoTela/transparente.png");
     position: relative;
     vertical-align: bottom;
 }
-#janelaDeAmostraDaCamada div{
+
+#janelaDeAmostraDaCamada div {
     position: absolute;
     width: 25px;
     height: 25px;

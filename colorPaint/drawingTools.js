@@ -386,16 +386,15 @@ export default function drawingToolsObject() {
         eraser(eventName) {
             if (eventName === "down") {
                 D.undoRedoChange.saveChanges();
-                this.toolProperties.brushCanvas = D.undoRedoChange.createCopyLayer(this.currentLayer.canvas);
                 this.eventLayer.strokeStyle = "rgba(0, 0, 0, " + this.toolProperties.opacity + ")";
             }
             this.brush(eventName);
             this.currentLayer.clearRect(0, 0, D.project.properties.resolution.width, D.project.properties.resolution.height);
             this.currentLayer.globalCompositeOperation = "source-over";
-            this.currentLayer.drawImage(this.toolProperties.brushCanvas.canvas, 0, 0, D.project.properties.resolution.width, D.project.properties.resolution.height);
+            this.currentLayer.drawImage(D.undoRedoChange.lastChange, 0, 0, D.project.properties.resolution.width, D.project.properties.resolution.height);
             this.currentLayer.globalCompositeOperation = "destination-out";
             this.currentLayer.drawImage(this.eventLayer.canvas, 0, 0);
-            this.eventLayer.clearRect(0, 0, D.project.properties.resolution.width, D.project.properties.resolution.height)
+            this.eventLayer.clearRect(0, 0, D.project.properties.resolution.width, D.project.properties.resolution.height);
         },
         line(eventName) {
             if (eventName === "down") { return; }

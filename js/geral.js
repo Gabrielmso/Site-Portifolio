@@ -33,6 +33,8 @@ export const cloneReplaceElement = (oldElement) => {
     return newElement;
 }
 
+export const cloneElement = (oldElement) => oldElement.cloneNode(true);
+
 export const preventDefaultAction = (e) => {
     e.preventDefault();
     e.stopPropagation();
