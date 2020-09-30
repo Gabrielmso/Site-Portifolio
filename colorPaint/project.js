@@ -1,4 +1,4 @@
-import { preventDefaultAction } from "../js/geral.js";
+import { preventDefaultAction, setStyle } from "../js/geral.js";
 
 export default function projectObject() {
     const D = {}, status = { created: false };
@@ -48,17 +48,21 @@ export default function projectObject() {
         layerSampleWindow: {
             window: document.getElementById("janelaDeAmostraDaCamada"), ctx: document.getElementById("canvasAmostraDacamada").getContext("2d"),
             timeTransition: 160,
+            adjustSize({ width, height }) {
+                this.ctx.canvas.width = width * 2;
+                this.ctx.canvas.height = height * 2;
+                setStyle(this.ctx.canvas, { width: this.ctx.canvas.width + "px", height: this.ctx.canvas.height + "px" });
+            },
             open(layer, icon) {
                 const { top, height } = icon.getBoundingClientRect();
-                this.window.style.display = "block";
-                this.window.style.top = top - (this.window.offsetHeight - height) + "px";
+                setStyle(this.window, { display: "block", top: top - (this.ctx.canvas.height + 20 - height) + "px" });
                 this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
                 this.ctx.drawImage(layer, 0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-                setTimeout(() => this.window.style.opacity = "1", 5);
+                setTimeout(() => setStyle(this.window, { opacity: "1" }), 7);
             },
             close() {
-                this.window.style.opacity = "";
-                setTimeout(() => this.window.style.display = "", this.timeTransition);
+                setStyle(this.window, { opacity: null });
+                setTimeout(() => setStyle(this.window, { display: null }), this.timeTransition);
             },
         },
         layerOpacityBar: {
@@ -167,15 +171,11 @@ export default function projectObject() {
             this.layerOpacityBar.content.style.display = "flex";
             status.created = true;
             this.adjustScreen();
-            D.previewFunctions.adjustPreview(this.properties.resolution.proportion);
             D.drawingTools.addEventsToElements();
             D.previewFunctions.addEventsToElements();
             D.undoRedoChange.addEventsToElements();
             D.hotKeys.addEventsToElements();
-            this.layerSampleWindow.ctx.canvas.width = D.previewFunctions.ctxTelaPreview.canvas.offsetWidth * 2;
-            this.layerSampleWindow.ctx.canvas.height = D.previewFunctions.ctxTelaPreview.canvas.offsetHeight * 2;
-            this.layerSampleWindow.ctx.canvas.style.width = this.layerSampleWindow.ctx.canvas.width + "px";
-            this.layerSampleWindow.ctx.canvas.style.height = this.layerSampleWindow.ctx.canvas.height + "px";
+            this.layerSampleWindow.adjustSize(D.previewFunctions.adjustPreview(this.properties.resolution.proportion));
             setTimeout(() => this.clickIconLayer(0), 3);
         },
         createElements(color) {
@@ -253,20 +253,14 @@ export default function projectObject() {
             this.screen.appendChild(elCamada);
             // ================================== CRIA O PREVIEW DA CAMADA ====================================
             const idPreviewCamada = "camadaPreview" + num;
-            const elPreviewCamada = document.createElement("canvas");
-            elPreviewCamada.setAttribute("id", idPreviewCamada);
-            elPreviewCamada.setAttribute("class", "preview");
-            elPreviewCamada.setAttribute("style", camadaStyle);
-            elPreviewCamada.setAttribute("height", D.previewFunctions.ctxTelaPreview.canvas.height);
-            elPreviewCamada.setAttribute("width", D.previewFunctions.ctxTelaPreview.canvas.width);
-            D.previewFunctions.contentTelaPreview.appendChild(elPreviewCamada);
+            const previewLayer = D.previewFunctions.createPreviewLayer(idPreviewCamada, camadaStyle);
             if (document.getElementById(idicone) != null && document.getElementById(idBttVisivel) != null &&
                 document.getElementById(idNome) != null && document.getElementById(idPocentagem) != null &&
                 document.getElementById(idIconTela) != null && document.getElementById(idCamada) != null &&
                 document.getElementById(idPreviewCamada) != null) {
                 const objCamada = {
                     name: nomeCamada, ctx: elCamada.getContext("2d"), icon: iconeCamada,
-                    previewLayer: elPreviewCamada.getContext("2d"), miniature: iconTela.getContext("2d"),
+                    previewLayer: previewLayer.getContext("2d"), miniature: iconTela.getContext("2d"),
                     bttLook: bttVisivel, txtOpacity: txtPorcentagem, opacity: 1, visible: true, cursorInIcon: false
                 };
                 this.arrayLayers[num - 1] = objCamada;

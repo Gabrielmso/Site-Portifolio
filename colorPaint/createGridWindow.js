@@ -105,15 +105,15 @@ export default function createGridWindowObject() {
                 transform: "none", left: newPositionX + "px", top: newPositionY + "px"
             });
         },
-        mouseDownEventMoveWindow = e => {
-            mousePositionMoveWindow.update(getMousePosition(e.currentTarget, e));
-            contentWindow.addEventListener("mousemove", mouseMoveEventMoveWindow);
-            contentWindow.addEventListener("mouseup", mouseUpEventMoveWindow);
-        },
         mouseMoveEventMoveWindow = e => moveWindow(getMousePosition(contentWindow, e)),
         mouseUpEventMoveWindow = () => {
             contentWindow.removeEventListener("mousemove", mouseMoveEventMoveWindow);
             contentWindow.removeEventListener("mouseup", mouseUpEventMoveWindow);
+        },
+        mouseDownEventMoveWindow = e => {
+            mousePositionMoveWindow.update(getMousePosition(e.currentTarget, e));
+            contentWindow.addEventListener("mousemove", mouseMoveEventMoveWindow);
+            contentWindow.addEventListener("mouseup", mouseUpEventMoveWindow);
         },
         inputSizeChange = e => {
             const num = parseInt(e.currentTarget.value);
