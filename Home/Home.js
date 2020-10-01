@@ -1,5 +1,5 @@
 import loadTopoMenu from "../topoMenu/topoMenu.js";
-import { throttle } from "../js/geral.js";
+import { throttle, getElement } from "../js/geral.js";
 
 let topoMenu;
 
@@ -24,15 +24,14 @@ function animationScrollTop(element, scrollValue, time) {
 
 function homeFunctions() {
     let topo = true;
-    const topoApresentacao = document.getElementById("topoApresentacao"),
-        sobreMim = document.getElementById("sobreMim"),
-        imgFundos = [document.getElementById("imgFundo"),
-        document.getElementById("imgFundoBlur")],
-        txt1 = document.getElementById("txt1"),
-        txt2 = document.getElementById("txt2"),
-        txt3 = document.getElementById("txt3"),
-        txt4 = document.getElementById("txt4"),
-        bttSobreMim = document.getElementById("bttSobreMim");
+    const topoApresentacao = getElement("topoApresentacao"),
+        sobreMim = getElement("sobreMim"),
+        imgFundos = [getElement("imgFundo"), getElement("imgFundoBlur")],
+        txt1 = getElement("txt1"),
+        txt2 = getElement("txt2"),
+        txt3 = getElement("txt3"),
+        txt4 = getElement("txt4"),
+        bttSobreMim = getElement("bttSobreMim");
 
     topoApresentacao.style.display = "block";
     sobreMim.style.display = "block";

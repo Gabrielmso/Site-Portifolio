@@ -8,19 +8,19 @@ body {
     overflow: hidden;
 }
 
-#topoApresentacao {
+[data-id="topoApresentacao"] {
     width: 100%;
     height: 100%;
     overflow: auto;
 }
 
-#textoApresentacao {
+[data-id="textoApresentacao"] {
     position: relative;
     overflow: hidden;
     padding-top: 20px;
 }
 
-#imgFundo {
+[data-id="imgFundo"] {
     position: fixed;
     width: 100%;
     height: 100%;
@@ -33,7 +33,7 @@ body {
     transition: opacity 900ms ease-in-out;
 }
 
-#imgFundoBlur {
+[data-id="imgFundoBlur"] {
     width: 100%;
     height: 100%;
     opacity: 0;
@@ -46,7 +46,7 @@ body {
     transition: opacity 1000ms ease-in-out;
 }
 
-#contentFoto {
+[data-id="contentFoto"] {
     align-items: flex-end;
     width: 40%;
     height: 100%;
@@ -54,7 +54,7 @@ body {
     padding-right: 20px;
 }
 
-#apresentacao {
+[data-id="apresentacao"] {
     align-items: flex-start;
     width: 59.99%;
     height: 100%;
@@ -62,20 +62,20 @@ body {
     padding-right: 20px;
 }
 
-#texto {
+[data-id="texto"] {
     font-family: "Fontetitulo1";
     text-align: left;
     display: inline-block;
 }
 
-#contentFoto img {
+[data-id="contentFoto"] img {
     width: 250px;
     height: 250px;
     border-radius: 50%;
     border: 3px solid #d5c06b;
 }
 
-#bttSobreMim {
+[data-id="bttSobreMim"] {
     position: relative;
     display: none;
     opacity: 0;
@@ -91,19 +91,19 @@ body {
     transition: opacity 700ms ease-in-out, color 350ms ease-in-out, background-color 350ms ease-in-out;
 }
 
-#bttSobreMim:hover {
+[data-id="bttSobreMim"]:hover {
     color: #000000;
     background-color: #d5c06b;
 }
 
-#bttSobreMimContainer {
+[data-id="bttSobreMimContainer"] {
     position: relative;
     border-radius: 30px;
     height: 60px;
     width: 150px;
 }
 
-#bttSobreMim p {
+[data-id="bttSobreMim"] p {
     line-height: 52px;
 }
 
@@ -114,29 +114,29 @@ body {
     transition: opacity 700ms ease-in-out, margin-left 700ms ease, border-bottom 1500ms ease-in-out;
 }
 
-#txt1 {
+[data-id="txt1"] {
     font-size: 65px;
     margin-bottom: 15px;
 }
 
-#txt2 {
+[data-id="txt2"] {
     font-size: 50px;
     margin-bottom: 15px;
     margin-left: 70px;
 }
 
-#txt3 {
+[data-id="txt3"] {
     font-size: 35px;
     border-bottom: 2px solid rgba(255, 255, 255, 0);
     padding-bottom: 5px;
     margin-bottom: 7px;
 }
 
-#txt4 {
+[data-id="txt4"] {
     font-size: 28px;
 }
 
-#contentSobreMim {
+[data-id="contentSobreMim"] {
     width: 100%;
     height: 100%;
     font-family: "Fontetitulo1";
@@ -147,13 +147,13 @@ body {
     padding: 120px;
 }
 
-#contentSobreMim h1 {
+[data-id="contentSobreMim"] h1 {
     font-size: 60px;
     border-bottom: 2px solid rgba(255, 255, 255, 0.302);
     margin-bottom: 20px;
 }
 
-#contentSobreMim p {
+[data-id="contentSobreMim"] p {
     font-size: 22px;
 }
 
@@ -175,7 +175,7 @@ body {
 }
 
 @media screen and (max-width: 650px) {
-    #contentFoto {
+    [data-id="contentFoto"] {
         justify-content: flex-end;
         align-items: center;
         height: 49.99%;
@@ -183,7 +183,7 @@ body {
         float: none;
         padding-right: 0px;
     }
-    #apresentacao {
+    [data-id="apresentacao"] {
         justify-content: flex-start;
         align-items: center;
         height: 49.99%;
@@ -191,38 +191,38 @@ body {
         padding-left: 0px;
         padding-right: 0px;
     }
-    #contentFoto img {
+    [data-id="contentFoto"] img {
         width: 200px;
         height: 200px;
     }
-    #bttSobreMimContainer {
+    [data-id="bttSobreMimContainer"] {
         left: 50%;
         transform: translateX(-50%);
     }
-    #texto {
+    [data-id="texto"] {
         text-align: center;
     }
-    #txt1 {
+    [data-id="txt1"] {
         font-size: 55px;
         display: inline-block;
     }
-    #txt2 {
+    [data-id="txt2"] {
         margin-left: 8px;
         font-size: 43px;
         display: inline-block;
     }
-    #txt3 {
+    [data-id="txt3"] {
         font-size: 28px;
         display: inline-block;
     }
-    #txt4 {
+    [data-id="txt4"] {
         font-size: 22.5px;
         display: inline-block;
     }
-    #contentSobreMim {
+    [data-id="contentSobreMim"] {
         padding: 50px;
     }
-    #contentSobreMim h1 {
+    [data-id="contentSobreMim"] h1 {
         font-size: 55px;
     }
 }

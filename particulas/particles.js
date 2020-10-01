@@ -1,7 +1,7 @@
-import { getDistanceCoordinates, randomNumber } from "../js/geral.js";
+import { getDistanceCoordinates, randomNumber, getElement } from "../js/geral.js";
 
 export default function particles() {
-   const ctx = document.getElementById("particulas").getContext("2d"),
+   const ctx = getElement("particulas").getContext("2d"),
       lineDistance = 250;
    let arrayParticles, startAnimation;
    window.addEventListener("resize", start);

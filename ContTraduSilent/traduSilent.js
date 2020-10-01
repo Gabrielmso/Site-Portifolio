@@ -1,98 +1,99 @@
+import { getElement, getAllElements } from "../js/geral.js";
 import loadTopoMenu from "../topoMenu/topoMenu.js";
 import particles from "../particulas/particles.js";
 
 let topoMenu;
 function traduSilentFunctions() {
-    const titulo = document.getElementById("titulo"), info = document.getElementById("info"),
-        traprogress = document.getElementById("traprogress"), textos = document.getElementsByClassName("texto"),
-        bttverdetalhes = document.getElementById("bttverdetalhes"), telaSlideCarrosel = document.getElementsByClassName("telaslide"),
+    const titulo = getElement("titulo"), info = getElement("info"),
+        traprogress = getElement("traprogress"), textos = document.getElementsByClassName("texto"),
+        bttverdetalhes = getElement("bttverdetalhes"), telaSlideCarrosel = document.getElementsByClassName("telaslide"),
         imgTrad = document.getElementsByClassName("imgtrad"), slides = document.getElementsByClassName("slides"),
         tempoTransicao = 700, styletransicao = "height " + tempoTransicao + "ms ease-in-out";//Armazena a configuração da transição dos slides.
     const proporcao4por3 = 4 / 3;
     let numSlide = 0, contCarrosel = 0, fundoComparacaoAberto = false, mouseTexto = false, imgVisivel = false, mudarCarrosel = true;
     let tmp, larguraJanela = window.innerWidth, alturaJanela = window.innerHeight;
     const sessao = [
-        { slide: document.getElementById("sessao1"), imagem: document.getElementById("fundo1") },
+        { slide: getElement("sessao1"), imagem: getElement("fundo1") },
         {
-            slide: document.getElementById("sessao2"), imagem: document.getElementById("fundo2"),
+            slide: getElement("sessao2"), imagem: getElement("fundo2"),
             comparacao: {
-                abre: document.getElementById("compararthereareviolent"),
-                fecha: document.getElementById("fecharfundo1"),
-                fundo: document.getElementById("fundocomparacao"),
-                imagem: { container: document.getElementById("imgviolentasorig") }
+                abre: getElement("compararthereareviolent"),
+                fecha: getElement("fecharfundo1"),
+                fundo: getElement("fundocomparacao"),
+                imagem: { container: getElement("imgviolentasorig") }
             }, visualizacao: {
-                abre1: document.getElementById("imgverjap"),
-                abre2: document.getElementById("imgverlimp"),
-                fecha: document.getElementById("imgjap"),
-                fundo: document.getElementById("fundoverjapelimp")
+                abre1: getElement("imgverjap"),
+                abre2: getElement("imgverlimp"),
+                fecha: getElement("imgjap"),
+                fundo: getElement("fundoverjapelimp")
             }
         },
         {
-            slide: document.getElementById("sessao3"), imagem: document.getElementById("fundo3"),
+            slide: getElement("sessao3"), imagem: getElement("fundo3"),
             comparacao: {
-                abre: document.getElementById("omedodesangue"),
-                fecha: document.getElementById("fecharcomparacg"),
-                fundo: document.getElementById("fundocomparacg"),
+                abre: getElement("omedodesangue"),
+                fecha: getElement("fecharcomparacg"),
+                fundo: getElement("fundocomparacg"),
                 imagem: {
-                    container: document.getElementById("fecharcomparacg"),
-                    cgHorizontal: document.getElementById("gifcgintrohori"),
-                    cgVertical: document.getElementById("gifcgintrovert")
+                    container: getElement("fecharcomparacg"),
+                    cgHorizontal: getElement("gifcgintrohori"),
+                    cgVertical: getElement("gifcgintrovert")
                 }
             }
         },
         {
-            slide: document.getElementById("sessao4"), imagem: document.getElementById("fundo4"),
+            slide: getElement("sessao4"), imagem: getElement("fundo4"),
             comparacao: {
-                abre: document.getElementById("compararMapaAntigaSilent"),
-                fecha: document.getElementById("fecharantigasilenthill"),
-                fundo: document.getElementById("fundoantigasilenthill"),
-                imagem: { container: document.getElementById("imgoldsilenthill") }
+                abre: getElement("compararMapaAntigaSilent"),
+                fecha: getElement("fecharantigasilenthill"),
+                fundo: getElement("fundoantigasilenthill"),
+                imagem: { container: getElement("imgoldsilenthill") }
             }
         },
         {
-            slide: document.getElementById("sessao5"), imagem: document.getElementById("fundo5"),
+            slide: getElement("sessao5"), imagem: getElement("fundo5"),
             comparacao: {
-                abre: document.getElementById("compararFolhasCaderno"),
-                fecha: document.getElementById("fecharfolhas"),
-                fundo: document.getElementById("fundocomparafolhas"),
+                abre: getElement("compararFolhasCaderno"),
+                fecha: getElement("fecharfolhas"),
+                fundo: getElement("fundocomparafolhas"),
                 carrosel: {
-                    slides: [document.getElementById("imgtoschool"),
-                    document.getElementById("imgdoghouse")],
-                    icones: [document.getElementById("icontoschool"),
-                    document.getElementById("icondoghouse")],
-                    contentIcons: document.getElementById("folhascontentimgicons"),
-                    bttEsquerda: document.getElementById("folhasbtnLeft"),
-                    bttDireita: document.getElementById("folhasbtnRight"),
+                    slides: [getElement("imgtoschool"),
+                    getElement("imgdoghouse")],
+                    icones: [getElement("icontoschool"),
+                    getElement("icondoghouse")],
+                    contentIcons: getElement("folhascontentimgicons"),
+                    bttEsquerda: getElement("folhasbtnLeft"),
+                    bttDireita: getElement("folhasbtnRight"),
                 }
             }
         },
         {
-            slide: document.getElementById("sessao6"), imagem: document.getElementById("fundo6"),
+            slide: getElement("sessao6"), imagem: getElement("fundo6"),
             comparacao: {
-                abre: document.getElementById("compararChavesEclipse"),
-                fecha: document.getElementById("fecharchavesparaoeclipse"),
-                fundo: document.getElementById("fundochavesparaoeclipse"),
-                imagem: { container: document.getElementById("imgkeysforeclipse") }
+                abre: getElement("compararChavesEclipse"),
+                fecha: getElement("fecharchavesparaoeclipse"),
+                fundo: getElement("fundochavesparaoeclipse"),
+                imagem: { container: getElement("imgkeysforeclipse") }
             }
         },
         {
-            slide: document.getElementById("sessao7"), imagem: document.getElementById("fundo7"),
+            slide: getElement("sessao7"), imagem: getElement("fundo7"),
             comparacao: {
-                abre: document.getElementById("compararEscola"),
-                fecha: document.getElementById("fecharfundoescola"),
-                fundo: document.getElementById("fundomapaescola"),
+                abre: getElement("compararEscola"),
+                fecha: getElement("fecharfundoescola"),
+                fundo: getElement("fundomapaescola"),
                 carrosel: {
-                    slides: [document.getElementById("imgschoolp"),
-                    document.getElementById("imgschool1a"),
-                    document.getElementById("imgschool2a"),
-                    document.getElementById("imgschoolt")],
-                    icones: [document.getElementById("iconmapaescolap"),
-                    document.getElementById("iconmapaescola1a"),
-                    document.getElementById("iconmapaescola2a"),
-                    document.getElementById("iconmapaescolat")],
-                    contentIcons: document.getElementById("escolacontentimgicons"),
-                    bttEsquerda: document.getElementById("mapaescolabtnLeft"),
-                    bttDireita: document.getElementById("mapaescolabtnRight"),
+                    slides: [getElement("imgschoolp"),
+                    getElement("imgschool1a"),
+                    getElement("imgschool2a"),
+                    getElement("imgschoolt")],
+                    icones: [getElement("iconmapaescolap"),
+                    getElement("iconmapaescola1a"),
+                    getElement("iconmapaescola2a"),
+                    getElement("iconmapaescolat")],
+                    contentIcons: getElement("escolacontentimgicons"),
+                    bttEsquerda: getElement("mapaescolabtnLeft"),
+                    bttDireita: getElement("mapaescolabtnRight"),
                 }
             }
         },
@@ -200,12 +201,13 @@ function traduSilentFunctions() {
     }
 
     function carregamento() {//Faz os elementos do primeiro "slide" aparecerem e após isso permite trocar de slide.
-        document.getElementById("conteudoSlide1").style.opacity = "1";
+        getElement("conteudoSlide1").style.opacity = "1";
         ajustarBlurFundo();
         info.style.display = "block";
         traprogress.style.display = "block";
         tmp = setInterval(brilhotitulo, 1250);
         setTimeout(() => {//Fazer a "traprogress" e a "info" aparecerem.
+            const bttdownload = getElement("bttdownload");
             traprogress.style.opacity = "1";
             traprogress.style.marginTop = larguraJanela <= 650 ? "13px" : "0px";
             info.style.opacity = "1";
@@ -218,7 +220,7 @@ function traduSilentFunctions() {
                 info.style.trasition = "none";
             }, 600);
             setTimeout(() => {//Fazer o "bttdownload" aparecer.
-                document.getElementById("espacoparticulas").style.opacity = "1";
+                getElement("espacoparticulas").style.opacity = "1";
                 particles();
                 bttdownload.style.opacity = "1";
                 bttverdetalhes.style.display = "block";

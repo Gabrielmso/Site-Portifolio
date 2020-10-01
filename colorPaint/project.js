@@ -49,8 +49,8 @@ export default function projectObject() {
             window: getElement("janelaDeAmostraDaCamada"), ctx: getElement("canvasAmostraDacamada").getContext("2d"),
             timeTransition: 160,
             adjustSize({ width, height }) {
-                this.ctx.canvas.width = width * 2;
-                this.ctx.canvas.height = height * 2;
+                this.ctx.canvas.width = Math.floor(width * 2.3);
+                this.ctx.canvas.height = Math.floor(height * 2.3);
                 setStyle(this.ctx.canvas, { width: this.ctx.canvas.width + "px", height: this.ctx.canvas.height + "px" });
             },
             open(layer, icon) {
@@ -303,14 +303,16 @@ export default function projectObject() {
             this.layerOpacityBar.bar.value = this.arrayLayers[this.selectedLayer].opacity;
             D.drawingTools.currentLayer = this.arrayLayers[this.selectedLayer].ctx;
         },
+        waitToShowSample: null,
         showLayerSample(numLayer) {
             this.arrayLayers[numLayer].cursorInIcon = true;
-            setTimeout(() => {
+            this.waitToShowSample = setTimeout(() => {
                 if (this.cursorInBttLook || !this.arrayLayers[numLayer].cursorInIcon) { return; }
                 this.layerSampleWindow.open(this.arrayLayers[numLayer].ctx.canvas, this.arrayLayers[numLayer].icon);
-            }, 850)
+            }, 700)
         },
         closeLayerSample(numLayer) {
+            clearTimeout(this.waitToShowSample);
             this.arrayLayers[numLayer].cursorInIcon = false;
             this.layerSampleWindow.close();
         },

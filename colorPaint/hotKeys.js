@@ -59,22 +59,19 @@ export default function hotKeysObject() {
             if (D.drawingTools.painting) { e.preventDefault(); return; }
             if (status.ctrlPressed) {
                 const keyFunction = hotKeysWithCtrl[e.code];
-                if (keyFunction) {
-                    e.preventDefault();
-                    keyFunction();
-                }
+                if (!keyFunction) { return; }
+                e.preventDefault();
+                keyFunction();
             } else if (status.shiftPressed) {
                 const keyFunction = hotKeysWithShift[e.code];
-                if (keyFunction) {
-                    e.preventDefault();
-                    keyFunction();
-                }
-            } else {
-                const keyFunction = keyCodeEventKeyDown[e.code];
-                if (keyFunction) {
-                    e.preventDefault();
-                    keyFunction();
-                }
+                if (!keyFunction) { return; }
+                e.preventDefault();
+                keyFunction();
+            }
+            const keyFunction = keyCodeEventKeyDown[e.code];
+            if (keyFunction) {
+                e.preventDefault();
+                keyFunction();
             }
             const mainKeysFunction = mainKeysEventKeyDown[e.key];
             if (mainKeysFunction) {

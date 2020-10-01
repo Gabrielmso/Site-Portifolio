@@ -285,19 +285,19 @@
     margin-left: auto;
     margin-right: auto;
     list-style: none;
-    -webkit-transition: all 0.35 ease;
-    transition: all 0.35s ease;
+    -webkit-transition: all 0.3 ease;
+    transition: all 0.3s ease;
 }
 
 [data-id="fundomenu"] {
     display: none;
     margin-top: 50px;
     position: absolute;
+    backdrop-filter: blur(5px);
     background-color: rgba(0, 0, 0, 0.60);
-    box-shadow: 7px 0px 5px rgba(0, 0, 0, 0.34);
     width: 240px;
-    -webkit-transition: all 0.35;
-    transition: all 0.35s;
+    -webkit-transition: left 0.3s;
+    transition: all 0.3s;
     z-index: 100000;
 }
 
@@ -469,7 +469,7 @@
 }
 
 @media screen and (max-width: 650px) {
-    [data-id="opcoesmenu" {
+    [data-id="opcoesmenu"] {
         display: none;
     }
     [data-id="fundomenu"] {
