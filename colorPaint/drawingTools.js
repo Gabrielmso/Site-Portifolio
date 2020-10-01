@@ -1,7 +1,6 @@
 import {
-    getImage, preventDefaultAction, throttle, setStyle,
-    getMousePosition, logarithm, getDistanceCoordinates,
-    getElement
+    getImage, preventDefaultAction, throttle, setStyle, getMousePosition, logarithm,
+    getDistanceCoordinates, getElement
 } from "../js/geral.js";
 
 export default function drawingToolsObject() {
@@ -135,7 +134,7 @@ export default function drawingToolsObject() {
                 } else { D.contentTelas.scrollLeft += deltaY < 0 ? -D.contentTelas.offsetWidth / 7 : D.contentTelas.offsetWidth / 7; }
             },
         }
-    let showDashSample = true;
+    let showDashSample = true, infoChangeTool;
     return {
         eventLayer: getElement("pintar").getContext("2d"),
         get mousePosition() { return { x: mousePosition.x, y: mousePosition.y } },
@@ -702,13 +701,13 @@ export default function drawingToolsObject() {
             const eventFunction = {
                 down: () => {
                     cursorTool.visible = false;
-                    D.hotKeys.infoShifth = this.toolProperties.size;
+                    infoChangeTool = this.toolProperties.size;
                     this.brush("down");
                 },
                 move: () => {
                     const { start, end } = strokeCoordinates.onlyStartEnd(),
                         distance = end.x - start.x < 0 ? -getDistanceCoordinates(start, end) : getDistanceCoordinates(start, end);
-                    this.changeToolSize(D.hotKeys.infoShifth + distance);
+                    this.changeToolSize(infoChangeTool + distance);
                     cursorTool.visible = false;
                     this.applyToolChanges();
                     strokeCoordinates.onlyFirst();
@@ -722,16 +721,16 @@ export default function drawingToolsObject() {
             const eventFunction = {
                 down: () => {
                     cursorTool.visible = false;
-                    D.hotKeys.infoShift = {
+                    infoChangeTool = {
                         startCoordinate: getMousePosition(D.janelaPrincipal, e),
                         beforeValue: +(this.toolOpacityBar.bar.value)
                     }
                     this.brush("down");
                 },
                 move: () => {
-                    const start = D.hotKeys.infoShift.startCoordinate, end = getMousePosition(D.janelaPrincipal, e),
+                    const start = infoChangeTool.startCoordinate, end = getMousePosition(D.janelaPrincipal, e),
                         distance = end.x - start.x < 0 ? -getDistanceCoordinates(start, end) : getDistanceCoordinates(start, end);
-                    this.changeToolOpacity(+((D.hotKeys.infoShift.beforeValue + ((distance * 0.01) / 2.5)).toFixed(2)), false);
+                    this.changeToolOpacity(+((infoChangeTool.beforeValue + ((distance * 0.01) / 2.5)).toFixed(2)), false);
                     this.applyToolChanges();
                     strokeCoordinates.onlyFirst();
                     this.brush("down");
@@ -744,16 +743,16 @@ export default function drawingToolsObject() {
             const eventFunction = {
                 down: () => {
                     cursorTool.visible = false;
-                    D.hotKeys.infoShift = {
+                    infoChangeTool = {
                         startCoordinate: getMousePosition(D.janelaPrincipal, e),
                         beforeValue: +(this.toolHardnessBar.bar.value)
                     }
                     this.brush("down");
                 },
                 move: () => {
-                    const start = D.hotKeys.infoShift.startCoordinate, end = getMousePosition(D.janelaPrincipal, e),
+                    const start = infoChangeTool.startCoordinate, end = getMousePosition(D.janelaPrincipal, e),
                         distance = end.x - start.x < 0 ? -getDistanceCoordinates(start, end) : getDistanceCoordinates(start, end);
-                    this.changeToolHardness(+((D.hotKeys.infoShift.beforeValue + ((distance * 0.01) / 2.5)).toFixed(2)), false);
+                    this.changeToolHardness(+((infoChangeTool.beforeValue + ((distance * 0.01) / 2.5)).toFixed(2)), false);
                     this.applyToolChanges();
                     strokeCoordinates.onlyFirst();
                     this.brush("down");
@@ -764,7 +763,7 @@ export default function drawingToolsObject() {
         },
         defaultFunctionChangeToolPropertieCursor() {
             this.selectDrawingTool(this.selectedTool);
-            D.hotKeys.infoShifth = null;
+            infoChangeTool = null;
         },
         changeCursorMode(e) {
             cursorTool.show = !cursorTool.show;
