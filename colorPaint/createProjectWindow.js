@@ -1,21 +1,21 @@
-import { elementById, setStyle } from "../js/geral.js";
+import { getElement, setStyle } from "../js/geral.js";
 
 export default function createProjectWindowObject() {
     const D = {}, status = { neverOpened: true, mode: "create" },
-        content = elementById("contentCriarAbrirProjeto"),
+        content = getElement("contentCriarAbrirProjeto"),
         createProject = {
-            window: elementById("janelaCriarProjeto"),
+            window: getElement("janelaCriarProjeto"),
             inputs: {
-                name: elementById("txtNomeProjeto"), width: elementById("txtLarguraProjeto"),
-                height: elementById("txtAlturaProjeto"), background: elementById("corDeFundoProjeto"),
-                numLayers: elementById("numeroCamadasProjeto")
+                name: getElement("txtNomeProjeto"), width: getElement("txtLarguraProjeto"),
+                height: getElement("txtAlturaProjeto"), background: getElement("corDeFundoProjeto"),
+                numLayers: getElement("numeroCamadasProjeto")
             },
-            bttCreate: elementById("bttCriarprojeto"),
+            bttCreate: getElement("bttCriarprojeto"),
             addEventsToElements() { this.bttCreate.addEventListener("mousedown", validateProperties); },
             removeEventsToElements() { this.bttCreate.removeEventListener("mousedown", validateProperties); }
         },
         loadProject = {
-            window: elementById("janelaAbrirProjeto"), bttLoad: elementById("bttSelecionarProjeto"),
+            window: getElement("janelaAbrirProjeto"), bttLoad: getElement("bttSelecionarProjeto"),
             addEventsToElements() {
                 this.bttLoad.addEventListener("mousedown", getFile);
                 this.window.addEventListener("mouseleave", mouseLeaveWindowLoad);

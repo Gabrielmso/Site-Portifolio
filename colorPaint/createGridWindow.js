@@ -1,19 +1,19 @@
-import { getMousePosition, elementById, setStyle } from "../js/geral.js";
+import { getMousePosition, getElement, setStyle } from "../js/geral.js";
 
 export default function createGridWindowObject() {
     const D = {},
         gridProperties = {
-            screen: elementById("grid"), size: 80, position: { x: 0, y: 0 }, visible: false,
+            screen: getElement("grid"), size: 80, position: { x: 0, y: 0 }, visible: false,
         },
         previousVisualization = { scrollX: 0, scrollY: 0, zoom: 0 },
-        contentWindow = elementById("contentJanelaMenuGrid"),
-        window = elementById("janelaMenuGrid"), insideWindow = {
-            barMoveWindow: elementById("barraMoverJanelaMenuGrid"),
+        contentWindow = getElement("contentJanelaMenuGrid"),
+        window = getElement("janelaMenuGrid"), insideWindow = {
+            barMoveWindow: getElement("barraMoverJanelaMenuGrid"),
             inputs: {
-                size: elementById("txtTamanhoGrid"), horizontalPosition: elementById("txtPosicaoHorizontalGrid"),
-                verticalPosition: elementById("txtPosicaoVerticalGrid"),
+                size: getElement("txtTamanhoGrid"), horizontalPosition: getElement("txtPosicaoHorizontalGrid"),
+                verticalPosition: getElement("txtPosicaoVerticalGrid"),
             },
-            buttons: { ok: elementById("bttOkGrid"), cancel: elementById("bttcancelarGrid") },
+            buttons: { ok: getElement("bttOkGrid"), cancel: getElement("bttcancelarGrid") },
         },
         mousePositionMoveWindow = {
             x: 0, y: 0, update({ x, y }) {

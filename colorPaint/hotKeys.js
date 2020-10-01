@@ -1,25 +1,25 @@
 import { setStyle } from "../js/geral.js";
 
 export default function hotKeysObject() {
-    const D = {};
+    const D = {}, status = { ctrlPressed: false, shiftPressed: false };
     return {
-        ctrlPressed: false, shiftPressed: false,
-        infoMoveDrawWithSpace: { startCoordinate: null, scroolTop: null, scrollLeft: null },
-        infoTraceUsedShift: { sizeX: 0, sizeY: 0 },
+        get ctrlPressed() { return status.ctrlPressed },
+        get shiftPressed() { return status.shiftPressed },
         infoShift: null,
         addEventsToElements() {
             document.addEventListener("keydown", (e) => this.keyDownEvent(e));
             document.addEventListener("keyup", (e) => this.keyUpEvent(e));
+            delete this.addEventsToElements;
         },
         keyDownEvent(e) {
             if (D.drawingTools.painting) { e.preventDefault(); return; }
-            if (this.ctrlPressed) {//Teclas de atalho com o ctrl.
+            if (status.ctrlPressed) {//Teclas de atalho com o ctrl.
                 const keyFunction = this.hotKeysWithCtrl[e.code];
                 if (keyFunction) {
                     e.preventDefault();
                     keyFunction();
                 }
-            } else if (this.shiftPressed) {
+            } else if (status.shiftPressed) {
                 const keyFunction = this.hotKeysWithShift[e.code];
                 if (keyFunction) {
                     e.preventDefault();
@@ -49,7 +49,6 @@ export default function hotKeysObject() {
             }
             if (e.code === "Space") {
                 e.preventDefault();
-                this.infoMoveDrawWithSpace = { startCoordinate: null, scroolTop: null, scrollLeft: null };
                 this.keyUpSpace();
             }
             if (e.code === "ShiftLeft") {
@@ -58,13 +57,13 @@ export default function hotKeysObject() {
             }
         },
         keyDownControl() {
-            this.ctrlPressed = true;
+            status.ctrlPressed = true;
             if (D.drawingTools.selectedTool === "brush") {
                 D.drawingTools.selectDrawingTool("eyeDropper");//Muda para a ferramenta conta gotas.
             }
         },
         keyUpControl() {
-            this.ctrlPressed = false;
+            status.ctrlPressed = false;
             if (D.drawingTools.previousTool === "brush" && D.drawingTools.mouseFunctionName === "eyeDropper") {
                 D.drawingTools.selectDrawingTool("brush");//Volta para a ferramenta pincel.                
             }
@@ -79,11 +78,10 @@ export default function hotKeysObject() {
             D.drawingTools.selectDrawingTool(D.drawingTools.selectedTool);
         },
         keyDownShift() {
-            this.shiftPressed = true;
+            status.shiftPressed = true;
         },
         keyUpShift() {
-            this.infoTraceUsedShift = { sizeX: 0, sizeY: 0 };
-            this.shiftPressed = false;
+            status.shiftPressed = false;
             D.drawingTools.selectDrawingTool(D.drawingTools.selectedTool);
         },
         changeToolSizeHotKey(increase) {

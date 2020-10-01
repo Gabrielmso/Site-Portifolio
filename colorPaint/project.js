@@ -1,4 +1,4 @@
-import { preventDefaultAction, setStyle } from "../js/geral.js";
+import { preventDefaultAction, setStyle, getElement } from "../js/geral.js";
 
 export default function projectObject() {
     const D = {}, status = { created: false };
@@ -11,7 +11,7 @@ export default function projectObject() {
         selectedColors: {
             firstPlane: { r: 0, g: 0, b: 0 }, backgroundPlane: { r: 255, g: 255, b: 255 },
             saved: { selected: -1, colors: [] },
-            txtFirstPlane: document.getElementById("txtCorEscolhida"),
+            txtFirstPlane: getElement("txtCorEscolhida"),
             set(plane, color) {
                 const apply = {
                     color1: (rgb) => {
@@ -42,11 +42,11 @@ export default function projectObject() {
                 this.set(plane, this.saved.colors[numColor].rgb);
             }
         },
-        drawComplete: document.getElementById("desenho").getContext("2d"),
-        screen: document.getElementById("telasCanvas"),
+        screen: getElement("telasCanvas"),
+        drawComplete: getElement("desenho").getContext("2d"),
         selectedLayer: 0, previousLayer: 0, arrayLayers: [], cursorInBttLook: false,
         layerSampleWindow: {
-            window: document.getElementById("janelaDeAmostraDaCamada"), ctx: document.getElementById("canvasAmostraDacamada").getContext("2d"),
+            window: getElement("janelaDeAmostraDaCamada"), ctx: getElement("canvasAmostraDacamada").getContext("2d"),
             timeTransition: 160,
             adjustSize({ width, height }) {
                 this.ctx.canvas.width = width * 2;
@@ -66,18 +66,18 @@ export default function projectObject() {
             },
         },
         layerOpacityBar: {
-            content: document.getElementById("contentBarraOpacidadeCamada"),
-            bar: document.getElementById("barraOpacidadeCamada"),
+            content: getElement("contentBarraOpacidadeCamada"),
+            bar: getElement("barraOpacidadeCamada"),
             mousedown: false,
         },
         addEventsToElements() {
             this.selectedColors.set(1, this.selectedColors.get(1));
             this.layerOpacityBar.bar.addEventListener("input", (e) => { this.changeOpacityLayer(+((+(e.currentTarget.value)).toFixed(2))) });
-            document.getElementById("bttRemoverCorSalva").addEventListener("mousedown", () => this.removeColor());
+            getElement("bttRemoverCorSalva").addEventListener("mousedown", () => this.removeColor());
         },
         saveColor(colorToSave) {
             const indexColor = this.selectedColors.saved.colors.length;
-            if (indexColor === 0) { document.getElementById("bttRemoverCorSalva").style.display = "block"; }
+            if (indexColor === 0) { getElement("bttRemoverCorSalva").style.display = "block"; }
             for (let i = 0; i < indexColor; i++) {
                 const color = this.selectedColors.saved.colors[i].rgb;
                 if (color.r === colorToSave.r && color.g === colorToSave.g && color.b === colorToSave.b) {
@@ -91,7 +91,7 @@ export default function projectObject() {
             savedColorEl.setAttribute("class", "corSalva cursor");
             savedColorEl.setAttribute("style", "background-color: " + styleColor + ";");
             this.selectedColors.saved.colors.push({ el: savedColorEl, rgb: colorToSave });
-            document.getElementById("coresSalvas").appendChild(savedColorEl);
+            getElement("coresSalvas").appendChild(savedColorEl);
             this.selectedColors.saved.colors[indexColor].el.addEventListener("mousedown", (e) => {
                 if (!D.colorSelectionWindow.opened) { this.selectedColors.selectSavedColor(indexColor, e.button); }
                 else { D.colorSelectionWindow.currentColor = this.selectedColors.saved.colors[indexColor].rgb; }
@@ -108,7 +108,7 @@ export default function projectObject() {
                     resave[i].el.remove();
                     this.saveColor(resave[i].rgb);
                 }
-                if (this.selectedColors.saved.colors.length === 0) { document.getElementById("bttRemoverCorSalva").style.display = "none"; }
+                if (this.selectedColors.saved.colors.length === 0) { getElement("bttRemoverCorSalva").style.display = "none"; }
             }
         },
         zoom(zoom, centralize, value) {
@@ -147,8 +147,8 @@ export default function projectObject() {
             this.drawInPreview(this.arrayLayers[this.selectedLayer]);
         },
         create(name, resolution, background, numberLayers) {
-            const corFundo = document.getElementById("corFundo"), fundoPreview = document.getElementById("fundoPreview"),
-                txtResolucao = document.getElementById("txtResolucao");
+            const corFundo = getElement("corFundo"), fundoPreview = getElement("fundoPreview"),
+                txtResolucao = getElement("txtResolucao");
             this.properties.name = name;
             this.properties.resolution = { width: resolution.width, height: resolution.height, proportion: resolution.width / resolution.height };
             this.properties.background = background;
@@ -167,7 +167,7 @@ export default function projectObject() {
             D.drawingTools.eventLayer.canvas.height = this.properties.resolution.height;
             txtResolucao.value = this.properties.resolution.width + ", " + this.properties.resolution.height;
             while (this.properties.numberLayers > this.arrayLayers.length) { this.createElements(color); }
-            document.getElementById("nomeDoProjeto").innerText = this.properties.name;
+            getElement("nomeDoProjeto").innerText = this.properties.name;
             this.layerOpacityBar.content.style.display = "flex";
             status.created = true;
             this.adjustScreen();
@@ -181,27 +181,26 @@ export default function projectObject() {
         createElements(color) {
             const num = this.arrayLayers.length + 1;
             // ============= CRIA O ICONE DA CAMADA ==================
-            const contentIconeCamadas = document.getElementById("contentIconeCamadas");
+            const contentIconeCamadas = getElement("contentIconeCamadas");
             const idicone = "camadaIcone" + num;
             const iconeCamada = document.createElement("div");
-            iconeCamada.setAttribute("id", idicone);
+            iconeCamada.setAttribute("data-id", idicone);
             iconeCamada.setAttribute("class", "camadas");
             if (num === 1) { contentIconeCamadas.appendChild(iconeCamada); }
             else {
                 const idElAnterior = "camadaIcone" + (num - 1);
-                const elAnterior = document.getElementById(idElAnterior);
-                contentIconeCamadas.insertBefore(iconeCamada, elAnterior);
+                contentIconeCamadas.insertBefore(iconeCamada, getElement(idElAnterior));
             }
             contentIconeCamadas.scrollTop = contentIconeCamadas.scrollHeight;
             const bttVisivel = document.createElement("div");
             const idBttVisivel = "visivel" + num;
-            bttVisivel.setAttribute("id", idBttVisivel);
+            bttVisivel.setAttribute("data-id", idBttVisivel);
             bttVisivel.setAttribute("class", "iconVer cursor");
             iconeCamada.appendChild(bttVisivel);
             const info = document.createElement("label");
             const idNome = "nomeCamada" + num;
             const nomeCamada = document.createElement("span");
-            nomeCamada.setAttribute("id", idNome);
+            nomeCamada.setAttribute("data-id", idNome);
             nomeCamada.innerHTML = "Camada " + num;
             const br = document.createElement("br");
             const txtOpacidade = document.createElement("span");
@@ -209,7 +208,7 @@ export default function projectObject() {
             const idPocentagem = "porcent" + num;
             const txtPorcentagem = document.createElement("input");
             txtPorcentagem.setAttribute("type", "text");
-            txtPorcentagem.setAttribute("id", idPocentagem);
+            txtPorcentagem.setAttribute("data-id", idPocentagem);
             txtPorcentagem.setAttribute("readOnly", "true");
             txtPorcentagem.setAttribute("class", "opacidadeCamada");
             txtPorcentagem.setAttribute("value", "100%");
@@ -223,7 +222,7 @@ export default function projectObject() {
             iconeCamada.appendChild(contentMiniIcon);
             const idIconTela = "iconTela" + num;
             const iconTela = document.createElement("canvas");
-            iconTela.setAttribute("id", idIconTela);
+            iconTela.setAttribute("data-id", idIconTela);
             let styleIconTela, proportioIcon = 80 / 60;
             if (this.properties.resolution.proportion >= proportioIcon) {
                 const iconAltura = Math.round(80 / this.properties.resolution.proportion);
@@ -245,7 +244,7 @@ export default function projectObject() {
             const idCamada = "telaCamada" + num;
             const camadaStyle = "z-index: " + (num * 2) + ";";
             const elCamada = document.createElement("canvas");
-            elCamada.setAttribute("id", idCamada);
+            elCamada.setAttribute("data-id", idCamada);
             elCamada.setAttribute("class", "telaCanvas");
             elCamada.setAttribute("style", camadaStyle);
             elCamada.setAttribute("height", this.properties.resolution.height);
@@ -254,10 +253,10 @@ export default function projectObject() {
             // ================================== CRIA O PREVIEW DA CAMADA ====================================
             const idPreviewCamada = "camadaPreview" + num;
             const previewLayer = D.previewFunctions.createPreviewLayer(idPreviewCamada, camadaStyle);
-            if (document.getElementById(idicone) != null && document.getElementById(idBttVisivel) != null &&
-                document.getElementById(idNome) != null && document.getElementById(idPocentagem) != null &&
-                document.getElementById(idIconTela) != null && document.getElementById(idCamada) != null &&
-                document.getElementById(idPreviewCamada) != null) {
+            if (getElement(idicone) != null && getElement(idBttVisivel) != null &&
+                getElement(idNome) != null && getElement(idPocentagem) != null &&
+                getElement(idIconTela) != null && getElement(idCamada) != null &&
+                getElement(idPreviewCamada) != null) {
                 const objCamada = {
                     name: nomeCamada, ctx: elCamada.getContext("2d"), icon: iconeCamada,
                     previewLayer: previewLayer.getContext("2d"), miniature: iconTela.getContext("2d"),

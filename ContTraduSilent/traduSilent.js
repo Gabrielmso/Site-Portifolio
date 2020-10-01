@@ -108,7 +108,7 @@ function traduSilentFunctions() {
         mudarMenu();
     });
 
-    logoBlack.addEventListener("click", () => {
+    topoMenu.logo.addEventListener("click", () => {
         if (numSlide > 0) { voltaPrimeiroSlide(); }
         else { window.location.href = "index.html"; }
     });

@@ -54,7 +54,7 @@ function homeFunctions() {
         }
     }, 120, true));
 
-    logoBlack.addEventListener("click", function () {
+    topoMenu.logo.addEventListener("click", function () {
         if ((document.body.scrollTop || document.documentElement.scrollTop) > 3) {
             animationScrollTop(document.documentElement, 0, 450);
         } else { window.location.href = "index.html"; }

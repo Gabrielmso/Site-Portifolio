@@ -1,16 +1,14 @@
-import { throttle, elementById, setStyle } from "../js/geral.js";
+import { throttle, getElement, getAllElements, setStyle } from "../js/geral.js";
 
 function topMenuObject() {
     return {
         changeMenu: true,
         scrollBody: 0,
-        menu: elementById("menu"),
-        logo: elementById("logoBlack"),
-        categories: document.getElementsByClassName("opcaomenu"),
+        menu: getElement("menu"),
+        logo: getElement("logoBlack"),
+        categories: getAllElements("opmenu"),
         menuIcon: {
-            btt: elementById("iconemenublack"),
-            traces: [elementById("traco1"), elementById("traco2"), elementById("traco3")],
-            lateralMenu: elementById("fundomenu"),
+            btt: getElement("bttmenu"), traces: getAllElements("tracomenu"), lateralMenu: getElement("fundomenu"),
             focus: false,
             actionAnimation() {
                 const oldClass = this.focus ? "movertraco" : "iniciotraco",
@@ -29,11 +27,9 @@ function topMenuObject() {
             }
         },
         downArrow: {
-            btt: elementById("submenu"),
-            icon: elementById("iconesetablack"),
-            traces: [elementById("tracoseta1"), elementById("tracoseta2"), elementById("tracoseta3"),
-            elementById("tracoseta4")],
-            contentDrop: elementById("socials"),
+            btt: getElement("submenu"), icon: getElement("bttseta"),
+            traces: getAllElements("tracoseta"),
+            contentDrop: getElement("socials"),
             focus: false,
             actionAnimation() {
                 const oldClass = this.focus ? "movertracoseta" : "iniciotracoseta",
@@ -109,7 +105,7 @@ function callTopMenuObject() {
 function loadFile(url) {
     return new Promise((resolve) => {
         fetch(url).then((response) => {
-            if (response.status === 200) { resolve(response); }
+            if (response.ok) { resolve(response); }
             resolve(false);
         });
     });

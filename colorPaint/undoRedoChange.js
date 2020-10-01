@@ -1,9 +1,9 @@
-import { elementById, cloneElement } from "../js/geral.js";
+import { getElement, cloneElement } from "../js/geral.js";
 
 export default function undoRedoChangeObject() {
     const D = {}, changeLimit = 20,
         changes = { undone: [], redone: [] },
-        buttons = { undo: elementById("bttDesfazer"), redo: elementById("bttRefazer") },
+        buttons = { undo: getElement("bttDesfazer"), redo: getElement("bttRefazer") },
         createCopyLayer = layer => {
             const ctxCanvas = cloneElement(layer).getContext("2d");
             ctxCanvas.drawImage(layer, 0, 0);

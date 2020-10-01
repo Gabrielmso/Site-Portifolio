@@ -1,11 +1,11 @@
-import { getMousePosition, elementById, setStyle } from "../js/geral.js";
+import { getMousePosition, getElement, setStyle } from "../js/geral.js";
 
 export default function previewFunctionsObject() {
     const D = {},
-        contentPreview = elementById("contentPreview"),
-        contentTelaPreview = elementById("contentTelaPreview"),
-        ctxTelaPreview = elementById("telaPreview").getContext("2d"),
-        moverScroll = elementById("moverScroll"),
+        contentPreview = getElement("contentPreview"),
+        contentTelaPreview = getElement("contentTelaPreview"),
+        ctxTelaPreview = getElement("telaPreview").getContext("2d"),
+        moverScroll = getElement("moverScroll"),
         scrollEventMoveMoverScroll = () => {
             const mult = (D.contentTelas.scrollHeight - 12) / contentTelaPreview.offsetHeight;
             const mult2 = (D.contentTelas.scrollWidth - 12) / contentTelaPreview.offsetWidth;
@@ -18,17 +18,17 @@ export default function previewFunctionsObject() {
             D.contentTelas.scrollTop = top * ((D.contentTelas.scrollHeight) / contentTelaPreview.offsetHeight);
             D.contentTelas.scrollLeft = left * ((D.contentTelas.scrollWidth) / contentTelaPreview.offsetWidth);
         },
-        mouseMoveMoverScroll = mousePos => {
+        mouseMoveMoverScroll = ({ x, y }) => {
             const midWidth = moverScroll.offsetWidth / 2, midHeight = moverScroll.offsetHeight / 2;
             let left, top;
-            if (mousePos.x <= midWidth) { left = 0; }
-            else if (mousePos.x >= contentTelaPreview.offsetWidth - (Math.floor(midWidth))) {
+            if (x <= midWidth) { left = 0; }
+            else if (x >= contentTelaPreview.offsetWidth - (Math.floor(midWidth))) {
                 left = contentTelaPreview.offsetWidth - (midWidth * 2);
-            } else { left = mousePos.x - (Math.floor(midWidth)); }
-            if (mousePos.y <= midHeight) { top = 0; }
-            else if (mousePos.y >= contentTelaPreview.offsetHeight - (Math.floor(midHeight))) {
+            } else { left = x - (Math.floor(midWidth)); }
+            if (y <= midHeight) { top = 0; }
+            else if (y >= contentTelaPreview.offsetHeight - (Math.floor(midHeight))) {
                 top = contentTelaPreview.offsetHeight - (midHeight * 2);
-            } else { top = mousePos.y - (Math.floor(midHeight)); }
+            } else { top = y - (Math.floor(midHeight)); }
             setStyle(moverScroll, { top: top + "px", left: left + "px" });
             changeScrollsContentTelas(top, left);
         },
@@ -53,7 +53,7 @@ export default function previewFunctionsObject() {
         },
         createPreviewLayer(id, style,) {
             const layerElement = document.createElement("canvas");
-            layerElement.setAttribute("id", id);
+            layerElement.setAttribute("data-id", id);
             layerElement.setAttribute("class", "preview");
             layerElement.setAttribute("style", style);
             layerElement.setAttribute("height", ctxTelaPreview.canvas.height);

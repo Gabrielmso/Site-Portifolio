@@ -9,7 +9,7 @@ import hotKeysObject from "./hotKeys.js";
 import createGridWindowObject from "./createGridWindow.js";
 import colorSelectionWindowObject from "./colorSelectionWindow.js";
 import notificationsObject from "./notifications.js";
-import { preventDefaultAction, getMousePosition, elementById, setStyle } from "../js/geral.js";
+import { preventDefaultAction, getMousePosition, getElement, setStyle } from "../js/geral.js";
 
 let topoMenu;
 function loadApp() {
@@ -23,15 +23,15 @@ function loadApp() {
         colorSelectionWindow = colorSelectionWindowObject(),
         notification = notificationsObject();
 
-    const contentTools = elementById("contentTools"),
-        barraLateralEsquerda = elementById("barraLateralEsquerda"),
-        barraLateralDireita = elementById("barraLateralDireita"),
-        contentCentro = elementById("contentCentro"),
-        contentTelas = elementById("contentTelas"),
-        corPrincipal = elementById("corPrincipal"),
-        corSecundaria = elementById("corSecundaria"),
-        txtPorcentagemZoom = elementById("txtPorcentagemZoom"),
-        janelaPrincipal = elementById("colorPaintContent");
+    const contentTools = getElement("contentTools"),
+        barraLateralEsquerda = getElement("barraLateralEsquerda"),
+        barraLateralDireita = getElement("barraLateralDireita"),
+        contentCentro = getElement("contentCentro"),
+        contentTelas = getElement("contentTelas"),
+        corPrincipal = getElement("corPrincipal"),
+        corSecundaria = getElement("corSecundaria"),
+        txtPorcentagemZoom = getElement("txtPorcentagemZoom"),
+        janelaPrincipal = getElement("colorPaintContent");
 
     createProjectWindow.addDependencies({ project, notification, openWindowbackgroundBlur });
     project.addDependencies({
@@ -52,13 +52,13 @@ function loadApp() {
     project.addEventsToElements();
     notification.addEventsToElements();
 
-    elementById("bttCriarNovoProjeto").addEventListener("mousedown", () => createProjectWindow.open("create"));
-    elementById("bttCriarGrade").addEventListener("mousedown", () => createGridWindow.open());
-    elementById("bttModoCursor").addEventListener("mousedown", e => drawingTools.changeCursorMode(e));
-    elementById("bttMostrarAlteracaoPincel").addEventListener("mousedown", e => drawingTools.changeShowDashSample(e));
-    elementById("bttSalvarDesenho").addEventListener("mousedown", () => project.saveDraw());
-    elementById("bttSalvarProjeto").addEventListener("mousedown", () => project.saveProject());
-    elementById("bttcarregarProjeto").addEventListener("mousedown", () => createProjectWindow.open("load"));
+    getElement("bttCriarNovoProjeto").addEventListener("mousedown", () => createProjectWindow.open("create"));
+    getElement("bttCriarGrade").addEventListener("mousedown", () => createGridWindow.open());
+    getElement("bttModoCursor").addEventListener("mousedown", e => drawingTools.changeCursorMode(e));
+    getElement("bttMostrarAlteracaoPincel").addEventListener("mousedown", e => drawingTools.changeShowDashSample(e));
+    getElement("bttSalvarDesenho").addEventListener("mousedown", () => project.saveDraw());
+    getElement("bttSalvarProjeto").addEventListener("mousedown", () => project.saveProject());
+    getElement("bttcarregarProjeto").addEventListener("mousedown", () => createProjectWindow.open("load"));
 
     corPrincipal.addEventListener("mousedown", () => {
         if (colorSelectionWindow.opened) { colorSelectionWindow.currentColor = project.selectedColors.firstPlane; }
@@ -70,14 +70,14 @@ function loadApp() {
         else { colorSelectionWindow.open(2); }
     });
 
-    elementById("bttCoresPrincipais").addEventListener("mousedown", () => {
+    getElement("bttCoresPrincipais").addEventListener("mousedown", () => {
         if (!colorSelectionWindow.opened) {
             project.selectedColors.set(1, { r: 0, g: 0, b: 0 });
             project.selectedColors.set(2, { r: 255, g: 255, b: 255 });
         }
     });
 
-    elementById("bttAlternaCor").addEventListener("mousedown", () => {
+    getElement("bttAlternaCor").addEventListener("mousedown", () => {
         if (!colorSelectionWindow.opened) {
             const color = { ...project.selectedColors.get(1) };
             project.selectedColors.set(1, project.selectedColors.get(2));
@@ -85,8 +85,8 @@ function loadApp() {
         }
     });
 
-    elementById("bttZoomMais").addEventListener("mousedown", () => project.zoom(true, true, 1.25));
-    elementById("bttZoomMenos").addEventListener("mousedown", () => project.zoom(false, true, 1.25));
+    getElement("bttZoomMais").addEventListener("mousedown", () => project.zoom(true, true, 1.25));
+    getElement("bttZoomMenos").addEventListener("mousedown", () => project.zoom(false, true, 1.25));
 
     txtPorcentagemZoom.addEventListener("keyup", e => {
         if (e.code === "Enter") {
@@ -94,12 +94,12 @@ function loadApp() {
             if (isNaN(valor) === false && valor >= 1) { project.zoom("porcentagem", true, valor); }
         }
     });
-    const openHotKeysWindow = open => openWindowbackgroundBlur(elementById("contentJanelaAtalhos"), open)
-    elementById("bttAtalhos").addEventListener("mousedown", () => openHotKeysWindow(true));
-    elementById("bttOkAtalhos").addEventListener("mousedown", () => openHotKeysWindow(false));
+    const openHotKeysWindow = open => openWindowbackgroundBlur(getElement("contentJanelaAtalhos"), open)
+    getElement("bttAtalhos").addEventListener("mousedown", () => openHotKeysWindow(true));
+    getElement("bttOkAtalhos").addEventListener("mousedown", () => openHotKeysWindow(false));
 
 
-    elementById("colorPaintContent").addEventListener("wheel", e => {//Zoom com o scroll do mouse.
+    janelaPrincipal.addEventListener("wheel", e => {//Zoom com o scroll do mouse.
         if (!hotKeys.ctrlPressed) { return; }
         preventDefaultAction(e);
         if (e.deltaY < 0) { project.zoom(true, false, 1.10); }
@@ -134,7 +134,7 @@ function loadApp() {
             height: contentTools.offsetHeight + "px"
         });
         setStyle(contentTelas, { height: (contentCentro.offsetHeight - 15) + "px" });
-        setStyle(elementById("janelaCamadas"), { height: (barraLateralEsquerda.offsetHeight - 336) + "px" });
+        setStyle(getElement("janelaCamadas"), { height: (barraLateralEsquerda.offsetHeight - 336) + "px" });
     }
 
     function openWindowbackgroundBlur(window, open) {
@@ -158,19 +158,19 @@ function loadApp() {
     }
 
     function criarOuAbrirProjeto() {
-        const carregar = elementById("carregamento"),
+        const carregar = getElement("carregamento"),
             loadMode = sessionStorage.getItem("loadMode"),
             fadeOut = () => {
                 setStyle(carregar, { opacity: "0" })
                 setTimeout(() => carregar.remove(), 700);
             },
             carregamento = () => {
-                const logoCarregamento = elementById("logoCarregamento");
+                const logoCarregamento = getElement("logoCarregamento");
                 setStyle(logoCarregamento, { transition: "opacity 1.5s linear" })
                 setTimeout(() => {
                     setStyle(logoCarregamento, { opacity: "1" });
                     setTimeout(() => {
-                        const { left, top } = logoBlack.getBoundingClientRect();
+                        const { left, top } = topoMenu.logo.getBoundingClientRect();
                         setStyle(logoCarregamento, {
                             transition: "width 500ms ease-out, height 500ms ease-out, opacity 500ms ease-out, top 500ms ease-out, left 500ms ease-out",
                             width: "90px", height: "50px", opacity: "0.75",
@@ -181,7 +181,7 @@ function loadApp() {
                 }, 150);
             }
 
-        if (loadMode) {            
+        if (loadMode) {
             createProjectWindow.open(loadMode);
             sessionStorage.removeItem("loadMode");
             fadeOut();

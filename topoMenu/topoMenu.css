@@ -1,4 +1,4 @@
-#menu {
+[data-id="menu"] {
     position: fixed;
     top: 0%;
     width: 100%;
@@ -7,7 +7,7 @@
     z-index: 1000000;
 }
 
-#larguramenu {
+[data-id="larguramenu"] {
     width: 100%;
     max-width: 1400px;
     margin-left: auto;
@@ -85,7 +85,7 @@
     left: -250px;
 }
 
-#logoBlack {
+[data-id="logoBlack"] {
     position: relative;
     display: block;
     background-image: url("./imagens/LogoGMwhite.svg");
@@ -110,25 +110,25 @@
     background-size: 65px;
 }
 
-#logoinsta {
+[data-id="logoinsta"] {
     background-image: url("./imagens/icones/instagramLogoWhite.svg");
     background-size: 35px;
     background-position: 50%;
 }
 
-#logoyoutube {
+[data-id="logoyoutube"] {
     background-image: url("./imagens/icones/youtubeLogoWhite.svg");
     background-size: 41px;
     background-position: 50% 25%;
 }
 
-#logoGitHub {
+[data-id="logoGitHub"] {
     background-image: url("./imagens/icones/githubLogoWhite.svg");
     background-size: 36px;
     background-position: 50%;
 }
 
-#logoLinkedin {
+[data-id="logoLinkedin"] {
     background-image: url("./imagens/icones/linkedinLogo.svg");
     background-size: 34px;
     background-position: 50% 40%;
@@ -142,11 +142,11 @@
     height: 50px;
 }
 
-.iconeSociais:hover, #logoBlack:hover, #iconesetablack:hover, #iconemenublack:hover {
+.iconeSociais:hover, [data-id="logoBlack"]:hover, [data-id="bttseta"]:hover, [data-id="bttmenu"]:hover {
     opacity: 1;
 }
 
-#iconesetablack {
+[data-id="bttseta"] {
     position: relative;
     display: block;
     width: 50px;
@@ -155,7 +155,7 @@
     -webkit-transition: height 0.35s ease, padding-top 0.35s ease;
 }
 
-#iconemenublack {
+[data-id="bttmenu"] {
     position: relative;
     display: none;
     float: left;
@@ -246,14 +246,14 @@
     left: 21px;
 }
 
-#submenu {
+[data-id="submenu"] {
     position: relative;
     width: 50px;
     height: 50px;
     float: right;
 }
 
-#socials {
+[data-id="socials"] {
     background-color: rgba(0, 0, 0, 0.60);
     position: relative;
     display: block;
@@ -278,7 +278,7 @@
     clear: both;
 }
 
-#opcoesmenu {
+[data-id="opcoesmenu"] {
     display: block;
     position: relative;
     width: 396px;
@@ -289,7 +289,7 @@
     transition: all 0.35s ease;
 }
 
-#fundomenu {
+[data-id="fundomenu"] {
     display: none;
     margin-top: 50px;
     position: absolute;
@@ -301,7 +301,7 @@
     z-index: 100000;
 }
 
-#opcoesmenu2 {
+[data-id="opcoesmenu2"] {
     overflow: auto;
     width: 240px;
     display: block;
@@ -309,13 +309,13 @@
     line-height: 24px;
 }
 
-#opcoesmenu li {
+[data-id="opcoesmenu"] li {
     float: left;
     margin-right: 2px;
     line-height: 24px;
 }
 
-#opcoesmenu a {
+[data-id="opcoesmenu"] a {
     padding-left: 12px;
     padding-right: 12px;
     display: block;
@@ -329,7 +329,7 @@
     border-bottom: 3px solid rgba(213, 192, 107, 0);
 }
 
-#opcoesmenu ul a {
+[data-id="opcoesmenu"] ul a {
     padding-bottom: 13px;
     padding-top: 13px;
     padding-left: 12px;
@@ -351,14 +351,14 @@
     padding-top: 18px;
 }
 
-#opcoesmenu li a:hover, #opcoesmenu li p:hover {
+[data-id="opcoesmenu"] li a:hover, [data-id="opcoesmenu"] li p:hover {
     border-bottom: solid 3px rgba(213, 192, 107, 0.83);
     color: rgb(213, 192, 107);
     transition: all 0.35s;
     -webkit-transition: all 0.35s;
 }
 
-#opcoesmenu ul li a:hover, #opcoesmenu ul li p:hover {
+[data-id="opcoesmenu"] ul li a:hover, [data-id="opcoesmenu"] ul li p:hover {
     background-color: rgba(100, 68, 8, 0.83);
     color: rgb(213, 192, 107);
     transition: all 0.35s;
@@ -366,17 +366,17 @@
     border-bottom: none;
 }
 
-#opcoesmenu2 li a:hover, #opcoesmenu2 li p:hover {
+[data-id="opcoesmenu2"] li a:hover, [data-id="opcoesmenu2"] li p:hover {
     background-color: rgba(80, 80, 80, 0.486);
     color: rgb(213, 192, 107);
 }
 
-#opcoesmenu2 ul li a:hover, #opcoesmenu2 ul li p:hover {
+[data-id="opcoesmenu2"] ul li a:hover, [data-id="opcoesmenu2"] ul li p:hover {
     background-color: rgba(100, 68, 8, 0.83);
     color: rgb(213, 192, 107);
 }
 
-#opcoesmenu ul {
+[data-id="opcoesmenu"] ul {
     width: 220px;
     position: absolute;
     overflow: hidden;
@@ -388,7 +388,7 @@
     z-index: 10000;
 }
 
-#opcoesmenu2 li p {
+[data-id="opcoesmenu2"] li p {
     padding-top: 13px;
     padding-bottom: 13px;
     margin-bottom: 0;
@@ -400,7 +400,7 @@
     color: white;
 }
 
-#opcoesmenu2 a {
+[data-id="opcoesmenu2"] a {
     padding-top: 13px;
     padding-bottom: 13px;
     padding-left: 12px;
@@ -413,19 +413,19 @@
     transition: all 0.3s;
 }
 
-#opcoesmenu2 li:hover ul {
+[data-id="opcoesmenu2"] li:hover ul {
     max-height: 100px;
 }
 
-#opcoesmenu li:hover ul {
+[data-id="opcoesmenu"] li:hover ul {
     max-height: 100px;
 }
 
-#opcoesmenu li ul:hover {
+[data-id="opcoesmenu"] li ul:hover {
     overflow-y: auto;
 }
 
-#opcoesmenu2 ul {
+[data-id="opcoesmenu2"] ul {
     position: static;
     overflow: hidden;
     max-height: 0px;
@@ -434,27 +434,27 @@
     -webkit-transition: all 0.35s;
 }
 
-#opcoesmenu2 ul li {
+[data-id="opcoesmenu2"] ul li {
     background-color: rgba(213, 192, 107, 0.83);
     transition: all 0.35s;
     -webkit-transition: all 0.35s;
 }
 
-#opcoesmenu2 ul a, #opcoesmenu2 ul p {
+[data-id="opcoesmenu2"] ul a, [data-id="opcoesmenu2"] ul p {
     color: #000;
 }
 
-#opcoesmenu ul a, #opcoesmenu ul p {
+[data-id="opcoesmenu"] ul a, [data-id="opcoesmenu"] ul p {
     color: #000;
 }
 
-#opcoesmenu p:hover {
+[data-id="opcoesmenu"] p:hover {
     color: rgb(213, 192, 107);
     transition: all 0.35s;
     -webkit-transition: all 0.35s;
 }
 
-#opcoesmenu ul li {
+[data-id="opcoesmenu"] ul li {
     width: 220px;
     text-align: left;
     list-style: none;
@@ -463,16 +463,16 @@
     -webkit-transition: all 0.35s;
 }
 
-#opcoesmenu ul li a {
+[data-id="opcoesmenu"] ul li a {
     padding-left: 10px;
     padding-right: 4px;
 }
 
 @media screen and (max-width: 650px) {
-    #opcoesmenu {
+    [data-id="opcoesmenu" {
         display: none;
     }
-    #fundomenu {
+    [data-id="fundomenu"] {
         display: block;
     }
     .iniciomenu {
@@ -507,10 +507,10 @@
         margin-left: auto;
         margin-right: auto;
     }
-    #iconemenublack {
+    [data-id="bttmenu"] {
         display: block;
     }
-    #logoBlack {
+    [data-id="logoBlack"] {
         width: 90px;
         height: 50px;
         float: none;

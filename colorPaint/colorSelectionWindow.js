@@ -1,4 +1,4 @@
-import { getMousePosition, elementById, setStyle } from "../js/geral.js";
+import { getMousePosition, getElement, setStyle } from "../js/geral.js";
 
 export default function colorSelectionWindowObject() {
     const D = {}, status = { opened: false, primaryOrSecondary: 1 },
@@ -22,22 +22,22 @@ export default function colorSelectionWindowObject() {
                 this.v = v;
             }, get() { return { h: this.h, s: this.s, v: this.v } }
         },
-        window = elementById("janelaSelecionarCor"), insideWindow = {
-            barMoveWindow: elementById("moverJanelaSelecionarCor"),
-            compareColors: { current: elementById("corAtual"), selected: elementById("corSelecionada") },
+        window = getElement("janelaSelecionarCor"), insideWindow = {
+            barMoveWindow: getElement("moverJanelaSelecionarCor"),
+            compareColors: { current: getElement("corAtual"), selected: getElement("corSelecionada") },
             canvas: {
-                spectrum: elementById("barraeEspectroCor").getContext("2d"),
-                gradient: elementById("gradienteCor").getContext("2d")
+                spectrum: getElement("barraeEspectroCor").getContext("2d"),
+                gradient: getElement("gradienteCor").getContext("2d")
             },
             cursors: {
-                spectrum: { el: elementById("cursorBarra"), clicked: false },
-                gradient: { el: elementById("cursorGradiente"), position: { x: 0, y: 0 }, clicked: false }
+                spectrum: { el: getElement("cursorBarra"), clicked: false },
+                gradient: { el: getElement("cursorGradiente"), position: { x: 0, y: 0 }, clicked: false }
             },
-            inputs: { txtRgb: elementById("codRGB"), txtHex: elementById("codHEX") },
+            inputs: { txtRgb: getElement("codRGB"), txtHex: getElement("codHEX") },
             buttons: {
-                ok: elementById("bttOkSelecionaCor"),
-                saveColor: elementById("bttSalvarCor"),
-                cancel: elementById("bttCancelarSelecionaCor")
+                ok: getElement("bttOkSelecionaCor"),
+                saveColor: getElement("bttSalvarCor"),
+                cancel: getElement("bttCancelarSelecionaCor")
             },
         },
         rgbTohex = color => {
@@ -144,11 +144,10 @@ export default function colorSelectionWindowObject() {
             paintGradient(color);
             findColorInPositionGradient();
         },
-        moveCursorGradient = position => {
+        moveCursorGradient = ({ x, y }) => {
             const width = insideWindow.canvas.gradient.canvas.offsetWidth, height = insideWindow.canvas.gradient.canvas.offsetHeight;
-            position.x = position.x < 0 ? 0 : position.x > width ? width : position.x;
-            position.y = position.y < 0 ? 0 : position.y > height ? height : position.y;
-            insideWindow.cursors.gradient.position = { x: position.x, y: position.y };
+            const position = { x: x < 0 ? 0 : x > width ? width : x, y: y < 0 ? 0 : y > height ? height : y }
+            insideWindow.cursors.gradient.position = position;
             setStyle(insideWindow.cursors.gradient.el, {
                 left: (position.x - 10) + "px", top: (position.y - 10) + "px"
             });
@@ -169,9 +168,9 @@ export default function colorSelectionWindowObject() {
         mouseUpMoveCursors = () => {
             insideWindow.cursors.spectrum.clicked = insideWindow.cursors.gradient.clicked = false;
         },
-        moveWindow = mousePosition => {
-            const { x, y } = mousePositionMoveWindow.get();
-            let newPositionX = mousePosition.x - x, newPositionY = mousePosition.y - y;
+        moveWindow = ({ x, y }) => {
+            const { x: bx, y: by } = mousePositionMoveWindow.get();
+            let newPositionX = x - bx, newPositionY = y - by;
             newPositionX = newPositionX < 0 ? 0 : newPositionX + window.offsetWidth > D.janelaPrincipal.offsetWidth ?
                 D.janelaPrincipal.offsetWidth - window.offsetWidth : newPositionX;
             newPositionY = newPositionY < 50 ? 50 : newPositionY + window.offsetHeight > D.janelaPrincipal.offsetHeight ?

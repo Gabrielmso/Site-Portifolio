@@ -112,7 +112,7 @@ li {
     line-height: 25px;
 }
 
-#carregamento {
+[data-id="carregamento"] {
     position: absolute;
     top: 0;
     width: 100%;

@@ -1,158 +1,167 @@
 import {
     getImage, preventDefaultAction, throttle, setStyle,
-    getMousePosition, logarithm, getDistanceCoordinates
+    getMousePosition, logarithm, getDistanceCoordinates,
+    getElement
 } from "../js/geral.js";
 
 export default function drawingToolsObject() {
     const D = {}, tools = {
-        brush: { btt: document.getElementById("pincel"), prop: { s: 5, o: 1, h: 1 } },
-        line: { btt: document.getElementById("linha"), prop: { s: 5, o: 1, h: 1 } },
-        rectangle: { btt: document.getElementById("retangulo"), prop: { s: 5, o: 1, h: 1 } },
-        ellipse: { btt: document.getElementById("elipse"), prop: { s: 5, o: 1, h: 1 } },
-        eraser: { btt: document.getElementById("borracha"), prop: { s: 50, o: 1, h: 1 } },
-        curve: { btt: document.getElementById("curva"), prop: { s: 5, o: 1, h: 1 } },
-        paintBucket: { btt: document.getElementById("baldeDeTinta") },
-        blur: { btt: document.getElementById("desfoque"), prop: { s: 30, o: 0.7, h: 0.8 } },
-        smudge: { btt: document.getElementById("borrar"), prop: { s: 30, o: 0.7, h: 0.8 } },
-        eyeDropper: { btt: document.getElementById("contaGotas") }
-    }, mousePosition = {
-        x: 0, y: 0, update(newX, newY) {
-            this.x = newX;
-            this.y = newY;
-        }
-    }, strokeCoordinates = {
-        x: [], y: [], length: 0,
-        add() {
-            if (this.x.last === mousePosition.x && this.y.last === mousePosition.y) { return; }
-            this.x.push(mousePosition.x);
-            this.y.push(mousePosition.y);
-            this.length++;
-            if (D.hotKeys.shiftPressed) {
-                const deltaX = strokeCoordinates.x.last - strokeCoordinates.x.first,
-                    deltaY = strokeCoordinates.y.last - strokeCoordinates.y.first;
-                if (D.hotKeys.infoTraceUsedShift.sizeX < Math.abs(deltaX)) { D.hotKeys.infoTraceUsedShift.sizeX = Math.abs(deltaX); }
-                if (D.hotKeys.infoTraceUsedShift.sizeY < Math.abs(deltaY)) { D.hotKeys.infoTraceUsedShift.sizeY = Math.abs(deltaY); }
-                if (D.drawingTools.selectedTool === "rectangle" || D.drawingTools.selectedTool === "ellipse") {
-                    if (Math.abs(deltaX) >= Math.abs(deltaY)) {
-                        if (deltaX < 0 && deltaY < 0 || deltaX > 0 && deltaY > 0) {
-                            strokeCoordinates.y.last = strokeCoordinates.y.first + (deltaX);
-                        } else if (deltaX < 0 && deltaY > 0 || deltaX > 0 && deltaY < 0) {
-                            strokeCoordinates.y.last = strokeCoordinates.y.first - (deltaX);
+        brush: { btt: getElement("pincel"), prop: { s: 5, o: 1, h: 1 } },
+        line: { btt: getElement("linha"), prop: { s: 5, o: 1, h: 1 } },
+        rectangle: { btt: getElement("retangulo"), prop: { s: 5, o: 1, h: 1 } },
+        ellipse: { btt: getElement("elipse"), prop: { s: 5, o: 1, h: 1 } },
+        eraser: { btt: getElement("borracha"), prop: { s: 50, o: 1, h: 1 } },
+        curve: { btt: getElement("curva"), prop: { s: 5, o: 1, h: 1 } },
+        paintBucket: { btt: getElement("baldeDeTinta") },
+        blur: { btt: getElement("desfoque"), prop: { s: 30, o: 0.7, h: 0.8 } },
+        smudge: { btt: getElement("borrar"), prop: { s: 30, o: 0.7, h: 0.8 } },
+        eyeDropper: { btt: getElement("contaGotas") }
+    },
+        infoTraceUsedShift = {
+            sizeX: 0, sizeY: 0,
+            clear() {
+                this.sizeX = 0;
+                this.sizeY = 0;
+            }
+        },
+        mousePosition = {
+            x: 0, y: 0, update(newX, newY) {
+                this.x = newX;
+                this.y = newY;
+            }
+        }, strokeCoordinates = {
+            x: [], y: [], length: 0,
+            add() {
+                if (this.x.last === mousePosition.x && this.y.last === mousePosition.y) { return; }
+                this.x.push(mousePosition.x);
+                this.y.push(mousePosition.y);
+                this.length++;
+                if (D.hotKeys.shiftPressed) {
+                    const deltaX = strokeCoordinates.x.last - strokeCoordinates.x.first,
+                        deltaY = strokeCoordinates.y.last - strokeCoordinates.y.first;
+                    if (infoTraceUsedShift.sizeX < Math.abs(deltaX)) { infoTraceUsedShift.sizeX = Math.abs(deltaX); }
+                    if (infoTraceUsedShift.sizeY < Math.abs(deltaY)) { infoTraceUsedShift.sizeY = Math.abs(deltaY); }
+                    if (D.drawingTools.selectedTool === "rectangle" || D.drawingTools.selectedTool === "ellipse") {
+                        if (Math.abs(deltaX) >= Math.abs(deltaY)) {
+                            if (deltaX < 0 && deltaY < 0 || deltaX > 0 && deltaY > 0) {
+                                strokeCoordinates.y.last = strokeCoordinates.y.first + (deltaX);
+                            } else if (deltaX < 0 && deltaY > 0 || deltaX > 0 && deltaY < 0) {
+                                strokeCoordinates.y.last = strokeCoordinates.y.first - (deltaX);
+                            }
+                        } else {
+                            if (deltaY < 0 && deltaX < 0 || deltaY > 0 && deltaX > 0) {
+                                strokeCoordinates.x.last = strokeCoordinates.x.first + (deltaY);
+                            } else if (deltaY < 0 && deltaX > 0 || deltaY > 0 && deltaX < 0) {
+                                strokeCoordinates.x.last = strokeCoordinates.x.first - (deltaY);
+                            }
                         }
+                    } else if (infoTraceUsedShift.sizeX >= infoTraceUsedShift.sizeY) {
+                        for (let i = 0; i <= this.length; i++) { strokeCoordinates.y[i] = strokeCoordinates.y.first; }
                     } else {
-                        if (deltaY < 0 && deltaX < 0 || deltaY > 0 && deltaX > 0) {
-                            strokeCoordinates.x.last = strokeCoordinates.x.first + (deltaY);
-                        } else if (deltaY < 0 && deltaX > 0 || deltaY > 0 && deltaX < 0) {
-                            strokeCoordinates.x.last = strokeCoordinates.x.first - (deltaY);
-                        }
+                        for (let i = 0; i <= this.length; i++) { strokeCoordinates.x[i] = strokeCoordinates.x.first; }
                     }
-                } else if (D.hotKeys.infoTraceUsedShift.sizeX >= D.hotKeys.infoTraceUsedShift.sizeY) {
-                    for (let i = 0; i <= this.length; i++) { strokeCoordinates.y[i] = strokeCoordinates.y.first; }
-                } else {
-                    for (let i = 0; i <= this.length; i++) { strokeCoordinates.x[i] = strokeCoordinates.x.first; }
                 }
+            },
+            onlyStartEnd() {
+                this.x = [this.x.first, this.x.last];
+                this.y = [this.y.first, this.y.last];
+                this.length = 2;
+                return { start: { x: this.x[0], y: this.y[0] }, end: { x: this.x[1], y: this.y[1] } };
+            },
+            onlyFirst() {
+                this.x = [this.x.first];
+                this.y = [this.y.first];
+                this.length = 1;
+            },
+            center() {
+                const { offsetHeight, offsetWidth } = D.contentTelas, midWidth = offsetWidth / 2, midHeight = offsetHeight / 2;
+                this.x = [(D.project.properties.resolution.width / D.project.screen.offsetWidth) * ((midWidth - D.project.screen.offsetLeft) + D.contentTelas.scrollLeft)];
+                this.y = [(D.project.properties.resolution.height / D.project.screen.offsetHeight) * ((midHeight - D.project.screen.offsetTop) + D.contentTelas.scrollTop)];
+                this.length = 1;
+            },
+            clear() {
+                this.x.clear();
+                this.y.clear();
+                this.length = 0;
             }
-        },
-        onlyStartEnd() {
-            this.x = [this.x.first, this.x.last];
-            this.y = [this.y.first, this.y.last];
-            this.length = 2;
-            return { start: { x: this.x[0], y: this.y[0] }, end: { x: this.x[1], y: this.y[1] } };
-        },
-        onlyFirst() {
-            this.x = [this.x.first];
-            this.y = [this.y.first];
-            this.length = 1;
-        },
-        center() {
-            const { offsetHeight, offsetWidth } = D.contentTelas, midWidth = offsetWidth / 2, midHeight = offsetHeight / 2;
-            this.x = [(D.project.properties.resolution.width / D.project.screen.offsetWidth) * ((midWidth - D.project.screen.offsetLeft) + D.contentTelas.scrollLeft)];
-            this.y = [(D.project.properties.resolution.height / D.project.screen.offsetHeight) * ((midHeight - D.project.screen.offsetTop) + D.contentTelas.scrollTop)];
-            this.length = 1;
-        },
-        clear() {
-            this.x.clear();
-            this.y.clear();
-            this.length = 0;
+        }, cursorTool = {
+            cursor: getElement("cursorFerramenta"), show: true, visible: false, halfSize: 20, position: { x: 0, y: 0 },
+            imgsCursor: {
+                paintBucket: getImage("/colorPaint/imagens/cursor/cursorBaldeDeTinta.png"),
+                eyeDropper: getImage("/colorPaint/imagens/cursor/cursorContaGotas.png"),
+                crossHair: getImage("/colorPaint/imagens/cursor/crossHair.png"),
+                centerCrossHair: getImage("/colorPaint/imagens/cursor/centerCrossHair.png"),
+                circle: getImage("/colorPaint/imagens/cursor/circle.png")
+            },
+            eyeDropper: {
+                cursor: getElement("cursorComparaContaGotas"), compareColors: getElement("comparaCoresContaGotas"),
+                position: null
+            },
+            changeSize(size) {
+                if (size < 13) {
+                    this.cursor.classList.remove("bordaCursor");
+                    setStyle(this.cursor, {
+                        width: "26px", height: "26px",
+                        backgroundImage: "url('/colorPaint/imagens/cursor/crossHair.png')",
+                    });
+                    this.halfSize = 13;
+                } else {
+                    this.cursor.classList.add("bordaCursor");
+                    this.halfSize = size / 2;
+                    setStyle(this.cursor, {
+                        width: size + "px", height: size + "px", backgroundImage: size < 200 ? "none" : "",
+                    });
+                }
+                this.changeCursorPosition(this.position);
+            },
+            changeCursorPosition({ x, y }) {
+                this.position.x = x;
+                this.position.y = y;
+                setStyle(this.cursor, { top: y - this.halfSize + "px", left: x - this.halfSize + "px" });
+            },
+            changeEyeDropperPosition({ x, y }) {
+                setStyle(this.eyeDropper.cursor, { top: y - 125 + "px", left: x - 125 + "px" });
+            },
+            invisibleCursor() {
+                this.visible = false;
+                setStyle(this.cursor, { display: "none" });
+            },
+            visibleCursor() {
+                this.visible = true;
+            },
+            wheel({ deltaY }) {
+                if (!D.hotKeys.shiftPressed) {
+                    D.contentTelas.scrollTop += deltaY < 0 ? -D.contentTelas.offsetHeight / 7 : D.contentTelas.offsetHeight / 7;
+                } else { D.contentTelas.scrollLeft += deltaY < 0 ? -D.contentTelas.offsetWidth / 7 : D.contentTelas.offsetWidth / 7; }
+            },
         }
-    }, cursorTool = {
-        cursor: document.getElementById("cursorFerramenta"), show: true, visible: false, halfSize: 20, position: { x: 0, y: 0 },
-        imgsCursor: {
-            paintBucket: getImage("/colorPaint/imagens/cursor/cursorBaldeDeTinta.png"),
-            eyeDropper: getImage("/colorPaint/imagens/cursor/cursorContaGotas.png"),
-            crossHair: getImage("/colorPaint/imagens/cursor/crossHair.png"),
-            centerCrossHair: getImage("/colorPaint/imagens/cursor/centerCrossHair.png"),
-            circle: getImage("/colorPaint/imagens/cursor/circle.png")
-        },
-        eyeDropper: {
-            cursor: document.getElementById("cursorComparaContaGotas"), compareColors: document.getElementById("comparaCoresContaGotas"),
-            position: null
-        },
-        changeSize(size) {
-            if (size < 13) {
-                this.cursor.classList.remove("bordaCursor");
-                setStyle(this.cursor, {
-                    width: "26px", height: "26px",
-                    backgroundImage: "url('/colorPaint/imagens/cursor/crossHair.png')",
-                });
-                this.halfSize = 13;
-            } else {
-                this.cursor.classList.add("bordaCursor");
-                this.halfSize = size / 2;
-                setStyle(this.cursor, {
-                    width: size + "px", height: size + "px", backgroundImage: size < 200 ? "none" : "",
-                });
-            }
-            this.changeCursorPosition(this.position);
-        },
-        changeCursorPosition({ x, y }) {
-            this.position.x = x;
-            this.position.y = y;
-            setStyle(this.cursor, { top: y - this.halfSize + "px", left: x - this.halfSize + "px" });
-        },
-        changeEyeDropperPosition({ x, y }) {
-            setStyle(this.eyeDropper.cursor, { top: y - 125 + "px", left: x - 125 + "px" });
-        },
-        invisibleCursor() {
-            this.visible = false;
-            setStyle(this.cursor, { display: "none" });
-        },
-        visibleCursor() {
-            this.visible = true;
-        },
-        wheel({ deltaY }) {
-            if (!D.hotKeys.shiftPressed) {
-                D.contentTelas.scrollTop += deltaY < 0 ? -D.contentTelas.offsetHeight / 7 : D.contentTelas.offsetHeight / 7;
-            } else { D.contentTelas.scrollLeft += deltaY < 0 ? -D.contentTelas.offsetWidth / 7 : D.contentTelas.offsetWidth / 7; }
-        },
-    }
     let showDashSample = true;
     return {
-        eventLayer: document.getElementById("pintar").getContext("2d"),
+        eventLayer: getElement("pintar").getContext("2d"),
         get mousePosition() { return { x: mousePosition.x, y: mousePosition.y } },
         invisibleCursor: () => cursorTool.invisibleCursor(),
         currentLayer: null, selectedTool: "brush", mouseFunctionName: "brush", previousTool: "brush",
-        clickToCurve: false, txtPositionCursor: document.getElementById("txtPosicaoCursor"),
+        clickToCurve: false, txtPositionCursor: getElement("txtPosicaoCursor"),
         infoMoveScreenWithSpace: { startCoordinate: null, scroolTop: null, scrollLeft: null },
         painting: false, bttMouseUsed: false, clickPropertieBar: false,
         toolProperties: {
-            elements: [{ property: document.getElementById("propriedadeTamanho"), contentBar: document.getElementById("contentBarraTamanho") },
-            { property: document.getElementById("propriedadeOpacidade"), contentBar: document.getElementById("contentBarraOpacidade") },
-            { property: document.getElementById("propriedadeDureza"), contentBar: document.getElementById("contentBarraDureza") }],
+            elements: [{ property: getElement("propriedadeTamanho"), contentBar: getElement("contentBarraTamanho") },
+            { property: getElement("propriedadeOpacidade"), contentBar: getElement("contentBarraOpacidade") },
+            { property: getElement("propriedadeDureza"), contentBar: getElement("contentBarraDureza") }],
             size: 5, opacity: 1, hardness: 1, color: { r: 0, g: 0, b: 0 }, brushCanvas: null, brushForm: null, halfSize: null,
             filter: null,
         },
         toolSizeBar: {
-            bar: document.getElementById("barraTamanho"),
-            txt: document.getElementById("txtTamanhoFerramenta"),
+            bar: getElement("barraTamanho"),
+            txt: getElement("txtTamanhoFerramenta"),
         },
         toolOpacityBar: {
-            bar: document.getElementById("barraOpacidade"),
-            txt: document.getElementById("txtOpacidadeFerramenta"),
+            bar: getElement("barraOpacidade"),
+            txt: getElement("txtOpacidadeFerramenta"),
         },
         toolHardnessBar: {
-            bar: document.getElementById("barraDureza"),
-            txt: document.getElementById("txtDurezaFerramenta"),
+            bar: getElement("barraDureza"),
+            txt: getElement("txtDurezaFerramenta"),
         },
         addEventsToElements() {
             D.contentTelas.addEventListener("contextmenu", preventDefaultAction);
@@ -360,6 +369,7 @@ export default function drawingToolsObject() {
                 this.currentLayer.globalCompositeOperation = "source-over";
             }
             this.bttMouseUsed = this.clickPropertieBar = false;
+            infoTraceUsedShift.clear();
         },
         completeToolUsage(e) {
             switch (this.mouseFunctionName) {

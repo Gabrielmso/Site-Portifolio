@@ -1,10 +1,10 @@
-import { cloneReplaceElement, elementById, setStyle } from "../js/geral.js";
+import { cloneReplaceElement, getElement, setStyle } from "../js/geral.js";
 
 export default function notificationsObject() {
     const status = { type: "", opened: false, mouseInWindow: false }, timeTransition = 360,
-        contentWindow = elementById("contentNotificacao"), window = elementById("notificacao"),
-        title = elementById("tituloNotificacao"), text = elementById("textoNotificacao"),
-        buttons = { btt1: elementById("bttNotificacao1"), btt2: elementById("bttNotificacao2") },
+        contentWindow = getElement("contentNotificacao"), window = getElement("notificacao"),
+        title = getElement("tituloNotificacao"), text = getElement("textoNotificacao"),
+        buttons = { btt1: getElement("bttNotificacao1"), btt2: getElement("bttNotificacao2") },
         showTransition = () => {
             setStyle(window, { transition: "none", opacity: "0", bottom: `-${window.offsetHeight + 10}px` });
             setTimeout(() => setStyle(window, { transition: null, opacity: "1", bottom: "10px" }), 7);
