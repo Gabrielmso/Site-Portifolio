@@ -1,13 +1,13 @@
-import { getElement, getAllElements } from "../js/geral.js";
+import { getElement, getAllElementsClass, setStyle } from "../js/geral.js";
 import loadTopoMenu from "../topoMenu/topoMenu.js";
 import particles from "../particulas/particles.js";
 
 let topoMenu;
 function traduSilentFunctions() {
     const titulo = getElement("titulo"), info = getElement("info"),
-        traprogress = getElement("traprogress"), textos = document.getElementsByClassName("texto"),
-        bttverdetalhes = getElement("bttverdetalhes"), telaSlideCarrosel = document.getElementsByClassName("telaslide"),
-        imgTrad = document.getElementsByClassName("imgtrad"), slides = document.getElementsByClassName("slides"),
+        traprogress = getElement("traprogress"), textos = getAllElementsClass("texto"),
+        bttverdetalhes = getElement("bttverdetalhes"), telaSlideCarrosel = getAllElementsClass("telaslide"),
+        imgTrad = getAllElementsClass("imgtrad"), slides = getAllElementsClass("slides"),
         tempoTransicao = 700, styletransicao = "height " + tempoTransicao + "ms ease-in-out";//Armazena a configuração da transição dos slides.
     const proporcao4por3 = 4 / 3;
     let numSlide = 0, contCarrosel = 0, fundoComparacaoAberto = false, mouseTexto = false, imgVisivel = false, mudarCarrosel = true;
@@ -102,7 +102,7 @@ function traduSilentFunctions() {
     window.addEventListener("resize", () => {
         larguraJanela = window.innerWidth;
         alturaJanela = window.innerHeight;
-        traprogress.style.marginTop = larguraJanela <= 650 ? "13px" : "0px";
+        setStyle(traprogress, { marginTop: larguraJanela <= 650 ? "13px" : "0px" })
         ajustarElementos();
         ajustarimgscomparacao();
         ajustarBlurFundo();
@@ -162,14 +162,14 @@ function traduSilentFunctions() {
             }
         }
     }
-
+    const imglimp = getElement("imglimp");
     sessao[1].visualizacao.abre1.addEventListener("click", () => {
-        imglimp.style.opacity = "0";
+        setStyle(imglimp, { opacity: null });
         fundoFadeIn(sessao[1].visualizacao.fundo);
     });
 
     sessao[1].visualizacao.abre2.addEventListener("click", () => {
-        imglimp.style.opacity = "1";
+        setStyle(imglimp, { opacity: "1" });
         fundoFadeIn(sessao[1].visualizacao.fundo);
     });
 
@@ -177,23 +177,22 @@ function traduSilentFunctions() {
 
     function fundoFadeIn(content) {
         const tempo = 650;
-        content.style.display = "block";
-        content.style.transition = "opacity " + tempo + "ms ease-in-out";
+        setStyle(content, { display: "block", transition: "opacity " + tempo + "ms ease-in-out" });
         setTimeout(() => {
-            content.style.opacity = "1";
+            setStyle(content, { opacity: "1" });
             setTimeout(() => {
                 fundoComparacaoAberto = true;
-                content.style.transition = "opacity " + tempo / 2 + "ms ease-in-out";;
+                setStyle(content, { transition: "opacity " + tempo / 2 + "ms ease-in-out" });
             }, tempo);
         }, 16);
     }
 
     function fundoFadeOut(content) {
-        content.style.opacity = "0";
+        setStyle(content, { opacity: null });
         fundoComparacaoAberto = false;
         setTimeout(() => {
-            content.style.display = "none";
-            for (let i = 0; i < imgTrad.length; i++) { imgTrad[i].style.opacity = "0"; }
+            setStyle(content, { display: null });
+            for (let i = 0; i < imgTrad.length; i++) { setStyle(imgTrad[i], { opacity: null }); }
             for (let i = 0; i < sessao.length; i++) {
                 if (sessao[i].comparacao && sessao[i].comparacao.carrosel) { mudarSlideCarrosel(0, i); }
             }
@@ -201,34 +200,30 @@ function traduSilentFunctions() {
     }
 
     function carregamento() {//Faz os elementos do primeiro "slide" aparecerem e após isso permite trocar de slide.
-        getElement("conteudoSlide1").style.opacity = "1";
+        setStyle(getElement("conteudoSlide1"), { opacity: "1" });
         ajustarBlurFundo();
-        info.style.display = "block";
-        traprogress.style.display = "block";
+        setStyle(info, { display: "block" });
+        setStyle(traprogress, { display: "block" });
         tmp = setInterval(brilhotitulo, 1250);
         setTimeout(() => {//Fazer a "traprogress" e a "info" aparecerem.
             const bttdownload = getElement("bttdownload");
-            traprogress.style.opacity = "1";
-            traprogress.style.marginTop = larguraJanela <= 650 ? "13px" : "0px";
-            info.style.opacity = "1";
-            info.style.marginTop = "0px";
-            bttdownload.style.display = "block";
+            setStyle(traprogress, { opacity: "1", marginTop: larguraJanela <= 650 ? "13px" : "0px" });
+            setStyle(info, { opacity: "1", marginTop: "0px" });
+            setStyle(bttdownload, { display: "block" });
             setTimeout(() => {
-                traprogress.style.webkitTransition = "none";
-                traprogress.style.trasition = "none";
-                info.style.webkitTransition = "none";
-                info.style.trasition = "none";
+                setStyle(traprogress, { trasition: "none" });
+                setStyle(info, { trasition: "none" });
             }, 600);
             setTimeout(() => {//Fazer o "bttdownload" aparecer.
-                getElement("espacoparticulas").style.opacity = "1";
-                particles();
-                bttdownload.style.opacity = "1";
-                bttverdetalhes.style.display = "block";
+                setStyle(bttdownload, { opacity: "1" });
+                setStyle(bttverdetalhes, { display: "block" });
                 for (let i = 0; i < sessao.length; i++) { carregarImagemFundo(sessao[i].imagem, i + 1); }
                 setTimeout(() => {//Fazer o "bttverdetalhes" aparecer.
-                    bttverdetalhes.style.opacity = "1";
+                    setStyle(bttverdetalhes, { opacity: "1" });
                     bttverdetalhes.addEventListener("click", mudarslidebttverdetalhes);
                     document.addEventListener("wheel", mudarSlideScroll);
+                    setStyle(getElement("espacoparticulas"), { opacity: "1" });
+                    particles();
                 }, 1000);
             }, 900);
         }, 1500);
@@ -254,22 +249,19 @@ function traduSilentFunctions() {
     function voltaPrimeiroSlide() {
         numSlide = 0;
         tmp = setInterval(brilhotitulo, 1250);
-        const conteudoSlides = document.getElementsByClassName("mycontainer");
+        const conteudoSlides = getAllElementsClass("mycontainer");
         for (let i = 0; i < sessao.length; i++) {
-            sessao[i].slide.style.webkitTransition = styletransicao;
-            sessao[i].slide.style.transition = styletransicao;
-            sessao[i].slide.style.height = "";
-            conteudoSlides[i].style.overflow = "hidden";
+            setStyle(sessao[i].slide, { transition: styletransicao, height: null });
+            setStyle(conteudoSlides[i], { overflow: "hidden" });
         }
-        setTimeout(function () {
+        setTimeout(() => {
             for (let i = 0; i < sessao.length; i++) {
-                sessao[i].slide.style.webkitTransition = "";
-                sessao[i].slide.style.transition = "";
-                conteudoSlides[i].style.overflow = "";
+                setStyle(sessao[i].slide, { transition: null, height: null });
+                setStyle(conteudoSlides[i], { overflow: null });
             }
             mudarMenu();
         }, tempoTransicao + 16);
-        bttverdetalhes.style.opacity = "1";
+        setStyle(bttverdetalhes, { opacity: "1" });
     }
 
     function slideDown(numSlideAtual) {
@@ -279,22 +271,21 @@ function traduSilentFunctions() {
         numSlide--;
         const numSlideAnterior = numSlideAtual - 1, conteudoSlideAtual = sessao[numSlideAtual].slide.getElementsByClassName("mycontainer")[0],
             conteudoSlideAnterior = sessao[numSlideAnterior].slide.getElementsByClassName("mycontainer")[0];
-        sessao[numSlideAnterior].slide.style.webkitTransition = styletransicao;
-        sessao[numSlideAnterior].slide.style.transition = styletransicao;
-        conteudoSlideAnterior.style.overflow = conteudoSlideAtual.style.overflow = "hidden";
-        sessao[numSlideAnterior].slide.style.height = "";
-        setTimeout(function () {
+        setStyle(sessao[numSlideAnterior].slide, { transition: styletransicao, height: null });
+        setStyle(conteudoSlideAnterior, { overflow: "hidden" });
+        setStyle(conteudoSlideAtual, { overflow: "hidden" });
+        setTimeout(() => {
             if (numSlideAtual === 1) {
                 mudarMenu();
                 tmp = setInterval(brilhotitulo, 1250);
             }
-            conteudoSlideAnterior.style.overflow = conteudoSlideAtual.style.overflow = "";
-            sessao[numSlideAnterior].slide.style.webkitTransition = "";
-            sessao[numSlideAnterior].slide.style.transition = "";
+            setStyle(conteudoSlideAnterior, { overflow: null });
+            setStyle(conteudoSlideAtual, { overflow: null });
+            setStyle(sessao[numSlideAnterior].slide, { transition: null });
             document.addEventListener("wheel", mudarSlideScroll);
             bttverdetalhes.addEventListener("click", mudarslidebttverdetalhes);
         }, tempoTransicao + 16);
-        if (numSlideAtual === sessao.length - 1) { bttverdetalhes.style.opacity = "1"; }
+        if (numSlideAtual === sessao.length - 1) { setStyle(bttverdetalhes, { opacity: "1" }); }
     }
 
     function slideUp(numSlideAtual) {
@@ -304,53 +295,52 @@ function traduSilentFunctions() {
         const numProximoSlide = numSlideAtual + 1, conteudoSlideAtual = sessao[numSlideAtual].slide.getElementsByClassName("mycontainer")[0],
             conteudoProximoSlide = sessao[numProximoSlide].slide.getElementsByClassName("mycontainer")[0];
         bttverdetalhes.removeEventListener("click", mudarslidebttverdetalhes);
-        conteudoProximoSlide.style.overflow = conteudoSlideAtual.style.overflow = "hidden";
+        setStyle(conteudoProximoSlide, { overflow: "hidden" });
+        setStyle(conteudoSlideAtual, { overflow: "hidden" });
         clearInterval(tmp);
-        sessao[numSlideAtual].slide.style.webkitTransition = styletransicao;
-        sessao[numSlideAtual].slide.style.transition = styletransicao;
-        sessao[numSlideAtual].slide.style.height = "0px";
-        setTimeout(function () {
-            conteudoSlideAtual.style.overflow = conteudoProximoSlide.style.overflow = "";
-            sessao[numSlideAtual].slide.style.webkitTransition = "";
-            sessao[numSlideAtual].slide.style.transition = "";
+        setStyle(sessao[numSlideAtual].slide, { transition: styletransicao, height: "0px" });
+        setTimeout(() => {
+            setStyle(conteudoProximoSlide, { overflow: null });
+            setStyle(conteudoSlideAtual, { overflow: null });
+            setStyle(sessao[numSlideAtual].slide, { transition: null });
             bttverdetalhes.addEventListener("click", mudarslidebttverdetalhes);
             document.addEventListener("wheel", mudarSlideScroll);
         }, tempoTransicao + 16);
         if (numSlideAtual === 0) { mudarMenu(); }
-        else if (numProximoSlide === sessao.length - 1) { bttverdetalhes.style.opacity = "0"; }
+        else if (numProximoSlide === sessao.length - 1) { setStyle(bttverdetalhes, { opacity: "0" });; }
     }
 
     function mudarSlideCarrosel(numSlide, numSessao) {
         mudarCarrosel = false;
         const slides = sessao[numSessao].comparacao.carrosel.slides, icones = sessao[numSessao].comparacao.carrosel.icones,
             contentIcones = sessao[numSessao].comparacao.carrosel.contentIcons;
-        contentIcones.style.transition = "left 350ms ease-in-out";
+        setStyle(contentIcones, { transition: "left 350ms ease-in-out" });
         for (let i = 0; i < slides.length; i++) {
-            slides[i].style.transition = "width 350ms ease-in-out";
+            setStyle(slides[i], { transition: "width 350ms ease-in-out" });
         }
         setTimeout(() => {
             for (let i = 0; i < slides.length; i++) {
-                if (i != numSlide) { slides[i].style.width = "0%"; }
+                if (i != numSlide) { setStyle(slides[i], { width: "0%" }); }
             }
-            slides[numSlide].style.width = "100%";
-            contentIcones.style.left = ((larguraJanela / 2) - 44) - (88 * numSlide) + "px";
-            icones[numSlide].style.border = "1px solid rgba(213, 192, 107, 0.55)";
-            setTimeout(function () {
-                icones[numSlide].style.opacity = "1";
+            setStyle(slides[numSlide], { width: "100%" });
+            setStyle(contentIcones, { left: ((larguraJanela / 2) - 44) - (88 * numSlide) + "px" });
+            setStyle(icones[numSlide], { border: "1px solid rgba(213, 192, 107, 0.55)" });
+            setTimeout(() => {
+                setStyle(icones[numSlide], { opacity: "1" });
                 for (let i = 0; i < icones.length; i++) {
-                    if (i != numSlide) { icones[i].style.opacity = icones[i].style.border = ""; }
-                    slides[i].style.transition = "";
+                    if (i != numSlide) { setStyle(icones[1], { opacity: null, border: null }); }
+                    setStyle(slides[i], { transition: null });
                 }
-                contentIcones.style.transition = "";
+                setStyle(contentIcones, { transition: null });
                 imgVisivel = false;
-                for (let i = 0; i < imgTrad.length; i++) { imgTrad[i].style.opacity = "0"; }
+                for (let i = 0; i < imgTrad.length; i++) { setStyle(imgTrad[i], { opacity: "0" }); }
                 mudarCarrosel = true;
             }, 350)
         }, 16)
     }
 
     function mudarMenu() {
-        if (numSlide === 0) { topoMenu.changeTheme(true) }
+        if (numSlide === 0) { topoMenu.changeTheme(true); }
         else { topoMenu.changeTheme(false); }
     }
 
@@ -360,70 +350,80 @@ function traduSilentFunctions() {
             for (let i = 0; i < sessao.length; i++) {
                 if (i != 2 && sessao[i].comparacao && sessao[i].comparacao.imagem) {
                     const el = sessao[i].comparacao.imagem.container;
-                    el.style.height = altura + "px";
-                    el.style.width = altura * proporcao4por3 + "px";
+                    setStyle(el, { height: altura + "px", width: altura * proporcao4por3 + "px" });
                 } else if (i === 2) {
                     const largura = Math.round(larguraJanela * (98 / 100));
-                    sessao[2].comparacao.imagem.cgVertical.style.display = "none";
-                    sessao[2].comparacao.imagem.cgHorizontal.style.display = "block";
-                    sessao[2].comparacao.fecha.style.width = largura + "px";
-                    sessao[2].comparacao.fecha.style.height = largura / (proporcao4por3 * 2) + "px";
+                    setStyle(sessao[2].comparacao.imagem.cgVertical, { display: "none" });
+                    setStyle(sessao[2].comparacao.imagem.cgHorizontal, { display: "block" });
+                    setStyle(sessao[2].comparacao.fecha, {
+                        width: largura + "px", height: largura / (proporcao4por3 * 2) + "px"
+                    });
                 }
             }
-            sessao[1].visualizacao.fecha.style.height = Math.round(alturaJanela * (7.5 / 10)) + "px";
-            sessao[1].visualizacao.fecha.style.width = Math.round(alturaJanela * (7.5 / 10)) * proporcao4por3 + "px";
+            setStyle(sessao[1].visualizacao.fecha, {
+                width: Math.round(alturaJanela * (7.5 / 10)) * proporcao4por3 + "px",
+                height: Math.round(alturaJanela * (7.5 / 10)) + "px"
+            });
         } else {
             for (let i = 0; i < sessao.length; i++) {
                 if (i != 2 && sessao[i].comparacao && sessao[i].comparacao.imagem) {
                     const el = sessao[i].comparacao.imagem.container;
-                    el.style.width = larguraJanela + "px";
-                    el.style.height = larguraJanela / proporcao4por3 + "px";;
+                    setStyle(el, { height: larguraJanela / proporcao4por3 + "px", width: larguraJanela + "px" });
                 } else if (i === 2) {
                     const altura = Math.round(alturaJanela * (98 / 100));
-                    sessao[2].comparacao.imagem.cgVertical.style.display = "block";
-                    sessao[2].comparacao.imagem.cgHorizontal.style.display = "none";
-                    sessao[2].comparacao.fecha.style.height = altura + "px";
-                    sessao[2].comparacao.fecha.style.width = altura * (proporcao4por3 / 2) + "px";
+                    setStyle(sessao[2].comparacao.imagem.cgVertical, { display: "block" });
+                    setStyle(sessao[2].comparacao.imagem.cgHorizontal, { display: "none" });
+                    setStyle(sessao[2].comparacao.fecha, {
+                        width: altura * (proporcao4por3 / 2) + "px", height: altura + "px"
+                    });
                 }
             }
         }
         for (let i = 0; i < sessao.length; i++) {
             if (sessao[i].comparacao && sessao[i].comparacao.carrosel) {
-                sessao[i].comparacao.carrosel.contentIcons.style.left = ((larguraJanela / 2) - 44) - (88 * contCarrosel) + "px";
+                setStyle(sessao[i].comparacao.carrosel.contentIcons, {
+                    left: ((larguraJanela / 2) - 44) - (88 * contCarrosel) + "px"
+                });
             }
         }
-        for (let i = 0; i < telaSlideCarrosel.length; i++) { telaSlideCarrosel[i].style.height = alturaJanela - 68 + "px"; }
+        for (let i = 0; i < telaSlideCarrosel.length; i++) {
+            setStyle(telaSlideCarrosel[i], { height: alturaJanela - 68 + "px" });
+        }
         if (larguraJanela / (alturaJanela - 68) > proporcao4por3) {
             const alturaCarrosel = Math.round((alturaJanela - 68) * (98 / 100));
             for (let i = 0; i < slides.length; i++) {
-                slides[i].style.height = alturaCarrosel + "px";
-                slides[i].style.width = alturaCarrosel * proporcao4por3 + "px";
+                setStyle(slides[i], {
+                    height: alturaCarrosel + "px",
+                    width: alturaCarrosel * proporcao4por3 + "px"
+                });
             }
         } else {
             for (let i = 0; i < slides.length; i++) {
-                slides[i].style.width = larguraJanela + "px";
-                slides[i].style.height = larguraJanela / proporcao4por3 + "px";
+                setStyle(slides[i], {
+                    width: larguraJanela + "px",
+                    height: larguraJanela / proporcao4por3 + "px"
+                });
             }
         }
     }
     function carregarImagemFundo(fundo, i) {
         const imagem = new Image();
-        imagem.onload = (e) => fundo.style.backgroundImage = "url('" + e.currentTarget.src + "')";
+        imagem.onload = (e) => setStyle(fundo, { backgroundImage: "url('" + e.currentTarget.src + "')" });
         imagem.src = "/ContTraduSilent/imagens/fundo/fundo" + i + ".jpg";
     }
-    function compararImagens() {
-        this.style.opacity = imgVisivel ? "0" : "1";
+    function compararImagens(e) {
+        setStyle(e.currentTarget, { opacity: imgVisivel ? "0" : "1" });
         imgVisivel = !imgVisivel;
     }
     function ajustarElementos() {
         const largura = larguraJanela <= alturaJanela ? "90%" : "55%";
         for (let i = 0; i < sessao.length; i++) {
-            if (sessao[i].comparacao) { sessao[i].comparacao.abre.style.width = largura; }
+            if (sessao[i].comparacao) { setStyle(sessao[i].comparacao.abre, { width: largura }); }
         }
     }
     function ajustarBlurFundo() {
         const num = (larguraJanela > alturaJanela ? larguraJanela : alturaJanela) / 333;
-        for (let i = 0; i < sessao.length; i++) { sessao[i].imagem.style.filter = "blur(" + num + "px)"; }
+        for (let i = 0; i < sessao.length; i++) { setStyle(sessao[i].imagem, { filter: "blur(" + num + "px)" }); }
     }
     function scrollTextoMudarSlide(e) {
         const el = e.currentTarget;

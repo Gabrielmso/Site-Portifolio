@@ -51,3 +51,4 @@ export const getDistanceCoordinates = (p1, p2) => (((p2.x - p1.x) ** 2 + (p2.y -
 export const randomNumber = (min, max) => (Math.random() * (max - min) + min);
 export const getElement = data_id => document.querySelector(`[data-id="${data_id}"]`);
 export const getAllElements = attr => document.querySelectorAll(`[${attr}]`);
+export const getAllElementsClass = className => document.getElementsByClassName(className);
