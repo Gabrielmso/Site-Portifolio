@@ -4,10 +4,10 @@ import particles from "../particulas/particles.js";
 
 let topoMenu;
 function traduSilentFunctions() {
-    const titulo = getElement("titulo"), info = getElement("info"),
-        traprogress = getElement("traprogress"), textos = getAllElementsClass("texto"),
-        bttverdetalhes = getElement("bttverdetalhes"), telaSlideCarrosel = getAllElementsClass("telaslide"),
-        imgTrad = getAllElementsClass("imgtrad"), slides = getAllElementsClass("slides"),
+    const titulo = getElement("titulo"), info = getElement("info"), traprogress = getElement("traprogress"),
+        textos = getAllElementsClass("texto"), bttverdetalhes = getElement("bttverdetalhes"),
+        telaSlideCarrosel = getAllElementsClass("telaslide"), imgTrad = getAllElementsClass("imgtrad"),
+        slides = getAllElementsClass("slides"),
         tempoTransicao = 700, styletransicao = "height " + tempoTransicao + "ms ease-in-out";//Armazena a configuração da transição dos slides.
     const proporcao4por3 = 4 / 3;
     let numSlide = 0, contCarrosel = 0, fundoComparacaoAberto = false, mouseTexto = false, imgVisivel = false, mudarCarrosel = true;
@@ -105,7 +105,6 @@ function traduSilentFunctions() {
         setStyle(traprogress, { marginTop: larguraJanela <= 650 ? "13px" : "0px" })
         ajustarElementos();
         ajustarimgscomparacao();
-        ajustarBlurFundo();
         mudarMenu();
     });
 
@@ -200,8 +199,7 @@ function traduSilentFunctions() {
     }
 
     function carregamento() {//Faz os elementos do primeiro "slide" aparecerem e após isso permite trocar de slide.
-        setStyle(getElement("conteudoSlide1"), { opacity: "1" });
-        ajustarBlurFundo();
+        setStyle(getElement("conteudoSlide1"), { opacity: null });
         setStyle(info, { display: "block" });
         setStyle(traprogress, { display: "block" });
         tmp = setInterval(brilhotitulo, 1250);
@@ -328,7 +326,7 @@ function traduSilentFunctions() {
             setTimeout(() => {
                 setStyle(icones[numSlide], { opacity: "1" });
                 for (let i = 0; i < icones.length; i++) {
-                    if (i != numSlide) { setStyle(icones[1], { opacity: null, border: null }); }
+                    if (i != numSlide) { setStyle(icones[i], { opacity: null, border: null }); }
                     setStyle(slides[i], { transition: null });
                 }
                 setStyle(contentIcones, { transition: null });
@@ -421,10 +419,6 @@ function traduSilentFunctions() {
             if (sessao[i].comparacao) { setStyle(sessao[i].comparacao.abre, { width: largura }); }
         }
     }
-    function ajustarBlurFundo() {
-        const num = (larguraJanela > alturaJanela ? larguraJanela : alturaJanela) / 333;
-        for (let i = 0; i < sessao.length; i++) { setStyle(sessao[i].imagem, { filter: "blur(" + num + "px)" }); }
-    }
     function scrollTextoMudarSlide(e) {
         const el = e.currentTarget;
         if (e.deltaY > 0) {
@@ -432,7 +426,7 @@ function traduSilentFunctions() {
         } else { mouseTexto = el.scrollTop === 0 ? false : true; }
     }
     ajustarimgscomparacao();
-    setTimeout(carregamento, 900);
+    setTimeout(carregamento, 800);
 }
 
 export default async function traduSilent() {
