@@ -18,10 +18,10 @@
     <script type="module">
         import loadTopoMenu from "./topoMenu/topoMenu.js";
         import particles from "./particulas/particles.js";
-        import { fadeOutLoading } from "./js/geral.js";
+        import { fadeOutLoading, getElement } from "./js/geral.js";
         window.onload = async () => {
             if (!(await loadTopoMenu())) { return; }
-            particles();
+            particles(getElement("particulas")).start();
             fadeOutLoading();
         };
     </script>

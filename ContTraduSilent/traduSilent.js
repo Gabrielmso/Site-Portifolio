@@ -1,6 +1,6 @@
 import { getElement, getAllElementsClass, setStyle } from "../js/geral.js";
 import loadTopoMenu from "../topoMenu/topoMenu.js";
-import particles from "../particulas/particles.js";
+import particlesAnimation from "../particulas/particles.js";
 
 let topoMenu;
 function traduSilentFunctions() {
@@ -8,6 +8,7 @@ function traduSilentFunctions() {
         textos = getAllElementsClass("texto"), bttverdetalhes = getElement("bttverdetalhes"),
         telaSlideCarrosel = getAllElementsClass("telaslide"), imgTrad = getAllElementsClass("imgtrad"),
         slides = getAllElementsClass("slides"),
+        particles = particlesAnimation(getElement("particulas")),
         tempoTransicao = 700, styletransicao = "height " + tempoTransicao + "ms ease-in-out";//Armazena a configuração da transição dos slides.
     const proporcao4por3 = 4 / 3;
     let numSlide = 0, contCarrosel = 0, fundoComparacaoAberto = false, mouseTexto = false, imgVisivel = false, mudarCarrosel = true;
@@ -182,11 +183,13 @@ function traduSilentFunctions() {
             setTimeout(() => {
                 fundoComparacaoAberto = true;
                 setStyle(content, { transition: "opacity " + tempo / 2 + "ms ease-in-out" });
+                particles.stop();
             }, tempo);
         }, 16);
     }
 
     function fundoFadeOut(content) {
+        particles.start();
         setStyle(content, { opacity: null });
         fundoComparacaoAberto = false;
         setTimeout(() => {
@@ -221,15 +224,14 @@ function traduSilentFunctions() {
                     bttverdetalhes.addEventListener("click", mudarslidebttverdetalhes);
                     document.addEventListener("wheel", mudarSlideScroll);
                     setStyle(getElement("espacoparticulas"), { opacity: "1" });
-                    particles();
+                    particles.start();
                 }, 1000);
             }, 900);
         }, 1500);
     };
 
     function brilhotitulo() {
-        if (titulo.classList.contains("brilho")) { titulo.classList.remove("brilho"); }
-        else { titulo.classList.add("brilho"); }
+        titulo.classList.toggle("brilho");
     }
 
     function mudarSlideScroll(e) {
