@@ -50,7 +50,6 @@ function loadApp() {
     createGridWindow.addDependencies({ project, notification, contentTelas, txtPorcentagemZoom });
 
     project.addEventsToElements();
-    notification.addEventsToElements();
 
     getElement("bttCriarNovoProjeto").addEventListener("mousedown", () => createProjectWindow.open("create"));
     getElement("bttCriarGrade").addEventListener("mousedown", () => createGridWindow.open());
