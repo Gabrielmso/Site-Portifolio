@@ -55,7 +55,7 @@ export default function hotKeysObject() {
                 D.drawingTools.selectDrawingTool(D.drawingTools.selectedTool);
             }
         },
-        keyDownEvent = (e) => {
+        keyDownEvent = e => {
             if (D.drawingTools.painting) { e.preventDefault(); return; }
             if (status.ctrlPressed) {
                 const keyFunction = hotKeysWithCtrl[e.code];
@@ -79,7 +79,7 @@ export default function hotKeysObject() {
                 mainKeysFunction();
             }
         },
-        keyUpEvent = (e) => {
+        keyUpEvent = e => {
             const mainKeysFunction = mainKeysEventKeyUp[e.key];
             if (mainKeysFunction) {
                 e.preventDefault();

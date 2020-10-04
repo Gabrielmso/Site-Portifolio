@@ -1,7 +1,7 @@
 import { getElement, setStyle } from "../js/geral.js";
 
 export default function notificationsObject() {
-    const status = { type: "", opened: false, mouseInWindow: false }, timeTransition = 360,
+    const status = { type: "", opened: false, mouseInWindow: false, timeToClose: 0 }, timeTransition = 360,
         bttsFunctions = { btt1: () => { }, btt2: () => { } },
         contentWindow = getElement("contentNotificacao"), window = getElement("notificacao"),
         title = getElement("tituloNotificacao"), text = getElement("textoNotificacao"),
@@ -41,23 +41,24 @@ export default function notificationsObject() {
         },
         close = () => {
             if (!status.opened || status.mouseInWindow && status.type === "notify") { return; }
-            status.opened = false;
+            clearTimeout(status.timeToClose);
+            status.opened = status.mouseInWindow = false;
             removeEventsToElements();
             hideTransition();
         },
         modeType = {
-            confirm(properties) {
+            confirm({ function: fn }) {
                 setStyle(window, { backgroundColor: "rgba(25, 5, 125, 0.9)" });
                 setStyle(buttons.btt2, { display: "block" });
                 buttons.btt1.textContent = "Sim";
                 buttons.btt2.textContent = "Não";
                 bttsFunctions.btt1 = () => {
                     close();
-                    setTimeout(properties.function, timeTransition);
+                    setTimeout(fn, timeTransition);
                 }
                 bttsFunctions.btt2 = close;
             },
-            notify(properties) {
+            notify({ time }) {
                 setStyle(window, { backgroundColor: "rgba(145, 5, 5, 0.9)" });
                 setStyle(buttons.btt2, { display: "none" });
                 buttons.btt1.textContent = "Ok";
@@ -66,7 +67,7 @@ export default function notificationsObject() {
                     close();
                 }
                 bttsFunctions.btt2 = () => { };
-                setTimeout(close, properties.time + timeTransition);
+                status.timeToClose = setTimeout(close, time + timeTransition);
             }
         }
 
