@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <title>GM - GridImage</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.75">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="keywords" content="GridImage, GM">
+    <meta name="description"
+        content="GridImage, Aplicativo Web gratuito que permite adicionar grade em imagens para esboço.">
+    <meta name="Author" content="Gabriel Martins Soares de Oliveira">
+    <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico">
+    <link rel="stylesheet" href="css/styleGeral.css">
+    <link rel="stylesheet" href="topoMenu/topoMenu.css">
+    <link rel="stylesheet" href="gridImage/gridImage.css">
+    <script type="module">
+        import gridImage from "./gridImage/gridImage.js";
+        import { fadeOutLoading } from "./js/geral.js";
+        window.onload = async () => {
+            if (!(await gridImage())) { return; }
+            fadeOutLoading();
+        };
+    </script>
+</head>
+
+<body>
+    <main>
+        <section data-id="contentSelecionarImagem">
+            <div data-id="selecionarImagem" class="dragLeave">
+
+            </div>
+        </section>
+
+    </main>
+    <div data-id="carregamento"></div>
+</body>
+
+</html>

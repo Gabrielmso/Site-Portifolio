@@ -112,7 +112,7 @@ function loadFile(url) {
 }
 
 export default async function loadTopoMenu() {
-    const HTMLcontent = await loadFile("./menuTopo.html");
+    const HTMLcontent = await loadFile("./topoMenu/menuTopo.html");
     if (HTMLcontent) {
         document.body.insertAdjacentHTML("afterbegin", await HTMLcontent.text());
         return callTopMenuObject();

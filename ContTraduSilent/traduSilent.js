@@ -111,7 +111,7 @@ function traduSilentFunctions() {
 
     topoMenu.logo.addEventListener("click", () => {
         if (numSlide > 0) { voltaPrimeiroSlide(); }
-        else { window.location.href = "index.html"; }
+        else { window.location.href = "./"; }
     });
 
     info.addEventListener("mouseenter", () => mouseTexto = true);

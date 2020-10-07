@@ -279,11 +279,10 @@
 }
 
 [data-id="opcoesmenu"] {
-    display: block;
-    position: relative;
-    width: 396px;
-    margin-left: auto;
-    margin-right: auto;
+    display: inline-block;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     list-style: none;
     -webkit-transition: all 0.3 ease;
     transition: all 0.3s ease;
@@ -414,11 +413,11 @@
 }
 
 [data-id="opcoesmenu2"] li:hover ul {
-    max-height: 100px;
+    max-height: 150px;
 }
 
 [data-id="opcoesmenu"] li:hover ul {
-    max-height: 100px;
+    max-height: 150px;
 }
 
 [data-id="opcoesmenu"] li ul:hover {
