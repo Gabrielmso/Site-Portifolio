@@ -225,7 +225,6 @@ input[type="range"]::-webkit-slider-thumb {
 .bttColorPaint {
     position: relative;
     float: right;
-    border: none;
     top: 10px;
     min-width: 85px;
     margin-left: 10px;

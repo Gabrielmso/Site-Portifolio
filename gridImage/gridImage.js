@@ -1,8 +1,15 @@
 import { setStyle } from "../js/geral.js";
 import loadTopoMenu from "../topoMenu/topoMenu.js";
+import selectImageObject from "./selectImage.js";
 
 let topoMenu;
 function loadApp() {
+    const selectImage = selectImageObject();
+    
+
+
+
+
     topoMenu.logo.addEventListener("click", () => {
         window.location.href = "./";
     });

@@ -1,4 +1,4 @@
-import { getElement, setStyle } from "../js/geral.js";
+import { getElement, setStyle, createElement } from "../js/geral.js";
 
 export default function createProjectWindowObject() {
     const D = {}, status = { neverOpened: true, mode: "create" },
@@ -63,8 +63,7 @@ export default function createProjectWindowObject() {
             }
         },
         getFile = () => {
-            const input = document.createElement("input");
-            input.setAttribute("type", "file");
+            const input = createElement("input", { type: "file", accept: ".gm" });
             input.addEventListener("change", (e) => fileValidation(e.currentTarget.files[0]));
             input.click();
         },

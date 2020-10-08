@@ -32,6 +32,14 @@ export const cloneReplaceElement = oldElement => {
     return newElement;
 }
 
+export const createElement = (tagName, attributes) => {
+    const newElement = document.createElement(tagName);
+    for (const prop in attributes) {
+        newElement.setAttribute(prop, attributes[prop]);
+    }
+    return newElement;
+}
+
 export const cloneElement = oldElement => oldElement.cloneNode(true);
 
 export const setStyle = (element, style) => {

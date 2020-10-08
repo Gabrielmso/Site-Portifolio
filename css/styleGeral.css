@@ -1,7 +1,7 @@
 @charset "UTF-8";
 @font-face {
     font-family: "Fontetitulo1";
-    src: url("../fonts/font1.woff");
+    src: url("../fonts/Raleway-Thin.ttf");
 }
 
 @font-face {
@@ -40,6 +40,7 @@
 * {
     margin: 0px;
     padding: 0px;
+    outline: none;
 }
 
 html {
@@ -55,10 +56,14 @@ body {
     line-height: 1.5;
 }
 
+button{
+    border: none;
+}
+
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
     margin-bottom: .5rem;
     font-weight: 500;
-    line-height: 1.2;
+    line-height: 1.1;
 }
 
 .h6, h6 {

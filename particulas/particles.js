@@ -4,7 +4,7 @@ export default function particlesAnimation(canvasElement) {
    const ctx = canvasElement.getContext("2d"),
       lineDistance = 225;
    let arrayParticles, startAnimation, stopBlurParticles;
-   window.addEventListener("resize", start);
+   window.addEventListener("resize", restart);
 
    function moveParticles() {
       for (let i = 0, n = arrayParticles.length; i < n; i++) {
@@ -103,6 +103,11 @@ export default function particlesAnimation(canvasElement) {
       startAnimation = requestAnimationFrame(animation, ctx.canvas);
       stopBlurParticles = false;
       blurParticles();
+   }
+
+   function restart() {
+      arrayParticles = null;
+      start();
    }
 
    let now, before = 0;
