@@ -16,7 +16,8 @@ function loadApp() {
 
     selectImage.addDependencies({ loadImageToCanvas });
     loadImageToCanvas.addDependencies({ selectImage, screen, createGrid, app });
-    createGrid.addDependencies({ loadImageToCanvas, app, screen })
+    createGrid.addDependencies({ loadImageToCanvas, app, screen });
+    app.addDependencies({ loadImageToCanvas })
 
     topoMenu.logo.addEventListener("click", () => {
         window.location.href = "./";

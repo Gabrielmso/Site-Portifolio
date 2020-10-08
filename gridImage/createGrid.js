@@ -1,10 +1,22 @@
-export default function createGridObject() {
-    const D = {}, properties = { size: 50, color: null, position: null },
-        renderGrid = () => {
+import { createElement } from "../js/geral.js";
 
+export default function createGridObject() {
+    const D = {}, properties = {
+        size: 50,
+        color: { r: 0, g: 0, b: 0 }, opacity: 1,
+        position: { x: 0, y: 0 }
+    },
+        renderGrid = () => {
+            if (!D.app.isLoad) { return; }
         },
         createGrid = () => {
-
+            if (D.app.isLoad) { return; }
+            const { width, heght } = D.loadImageToCanvas.imageProperties.resolution;
+            const canvas = createElement("canvas", { class: "canvas canvasGrid", width, heght })
+                .getContext("2d");
+            D.screen.appendChild(canvas.canvas);
+            D.app.canvasGrid = canvas;
+            D.app.init();
         }
     return {
         set size(num) {
@@ -19,9 +31,13 @@ export default function createGridObject() {
             properties.color = { r, g, b };
             renderGrid();
         },
+        set opacity(num) {
+            properties.opacity = num;
+            renderGrid();
+        },
         init() {
             createGrid();
-            delete this.createGrid;
+            delete this.init;
         },
         addDependencies(dependencies) {
             for (const prop in dependencies) { D[prop] = dependencies[prop]; }

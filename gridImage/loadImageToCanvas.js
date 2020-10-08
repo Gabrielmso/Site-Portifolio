@@ -39,7 +39,6 @@ export default function loadImageToCanvasObject() {
             D.selectImage.finish();
             D.app.canvasImage = canvas;
             D.createGrid.init();
-            fadeTransition.out();
         },
         load = (imageFile, nameFile) => {
             const reader = new FileReader();
@@ -54,9 +53,14 @@ export default function loadImageToCanvasObject() {
         };
     return {
         get imageProperties() { return imageProperties; },
-        load,
-        conclude() {
-            for (const prop in this) { delete this[prop]; }
+        load(imageFile, nameFile) {
+            load(imageFile, nameFile);
+            delete this.load;
+        },
+        async finish() {
+            await fadeTransition.out();
+            delete this.addDependencies;
+            delete this.finish;
         },
         addDependencies(dependencies) {
             for (const prop in dependencies) { D[prop] = dependencies[prop]; }
