@@ -2,15 +2,16 @@ import { setStyle, getElement, createElement } from "../js/geral.js";
 
 
 export default function selectImageObject() {
+    let dragEnterElement;
     const D = {}, content = getElement("contentSelecionarImagem"),
         bttSelectImage = getElement("bttSelecionarImagem"),
         validExtentions = ["png", "jpg", "jpeg", "bmp"],
         animationGradient = (() => {
-            const minDeg = 130, maxDeg = 220;
+            const minDeg = 130, maxDeg = 220, gradiente = getElement("gradiente");
             let deg = 130, step = 4.8, animation;
             const updateGradient = () => {
                 deg = deg > maxDeg ? maxDeg : deg < minDeg ? minDeg : deg;
-                setStyle(content, {
+                setStyle(gradiente, {
                     backgroundImage: "linear-gradient(" + deg + "deg, rgb(200, 50, 9) -10%, rgba(17, 1, 50) 90%)"
                 });
             },
@@ -33,18 +34,25 @@ export default function selectImageObject() {
                 else { regress(); }
             }
         })(),
-        concludeLoadImage = async file => {
+        conclude = async (file, name) => {
             animationGradient(true);
-            await new Promise((resolve) => setTimeout(resolve, 200));
-            const reader = new FileReader();
-            reader.onload = e => D.loadImageToCanvas(e.currentTarget.result)
-            reader.readAsDataURL(file)
+            await new Promise((resolve) => setTimeout(resolve, 90));
+            bttSelectImage.removeEventListener("mousedown", bttClickToSelectImage);
+            content.removeEventListener("dragenter", dragEnterFile);
+            content.removeEventListener("dragleave", dragLeaveFile);
+            content.removeEventListener("drop", dropFileToLoad);
+            D.loadImageToCanvas.load(file, name);
         },
         imageValidation = file => {
-            if (!file) { return; }
-            const extention = file.name.split('.').pop().toLowerCase();
-            const imageValid = validExtentions.includes(extention) && file.type.includes("image");
-            if (imageValid) { concludeLoadImage(file); }
+            if (!file) {
+                animationGradient(false);
+                return;
+            }
+            const [name, extention] = file.name.split('.');
+            const extentionLowerCase = extention.toLowerCase();
+            const validName = name != "";
+            const imageValid = validExtentions.includes(extentionLowerCase) && file.type.includes("image");
+            if (imageValid && validName) { conclude(file, name); }
             else { animationGradient(false); }
         },
         bttClickToSelectImage = () => {
@@ -55,8 +63,13 @@ export default function selectImageObject() {
             inputFile.addEventListener("change", (e) => imageValidation(e.currentTarget.files[0]));
             inputFile.click();
         },
-        dragEnterFile = () => animationGradient(true),
-        dragLeaveFile = () => animationGradient(false),
+        dragEnterFile = e => {
+            dragEnterElement = e.target;
+            animationGradient(true)
+        },
+        dragLeaveFile = e => {
+            if (dragEnterElement === e.target) { animationGradient(false); }
+        },
         dropFileToLoad = e => imageValidation(e.dataTransfer.files[0]);
 
     bttSelectImage.addEventListener("mousedown", bttClickToSelectImage);
@@ -64,6 +77,10 @@ export default function selectImageObject() {
     content.addEventListener("dragleave", dragLeaveFile);
     content.addEventListener("drop", dropFileToLoad);
     return {
+        finish() {
+            content.remove();
+            for (const prop in this) { delete this[prop]; }
+        },
         addDependencies(dependencies) {
             for (const prop in dependencies) { D[prop] = dependencies[prop]; }
         }

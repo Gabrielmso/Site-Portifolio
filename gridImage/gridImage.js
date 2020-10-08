@@ -9,7 +9,7 @@ function loadApp() {
     const loadImageToCanvas = loadImageToCanvasObject();
 
     selectImage.addDependencies({ loadImageToCanvas });
-
+    loadImageToCanvas.addDependencies({ selectImage })
 
     topoMenu.logo.addEventListener("click", () => {
         window.location.href = "./";

@@ -249,13 +249,13 @@ export default function drawingToolsObject() {
         },
         changeToolSize(newSize) {
             const res = D.project.properties.resolution,
-                expoente = logarithm(+(this.toolSizeBar.bar.max) - 50, res.proportion > 1 ? res.width : res.height),
+                expoente = logarithm(+(this.toolSizeBar.bar.max) - 50, Math.max(res.width, res.height)),
                 value = newSize <= 50 ? newSize : 50 + Math.pow(newSize - 50, 1 / expoente);
             this.changeToolSizeBar(value, false);
         },
         changeToolSizeBar(value, show) {
             if (!(tools[this.selectedTool].prop)) { return; }
-            const res = D.project.properties.resolution, maxSize = res.proportion > 1 ? res.width : res.height,
+            const res = D.project.properties.resolution, maxSize = Math.max(res.width, res.height),
                 width = +(this.toolSizeBar.bar.max), expoente = logarithm(width - 50, maxSize);
             value = this.toolSizeBar.bar.value = value >= width ? width : value;
             const size = value < 1 ? 0.5 : value <= 50 ? Math.round(value) : Math.round((value - 50) ** expoente) + 50;
