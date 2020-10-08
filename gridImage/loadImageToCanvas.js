@@ -13,7 +13,7 @@ export default function loadImageToCanvasObject() {
                     setTimeout(() => {
                         setStyle(content, { opacity: "1" });
                         setTimeout(resolve, time)
-                    }, 16);
+                    }, 18);
                 });
             },
                 fadeOut = () => {
@@ -31,10 +31,15 @@ export default function loadImageToCanvasObject() {
         })(),
         renderImageInCanvas = async image => {
             await fadeTransition.in();
+            const { width, height } = imageProperties.resolution;
+            const canvas = createElement("canvas", { class: "canvas canvasImage", width, height })
+                .getContext("2d");
+            canvas.drawImage(image, 0, 0, width, height);
+            D.screen.appendChild(canvas.canvas);
             D.selectImage.finish();
-            await fadeTransition.out();
-            alert("Ainda está em desenvolvimento, volte em breve!");
-            window.location.reload();
+            D.app.canvasImage = canvas;
+            D.createGrid.init();
+            fadeTransition.out();
         },
         load = (imageFile, nameFile) => {
             const reader = new FileReader();
@@ -50,6 +55,9 @@ export default function loadImageToCanvasObject() {
     return {
         get imageProperties() { return imageProperties; },
         load,
+        conclude() {
+            for (const prop in this) { delete this[prop]; }
+        },
         addDependencies(dependencies) {
             for (const prop in dependencies) { D[prop] = dependencies[prop]; }
         }

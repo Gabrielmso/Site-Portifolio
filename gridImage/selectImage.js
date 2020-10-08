@@ -12,7 +12,7 @@ export default function selectImageObject() {
             const updateGradient = () => {
                 deg = deg > maxDeg ? maxDeg : deg < minDeg ? minDeg : deg;
                 setStyle(gradiente, {
-                    backgroundImage: "linear-gradient(" + deg + "deg, rgb(200, 50, 10) -10%, rgba(15, 0, 50) 90%)"
+                    backgroundImage: "linear-gradient(" + deg + "deg, rgb(200, 50, 10) -10%, rgb(15, 0, 50) 90%)"
                 });
             },
                 stop = () => cancelAnimationFrame(animation),
@@ -30,7 +30,7 @@ export default function selectImageObject() {
                 }
             return (make) => {
                 stop();
-                if (make) { progress() }
+                if (make) { progress(); }
                 else { regress(); }
             }
         })(),
@@ -56,10 +56,7 @@ export default function selectImageObject() {
             else { animationGradient(false); }
         },
         bttClickToSelectImage = () => {
-            const inputFile = createElement("input", {
-                type: "file",
-                accept: ".png, .jpg, .jpeg, .bmp"
-            });
+            const inputFile = createElement("input", { type: "file", accept: ".png, .jpg, .jpeg, .bmp" });
             inputFile.addEventListener("change", (e) => imageValidation(e.currentTarget.files[0]));
             inputFile.click();
         },
@@ -67,9 +64,7 @@ export default function selectImageObject() {
             dragEnterElement = e.target;
             animationGradient(true)
         },
-        dragLeaveFile = e => {
-            if (dragEnterElement === e.target) { animationGradient(false); }
-        },
+        dragLeaveFile = e => { if (dragEnterElement === e.target) { animationGradient(false); } },
         dropFileToLoad = e => imageValidation(e.dataTransfer.files[0]);
 
     bttSelectImage.addEventListener("mousedown", bttClickToSelectImage);

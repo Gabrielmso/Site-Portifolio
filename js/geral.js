@@ -14,9 +14,9 @@ export const throttle = (func, limit) => {
     }
 }
 
-export const getImage = (url, fnOnLoad) => {
+export const getImage = (url, fnOnLoad = false) => {
     const image = new Image();
-    if (fnOnLoad) { image.onload = fnOnLoad }
+    if (fnOnLoad) { image.onload = fnOnLoad; }
     image.src = url;
     return image;
 }

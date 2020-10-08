@@ -1,15 +1,22 @@
-import { setStyle, preventDefaultAction } from "../js/geral.js";
+import { setStyle, preventDefaultAction, getElement } from "../js/geral.js";
 import loadTopoMenu from "../topoMenu/topoMenu.js";
 import selectImageObject from "./selectImage.js";
 import loadImageToCanvasObject from "./loadImageToCanvas.js";
+import createGridObject from "./createGrid.js";
+import appObject from "./app.js";
 
 let topoMenu;
 function loadApp() {
     const selectImage = selectImageObject();
     const loadImageToCanvas = loadImageToCanvasObject();
+    const createGrid = createGridObject();
+    const app = appObject();
+
+    const screen = getElement("tela");
 
     selectImage.addDependencies({ loadImageToCanvas });
-    loadImageToCanvas.addDependencies({ selectImage })
+    loadImageToCanvas.addDependencies({ selectImage, screen, createGrid, app });
+    createGrid.addDependencies({ loadImageToCanvas, app, screen })
 
     topoMenu.logo.addEventListener("click", () => {
         window.location.href = "./";
