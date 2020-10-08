@@ -3,10 +3,11 @@ import { setStyle, getElement, createElement } from "../js/geral.js";
 
 export default function selectImageObject() {
     const D = {}, content = getElement("contentSelecionarImagem"),
+        bttSelectImage = getElement("bttSelecionarImagem"),
         validExtentions = ["png", "jpg", "jpeg", "bmp"],
         animationGradient = (() => {
             const minDeg = 130, maxDeg = 220;
-            let deg = 130, step = 4.6, animation;
+            let deg = 130, step = 4.8, animation;
             const updateGradient = () => {
                 deg = deg > maxDeg ? maxDeg : deg < minDeg ? minDeg : deg;
                 setStyle(content, {
@@ -15,13 +16,13 @@ export default function selectImageObject() {
             },
                 stop = () => cancelAnimationFrame(animation),
                 progress = () => {
-                    if (deg >= maxDeg) { return true; }
+                    if (deg >= maxDeg) { return; }
                     deg += step;
                     updateGradient();
                     animation = requestAnimationFrame(progress);
                 },
                 regress = () => {
-                    if (deg <= minDeg) { return true; }
+                    if (deg <= minDeg) { return; }
                     deg -= step;
                     updateGradient();
                     animation = requestAnimationFrame(regress);
@@ -32,13 +33,14 @@ export default function selectImageObject() {
                 else { regress(); }
             }
         })(),
-        concludeLoadImage = async (file) => {
-            animationGradient();
+        concludeLoadImage = async file => {
+            animationGradient(true);
+            await new Promise((resolve) => setTimeout(resolve, 200));
             const reader = new FileReader();
-            reader.onload = (e) => D.loadImageToCanvas(e.currentTarget.result)
+            reader.onload = e => D.loadImageToCanvas(e.currentTarget.result)
             reader.readAsDataURL(file)
         },
-        imageValidation = (file) => {
+        imageValidation = file => {
             if (!file) { return; }
             const extention = file.name.split('.').pop().toLowerCase();
             const imageValid = validExtentions.includes(extention) && file.type.includes("image");
@@ -53,15 +55,11 @@ export default function selectImageObject() {
             inputFile.addEventListener("change", (e) => imageValidation(e.currentTarget.files[0]));
             inputFile.click();
         },
-        dragEnterFile = (e) => {
-            animationGradient(true);
-        },
-        dragLeaveFile = (e) => {
-            animationGradient(false);
-        },
+        dragEnterFile = () => animationGradient(true),
+        dragLeaveFile = () => animationGradient(false),
         dropFileToLoad = e => imageValidation(e.dataTransfer.files[0]);
 
-    getElement("bttSelecionarImagem").addEventListener("mousedown", bttClickToSelectImage);
+    bttSelectImage.addEventListener("mousedown", bttClickToSelectImage);
     content.addEventListener("dragenter", dragEnterFile);
     content.addEventListener("dragleave", dragLeaveFile);
     content.addEventListener("drop", dropFileToLoad);

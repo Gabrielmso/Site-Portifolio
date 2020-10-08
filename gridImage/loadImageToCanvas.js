@@ -4,9 +4,10 @@ export default function loadImageToCanvasObject() {
 
 
 
-    const renderImageInCanvas = () => {
-        console.log("OOIIIII")
-    },
-        load = (dataUrlImage) => getImage(dataUrlImage, (e) => renderImageInCanvas(e.currentTarget));
-    return load;
+    const renderImageInCanvas = (image) => {
+        alert("Ainda está em desenvolvimento, volte em breve!");
+        window.location.reload();
+    }
+
+    return dataUrlImage => getImage(dataUrlImage, e => renderImageInCanvas(e.currentTarget));
 }
