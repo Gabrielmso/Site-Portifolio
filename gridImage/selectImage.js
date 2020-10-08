@@ -12,7 +12,7 @@ export default function selectImageObject() {
             const updateGradient = () => {
                 deg = deg > maxDeg ? maxDeg : deg < minDeg ? minDeg : deg;
                 setStyle(gradiente, {
-                    backgroundImage: "linear-gradient(" + deg + "deg, rgb(200, 50, 9) -10%, rgba(17, 1, 50) 90%)"
+                    backgroundImage: "linear-gradient(" + deg + "deg, rgb(200, 50, 10) -10%, rgba(15, 0, 50) 90%)"
                 });
             },
                 stop = () => cancelAnimationFrame(animation),

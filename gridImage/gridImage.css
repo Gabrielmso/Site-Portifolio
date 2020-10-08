@@ -30,9 +30,8 @@ main {
     height: 100%;
     top: 0px;
     left: 0px;
-    max-width: 1500px;
     filter: blur(3px);
-    background-image: linear-gradient(130deg, rgb(200, 50, 9) -10%, rgba(17, 1, 50) 90%);
+    background-image: linear-gradient(130deg, rgb(200, 50, 10) -10%, rgba(15, 0, 50) 90%);
     margin: 0px auto;
 }
 
