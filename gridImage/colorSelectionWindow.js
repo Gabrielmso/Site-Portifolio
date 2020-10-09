@@ -1,7 +1,7 @@
 import { getMousePosition, getElement, setStyle } from "../js/geral.js";
 
 export default function colorSelectionWindowObject() {
-    const D = {}, status = { opened: false, primaryOrSecondary: 1 },
+    const D = {}, status = { opened: false },
         mousePositionMoveWindow = {
             x: 0, y: 0, update({ x, y }) {
                 this.x = x;
@@ -171,19 +171,19 @@ export default function colorSelectionWindowObject() {
         moveWindow = ({ x, y }) => {
             const { x: bx, y: by } = mousePositionMoveWindow.get();
             let newPositionX = x - bx, newPositionY = y - by;
-            newPositionX = newPositionX < 0 ? 0 : newPositionX + window.offsetWidth > D.janelaPrincipal.offsetWidth ?
-                D.janelaPrincipal.offsetWidth - window.offsetWidth : newPositionX;
-            newPositionY = newPositionY < 50 ? 50 : newPositionY + window.offsetHeight > D.janelaPrincipal.offsetHeight ?
-                D.janelaPrincipal.offsetHeight - window.offsetHeight : newPositionY;
+            newPositionX = newPositionX < 0 ? 0 : newPositionX + window.offsetWidth > D.appWindow.offsetWidth ?
+                D.appWindow.offsetWidth - window.offsetWidth : newPositionX;
+            newPositionY = newPositionY < 50 ? 50 : newPositionY + window.offsetHeight > D.appWindow.offsetHeight ?
+                D.appWindow.offsetHeight - window.offsetHeight : newPositionY;
             setStyle(window, { top: newPositionY + "px", left: newPositionX + "px" });
+        },
+        mouseMoveEventMoveWindow = e => {
+            moveWindow(getMousePosition(D.appWindow, e))
         },
         mouseDownEventMoveWindow = e => {
             mousePositionMoveWindow.update(getMousePosition(e.currentTarget, e));
             document.addEventListener("mousemove", mouseMoveEventMoveWindow);
             document.addEventListener("mouseup", mouseUpEventMoveWindow);
-        },
-        mouseMoveEventMoveWindow = e => {
-            moveWindow(getMousePosition(D.janelaPrincipal, e))
         },
         mouseUpEventMoveWindow = () => {
             document.removeEventListener("mousemove", mouseMoveEventMoveWindow);
@@ -244,25 +244,18 @@ export default function colorSelectionWindowObject() {
         close = () => {
             removeEventsToElements();
             status.opened = false;
-            D.drawingTools.selectDrawingTool(D.drawingTools.previousTool);
             setStyle(window, { display: null });
         },
         selectColor = () => {
-            D.project.selectedColors.set(status.primaryOrSecondary, selectedColor.get());
-            close();
-            D.project.selectedColors.deselectAllSavedColor();
-        },
-        bttSaveColor = () => D.project.saveColor(selectedColor.get());
+            
+        }
 
     return {
-        get opened() { return status.opened },
+        get isOpen() { return status.opened },
         set currentColor(color) { findColor(color) },
-        open(numPlane) {
+        open(color) {
             addEventsToElements();
-            status.primaryOrSecondary = numPlane;
             insideWindow.cursors.spectrum.clicked = insideWindow.cursors.gradient.clicked = this.clickMoveWindow = false;
-            const color = D.project.selectedColors.get(status.primaryOrSecondary);
-            D.drawingTools.selectDrawingTool("eyeDropper");
             setStyle(window, { display: "block" });
             status.opened = true;
             setStyle(insideWindow.compareColors.current, {

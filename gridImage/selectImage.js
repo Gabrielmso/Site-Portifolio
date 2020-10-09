@@ -48,10 +48,11 @@ export default function selectImageObject() {
                 animationGradient(false);
                 return;
             }
-            const [name, extention] = file.name.split('.');
-            const extentionLowerCase = extention.toLowerCase();
+            const nameFile = file.name.split('.');
+            const extention = nameFile.pop().toLowerCase();
+            const name = nameFile.join("_");
             const validName = name != "";
-            const imageValid = validExtentions.includes(extentionLowerCase) && file.type.includes("image");
+            const imageValid = validExtentions.includes(extention) && file.type.includes("image");
             if (imageValid && validName) { conclude(file, name); }
             else { animationGradient(false); }
         },

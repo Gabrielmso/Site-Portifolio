@@ -1,13 +1,14 @@
 import { getMousePosition, preventDefaultAction, setStyle } from "../js/geral.js";
 
 export default function appObject() {
-    const D = {}, status = { isLoad: false, zoom: 0 }, canvas = {},
+    const D = {}, status = { isLoad: false, zoom: 0, isClick: false }, canvas = {},
         mousePosition = {
             x: 0, y: 0, update({ x, y }) {
                 this.x = x;
                 this.y = y;
             }
         },
+        infoMoveScreen = { mousePosition: { x: 0, y: 0 }, scrollsValues: { h: 0, w: 0 } },
         zoom = (type, center, value) => {
             const previousWidth = D.screen.offsetWidth,
                 { width, proportion } = D.canvasImage.properties.resolution,
@@ -40,18 +41,43 @@ export default function appObject() {
                 zoomAdjusted = proportion >= proportionContent ? (maxWidth * 100) / width : (maxHeight * 100) / height;
             zoom("percentage", false, zoomAdjusted);
         },
+        moveScreen = (eventName, e) => {
+            const { x, y } = getMousePosition(D.appWindow, e);
+            const typesEventName = {
+                down: () => {
+                    status.isClick = true;
+                    infoMoveScreen.mousePosition = { x, y };
+                    infoMoveScreen.scrollsValues.h = D.appWindow.scrollTop;
+                    infoMoveScreen.scrollsValues.w = D.appWindow.scrollLeft;
+                    setStyle(D.appWindow, { cursor: "grabbing" });
+                },
+                move: () => {
+                    const { x: bx, y: by } = infoMoveScreen.mousePosition;
+                    D.appWindow.scrollTop = infoMoveScreen.scrollsValues.h + by - y;
+                    D.appWindow.scrollLeft = infoMoveScreen.scrollsValues.w + bx - x;
+                },
+                up: () => {
+                    status.isClick = false
+                    setStyle(D.appWindow, { cursor: null });
+                }
+            }
+            typesEventName[eventName]();
+        },
         addEventsToElements = () => {
+            D.appWindow.addEventListener("mousedown", e => moveScreen("down", e));
+            D.appWindow.addEventListener("mouseup", e => moveScreen("up", e));
             document.addEventListener("mousemove", e => {
                 const { x, y } = getMousePosition(D.screen, e);
                 const { width, height } = D.canvasImage.properties.resolution;
                 mousePosition.update({
                     x: parseInt((width / D.screen.offsetWidth) * x), y: parseInt((height / D.screen.offsetHeight) * y)
                 });
+                if (status.isClick) { moveScreen("move", e) };
             });
             D.appWindow.addEventListener("wheel", e => {
                 preventDefaultAction(e);
-                if (e.deltaY < 0) { zoom("zoomIn", false, 1.06); }
-                else { zoom("zoomOut", false, 1.06); }
+                if (e.deltaY < 0) { zoom("zoomIn", false, 1.055); }
+                else { zoom("zoomOut", false, 1.055); }
                 const posContentTelas = getMousePosition(D.appWindow, e);
                 const { width, height } = D.canvasImage.properties.resolution;
                 const proporcaoPosY = mousePosition.y / height, proporcaoPosX = mousePosition.x / width;

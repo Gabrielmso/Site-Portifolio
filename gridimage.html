@@ -28,12 +28,44 @@
     <main>
         <section data-id="janelaapp">
             <div data-id="tela"></div>
+            <div data-id="janelaSelecionarCor">
+                <div data-id="moverJanelaSelecionarCor" class="barraMoverJanela noSelection"></div>
+                <div>
+                    <div data-id="comparaCorAtualEEscolhida">
+                        <div data-id="corSelecionada" class="comparacores noSelection"></div>
+                        <div data-id="corAtual" class="comparacores noSelection"></div>
+                    </div>
+                    <div data-id="contentGradienteCor" class="noSelection">
+                        <canvas data-id="gradienteCor" class="canvasSelecionarCor" width="440" height="255"></canvas>
+                        <div data-id="cursorGradiente" class="cursorSeletor">
+                            <div></div>
+                        </div>
+                    </div>
+                    <div data-id="contentBarraeEspectroCor" class="noSelection">
+                        <canvas data-id="barraeEspectroCor" class="canvasSelecionarCor" width="540"
+                            height="20"></canvas>
+                        <div data-id="cursorBarra" class="cursorSeletor">
+                            <div></div>
+                        </div>
+                    </div>
+                    <div data-id="InputsjanelaSelecionarCor">
+                        <label class="noSelection">RGB:</label><input data-id="codRGB" type="text"
+                            style="margin-right: 18px;">
+                        <label class="noSelection">HEX:</label><input data-id="codHEX" type="text">
+                    </div>
+                    <div class="bttsJanela">
+                        <button data-id="bttOkSelecionaCor" class="bttGridImage cursor noSelection">Ok</button>
+                        <button data-id="bttCancelarSelecionaCor"
+                            class="bttGridImage cursor noSelection">Cancelar</button>
+                    </div>
+                </div>
+            </div>
         </section>
         <section data-id="contentSelecionarImagem" class="noSelection">
             <div data-id="gradiente"></div>
             <h1>GridImage (alpha)</h1>
             <p>Arraste e solte uma imagem aqui ou... </p>
-            <button data-id="bttSelecionarImagem">Selecionar imagem</button>
+            <button data-id="bttSelecionarImagem" class="cursor">Selecionar imagem</button>
         </section>
     </main>
     <div data-id="carregamento"></div>

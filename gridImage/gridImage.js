@@ -3,6 +3,7 @@ import loadTopoMenu from "../topoMenu/topoMenu.js";
 import selectImageObject from "./selectImage.js";
 import canvasImageObject from "./canvasImage.js";
 import canvasGridObject from "./canvasGrid.js";
+import colorSelectionWindowObject from "./colorSelectionWindow.js";
 import appObject from "./app.js";
 
 let topoMenu;
@@ -10,6 +11,7 @@ function loadApp() {
     const selectImage = selectImageObject();
     const canvasImage = canvasImageObject();
     const canvasGrid = canvasGridObject();
+    const colorSelectionWindow = colorSelectionWindowObject();
     const app = appObject();
 
     const screen = getElement("tela");
@@ -18,7 +20,8 @@ function loadApp() {
     selectImage.addDependencies({ canvasImage });
     canvasImage.addDependencies({ selectImage, screen, canvasGrid, app });
     canvasGrid.addDependencies({ canvasImage, app, screen });
-    app.addDependencies({ canvasImage, screen, appWindow })
+    app.addDependencies({ canvasImage, screen, appWindow });
+    colorSelectionWindow.addDependencies({ appWindow, canvasGrid });
 
     topoMenu.logo.addEventListener("click", () => {
         window.location.href = "./";
