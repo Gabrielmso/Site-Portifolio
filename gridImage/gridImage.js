@@ -1,23 +1,24 @@
 import { setStyle, preventDefaultAction, getElement } from "../js/geral.js";
 import loadTopoMenu from "../topoMenu/topoMenu.js";
 import selectImageObject from "./selectImage.js";
-import loadImageToCanvasObject from "./loadImageToCanvas.js";
-import createGridObject from "./createGrid.js";
+import canvasImageObject from "./canvasImage.js";
+import canvasGridObject from "./canvasGrid.js";
 import appObject from "./app.js";
 
 let topoMenu;
 function loadApp() {
     const selectImage = selectImageObject();
-    const loadImageToCanvas = loadImageToCanvasObject();
-    const createGrid = createGridObject();
+    const canvasImage = canvasImageObject();
+    const canvasGrid = canvasGridObject();
     const app = appObject();
 
     const screen = getElement("tela");
+    const appWindow = getElement("janelaapp");
 
-    selectImage.addDependencies({ loadImageToCanvas });
-    loadImageToCanvas.addDependencies({ selectImage, screen, createGrid, app });
-    createGrid.addDependencies({ loadImageToCanvas, app, screen });
-    app.addDependencies({ loadImageToCanvas })
+    selectImage.addDependencies({ canvasImage });
+    canvasImage.addDependencies({ selectImage, screen, canvasGrid, app });
+    canvasGrid.addDependencies({ canvasImage, app, screen });
+    app.addDependencies({ canvasImage, screen, appWindow })
 
     topoMenu.logo.addEventListener("click", () => {
         window.location.href = "./";

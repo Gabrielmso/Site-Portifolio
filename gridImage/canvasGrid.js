@@ -1,6 +1,6 @@
 import { createElement } from "../js/geral.js";
 
-export default function createGridObject() {
+export default function canvasGridObject() {
     const D = {}, properties = {
         size: 50,
         color: { r: 0, g: 0, b: 0 }, opacity: 1,
@@ -11,8 +11,8 @@ export default function createGridObject() {
         },
         createGrid = () => {
             if (D.app.isLoad) { return; }
-            const { width, heght } = D.loadImageToCanvas.imageProperties.resolution;
-            const canvas = createElement("canvas", { class: "canvas canvasGrid", width, heght })
+            const { width, height } = D.canvasImage.properties.resolution;
+            const canvas = createElement("canvas", { class: "canvas canvasGrid", width, height })
                 .getContext("2d");
             D.screen.appendChild(canvas.canvas);
             D.app.canvasGrid = canvas;

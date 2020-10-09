@@ -41,7 +41,7 @@ export default function selectImageObject() {
             content.removeEventListener("dragenter", dragEnterFile);
             content.removeEventListener("dragleave", dragLeaveFile);
             content.removeEventListener("drop", dropFileToLoad);
-            D.loadImageToCanvas.load(file, name);
+            D.canvasImage.load(file, name);
         },
         imageValidation = file => {
             if (!file) {

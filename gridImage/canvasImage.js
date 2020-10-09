@@ -1,7 +1,7 @@
 import { setStyle, getImage, createElement } from "../js/geral.js"
 
-export default function loadImageToCanvasObject() {
-    const D = {}, imageProperties = { name: "", resolution: { width: 0, height: 0 } },
+export default function canvasImageObject() {
+    const D = {}, imageProperties = { name: "", resolution: { width: 0, height: 0, proportion: 0 } },
         fadeTransition = (() => {
             const time = 370;
             let content = null;
@@ -38,21 +38,23 @@ export default function loadImageToCanvasObject() {
             D.screen.appendChild(canvas.canvas);
             D.selectImage.finish();
             D.app.canvasImage = canvas;
-            D.createGrid.init();
+            D.canvasGrid.init();
         },
         load = (imageFile, nameFile) => {
             const reader = new FileReader();
             reader.onload = ev =>
                 getImage(ev.currentTarget.result, e => {
                     imageProperties.name = nameFile + "-GRID.png";
-                    imageProperties.resolution.width = e.currentTarget.naturalWidth;
-                    imageProperties.resolution.height = e.currentTarget.naturalHeight;
+                    const { naturalWidth: width, naturalHeight: height } = e.currentTarget;
+                    imageProperties.resolution.width = width;
+                    imageProperties.resolution.height = height;
+                    imageProperties.resolution.proportion = width / height;
                     renderImageInCanvas(e.currentTarget);
                 });
             reader.readAsDataURL(imageFile);
         };
     return {
-        get imageProperties() { return imageProperties; },
+        get properties() { return imageProperties; },
         load(imageFile, nameFile) {
             load(imageFile, nameFile);
             delete this.load;
