@@ -81,7 +81,6 @@ main {
     height: 100%;
     overflow: hidden;
     cursor: grab;
-    padding-top: 50px;
     top: 0px;
     left: 0px;
 }
@@ -109,7 +108,6 @@ main {
     height: 100%;
     top: 0px;
     left: 0px;
-    image-rendering: pixelated;
 }
 
 .canvasImage {

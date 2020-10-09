@@ -1,4 +1,4 @@
-import { getMousePosition, preventDefaultAction } from "../js/geral.js";
+import { getMousePosition, preventDefaultAction, setStyle } from "../js/geral.js";
 
 export default function appObject() {
     const D = {}, status = { isLoad: false, zoom: 0 }, canvas = {},
@@ -23,11 +23,15 @@ export default function appObject() {
             D.screen.style.width = newWidth + "px";
             D.screen.style.height = newHeight + "px";
             D.screen.style.left = newWidth >= offsetWidth ? "0px" : (offsetWidth / 2) - (newWidth / 2) + "px";
-            D.screen.style.top = newHeight >= offsetHeight - 50 ? "0px" : ((offsetHeight - 50) / 2) - (newHeight / 2) + "px";
+            D.screen.style.top = newHeight <= offsetHeight - 50 ? (((offsetHeight - 50) / 2) - (newHeight / 2)) + 50 + "px"
+                : newHeight <= offsetHeight + 50 ? 50 - ((((offsetHeight - 50) / 2) - (newHeight / 2)) - ((offsetHeight - 50) - newHeight)) + "px" : "0px";
             if (center) {
                 D.appWindow.scrollTop = ((newHeight / 2)) - ((offsetHeight + 50) / 2);
                 D.appWindow.scrollLeft = ((newWidth / 2)) - (offsetWidth / 2);
             }
+
+            if (width > newWidth) { setStyle(D.screen, { imageRendering: "auto" }); }
+            else { setStyle(D.screen, { imageRendering: "pixelated" }); }
             status.zoom = (100 * newWidth) / width;
         },
         adjustInVisualizationScreen = () => {
@@ -46,8 +50,8 @@ export default function appObject() {
             });
             D.appWindow.addEventListener("wheel", e => {
                 preventDefaultAction(e);
-                if (e.deltaY < 0) { zoom("zoomIn", false, 1.08); }
-                else { zoom("zoomOut", false, 1.08); }
+                if (e.deltaY < 0) { zoom("zoomIn", false, 1.06); }
+                else { zoom("zoomOut", false, 1.06); }
                 const posContentTelas = getMousePosition(D.appWindow, e);
                 const { width, height } = D.canvasImage.properties.resolution;
                 const proporcaoPosY = mousePosition.y / height, proporcaoPosX = mousePosition.x / width;
