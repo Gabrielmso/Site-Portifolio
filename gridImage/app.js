@@ -23,9 +23,8 @@ export default function appObject() {
             let newHeight = (newWidth / proportion)
             D.screen.style.width = newWidth + "px";
             D.screen.style.height = newHeight + "px";
-            D.screen.style.left = newWidth >= offsetWidth ? "0px" : (offsetWidth / 2) - (newWidth / 2) + "px";
-            D.screen.style.top = newHeight <= offsetHeight - 50 ? (((offsetHeight - 50) / 2) - (newHeight / 2)) + 50 + "px"
-                : newHeight <= offsetHeight + 50 ? 50 - ((((offsetHeight - 50) / 2) - (newHeight / 2)) - ((offsetHeight - 50) - newHeight)) + "px" : "0px";
+            D.screen.style.left = newWidth >= offsetWidth - 100 ? "50px" : (offsetWidth / 2) - (newWidth / 2) + "px";
+            D.screen.style.top = newHeight >= offsetHeight - 100 ? "50px" : 25 + ((offsetHeight / 2) - (newHeight / 2)) + "px";
             if (center) {
                 D.appWindow.scrollTop = ((newHeight / 2)) - ((offsetHeight + 50) / 2);
                 D.appWindow.scrollLeft = ((newWidth / 2)) - (offsetWidth / 2);
@@ -66,6 +65,7 @@ export default function appObject() {
         addEventsToElements = () => {
             D.appWindow.addEventListener("mousedown", e => moveScreen("down", e));
             D.appWindow.addEventListener("mouseup", e => moveScreen("up", e));
+            document.addEventListener("mouseleave", e => moveScreen("up", e));
             document.addEventListener("mousemove", e => {
                 const { x, y } = getMousePosition(D.screen, e);
                 const { width, height } = D.canvasImage.properties.resolution;
@@ -80,6 +80,7 @@ export default function appObject() {
                 else { zoom("zoomOut", false, 1.055); }
                 const posContentTelas = getMousePosition(D.appWindow, e);
                 const { width, height } = D.canvasImage.properties.resolution;
+
                 const proporcaoPosY = mousePosition.y / height, proporcaoPosX = mousePosition.x / width;
                 D.appWindow.scrollTop = parseInt((D.appWindow.scrollHeight * proporcaoPosY) - posContentTelas.y);
                 D.appWindow.scrollLeft = parseInt((D.appWindow.scrollWidth * proporcaoPosX) - posContentTelas.x);
@@ -93,13 +94,14 @@ export default function appObject() {
         get isLoad() { return status.isLoad },
         set canvasImage(ctx) { canvas.image = ctx; },
         set canvasGrid(ctx) { canvas.grid = ctx; },
+        get canvasGrid() { return canvas.grid; },
         async init() {
             status.isLoad = true;
             adjustInVisualizationScreen();
             addEventsToElements();
             await D.canvasImage.finish();
-            // alert("Ainda está em desenvolvimento, volte em breve!");
-            // window.location.reload();
+            alert("Ainda está em desenvolvimento, volte em breve!");
+            window.location.reload();
             delete this.init;
         },
         addDependencies(dependencies) {

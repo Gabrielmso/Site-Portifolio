@@ -95,7 +95,10 @@ main {
 
 [data-id="tela"] {
     position: relative;
+    display: inline-block;
     overflow: hidden;
+    margin-right: 100px;
+    margin-bottom: 90px;
 }
 
 /* ============================================= Seletor de cores ============================================= */
