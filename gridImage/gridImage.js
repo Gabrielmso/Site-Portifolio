@@ -14,13 +14,15 @@ function loadApp() {
     const colorSelectionWindow = colorSelectionWindowObject();
     const app = appObject();
 
-    const screen = getElement("tela");
     const appWindow = getElement("janelaapp");
+    const contentScreen = getElement("contentTela");
+    const screen = getElement("tela");
+
 
     selectImage.addDependencies({ canvasImage });
     canvasImage.addDependencies({ selectImage, screen, canvasGrid, app });
     canvasGrid.addDependencies({ canvasImage, app, screen });
-    app.addDependencies({ canvasImage, screen, appWindow });
+    app.addDependencies({ canvasImage, screen, contentScreen });
     colorSelectionWindow.addDependencies({ appWindow, canvasGrid });
 
     topoMenu.logo.addEventListener("click", () => {
@@ -36,7 +38,7 @@ export default async function gridImage() {
     if (topoMenu) {
         topoMenu.changeTheme(false);
         topoMenu.changeMenu = false;
-        setStyle(topoMenu.menu, { transition: "none" });
+        setStyle(topoMenu.menu, { transition: "none", "backdrop-filter": "blur(4px)" });
         loadApp();
         return true;
     }

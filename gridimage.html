@@ -27,7 +27,19 @@
 <body>
     <main>
         <section data-id="janelaapp">
-            <div data-id="tela"></div>
+            <div data-id="contentTela">
+                <div data-id="tela"></div>
+            </div>
+            <div data-id="janelaConfiguracao" class="noSelection">
+                <div data-id="moverJanelaConfiguracao" class="barraMoverJanela noSelection"></div>
+                <div class="tituloJanela"><label>Propriedades da grade</label></div>
+                <div class="conteudoJanela">
+                    <label>Tamanho: <input id="txtTamanhoGrid" min="1" type="number"> px.</label>
+                </div>
+                <div class="contentBttsJanela">
+                    <button class="cursor">Salvar imagem</button>
+                </div>
+            </div>
             <div data-id="janelaSelecionarCor">
                 <div data-id="moverJanelaSelecionarCor" class="barraMoverJanela noSelection"></div>
                 <div>
@@ -53,7 +65,7 @@
                             style="margin-right: 18px;">
                         <label class="noSelection">HEX:</label><input data-id="codHEX" type="text">
                     </div>
-                    <div class="bttsJanela">
+                    <div class="contentBttsJanela">
                         <button data-id="bttOkSelecionaCor" class="bttGridImage cursor noSelection">Ok</button>
                         <button data-id="bttCancelarSelecionaCor"
                             class="bttGridImage cursor noSelection">Cancelar</button>
@@ -68,6 +80,7 @@
             <button data-id="bttSelecionarImagem" class="cursor">Selecionar imagem</button>
         </section>
     </main>
+
     <div data-id="carregamento"></div>
 </body>
 

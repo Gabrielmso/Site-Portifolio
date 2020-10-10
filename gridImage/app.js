@@ -8,11 +8,10 @@ export default function appObject() {
                 this.y = y;
             }
         },
-        infoMoveScreen = { mousePosition: { x: 0, y: 0 }, scrollsValues: { h: 0, w: 0 } },
         zoom = (type, center, value) => {
             const previousWidth = D.screen.offsetWidth,
                 { width, proportion } = D.canvasImage.properties.resolution,
-                { offsetWidth, offsetHeight } = D.appWindow,
+                { offsetWidth, offsetHeight } = D.contentScreen,
                 typeZoom = {
                     percentage: () => (width * value) / 100,
                     zoomIn: () => previousWidth * value,
@@ -28,44 +27,44 @@ export default function appObject() {
             D.screen.style.left = left + "px";
             D.screen.style.top = top + "px";
             if (center) {
-                D.appWindow.scrollTop = ((D.appWindow.scrollHeight / 2)) - ((offsetHeight + 50) / 2);
-                D.appWindow.scrollLeft = ((D.appWindow.scrollWidth / 2)) - (offsetWidth / 2);
+                D.contentScreen.scrollTop = ((D.contentScreen.scrollHeight / 2)) - ((offsetHeight + 50) / 2);
+                D.contentScreen.scrollLeft = ((D.contentScreen.scrollWidth / 2)) - (offsetWidth / 2);
             }
             if (width > newWidth) { setStyle(D.screen, { imageRendering: "auto" }); }
             else { setStyle(D.screen, { imageRendering: "pixelated" }); }
             status.zoom = (100 * newWidth) / width;
         },
         adjustInVisualizationScreen = () => {
-            const { width, height, proportion } = D.canvasImage.properties.resolution, maxWidth = D.appWindow.offsetWidth,
-                maxHeight = D.appWindow.offsetHeight - 50, proportionContent = maxWidth / maxHeight,
+            const { width, height, proportion } = D.canvasImage.properties.resolution, maxWidth = D.contentScreen.offsetWidth,
+                maxHeight = D.contentScreen.offsetHeight - 50, proportionContent = maxWidth / maxHeight,
                 zoomAdjusted = proportion >= proportionContent ? (maxWidth * 100) / width : (maxHeight * 100) / height;
             zoom("percentage", true, zoomAdjusted);
         },
-        moveScreen = (eventName, e) => {
-            const { x, y } = getMousePosition(D.appWindow, e);
-            const typesEventName = {
-                down: () => {
-                    status.isClick = true;
-                    infoMoveScreen.mousePosition = { x, y };
-                    infoMoveScreen.scrollsValues.h = D.appWindow.scrollTop;
-                    infoMoveScreen.scrollsValues.w = D.appWindow.scrollLeft;
-                    setStyle(D.appWindow, { cursor: "grabbing" });
-                },
-                move: () => {
-                    const { x: bx, y: by } = infoMoveScreen.mousePosition;
-                    D.appWindow.scrollTop = infoMoveScreen.scrollsValues.h + by - y;
-                    D.appWindow.scrollLeft = infoMoveScreen.scrollsValues.w + bx - x;
-                },
-                up: () => {
-                    status.isClick = false
-                    setStyle(D.appWindow, { cursor: null });
+        moveScreen = (() => {
+            const infoMoveScreen = { mousePosition: { x: 0, y: 0 }, scrollsValues: { h: 0, w: 0 } },
+                typesEventName = {
+                    down: ({ x, y }) => {
+                        status.isClick = true;
+                        infoMoveScreen.mousePosition = { x, y };
+                        infoMoveScreen.scrollsValues.h = D.contentScreen.scrollTop;
+                        infoMoveScreen.scrollsValues.w = D.contentScreen.scrollLeft;
+                        setStyle(D.screen, { cursor: "grabbing" });
+                    },
+                    move: ({ x, y }) => {
+                        const { x: bx, y: by } = infoMoveScreen.mousePosition;
+                        D.contentScreen.scrollTop = infoMoveScreen.scrollsValues.h + by - y;
+                        D.contentScreen.scrollLeft = infoMoveScreen.scrollsValues.w + bx - x;
+                    },
+                    up: () => {
+                        status.isClick = false;
+                        setStyle(D.screen, { cursor: null });
+                    }
                 }
-            }
-            typesEventName[eventName]();
-        },
+            return (eventName, e) => typesEventName[eventName](getMousePosition(D.contentScreen, e));
+        })(),
         addEventsToElements = () => {
-            D.appWindow.addEventListener("mousedown", e => moveScreen("down", e));
-            D.appWindow.addEventListener("mouseup", e => moveScreen("up", e));
+            D.contentScreen.addEventListener("mousedown", e => moveScreen("down", e));
+            D.contentScreen.addEventListener("mouseup", e => moveScreen("up", e));
             document.addEventListener("mouseleave", e => moveScreen("up", e));
             document.addEventListener("mousemove", e => {
                 const { x, y } = getMousePosition(D.screen, e);
@@ -79,11 +78,11 @@ export default function appObject() {
                 preventDefaultAction(e);
                 if (e.deltaY < 0) { zoom("zoomIn", false, 1.055); }
                 else { zoom("zoomOut", false, 1.055); }
-                const posContentTelas = getMousePosition(D.appWindow, e);
+                const posContentTelas = getMousePosition(D.contentScreen, e);
                 const { width, height } = D.canvasImage.properties.resolution;
                 const proporcaoPosY = mousePosition.y / height, proporcaoPosX = mousePosition.x / width;
-                D.appWindow.scrollTop = parseInt((D.appWindow.scrollHeight * proporcaoPosY) - posContentTelas.y);
-                D.appWindow.scrollLeft = parseInt((D.appWindow.scrollWidth * proporcaoPosX) - posContentTelas.x);
+                D.contentScreen.scrollTop = parseInt((D.contentScreen.scrollHeight * proporcaoPosY) - posContentTelas.y);
+                D.contentScreen.scrollLeft = parseInt((D.contentScreen.scrollWidth * proporcaoPosX) - posContentTelas.x);
             }, { passive: false });
 
             window.addEventListener("resize", () => {
