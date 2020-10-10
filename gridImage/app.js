@@ -64,7 +64,7 @@ export default function appObject() {
         })(),
         addEventsToElements = () => {
             D.contentScreen.addEventListener("mousedown", e => moveScreen("down", e));
-            D.contentScreen.addEventListener("mouseup", e => moveScreen("up", e));
+            document.addEventListener("mouseup", e => moveScreen("up", e));
             document.addEventListener("mouseleave", e => moveScreen("up", e));
             document.addEventListener("mousemove", e => {
                 const { x, y } = getMousePosition(D.screen, e);

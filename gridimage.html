@@ -34,7 +34,21 @@
                 <div data-id="moverJanelaConfiguracao" class="barraMoverJanela noSelection"></div>
                 <div class="tituloJanela"><label>Propriedades da grade</label></div>
                 <div class="conteudoJanela">
-                    <label>Tamanho: <input id="txtTamanhoGrid" min="1" type="number"> px.</label>
+                    <label>Tamanho: <input data-id="txtTamanho" min="1" type="number"> px.</label>
+                    <label>Espessura: <input data-id="txtEspessura" min="1" type="number"> px.</label>
+                    <div class="subConteudo">
+                        <label>Posicionamento:</label>
+                        <label>Vertical: <input data-id="txtEspessura" min="1" type="number"> px.</label>
+                        <label>Horizontal: <input data-id="txtTamanhoGrid" min="1" type="number"> px.</label>
+                    </div>
+                    <div class="subConteudo">
+                        <label>Cor selecionada:</label>
+                        <div data-id="bttSelecionarCor" class="cursor"></div>
+                    </div>
+                    <div class="subConteudo">
+                        <label>Opacidade:</label>
+                        <input data-id="txtOpacidade" class="barraValor" min="1" max="100" type="range">
+                    </div>
                 </div>
                 <div class="contentBttsJanela">
                     <button class="cursor">Salvar imagem</button>

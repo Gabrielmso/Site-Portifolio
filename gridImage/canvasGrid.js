@@ -33,6 +33,7 @@ export default function canvasGridObject() {
             D.app.init();
         }
     return {
+        get properties() { return properties },
         set size(num) {
             properties.size = num < 1 ? 1 : Math.round(num);
             renderGrid();
