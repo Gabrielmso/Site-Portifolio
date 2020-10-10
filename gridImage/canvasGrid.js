@@ -18,7 +18,6 @@ export default function canvasGridObject() {
                 x: Math.round(((position.x / size) - (Math.trunc(position.x / size))) * size),
                 y: Math.round(((position.y / size) - (Math.trunc(position.y / size))) * size)
             }
-            console.log(pos)
             for (let i = pos.y; i <= height; i += size) { ctx.fillRect(0, i, width, line); }
             for (let i = pos.x; i <= width; i += size) { ctx.fillRect(i, 0, line, height); }
         },
@@ -29,12 +28,13 @@ export default function canvasGridObject() {
                 .getContext("2d");
             D.screen.appendChild(canvas.canvas);
             D.app.canvasGrid = canvas;
+            properties.size = Math.floor(width / 10);
             renderGrid();
             D.app.init();
         }
     return {
         set size(num) {
-            properties.size = num < 1 ? 1 : num;
+            properties.size = num < 1 ? 1 : Math.round(num);
             renderGrid();
         },
         set position({ x, y }) {
