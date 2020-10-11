@@ -55,9 +55,9 @@ export default function canvasImageObject() {
         };
     return {
         get properties() { return imageProperties; },
-        load(imageFile, nameFile) {
+        init(imageFile, nameFile) {
             load(imageFile, nameFile);
-            delete this.load;
+            delete this.init;
         },
         async finish() {
             await fadeTransition.out();

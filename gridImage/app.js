@@ -98,9 +98,8 @@ export default function appObject() {
             status.isLoad = true;
             adjustInVisualizationScreen();
             addEventsToElements();
+            D.settingsWindow.init();
             await D.canvasImage.finish();
-            alert("Ainda está em desenvolvimento, volte em breve!");
-            window.location.reload();
             delete this.init;
         },
         addDependencies(dependencies) {

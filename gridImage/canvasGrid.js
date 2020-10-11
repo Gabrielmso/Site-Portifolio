@@ -3,7 +3,7 @@ import { createElement } from "../js/geral.js";
 export default function canvasGridObject() {
     const D = {}, properties = {
         size: 80,
-        color: { r: 255, g: 255, b: 0 },
+        color: { r: 0, g: 0, b: 0 },
         opacity: 1,
         lineWidth: 1,
         position: { x: 0, y: 0 }
@@ -18,8 +18,10 @@ export default function canvasGridObject() {
                 x: Math.round(((position.x / size) - (Math.trunc(position.x / size))) * size),
                 y: Math.round(((position.y / size) - (Math.trunc(position.y / size))) * size)
             }
+            ctx.clearRect(0, 0, width, height);
             for (let i = pos.y; i <= height; i += size) { ctx.fillRect(0, i, width, line); }
             for (let i = pos.x; i <= width; i += size) { ctx.fillRect(i, 0, line, height); }
+            D.settingsWindow.update();
         },
         createGrid = () => {
             if (D.app.isLoad) { return; }

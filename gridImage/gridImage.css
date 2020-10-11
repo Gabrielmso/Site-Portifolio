@@ -109,15 +109,15 @@ main {
 
 [data-id="janelaConfiguracao"] {
     position: absolute;
-    z-index: 99997;
+    z-index: 9997;
     top: 100px;
-    left: 106px;
+    left: 100px;
     background-color: rgba(0, 0, 0, 0.75);
     border-radius: 10px;
     padding: 10px;
     color: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(4px);
-    min-width: 300px;
+    backdrop-filter: blur(5px);
+    min-width: 260px;
 }
 
 [data-id="bttSelecionarCor"] {
@@ -164,7 +164,7 @@ main {
     border-radius: 30px;
     font-size: 14px;
     border: 2px solid rgba(213, 192, 107, 0.6);
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.7);
     background-color: transparent;
     transition: opacity 250ms ease-in-out, border 250ms ease-in-out, box-shadow 250ms ease-in-out;
 }
@@ -188,7 +188,7 @@ main {
 .barraValor {
     appearance: none;
     margin: 0 auto;
-    width: 240px;
+    width: 220px;
     background: transparent;
     margin-bottom: 5px;
     transition: box-shadow 250ms ease-in-out;
@@ -251,11 +251,11 @@ main {
 
 [data-id="janelaSelecionarCor"] {
     position: absolute;
-    display: black;
+    display: none;
     top: 100px;
-    left: 456px;
-    background-color: rgba(0, 0, 0, 0.75);
-    backdrop-filter: blur(4px);
+    left: 150px;
+    background-color: rgba(12, 12, 17, 0.75);
+    backdrop-filter: blur(5px);
     width: 560px;
     border-radius: 10px;
     padding: 10px;

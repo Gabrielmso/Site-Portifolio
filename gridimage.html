@@ -38,8 +38,8 @@
                     <label>Espessura: <input data-id="txtEspessura" min="1" type="number"> px.</label>
                     <div class="subConteudo">
                         <label>Posicionamento:</label>
-                        <label>Vertical: <input data-id="txtEspessura" min="1" type="number"> px.</label>
-                        <label>Horizontal: <input data-id="txtTamanhoGrid" min="1" type="number"> px.</label>
+                        <label>Vertical: <input data-id="txtVertical" type="number"> px.</label>
+                        <label>Horizontal: <input data-id="txtHorizontal" type="number"> px.</label>
                     </div>
                     <div class="subConteudo">
                         <label>Cor selecionada:</label>
@@ -47,11 +47,11 @@
                     </div>
                     <div class="subConteudo">
                         <label>Opacidade:</label>
-                        <input data-id="txtOpacidade" class="barraValor" min="1" max="100" type="range">
+                        <input data-id="barraOpacidade" class="barraValor" min="0.01" max="1" step="0.01" type="range">
                     </div>
                 </div>
                 <div class="contentBttsJanela">
-                    <button class="cursor">Salvar imagem</button>
+                    <button data-id="bttSalvarImagem" class="cursor">Salvar imagem</button>
                 </div>
             </div>
             <div data-id="janelaSelecionarCor">

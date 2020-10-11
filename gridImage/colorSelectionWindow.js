@@ -36,7 +36,6 @@ export default function colorSelectionWindowObject() {
             inputs: { txtRgb: getElement("codRGB"), txtHex: getElement("codHEX") },
             buttons: {
                 ok: getElement("bttOkSelecionaCor"),
-                saveColor: getElement("bttSalvarCor"),
                 cancel: getElement("bttCancelarSelecionaCor")
             },
         },
@@ -225,8 +224,7 @@ export default function colorSelectionWindowObject() {
             insideWindow.barMoveWindow.addEventListener("mousedown", mouseDownEventMoveWindow);
             insideWindow.inputs.txtRgb.addEventListener("keyup", txtRgbKeyUp);
             insideWindow.inputs.txtHex.addEventListener("keyup", txtHexKeyUp);
-            insideWindow.buttons.ok.addEventListener("mousedown", selectColor)
-            insideWindow.buttons.saveColor.addEventListener("mousedown", bttSaveColor);
+            insideWindow.buttons.ok.addEventListener("mousedown", selectColor);
             insideWindow.buttons.cancel.addEventListener("mousedown", close);
         },
         removeEventsToElements = () => {
@@ -238,7 +236,6 @@ export default function colorSelectionWindowObject() {
             insideWindow.inputs.txtRgb.removeEventListener("keyup", txtRgbKeyUp);
             insideWindow.inputs.txtHex.removeEventListener("keyup", txtHexKeyUp);
             insideWindow.buttons.ok.removeEventListener("mousedown", selectColor)
-            insideWindow.buttons.saveColor.removeEventListener("mousedown", bttSaveColor);
             insideWindow.buttons.cancel.removeEventListener("mousedown", close);
         },
         close = () => {
@@ -247,7 +244,9 @@ export default function colorSelectionWindowObject() {
             setStyle(window, { display: null });
         },
         selectColor = () => {
-            
+            D.canvasGrid.color = selectedColor.get();
+            D.settingsWindow.update();
+            close();
         }
 
     return {

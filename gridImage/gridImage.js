@@ -5,14 +5,17 @@ import canvasImageObject from "./canvasImage.js";
 import canvasGridObject from "./canvasGrid.js";
 import colorSelectionWindowObject from "./colorSelectionWindow.js";
 import appObject from "./app.js";
+import settingsWindowObject from "./settingsWindow.js";
 
 let topoMenu;
 function loadApp() {
     const selectImage = selectImageObject();
     const canvasImage = canvasImageObject();
     const canvasGrid = canvasGridObject();
-    const colorSelectionWindow = colorSelectionWindowObject();
     const app = appObject();
+    const settingsWindow = settingsWindowObject();
+    const colorSelectionWindow = colorSelectionWindowObject();
+
 
     const appWindow = getElement("janelaapp");
     const contentScreen = getElement("contentTela");
@@ -21,9 +24,10 @@ function loadApp() {
 
     selectImage.addDependencies({ canvasImage });
     canvasImage.addDependencies({ selectImage, screen, canvasGrid, app });
-    canvasGrid.addDependencies({ canvasImage, app, screen });
-    app.addDependencies({ canvasImage, screen, contentScreen });
-    colorSelectionWindow.addDependencies({ appWindow, canvasGrid });
+    canvasGrid.addDependencies({ canvasImage, app, screen, settingsWindow });
+    app.addDependencies({ canvasImage, screen, contentScreen, settingsWindow });
+    settingsWindow.addDependencies({ colorSelectionWindow, canvasGrid, appWindow });
+    colorSelectionWindow.addDependencies({ appWindow, canvasGrid, settingsWindow });
 
     topoMenu.logo.addEventListener("click", () => {
         window.location.href = "./";
