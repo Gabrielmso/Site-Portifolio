@@ -26,7 +26,7 @@ function loadApp() {
     canvasImage.addDependencies({ selectImage, screen, canvasGrid, app });
     canvasGrid.addDependencies({ canvasImage, app, screen, settingsWindow });
     app.addDependencies({ canvasImage, screen, contentScreen, settingsWindow });
-    settingsWindow.addDependencies({ colorSelectionWindow, canvasGrid, appWindow });
+    settingsWindow.addDependencies({ colorSelectionWindow, canvasGrid, canvasImage, app, appWindow });
     colorSelectionWindow.addDependencies({ appWindow, canvasGrid, settingsWindow });
 
     topoMenu.logo.addEventListener("click", () => {

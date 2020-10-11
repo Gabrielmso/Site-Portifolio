@@ -1,4 +1,4 @@
-import { preventDefaultAction, setStyle, getElement } from "../js/geral.js";
+import { preventDefaultAction, setStyle, getElement, createElement, getImage } from "../js/geral.js";
 
 export default function projectObject() {
     const D = {}, status = { created: false };
@@ -351,17 +351,11 @@ export default function projectObject() {
         saveDraw() {
             if (!this.notifyAnyCreatedProjects()) { return; }
             this.createDrawComplete();
-            const dataURLtoBlob = (dataURL) => {
-                const BASE64_MARKER = ";base64,", base64Index = dataURL.indexOf(BASE64_MARKER) + BASE64_MARKER.length,
-                    base64 = dataURL.substring(base64Index), raw = window.atob(base64), rawLength = raw.length;
-                let array = new Uint8Array(rawLength);
-                for (let i = 0; i < rawLength; i++) { array[i] = raw.charCodeAt(i); }
-                return new Blob([array], { type: "image/png" });
-            }, blob = dataURLtoBlob(this.drawComplete.canvas.toDataURL("image/png")),
-                url = URL.createObjectURL(blob), salvarImagem = document.createElement("a");
-            salvarImagem.setAttribute("download", this.properties.name + ".png");
-            salvarImagem.setAttribute("href", url);
-            salvarImagem.click();
+            this.drawComplete.canvas.toBlob((b) => {
+                const a = createElement("a", { download: this.properties.name + ".png", href: URL.createObjectURL(b) });
+                a.click();
+                a.remove();
+            }, "image/png", 1);
         },
         saveProject() {
             if (!this.notifyAnyCreatedProjects()) { return; }
@@ -379,16 +373,12 @@ export default function projectObject() {
                 grid: D.createGridWindow.gridProperties,
                 numeroDeCamadas: this.properties.numberLayers, camadas: dadosCamadas
             }
-            const data = encode(JSON.stringify(objProjeto)), blob = new Blob([data], { type: "application/octet-stream;charset=utf-8" }),
-                url = URL.createObjectURL(blob), link = document.createElement("a");
-            link.setAttribute("href", url);
-            link.setAttribute("download", this.properties.name + ".gm");
-            link.click();
-            function encode(s) {
-                let out = [];
-                for (let i = 0; i < s.length; i++) { out[i] = s.charCodeAt(i); }
-                return new Uint8Array(out);
-            }
+            const json = JSON.stringify(objProjeto), a = createElement("a", {
+                download: this.properties.name + ".gm",
+                href: URL.createObjectURL(new Blob([json], { type: "application/json" }))
+            });
+            a.click();
+            a.remove();
         },
         loadProject(file) {
             const createSavedProject = (objProjeto) => {
@@ -398,16 +388,14 @@ export default function projectObject() {
                     this.arrayLayers[i].txtOpacity.value = Math.round(opacidade * 100) + "%";
                     this.arrayLayers[i].opacity = opacidade;
                     this.arrayLayers[i].ctx.canvas.style.opacity = opacidade;
-                    const imgData = new Image();
-                    imgData.src = objProjeto.camadas[i].imgDataCamada;
-                    imgData.onload = () => {
-                        this.arrayLayers[i].ctx.drawImage(imgData, 0, 0);
+                    getImage(objProjeto.camadas[i].imgDataCamada, (e) => {
+                        this.arrayLayers[i].ctx.drawImage(e.currentTarget, 0, 0);
                         const larguraMiniatura = this.arrayLayers[i].miniature.canvas.width, alturaMiniatura = this.arrayLayers[i].miniature.canvas.height;
                         this.arrayLayers[i].previewLayer.globalAlpha = this.arrayLayers[i].opacity;
                         this.arrayLayers[i].previewLayer.drawImage(this.arrayLayers[i].ctx.canvas, 0, 0, this.arrayLayers[i].previewLayer.canvas.width, this.arrayLayers[i].previewLayer.canvas.height);
                         this.arrayLayers[i].miniature.drawImage(this.arrayLayers[i].previewLayer.canvas, 0, 0, larguraMiniatura, alturaMiniatura);
                         if (!objProjeto.camadas[i].visivel) { this.clickBttLook(i); };
-                    }
+                    });
                 }
                 for (let i = 0; i < objProjeto.coresSalvas.length; i++) { this.saveColor(objProjeto.coresSalvas[i]); }
                 D.createGridWindow.createGrid = objProjeto.grid;
@@ -419,7 +407,7 @@ export default function projectObject() {
                         { title: "Erro!", text: "Este arquivo não possui projeto salvo." });
                 } else { createSavedProject(JSON.parse(e.currentTarget.result)); }
             };
-            reader.readAsText(file, "ISO-8859-1");
+            reader.readAsText(file, "utf-8");
         },
         notifyAnyCreatedProjects() {
             if (!status.created) {

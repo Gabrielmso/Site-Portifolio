@@ -1,4 +1,4 @@
-import { getElement, setStyle } from "../js/geral.js";
+import { getElement, setStyle, createElement } from "../js/geral.js";
 
 export default function settingsWindowObject() {
     const D = {},
@@ -19,8 +19,15 @@ export default function settingsWindowObject() {
             setStyle(bttSelectColor, { backgroundColor: `rgb(${color.r}, ${color.g}, ${color.b})` });
         },
         saveImage = () => {
-            alert("Ainda não é possível salvar. Volte em breve!");
-            window.location.reload();
+            const { name, resolution: { width, height } } = D.canvasImage.properties;
+            const canvas = createElement("canvas", { width, height }).getContext("2d");
+            canvas.drawImage(D.app.canvasImage.canvas, 0, 0);
+            canvas.drawImage(D.app.canvasGrid.canvas, 0, 0);
+            canvas.canvas.toBlob((blob) => {
+                const download = createElement("a", { download: name, href: URL.createObjectURL(blob) });
+                download.click();
+                download.remove();
+            }, "image/png", 1);
         },
         addEventsToElements = () => {
             bttSelectColor.addEventListener("mousedown", () => {

@@ -44,7 +44,7 @@ main {
 }
 
 [data-id="contentSelecionarImagem"] h1 {
-    font-size: 9vw;
+    font-size: 9.5vw;
     font-style: normal;
     font-family: "Fontetitulo1";
 }
@@ -112,7 +112,7 @@ main {
     z-index: 9997;
     top: 100px;
     left: 100px;
-    background-color: rgba(0, 0, 0, 0.75);
+    background-color: rgba(0, 0, 0, 0.7);
     border-radius: 10px;
     padding: 10px;
     color: rgba(255, 255, 255, 0.7);
@@ -254,7 +254,7 @@ main {
     display: none;
     top: 100px;
     left: 150px;
-    background-color: rgba(12, 12, 17, 0.75);
+    background-color: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(5px);
     width: 560px;
     border-radius: 10px;

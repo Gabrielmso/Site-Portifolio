@@ -92,6 +92,7 @@ export default function appObject() {
     return {
         get isLoad() { return status.isLoad },
         set canvasImage(ctx) { canvas.image = ctx; },
+        get canvasImage() { return canvas.image },
         set canvasGrid(ctx) { canvas.grid = ctx; },
         get canvasGrid() { return canvas.grid; },
         async init() {
