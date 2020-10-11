@@ -12,7 +12,7 @@ export default function canvasGridObject() {
             const ctx = D.app.canvasGrid, { width, height } = D.canvasImage.properties.resolution,
                 { size, color, position, opacity, lineWidth } = properties;
             ctx.fillStyle = `rgb(${color.r}, ${color.g}, ${color.b})`;
-            ctx.globalAlpha = opacity < 0.01 ? 0.01 : opacity > 1 ? 1 : opacity;
+            ctx.globalAlpha = opacity;
             const line = lineWidth < 1 ? 1 : parseInt(lineWidth);
             const pos = {
                 x: Math.round(((position.x / size) - (Math.trunc(position.x / size))) * size),
@@ -49,11 +49,11 @@ export default function canvasGridObject() {
             renderGrid();
         },
         set opacity(num) {
-            properties.opacity = num;
+            properties.opacity = num < 0.01 ? 0.01 : num > 1 ? 1 : num;
             renderGrid();
         },
         set lineWidth(num) {
-            properties.lineWidth = num;
+            properties.lineWidth = num < 1 ? 1 : Math.round(num);
             renderGrid();
         },
         init() {
