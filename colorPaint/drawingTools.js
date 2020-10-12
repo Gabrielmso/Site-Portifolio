@@ -164,17 +164,17 @@ export default function drawingToolsObject() {
         },
         addEventsToElements() {
             D.contentTelas.addEventListener("contextmenu", preventDefaultAction);
-            D.janelaPrincipal.addEventListener("mouseleave", () => {
+            document.addEventListener("mouseleave", () => {
                 if (!this.painting) { cursorTool.invisibleCursor(); }
             });
-            D.janelaPrincipal.addEventListener("mouseenter", () => this.changeCursorTool());
+            document.addEventListener("mouseenter", () => this.changeCursorTool());
             cursorTool.cursor.addEventListener("contextmenu", preventDefaultAction);
             D.contentTelas.addEventListener("mousedown", (e) => this.mouseDownEventDrawing(e));
             D.contentTelas.addEventListener("mousemove", () => this.txtPositionCursor.value = Math.ceil(mousePosition.x) + ", " + Math.ceil(mousePosition.y));
             D.contentTelas.addEventListener("mouseleave", () => { if (!cursorTool.visible) { this.txtPositionCursor.value = "" } });
             cursorTool.cursor.addEventListener("mousedown", (e) => this.mouseDownEventDrawing(e));
-            D.janelaPrincipal.addEventListener("mousemove", throttle((e) => this.mouseMoveEventDrawing(e), 12));
-            D.janelaPrincipal.addEventListener("mouseup", (e) => this.mouseUpEventDrawing(e));
+            document.addEventListener("mousemove", throttle((e) => this.mouseMoveEventDrawing(e), 12));
+            document.addEventListener("mouseup", (e) => this.mouseUpEventDrawing(e));
             cursorTool.cursor.addEventListener("wheel", (e) => cursorTool.wheel(e), { passive: true });
             this.toolOpacityBar.bar.addEventListener("input", (e) => this.mouseDownToolOpacityBar(e));
             this.toolSizeBar.bar.addEventListener("input", (e) => this.mouseDownToolSizeBar(e));

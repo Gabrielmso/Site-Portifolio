@@ -16,11 +16,9 @@ function loadApp() {
     const settingsWindow = settingsWindowObject();
     const colorSelectionWindow = colorSelectionWindowObject();
 
-
     const appWindow = getElement("janelaapp");
     const contentScreen = getElement("contentTela");
     const screen = getElement("tela");
-
 
     selectImage.addDependencies({ canvasImage });
     canvasImage.addDependencies({ selectImage, screen, canvasGrid, app });
@@ -29,9 +27,7 @@ function loadApp() {
     settingsWindow.addDependencies({ colorSelectionWindow, canvasGrid, canvasImage, app, appWindow });
     colorSelectionWindow.addDependencies({ appWindow, canvasGrid, settingsWindow });
 
-    topoMenu.logo.addEventListener("click", () => {
-        window.location.href = "./";
-    });
+    topoMenu.logo.addEventListener("click", () => window.location.href = "./");
     document.addEventListener("dragover", preventDefaultAction);
     document.addEventListener("dragenter", preventDefaultAction);
     document.addEventListener("drop", preventDefaultAction);

@@ -1,4 +1,4 @@
-import { getElement, setStyle, createElement } from "../js/geral.js";
+import { getElement, setStyle, createElement, getMousePosition } from "../js/geral.js";
 
 export default function settingsWindowObject() {
     const D = {},
@@ -9,6 +9,29 @@ export default function settingsWindowObject() {
         },
         bttSelectColor = getElement("bttSelecionarCor"),
         bttSaveImage = getElement("bttSalvarImagem"),
+        moveWindow = (() => {
+            const info = { mousePositionMoveWindow: { x: 0, y: 0 } },
+                content = getElement("janelaConfiguracao"),
+                move = e => {
+                    const { x: cx, y: cy } = getMousePosition(D.appWindow, e), { x: bx, y: by } = info.mousePositionMoveWindow;
+                    const top = cy - by, left = cx - bx;
+                    const validateTop = top < 50 ? 50 : top + content.offsetHeight > D.appWindow.offsetHeight ?
+                        D.appWindow.offsetHeight - content.offsetHeight : top;
+                    const validateLeft = left < 0 ? 0 : left + content.offsetWidth > D.appWindow.offsetWidth ?
+                        D.appWindow.offsetWidth - content.offsetWidth : left;
+                    setStyle(content, { top: validateTop + "px", left: validateLeft + "px" });
+                },
+                up = () => {
+                    document.removeEventListener("mousemove", move);
+                    document.removeEventListener("mouseup", up);
+                },
+                down = e => {
+                    info.mousePositionMoveWindow = getMousePosition(e.currentTarget, e);
+                    document.addEventListener("mousemove", move);
+                    document.addEventListener("mouseup", up);
+                }
+            return down;
+        })(),
         update = () => {
             const { size, position, lineWidth, color, opacity } = D.canvasGrid.properties;
             inputs.size.value = size;
@@ -44,6 +67,7 @@ export default function settingsWindowObject() {
             });
             inputs.opacity.addEventListener("input", (e) => D.canvasGrid.opacity = +(e.currentTarget.value));
             bttSaveImage.addEventListener("mousedown", saveImage);
+            getElement("moverJanelaConfiguracao").addEventListener("mousedown", moveWindow);
         }
     return {
         init() {
