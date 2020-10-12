@@ -164,10 +164,10 @@ export default function drawingToolsObject() {
         },
         addEventsToElements() {
             D.contentTelas.addEventListener("contextmenu", preventDefaultAction);
-            document.addEventListener("mouseleave", () => {
+            D.janelaPrincipal.addEventListener("mouseleave", () => {
                 if (!this.painting) { cursorTool.invisibleCursor(); }
             });
-            document.addEventListener("mouseenter", () => this.changeCursorTool());
+            D.janelaPrincipal.addEventListener("mouseenter", () => this.changeCursorTool());
             cursorTool.cursor.addEventListener("contextmenu", preventDefaultAction);
             D.contentTelas.addEventListener("mousedown", (e) => this.mouseDownEventDrawing(e));
             D.contentTelas.addEventListener("mousemove", () => this.txtPositionCursor.value = Math.ceil(mousePosition.x) + ", " + Math.ceil(mousePosition.y));
@@ -341,6 +341,7 @@ export default function drawingToolsObject() {
             this[this.mouseFunctionName]("down", e);
         },
         mouseMoveEventDrawing(e) {
+            preventDefaultAction(e);
             this.getCursorPosition(e);
             if (this.painting) {
                 strokeCoordinates.add();
