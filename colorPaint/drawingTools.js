@@ -341,7 +341,6 @@ export default function drawingToolsObject() {
             this[this.mouseFunctionName]("down", e);
         },
         mouseMoveEventDrawing(e) {
-            preventDefaultAction(e);
             this.getCursorPosition(e);
             if (this.painting) {
                 strokeCoordinates.add();
