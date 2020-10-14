@@ -3,45 +3,50 @@ import { setStyle, getElement, createElement } from "../js/geral.js";
 
 export default function selectImageObject() {
     let dragEnterElement;
-    const D = {}, content = getElement("contentSelecionarImagem"),
+    const observers = [], content = getElement("contentSelecionarImagem"),
         bttSelectImage = getElement("bttSelecionarImagem"),
         validExtentions = ["png", "jpg", "jpeg", "bmp"],
+        notifyImageSelected = async (file, name) => {
+            for (const observer of observers) { await observer(file, name); }
+        },
         animationGradient = (() => {
             const minDeg = 130, maxDeg = 220, gradiente = getElement("gradiente");
-            let deg = 130, step = 4.8, animation;
+            let deg = 130, step = 4.7, animation;
             const updateGradient = () => {
                 deg = deg > maxDeg ? maxDeg : deg < minDeg ? minDeg : deg;
                 setStyle(gradiente, {
                     backgroundImage: "linear-gradient(" + deg + "deg, rgb(200, 50, 10) -10%, rgb(15, 0, 50) 90%)"
                 });
-            },
-                stop = () => cancelAnimationFrame(animation),
+            }, stop = () => cancelAnimationFrame(animation),
                 progress = () => {
-                    if (deg >= maxDeg) { return; }
-                    deg += step;
-                    updateGradient();
-                    animation = requestAnimationFrame(progress);
-                },
-                regress = () => {
-                    if (deg <= minDeg) { return; }
-                    deg -= step;
-                    updateGradient();
-                    animation = requestAnimationFrame(regress);
+                    return new Promise((resolve) => (function making() {
+                        if (deg >= maxDeg) { resolve(); }
+                        deg += step;
+                        updateGradient();
+                        animation = requestAnimationFrame(making);
+                    })());
+                }, regress = () => {
+                    return new Promise((resolve) => (function making() {
+                        if (deg <= minDeg) { resolve(); }
+                        deg -= step;
+                        updateGradient();
+                        animation = requestAnimationFrame(making);
+                    })());
                 }
-            return (make) => {
+            return async (make) => {
                 stop();
-                if (make) { progress(); }
-                else { regress(); }
+                if (make) { await progress(); }
+                else { await regress(); }
             }
         })(),
         conclude = async (file, name) => {
-            animationGradient(true);
-            await new Promise((resolve) => setTimeout(resolve, 90));
+            await animationGradient(true);
             bttSelectImage.removeEventListener("mousedown", bttClickToSelectImage);
             content.removeEventListener("dragenter", dragEnterFile);
             content.removeEventListener("dragleave", dragLeaveFile);
             content.removeEventListener("drop", dropFileToLoad);
-            D.canvasImage.init(file, name);
+            await notifyImageSelected(file, name);
+            content.remove();
         },
         imageValidation = file => {
             if (!file) {
@@ -73,12 +78,8 @@ export default function selectImageObject() {
     content.addEventListener("dragleave", dragLeaveFile);
     content.addEventListener("drop", dropFileToLoad);
     return {
-        finish() {
-            content.remove();
-            for (const prop in this) { delete this[prop]; }
-        },
-        addDependencies(dependencies) {
-            for (const prop in dependencies) { D[prop] = dependencies[prop]; }
+        addObservers(newObservers) {
+            for (const observer of newObservers) { observers.push(observer); }
         }
     }
 }

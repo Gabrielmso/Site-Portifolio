@@ -1,71 +1,68 @@
 import { setStyle, getImage, createElement } from "../js/geral.js"
 
-export default function canvasImageObject() {
-    const D = {}, imageProperties = { name: "", resolution: { width: 0, height: 0, proportion: 0 } },
+export default function canvasImageObject(screen) {
+    const observers = [], imageProperties = { ctx: null, name: "", width: 0, height: 0, proportion: 0 },
+        notifyCanvasImageCreated = async canvas => {
+            for (const observer of observers) { await observer(canvas); }
+        },
         fadeTransition = (() => {
             const time = 370;
             let content = null;
-            const fadeIn = () => {
-                return new Promise((resolve) => {
-                    if (content) { resolve(); }
-                    content = createElement("div", { class: "fadetransition" });
-                    document.body.appendChild(content);
-                    setTimeout(() => {
-                        setStyle(content, { opacity: "1" });
-                        setTimeout(resolve, time)
-                    }, 18);
-                });
-            },
-                fadeOut = () => {
-                    return new Promise((resolve) => {
-                        if (!content) { resolve(); }
-                        setStyle(content, { opacity: null });
-                        setTimeout(() => {
-                            content.remove();
-                            content = null;
-                            resolve();
-                        }, time);
-                    });
-                }
+            const fadeIn = () => new Promise((resolve) => {
+                if (content) { resolve(); }
+                content = createElement("div", { class: "fadetransition" });
+                document.body.appendChild(content);
+                setTimeout(() => {
+                    setStyle(content, { opacity: "1" });
+                    setTimeout(resolve, time);
+                }, 18);
+            }), fadeOut = () => new Promise((resolve) => {
+                if (!content) { resolve(); }
+                setStyle(content, { opacity: null });
+                setTimeout(() => {
+                    content.remove();
+                    content = null;
+                    resolve();
+                }, time);
+            });
             return { in: fadeIn, out: fadeOut }
         })(),
         renderImageInCanvas = async image => {
             await fadeTransition.in();
-            const { width, height } = imageProperties.resolution;
+            const { width, height } = imageProperties;
             const canvas = createElement("canvas", { class: "canvas canvasImage", width, height })
                 .getContext("2d");
             canvas.drawImage(image, 0, 0, width, height);
-            D.screen.appendChild(canvas.canvas);
-            D.selectImage.finish();
-            D.app.canvasImage = canvas;
-            D.canvasGrid.init();
+            screen.appendChild(canvas.canvas);
+            imageProperties.ctx = canvas;
+            await notifyCanvasImageCreated(imageProperties);
+            fadeTransition.out();
         },
         load = (imageFile, nameFile) => {
-            const reader = new FileReader();
-            reader.onload = ev =>
-                getImage(ev.currentTarget.result, e => {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = ev => getImage(ev.currentTarget.result, async e => {
                     imageProperties.name = nameFile + "-GRID.png";
                     const { naturalWidth: width, naturalHeight: height } = e.currentTarget;
-                    imageProperties.resolution.width = width;
-                    imageProperties.resolution.height = height;
-                    imageProperties.resolution.proportion = width / height;
-                    renderImageInCanvas(e.currentTarget);
+                    imageProperties.width = width;
+                    imageProperties.height = height;
+                    imageProperties.proportion = width / height;
+                    await renderImageInCanvas(e.currentTarget);
+                    resolve();
                 });
-            reader.readAsDataURL(imageFile);
+                reader.readAsDataURL(imageFile);
+            });
         };
     return {
-        get properties() { return imageProperties; },
-        init(imageFile, nameFile) {
-            load(imageFile, nameFile);
-            delete this.init;
+        async init(imageFile, nameFile) {
+            if (!screen) {
+                console.log("canvasImageObject incompleted!");
+                return;
+            }
+            await load(imageFile, nameFile);
         },
-        async finish() {
-            await fadeTransition.out();
-            delete this.addDependencies;
-            delete this.finish;
-        },
-        addDependencies(dependencies) {
-            for (const prop in dependencies) { D[prop] = dependencies[prop]; }
+        addObservers(newObservers) {
+            for (const observer of newObservers) { observers.push(observer); }
         }
     };
 }

@@ -5,27 +5,26 @@ import canvasImageObject from "./canvasImage.js";
 import canvasGridObject from "./canvasGrid.js";
 import colorSelectionWindowObject from "./colorSelectionWindow.js";
 import appObject from "./app.js";
-import settingsWindowObject from "./settingsWindow.js";
+import settingsWindowGridObject from "./settingsWindowGrid.js";
 
 let topoMenu;
 function loadApp() {
-    const selectImage = selectImageObject();
-    const canvasImage = canvasImageObject();
-    const canvasGrid = canvasGridObject();
-    const app = appObject();
-    const settingsWindow = settingsWindowObject();
-    const colorSelectionWindow = colorSelectionWindowObject();
-
     const appWindow = getElement("janelaapp");
     const contentScreen = getElement("contentTela");
     const screen = getElement("tela");
 
-    selectImage.addDependencies({ canvasImage });
-    canvasImage.addDependencies({ selectImage, screen, canvasGrid, app });
-    canvasGrid.addDependencies({ canvasImage, app, screen, settingsWindow });
-    app.addDependencies({ canvasImage, screen, contentScreen, settingsWindow });
-    settingsWindow.addDependencies({ colorSelectionWindow, canvasGrid, canvasImage, app, appWindow });
-    colorSelectionWindow.addDependencies({ appWindow, canvasGrid, settingsWindow });
+    const app = appObject(contentScreen, screen);
+    const selectImage = selectImageObject();
+    const canvasImage = canvasImageObject(screen);
+    const canvasGrid = canvasGridObject(screen);
+    const settingsWindowGrid = settingsWindowGridObject(appWindow);
+    const colorSelectionWindow = colorSelectionWindowObject(appWindow);
+
+    selectImage.addObservers([canvasImage.init]);
+    canvasImage.addObservers([canvasGrid.init]);
+    canvasGrid.addObservers([app.init, settingsWindowGrid.init]);
+    settingsWindowGrid.addObservers([colorSelectionWindow.open]);
+    colorSelectionWindow.addObservers([settingsWindowGrid.setColorGrid]);
 
     topoMenu.logo.addEventListener("click", () => window.location.href = "./");
     document.addEventListener("dragover", preventDefaultAction);

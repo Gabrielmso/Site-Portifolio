@@ -1,13 +1,7 @@
 import { getMousePosition, getElement, setStyle } from "../js/geral.js";
 
-export default function colorSelectionWindowObject() {
-    const D = {}, status = { opened: false },
-        mousePositionMoveWindow = {
-            x: 0, y: 0, update({ x, y }) {
-                this.x = x;
-                this.y = y;
-            }, get() { return { x: this.x, y: this.y } }
-        },
+export default function colorSelectionWindowObject(contentWindow) {
+    const observers = [], status = { opened: false },
         selectedColor = {
             r: 0, g: 0, b: 0, update({ r, g, b }) {
                 this.r = r;
@@ -38,6 +32,9 @@ export default function colorSelectionWindowObject() {
                 ok: getElement("bttOkSelecionaCor"),
                 cancel: getElement("bttCancelarSelecionaCor")
             },
+        },
+        notifyColorSelected = async color => {
+            for (const observer of observers) { await observer(color); }
         },
         rgbTohex = color => {
             const rgb = color.b | (color.g << 8) | (color.r << 16);
@@ -167,27 +164,26 @@ export default function colorSelectionWindowObject() {
         mouseUpMoveCursors = () => {
             insideWindow.cursors.spectrum.clicked = insideWindow.cursors.gradient.clicked = false;
         },
-        moveWindow = ({ x, y }) => {
-            const { x: bx, y: by } = mousePositionMoveWindow.get();
-            let newPositionX = x - bx, newPositionY = y - by;
-            newPositionX = newPositionX < 0 ? 0 : newPositionX + window.offsetWidth > D.appWindow.offsetWidth ?
-                D.appWindow.offsetWidth - window.offsetWidth : newPositionX;
-            newPositionY = newPositionY < 50 ? 50 : newPositionY + window.offsetHeight > D.appWindow.offsetHeight ?
-                D.appWindow.offsetHeight - window.offsetHeight : newPositionY;
-            setStyle(window, { top: newPositionY + "px", left: newPositionX + "px" });
-        },
-        mouseMoveEventMoveWindow = e => {
-            moveWindow(getMousePosition(D.appWindow, e))
-        },
-        mouseDownEventMoveWindow = e => {
-            mousePositionMoveWindow.update(getMousePosition(e.currentTarget, e));
-            document.addEventListener("mousemove", mouseMoveEventMoveWindow);
-            document.addEventListener("mouseup", mouseUpEventMoveWindow);
-        },
-        mouseUpEventMoveWindow = () => {
-            document.removeEventListener("mousemove", mouseMoveEventMoveWindow);
-            document.removeEventListener("mouseup", mouseUpEventMoveWindow);
-        },
+        moveWindow = (() => {
+            let mousePositionMoveWindow = { x: 0, y: 0, };
+            const move = e => {
+                const { x, y } = getMousePosition(contentWindow, e), { x: bx, y: by } = mousePositionMoveWindow;
+                const left = x - bx, top = y - by;
+                const validateLeft = left < 0 ? 0 : left + window.offsetWidth > contentWindow.offsetWidth ?
+                    contentWindow.offsetWidth - window.offsetWidth : left;
+                const validateTop = top < 50 ? 50 : top + window.offsetHeight > contentWindow.offsetHeight ?
+                    contentWindow.offsetHeight - window.offsetHeight : top;
+                setStyle(window, { top: validateTop + "px", left: validateLeft + "px" });
+            }, up = () => {
+                document.removeEventListener("mousemove", move);
+                document.removeEventListener("mouseup", up);
+            }, down = e => {
+                mousePositionMoveWindow = getMousePosition(e.currentTarget, e);
+                document.addEventListener("mousemove", move);
+                document.addEventListener("mouseup", up);
+            }
+            return down;
+        })(),
         findCursorsPosition = () => {
             const { h, s, v } = colorHsv.get(), gradient = insideWindow.canvas.gradient.canvas,
                 spectrum = insideWindow.canvas.spectrum.canvas;
@@ -221,7 +217,7 @@ export default function colorSelectionWindowObject() {
             document.addEventListener("mouseup", mouseUpMoveCursors);
             insideWindow.canvas.spectrum.canvas.parentNode.addEventListener("mousedown", mouseDownCanvasSpectrum);
             insideWindow.canvas.gradient.canvas.parentNode.addEventListener("mousedown", mouseDownCanvasGradient);
-            insideWindow.barMoveWindow.addEventListener("mousedown", mouseDownEventMoveWindow);
+            insideWindow.barMoveWindow.addEventListener("mousedown", moveWindow);
             insideWindow.inputs.txtRgb.addEventListener("keyup", txtRgbKeyUp);
             insideWindow.inputs.txtHex.addEventListener("keyup", txtHexKeyUp);
             insideWindow.buttons.ok.addEventListener("mousedown", selectColor);
@@ -232,7 +228,7 @@ export default function colorSelectionWindowObject() {
             document.removeEventListener("mouseup", mouseUpMoveCursors);
             insideWindow.canvas.spectrum.canvas.parentNode.removeEventListener("mousedown", mouseDownCanvasSpectrum);
             insideWindow.canvas.gradient.canvas.parentNode.removeEventListener("mousedown", mouseDownCanvasGradient);
-            insideWindow.barMoveWindow.removeEventListener("mousedown", mouseDownEventMoveWindow);
+            insideWindow.barMoveWindow.removeEventListener("mousedown", moveWindow);
             insideWindow.inputs.txtRgb.removeEventListener("keyup", txtRgbKeyUp);
             insideWindow.inputs.txtHex.removeEventListener("keyup", txtHexKeyUp);
             insideWindow.buttons.ok.removeEventListener("mousedown", selectColor)
@@ -244,8 +240,7 @@ export default function colorSelectionWindowObject() {
             setStyle(window, { display: null });
         },
         selectColor = () => {
-            D.canvasGrid.color = selectedColor.get();
-            D.settingsWindow.update();
+            notifyColorSelected(selectedColor.get());
             close();
         }
 
@@ -253,8 +248,9 @@ export default function colorSelectionWindowObject() {
         get isOpen() { return status.opened },
         set currentColor(color) { findColor(color) },
         open(color) {
+            if (status.opened) { return };
             addEventsToElements();
-            insideWindow.cursors.spectrum.clicked = insideWindow.cursors.gradient.clicked = this.clickMoveWindow = false;
+            insideWindow.cursors.spectrum.clicked = insideWindow.cursors.gradient.clicked = false;
             setStyle(window, { display: "block" });
             status.opened = true;
             setStyle(insideWindow.compareColors.current, {
@@ -262,8 +258,8 @@ export default function colorSelectionWindowObject() {
             });
             findColor(color);
         },
-        addDependencies(dependencies) {
-            for (const prop in dependencies) { D[prop] = dependencies[prop]; }
+        addObservers(newObservers) {
+            for (const observer of newObservers) { observers.push(observer); }
         }
     }
 }
