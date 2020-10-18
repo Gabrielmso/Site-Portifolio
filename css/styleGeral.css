@@ -42,8 +42,8 @@
     padding: 0px;
     outline: none;
     border: none;
-    box-sizing: border-box;
-    font-family: "robotoLight";
+    box-sizing: border-box;    
+    font-family: "robotoRegular";
 }
 
 html {
@@ -51,7 +51,6 @@ html {
 }
 
 body {
-    font-family: "robotoLight";
     font-size: 16px;
     background-color: #000;
     color: white;

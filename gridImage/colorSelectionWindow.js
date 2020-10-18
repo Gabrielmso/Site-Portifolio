@@ -245,14 +245,10 @@ export default function colorSelectionWindowObject(contentWindow) {
         }
 
     return {
-        get isOpen() { return status.opened },
-        set currentColor(color) { findColor(color) },
         open(color) {
-            if (status.opened) { return };
-            addEventsToElements();
+            if (!status.opened) { addEventsToElements() };
             insideWindow.cursors.spectrum.clicked = insideWindow.cursors.gradient.clicked = false;
             setStyle(window, { display: "block" });
-            status.opened = true;
             setStyle(insideWindow.compareColors.current, {
                 backgroundColor: "rgb(" + color.r + ", " + color.g + ", " + color.b + ")",
             });

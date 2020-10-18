@@ -14,7 +14,7 @@ export default function canvasGridObject(screen) {
         notifyCanvasGridCreated = async canvas => {
             for (const observer of observers) { await observer(canvas); }
         },
-        createGrid = async (imageProperties) => {
+        createGrid = async imageProperties => {
             const { width, height } = imageProperties;
             const newCanvas = createElement("canvas", { class: "canvas canvasGrid", width, height })
                 .getContext("2d");

@@ -1,10 +1,11 @@
 :root {
-    --COR_PRIMARIA: rgb(20, 20, 20);
-    --COR_SECUNDARIA: rgb(28, 28, 28);
-    --COR_TERCIARIA: rgb(37, 37, 37);
-    --COR_QUARTENARIA: rgb(51, 51, 51);
-    --COR_BOTAO: rgba(255, 255, 255, 0.1);
-    --COR_BORDA: rgb(37, 37, 37);
+    --COR_PRIMARIA: rgb(10, 11, 11);
+    --COR_SECUNDARIA: rgb(16, 18, 19);
+    --COR_TERCIARIA: rgb(20, 21, 22);
+    --COR_QUARTENARIA: rgb(27, 29, 30);
+    --COR_BOTAO: rgba(255, 255, 255, 0.07);
+    --COR_BOTAO_HOVER: rgba(0, 0, 0, 0.5);
+    --COR_BORDA: rgb(20, 21, 22);
 }
 
 *::-webkit-scrollbar {
@@ -245,7 +246,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .bttColorPaint:hover {
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: var(--COR_BOTAO_HOVER);
     color: rgba(213, 192, 107, 0.7);
 }
 
@@ -369,7 +370,7 @@ input[type="range"]::-webkit-slider-thumb {
     width: 35px;
     height: 31px;
     display: inline-block;
-    background-color: rgb(13, 13, 13);
+    background-color: var(--COR_BOTAO);
     border-radius: 10px;
     margin-bottom: -2px;
 }
@@ -468,8 +469,16 @@ input[type="range"]::-webkit-slider-thumb {
     transform: translateX(-50%);
     text-transform: uppercase;
     border-radius: 25px;
-    background-color: rgb(80, 80, 80);
+    background-color: var(--COR_BOTAO);
+    color: rgba(255, 255, 255, 0.4);
     transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
+    line-height: 25px;
+    font-size: 11px;
+}
+
+[data-id="bttRemoverCorSalva"]:hover {
+    background-color: var(--COR_BOTAO_HOVER);
+    color: rgba(213, 192, 107, 0.7);
 }
 
 [data-id="bttAtalhos"] {
@@ -479,7 +488,8 @@ input[type="range"]::-webkit-slider-thumb {
     left: 50%;
     transform: translateX(-50%);
     border-radius: 25px;
-    background-color: rgb(80, 80, 80);
+    background-color: var(--COR_BOTAO);
+    color: rgba(255, 255, 255, 0.4);
     text-transform: uppercase;
     font-family: "robotoRegular";
     padding: 0px 10px;
@@ -487,30 +497,13 @@ input[type="range"]::-webkit-slider-thumb {
     height: 25px;
     min-width: 72px;
     text-align: center;
-}
-
-[data-id="bttAtalhos"] p {
-    color: rgb(156, 156, 156);
-    font-size: 12px;
-    text-align: center;
     line-height: 25px;
+    font-size: 11px;
 }
 
 [data-id="bttAtalhos"]:hover {
-    background-color: var(--COR_TERCIARIA);
-    color: rgb(110, 110, 110);
-}
-
-[data-id="bttRemoverCorSalva"] p {
-    color: rgb(156, 156, 156);
-    font-size: 12px;
-    text-align: center;
-    line-height: 25px;
-}
-
-[data-id="bttRemoverCorSalva"]:hover {
-    background-color: var(--COR_TERCIARIA);
-    color: rgb(110, 110, 110);
+    background-color: var(--COR_BOTAO_HOVER);
+    color: rgba(213, 192, 107, 0.7);
 }
 
 [data-id="contentCentro"] {
@@ -613,7 +606,7 @@ input[type="range"]::-webkit-slider-thumb {
 [data-id="barraLateralDireita"] {
     position: relative;
     font-size: 12px;
-    color: rgb(151, 151, 151);
+    color: rgb(119, 119, 119);
     float: right;
     width: 300px;
     height: 100%;
@@ -808,7 +801,7 @@ input[type="range"]::-webkit-slider-thumb {
     border-radius: 10px;
     padding: 10px;
     box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.4);
-    border-top: 1px solid rgba(255, 255, 255, 0.22);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 /* ============================================= Seletor de cores ============================================= */
@@ -818,7 +811,7 @@ input[type="range"]::-webkit-slider-thumb {
     display: none;
     top: 100px;
     left: 106px;
-    border-top: 1px solid rgba(255, 255, 255, 0.22);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
     background-color: var(--COR_TERCIARIA);
     width: 560px;
     border-radius: 10px;
@@ -837,7 +830,7 @@ input[type="range"]::-webkit-slider-thumb {
     padding: 2px;
     text-transform: uppercase;
     margin-left: 5px;
-    border: 2px solid rgba(255, 255, 255, 0.22);
+    border: 2px solid rgba(255, 255, 255, 0.15);
     border-radius: 25px;
 }
 
@@ -910,7 +903,7 @@ input[type="range"]::-webkit-slider-thumb {
     display: none;
     opacity: 0;
     right: 297px;
-    border-top: 1px solid rgba(255, 255, 255, 0.22);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
     background-color: var(--COR_PRIMARIA);
     border-radius: 10px;
     padding: 10px;
@@ -1233,7 +1226,7 @@ input[type="range"]::-webkit-slider-thumb {
     height: auto;
     border-radius: 10px;
     padding: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.22);
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.4);
 }
 
@@ -1291,7 +1284,7 @@ input[type="range"]::-webkit-slider-thumb {
     background-color: var(--COR_TERCIARIA);
     color: rgb(200, 200, 200);
     margin-left: 8px;
-    border: 2px solid rgba(255, 255, 255, 0.22);
+    border: 2px solid rgba(255, 255, 255, 0.15);
     border-radius: 25px;
 }
 
