@@ -667,7 +667,7 @@ p span:hover, p a:hover, li a:hover {
 
 @media screen and (max-width: 470px) {
     h1 {
-        font-size: 35px;
+        font-size: 33px;
     }
     h2 {
         font-size: 25px;

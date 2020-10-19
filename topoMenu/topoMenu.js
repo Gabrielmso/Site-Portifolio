@@ -1,4 +1,4 @@
-import { throttle, getElement, getAllElements, setStyle } from "../js/geral.js";
+import { throttle, getElement, getAllElements, setStyle, loadFile } from "../js/geral.js";
 
 function topMenuObject() {
     return {
@@ -92,29 +92,21 @@ function topMenuObject() {
         init() {
             this.addEventsToElements();
             this.screenResize();
+            delete this.init;
         },
     }
 }
 
 function callTopMenuObject() {
-    const topMenu = new topMenuObject();
+    const topMenu = topMenuObject();
     topMenu.init();
     return topMenu;
 }
 
-function loadFile(url) {
-    return new Promise((resolve) => {
-        fetch(url).then((response) => {
-            if (response.ok) { resolve(response); }
-            resolve(false);
-        });
-    });
-}
-
 export default async function loadTopoMenu() {
-    const HTMLcontent = await loadFile("./topoMenu/menuTopo.html");
-    if (HTMLcontent) {
-        document.body.insertAdjacentHTML("afterbegin", await HTMLcontent.text());
+    const htmlMenu = await loadFile("./topoMenu/menuTopo.html");
+    if (htmlMenu) {
+        document.body.insertAdjacentHTML("afterbegin", await htmlMenu.text());
         return callTopMenuObject();
     }
     return false;

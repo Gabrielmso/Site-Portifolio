@@ -14,6 +14,11 @@ export const throttle = (func, limit) => {
     }
 }
 
+export const loadFile = async (url) => {
+    const response = await fetch(url);
+    return response.ok ? response : false;
+}
+
 export const getImage = (url, fnOnLoad = false) => {
     const image = new Image();
     if (fnOnLoad) { image.onload = fnOnLoad; }
