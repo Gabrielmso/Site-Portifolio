@@ -8,6 +8,10 @@ body {
     overflow: hidden;
 }
 
+p, span {
+    font-family: "Fontetitulo2";
+}
+
 [data-id="topoApresentacao"] {
     width: 100%;
     height: 100%;
@@ -84,6 +88,7 @@ body {
     border-radius: 30px;
     border: solid 4px #d5c06b;
     text-transform: uppercase;
+    background-color: transparent;
     font-weight: bold;
     color: #d5c06b;
     text-align: center;
@@ -101,10 +106,6 @@ body {
     border-radius: 30px;
     height: 60px;
     width: 150px;
-}
-
-[data-id="bttSobreMim"] p {
-    line-height: 52px;
 }
 
 .fonte {
@@ -149,7 +150,8 @@ body {
 
 [data-id="contentSobreMim"] h1 {
     font-size: 60px;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.302);
+    font-family: "Fontetitulo2";
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
     margin-bottom: 20px;
 }
 

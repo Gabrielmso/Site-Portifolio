@@ -27,6 +27,22 @@
 }
 
 [data-id="contentParticulas"] a {
+    color: rgb(213, 192, 107);
     text-decoration: none;
-    color: #d5c06b;
+    transition: color 0.2s linear;
+}
+
+[data-id="contentParticulas"] a:hover {
+    color: rgb(134, 108, 3);
+}
+
+h1 {
+    font-size: 8.3vw;
+    font-family: 'FonteTitulo1'
+}
+
+@media screen and (min-width: 1420px) {
+    h1 {
+        font-size: 90px;
+    }
 }

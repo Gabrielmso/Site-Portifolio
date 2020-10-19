@@ -15,16 +15,16 @@ html, body {
 }
 
 h1 {
-    font-size: 55px;
+    font-size: 48px;
     text-align: center;
-    font-family: "Fontetitulo1";
+    font-family: "Fontetitulo2";
     font-weight: normal;
 }
 
 h2 {
     font-size: 36px;
     text-align: center;
-    font-family: "Fontetitulo1";
+    font-family: "Fontetitulo2";
 }
 
 p {
