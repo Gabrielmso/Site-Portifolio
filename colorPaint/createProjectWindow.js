@@ -1,7 +1,7 @@
 import { getElement, setStyle, createElement } from "../js/geral.js";
 
 export default function createProjectWindowObject() {
-    const D = {}, status = { neverOpened: true, mode: "create" },
+    const D = {}, state = { neverOpened: true, mode: "create", dragEnterElement: null },
         content = getElement("contentCriarAbrirProjeto"),
         createProject = {
             window: getElement("janelaCriarProjeto"),
@@ -36,7 +36,7 @@ export default function createProjectWindowObject() {
                 create: () => createProject.removeEventsToElements(),
                 load: () => loadProject.removeEventsToElements(),
             }
-            removeEventsMode[status.mode]();
+            removeEventsMode[state.mode]();
             content.removeEventListener("mousedown", clickContentToClose);
             await D.openWindowbackgroundBlur(content, false);
         },
@@ -111,8 +111,14 @@ export default function createProjectWindowObject() {
         },
         clickContentToClose = e => { if (e.currentTarget === e.target) { close(); } },
         mouseLeaveWindowLoad = () => loadProject.window.classList.replace("dragEnter", "dragLeave"),
-        dragEnterWindowLoad = () => loadProject.window.classList.replace("dragLeave", "dragEnter"),
-        dragLeaveWindowLoad = () => loadProject.window.classList.replace("dragEnter", "dragLeave"),
+        dragEnterWindowLoad = (e) => {
+            state.dragEnterElement = e.target;
+            loadProject.window.classList.replace("dragLeave", "dragEnter");
+        },
+        dragLeaveWindowLoad = (e) => {
+            if (state.dragEnterElement !== e.target) { return; }
+            loadProject.window.classList.replace("dragEnter", "dragLeave");
+        },
         dropFileWindowLoad = e => fileValidation(e.dataTransfer.files[0]);
 
     return {
@@ -143,8 +149,8 @@ export default function createProjectWindowObject() {
                     loadProject.addEventsToElements();
                 }
             }
-            status.mode = mode;
-            typeMode[status.mode]();
+            state.mode = mode;
+            typeMode[state.mode]();
             content.addEventListener("mousedown", clickContentToClose);
         },
         addDependencies(dependencies) {

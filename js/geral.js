@@ -40,9 +40,7 @@ export const cloneReplaceElement = oldElement => {
 
 export const createElement = (tagName, attributes) => {
     const newElement = document.createElement(tagName);
-    for (const prop in attributes) {
-        newElement.setAttribute(prop, attributes[prop]);
-    }
+    for (const prop in attributes) { newElement.setAttribute(prop, attributes[prop]); }
     return newElement;
 }
 
