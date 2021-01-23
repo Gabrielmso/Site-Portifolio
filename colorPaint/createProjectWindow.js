@@ -1,4 +1,4 @@
-import { getElement, setStyle, createElement } from "../js/geral.js";
+import { getElement, setStyle, createElement } from "../js/utils.js";
 
 export default function createProjectWindowObject() {
     const D = {}, state = { neverOpened: true, mode: "create", dragEnterElement: null },

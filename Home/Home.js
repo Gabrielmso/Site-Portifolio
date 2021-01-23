@@ -1,5 +1,5 @@
 import loadTopoMenu from "../topoMenu/topoMenu.js";
-import { throttle, getElement } from "../js/geral.js";
+import { throttle, getElement } from "../js/utils.js";
 
 let topoMenu;
 

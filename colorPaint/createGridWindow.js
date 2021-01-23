@@ -1,4 +1,4 @@
-import { getMousePosition, getElement, setStyle } from "../js/geral.js";
+import { getMousePosition, getElement, setStyle } from "../js/utils.js";
 
 export default function createGridWindowObject() {
     const D = {},

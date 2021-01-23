@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="gridImage/gridImage.css">
     <script type="module">
         import gridImage from "./gridImage/gridImage.js";
-        import { fadeOutLoading } from "./js/geral.js";
+        import { fadeOutLoading } from "./js/utils.js";
         window.onload = async () => {
             if (!(await gridImage())) { return; }
             fadeOutLoading();
@@ -25,6 +25,7 @@
 </head>
 
 <body>
+    <div data-id="carregamento"></div>
     <main>
         <section data-id="janelaapp">
             <div data-id="contentTela">
@@ -94,7 +95,6 @@
             <button data-id="bttSelecionarImagem" class="cursor">Selecionar imagem</button>
         </section>
     </main>
-    <div data-id="carregamento"></div>
 </body>
 
 </html>

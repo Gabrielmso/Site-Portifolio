@@ -1,4 +1,4 @@
-import { getElement, setStyle, createElement, getMousePosition } from "../js/geral.js";
+import { getElement, setStyle, createElement, getMousePosition } from "../js/utils.js";
 
 export default function settingsWindowGridObject(contentWindow) {
     const observers = [], canvas = {},

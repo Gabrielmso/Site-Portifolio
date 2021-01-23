@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="topoMenu/topoMenu.css">
     <link rel="stylesheet" href="Home/Home.css">
     <script type="module">
-        import { fadeOutLoading } from "./js/geral.js";
+        import { fadeOutLoading } from "./js/utils.js";
         import { home } from "./Home/Home.js";
         window.onload = async () => {
             if (!(await home())) { return; }
@@ -24,6 +24,7 @@
 </head>
 
 <body>
+    <div data-id="carregamento"></div>
     <header data-id="topoApresentacao" style="display: none">
         <div data-id="imgFundo">
             <div data-id="imgFundoBlur"></div>
@@ -61,7 +62,6 @@
         </div>
         </div>
     </section>
-    <div data-id="carregamento"></div>
 </body>
 
 </html>

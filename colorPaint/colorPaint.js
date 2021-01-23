@@ -9,7 +9,7 @@ import hotKeysObject from "./hotKeys.js";
 import createGridWindowObject from "./createGridWindow.js";
 import colorSelectionWindowObject from "./colorSelectionWindow.js";
 import notificationsObject from "./notifications.js";
-import { preventDefaultAction, getMousePosition, getElement, setStyle } from "../js/geral.js";
+import { preventDefaultAction, getMousePosition, getElement, setStyle } from "../js/utils.js";
 
 let topoMenu;
 function loadApp() {

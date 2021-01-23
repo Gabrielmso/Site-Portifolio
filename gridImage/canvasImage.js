@@ -1,4 +1,4 @@
-import { setStyle, getImage, createElement } from "../js/geral.js"
+import { setStyle, getImage, createElement } from "../js/utils.js"
 
 export default function canvasImageObject(screen) {
     const observers = [], imageProperties = { ctx: null, name: "", width: 0, height: 0, proportion: 0 },

@@ -1,4 +1,4 @@
-import { setStyle } from "../js/geral.js";
+import { setStyle } from "../js/utils.js";
 
 export default function hotKeysObject() {
     const D = {}, status = { ctrlPressed: false, shiftPressed: false },

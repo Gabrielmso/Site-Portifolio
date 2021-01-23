@@ -1,4 +1,4 @@
-import { preventDefaultAction, setStyle, getElement, createElement, getImage } from "../js/geral.js";
+import { preventDefaultAction, setStyle, getElement, createElement, getImage } from "../js/utils.js";
 
 export default function projectObject() {
     const D = {}, status = { created: false };

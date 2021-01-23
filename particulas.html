@@ -18,7 +18,7 @@
     <script type="module">
         import loadTopoMenu from "./topoMenu/topoMenu.js";
         import particles from "./particulas/particles.js";
-        import { fadeOutLoading, getElement } from "./js/geral.js";
+        import { fadeOutLoading, getElement } from "./js/utils.js";
         window.onload = async () => {
             if (!(await loadTopoMenu())) { return; }
             particles(getElement("particulas")).start();
@@ -28,6 +28,7 @@
 </head>
 
 <body>
+    <div data-id="carregamento"></div>
     <div data-id="espacoparticulas">
         <div data-id="fundo" class="colisaoParticulas" style="opacity: 0.72;"><canvas data-id="particulas"
                 style="opacity: 0.37;"></canvas></div>
@@ -39,7 +40,6 @@
                     GitHub</a>.</p>
         </div>
     </div>
-    <div data-id="carregamento"></div>
 </body>
 
 </html>

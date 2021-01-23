@@ -1,4 +1,4 @@
-import { throttle, getElement, getAllElements, setStyle, loadFile } from "../js/geral.js";
+import { throttle, getElement, getAllElements, setStyle, loadFile } from "../js/utils.js";
 
 function topMenuObject() {
     return {

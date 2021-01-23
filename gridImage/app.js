@@ -1,4 +1,4 @@
-import { getMousePosition, preventDefaultAction, setStyle } from "../js/geral.js";
+import { getMousePosition, preventDefaultAction, setStyle } from "../js/utils.js";
 
 export default function appObject(contentScreen, screen) {
     const status = { zoom: 0, isClick: false }, canvas = {},

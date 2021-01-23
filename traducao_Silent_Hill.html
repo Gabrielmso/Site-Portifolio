@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="topoMenu/topoMenu.css">
     <link rel="stylesheet" href="ContTraduSilent/traduSilent.css">
     <script type="module">
-        import { fadeOutLoading } from "./js/geral.js";
+        import { fadeOutLoading } from "./js/utils.js";
         import traduSilent from "./ContTraduSilent/traduSilent.js";
         window.onload = async () => {
             if (!(await traduSilent())) { return; }
@@ -27,6 +27,7 @@
 </head>
 
 <body>
+    <div data-id="carregamento"></div>
     <div data-id="espacoparticulas" style="opacity: 0;">
         <canvas data-id="particulas"></canvas>
     </div>
@@ -518,7 +519,6 @@
             <div data-id="imgchavekgordon" class="imgtrad"></div>
         </div>
     </div>
-    <div data-id="carregamento"></div>
 </body>
 
 </html>

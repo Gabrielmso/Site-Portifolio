@@ -1,4 +1,4 @@
-import { getElement, cloneElement } from "../js/geral.js";
+import { getElement, cloneElement } from "../js/utils.js";
 
 export default function undoRedoChangeObject() {
     const D = {}, changeLimit = 20,

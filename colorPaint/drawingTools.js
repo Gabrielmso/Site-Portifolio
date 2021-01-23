@@ -1,7 +1,7 @@
 import {
     getImage, preventDefaultAction, throttle, setStyle, getMousePosition, logarithm,
     getDistanceCoordinates, getElement
-} from "../js/geral.js";
+} from "../js/utils.js";
 
 export default function drawingToolsObject() {
     const D = {}, tools = {

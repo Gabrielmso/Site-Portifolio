@@ -1,4 +1,4 @@
-import { createElement } from "../js/geral.js";
+import { createElement } from "../js/utils.js";
 
 export default function canvasGridObject(screen) {
     const observers = [], canvas = {

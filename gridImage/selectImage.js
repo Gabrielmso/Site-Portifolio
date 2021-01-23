@@ -1,4 +1,4 @@
-import { setStyle, getElement, createElement } from "../js/geral.js";
+import { setStyle, getElement, createElement } from "../js/utils.js";
 
 
 export default function selectImageObject() {

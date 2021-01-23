@@ -1,4 +1,4 @@
-import { getDistanceCoordinates, randomNumber } from "../js/geral.js";
+import { getDistanceCoordinates, randomNumber } from "../js/utils.js";
 
 export default function particlesAnimation(canvasElement) {
    const ctx = canvasElement.getContext("2d"),

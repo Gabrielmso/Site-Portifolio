@@ -1,4 +1,4 @@
-import { getElement, getAllElementsClass, setStyle } from "../js/geral.js";
+import { getElement, getAllElementsClass, setStyle } from "../js/utils.js";
 import loadTopoMenu from "../topoMenu/topoMenu.js";
 import particlesAnimation from "../particulas/particles.js";
 

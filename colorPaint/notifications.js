@@ -1,4 +1,4 @@
-import { getElement, setStyle } from "../js/geral.js";
+import { getElement, setStyle } from "../js/utils.js";
 
 export default function notificationsObject() {
     const status = { type: "", opened: false, mouseInWindow: false, timeToClose: 0 }, timeTransition = 360,

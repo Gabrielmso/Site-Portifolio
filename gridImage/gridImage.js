@@ -1,4 +1,4 @@
-import { setStyle, preventDefaultAction, getElement } from "../js/geral.js";
+import { setStyle, preventDefaultAction, getElement } from "../js/utils.js";
 import loadTopoMenu from "../topoMenu/topoMenu.js";
 import selectImageObject from "./selectImage.js";
 import canvasImageObject from "./canvasImage.js";
