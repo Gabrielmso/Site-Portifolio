@@ -23,11 +23,7 @@ function loadApp() {
         colorSelectionWindow = colorSelectionWindowObject(),
         notification = notificationsObject();
 
-    const contentTools = getElement("contentTools"),
-        barraLateralEsquerda = getElement("barraLateralEsquerda"),
-        barraLateralDireita = getElement("barraLateralDireita"),
-        contentCentro = getElement("contentCentro"),
-        contentTelas = getElement("contentTelas"),
+    const contentTelas = getElement("contentTelas"),
         corPrincipal = getElement("corPrincipal"),
         corSecundaria = getElement("corSecundaria"),
         txtPorcentagemZoom = getElement("txtPorcentagemZoom"),
@@ -90,7 +86,7 @@ function loadApp() {
     txtPorcentagemZoom.addEventListener("keyup", e => {
         if (e.code === "Enter") {
             const valor = parseFloat(((e.currentTarget.value).replace("%", "")).replace(",", "."));
-            if (isNaN(valor) === false && valor >= 1) { project.zoom("porcentagem", true, valor); }
+            if (!isNaN(valor) && valor >= 1) { project.zoom("porcentagem", true, valor); }
         }
     });
     const openHotKeysWindow = open => openWindowbackgroundBlur(getElement("contentJanelaAtalhos"), open)
@@ -115,8 +111,6 @@ function loadApp() {
     document.addEventListener("drop", preventDefaultAction);
 
     window.addEventListener("resize", () => {
-        ajustarContents();
-        setTimeout(() => ajustarContents(), 120);
         if (project.created) { previewFunctions.changeMoverScrollSizeZoom(); };
     });
 
@@ -126,15 +120,6 @@ function loadApp() {
             return false;
         }
     });
-    function ajustarContents() {
-        setStyle(contentTools, { height: (janelaPrincipal.offsetHeight - 90) + "px" });
-        setStyle(contentCentro, {
-            width: contentTools.offsetWidth - barraLateralEsquerda.offsetWidth - barraLateralDireita.offsetWidth - 0.5 + "px",
-            height: contentTools.offsetHeight + "px"
-        });
-        setStyle(contentTelas, { height: (contentCentro.offsetHeight - 15) + "px" });
-        setStyle(getElement("janelaCamadas"), { height: (barraLateralEsquerda.offsetHeight - 336) + "px" });
-    }
 
     function openWindowbackgroundBlur(window, open) {
         return new Promise((resolve) => {
@@ -186,7 +171,6 @@ function loadApp() {
             fadeOut();
         } else { carregamento(); }
     }
-    ajustarContents();
     criarOuAbrirProjeto();
 }
 

@@ -65,8 +65,9 @@ input[type="range"]::-webkit-slider-thumb {
 
 [data-id="janelaPrincipal"] {
     position: relative;
-    width: 100%;
-    height: 100%;
+    display: grid;
+    grid-template-columns: 100%;
+    grid-template-rows: 90px 1fr;
 }
 
 [data-id="barraSuperior"] {
@@ -255,17 +256,16 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 [data-id="contentTools"] {
+    display: grid;
+    grid-template-rows: calc(100vh - 90px);
+    grid-template-columns: 96px 1fr auto;
     position: relative;
-    width: 100%;
-    height: 545px;
     background-color: var(--COR_PRIMARIA);
 }
 
 [data-id="barraLateralEsquerda"] {
     position: relative;
-    float: left;
     overflow: hidden;
-    width: 96px;
     height: 100%;
     border-right: 4px solid var(--COR_BORDA);
     background-color: var(--COR_QUARTENARIA);
@@ -508,12 +508,12 @@ input[type="range"]::-webkit-slider-thumb {
 
 [data-id="contentCentro"] {
     position: relative;
-    float: left;
+    overflow: hidden;
 }
 
 [data-id="contentTelas"] {
     position: relative;
-    width: 100%;
+    height: calc(100% - 15px);
     overflow: auto;
     scrollbar-width: thin;
 }
@@ -607,12 +607,15 @@ input[type="range"]::-webkit-slider-thumb {
     position: relative;
     font-size: 12px;
     color: rgb(119, 119, 119);
-    float: right;
-    width: 300px;
-    height: 100%;
     padding: 10px;
     border-left: 4px solid var(--COR_BORDA);
     background-color: var(--COR_QUARTENARIA);
+}
+
+[data-id="barraLateralCompleta"] {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
 }
 
 [data-id="janelaPreview"] {
@@ -687,6 +690,10 @@ input[type="range"]::-webkit-slider-thumb {
     margin-right: 5px;
 }
 
+[data-id="janelaCamadas"] {
+    flex-grow: 1;
+}
+
 [data-id="contentIconeCamadas"] {
     position: relative;
     width: 100%;
@@ -744,6 +751,10 @@ input[type="range"]::-webkit-slider-thumb {
 
 .janelasBarraLateralDireita:first-child {
     margin-top: 1px;
+}
+
+.janelasBarraLateralDireita:last-child {
+    margin-bottom: 0;
 }
 
 .titulosBarraDireita {

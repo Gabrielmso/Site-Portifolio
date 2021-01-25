@@ -2,7 +2,7 @@
 <html lang="pt-br">
 
 <head>
-    <title>GM - ColorPaint v1.1</title>
+    <title>GM - ColorPaint v1.1.1</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.75">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -140,34 +140,36 @@
                     </div>
                 </div>
                 <aside data-id="barraLateralDireita" class="noSelection">
-                    <div data-id="janelaPreview" class="janelasBarraLateralDireita">
-                        <label class="titulosBarraDireita">Preview:</label>
-                        <div data-id="contentPreview">
-                            <div data-id="contentTelaPreview">
-                                <canvas data-id="telaPreview" class="preview"></canvas>
-                                <div data-id="fundoPreview" class="preview"></div>
-                                <div data-id="moverScroll" style="cursor: grab"></div>
+                    <div data-id="barraLateralCompleta">
+                        <div data-id="janelaPreview" class="janelasBarraLateralDireita">
+                            <label class="titulosBarraDireita">Preview:</label>
+                            <div data-id="contentPreview">
+                                <div data-id="contentTelaPreview">
+                                    <canvas data-id="telaPreview" class="preview"></canvas>
+                                    <div data-id="fundoPreview" class="preview"></div>
+                                    <div data-id="moverScroll" style="cursor: grab"></div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div data-id="janelaInfo" class="janelasBarraLateralDireita">
-                        <label class="titulosBarraDireita">Info:</label>
-                        <div data-id="contentInfo">
-                            <label>Posição do cursor: </label><input data-id="txtPosicaoCursor" type="text"
-                                readonly><br>
-                            <label>Resolução: </label><input data-id="txtResolucao" type="text" readonly><br>
-                            <label>Cor do primeiro plano: </label><input data-id="txtCorEscolhida" type="text"
-                                readonly><br>
+                        <div data-id="janelaInfo" class="janelasBarraLateralDireita">
+                            <label class="titulosBarraDireita">Info:</label>
+                            <div data-id="contentInfo">
+                                <label>Posição do cursor: </label><input data-id="txtPosicaoCursor" type="text"
+                                    readonly><br>
+                                <label>Resolução: </label><input data-id="txtResolucao" type="text" readonly><br>
+                                <label>Cor do primeiro plano: </label><input data-id="txtCorEscolhida" type="text"
+                                    readonly><br>
+                            </div>
                         </div>
-                    </div>
-                    <div data-id="janelaCamadas" class="janelasBarraLateralDireita">
-                        <label class="titulosBarraDireita">Camadas:</label>
-                        <div data-id="contentIconeCamadas">
+                        <div data-id="janelaCamadas" class="janelasBarraLateralDireita">
+                            <label class="titulosBarraDireita">Camadas:</label>
+                            <div data-id="contentIconeCamadas">
+                            </div>
                         </div>
-                    </div>
-                    <div data-id="contentBarraOpacidadeCamada" class="janelasBarraLateralDireita noSelection">
-                        <label class="titulosBarraDireita">Opacidade:</label>
-                        <input data-id="barraOpacidadeCamada" type="range" min="0.01" max="1" step="0.01">
+                        <div data-id="contentBarraOpacidadeCamada" class="janelasBarraLateralDireita noSelection">
+                            <label class="titulosBarraDireita">Opacidade:</label>
+                            <input data-id="barraOpacidadeCamada" type="range" min="0.01" max="1" step="0.01">
+                        </div>
                     </div>
                 </aside>
             </div>

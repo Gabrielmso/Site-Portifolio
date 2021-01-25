@@ -26,7 +26,6 @@ export default function particlesAnimation(canvasElement) {
          particle.pos.x += particle.vel.x;
          ctx.drawImage(particle.circle.canvas, particle.pos.x - particle.mid, particle.pos.y - particle.mid);
       }
-
    }
 
    function drawLine(point1, point2, opacity) {
