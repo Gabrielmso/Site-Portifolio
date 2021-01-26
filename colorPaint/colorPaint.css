@@ -613,13 +613,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 [data-id="barraLateralCompleta"] {
-    display: flex;
     height: 100%;
-    flex-direction: column;
-}
-
-[data-id="janelaPreview"] {
-    height: 170px;
 }
 
 [data-id="contentPreview"] {
@@ -691,7 +685,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 [data-id="janelaCamadas"] {
-    flex-grow: 1;
+    height: calc(100% - 316px);
 }
 
 [data-id="contentIconeCamadas"] {
@@ -942,16 +936,6 @@ input[type="range"]::-webkit-slider-thumb {
 
 /* ============================================= Criar/abrir projeto ============================================= */
 
-[data-id="contentCriarAbrirProjeto"] section {
-    border-radius: 10px;
-    padding: 20px;
-    font-size: 20px;
-}
-
-[data-id="janelaCriarProjeto"] {
-    border: 2px solid rgba(255, 255, 255, 0.4);
-}
-
 [data-id="janelaAbrirProjeto"] {
     position: relative;
     display: flex;
@@ -962,34 +946,6 @@ input[type="range"]::-webkit-slider-thumb {
     height: 50%;
     min-width: 350px;
     min-height: 300px;
-}
-
-[data-id="contentCriarAbrirProjeto"] p {
-    margin-bottom: 16px;
-    text-align: center;
-    color: rgba(255, 255, 255, 0.65);
-}
-
-[data-id="contentCriarAbrirProjeto"] button {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.6);
-    text-transform: uppercase;
-    padding: 0px 15px;
-    min-width: 330px;
-    margin-top: 10px;
-    text-align: center;
-    line-height: 35px;
-    height: 35px;
-    font-size: 14px;
-    border-radius: 30px;
-    color: rgba(255, 255, 255, 0.55);
-    transition: background-color 150ms ease-in-out, box-shadow 150ms ease-in-out, color 150ms ease-in-out;
-}
-
-[data-id="contentCriarAbrirProjeto"] button:hover {
-    background-color: rgba(255, 255, 255, 0.25);
-    color: rgba(255, 255, 255, 0.8);
-    box-shadow: 0px 5px 20px rgba(255, 255, 255, 0.25);
 }
 
 [data-id="contentCriarAbrirProjeto"] ul li input, [data-id="contentCriarAbrirProjeto"] select {
@@ -1014,12 +970,12 @@ input[type="range"]::-webkit-slider-thumb {
 
 .dragEnter {
     color: rgba(213, 192, 107, 0.8);
-    border: 2px dashed rgba(213, 192, 107, 0.8);
+    border: 2px dashed rgba(213, 192, 107, 0.6);
 }
 
 .dragLeave {
     color: rgba(255, 255, 255, 0.6);
-    border: 2px dashed rgba(255, 255, 255, 0.6);
+    border: 2px dashed rgba(255, 255, 255, 0.4);
 }
 
 /* ================================================= carregamento ================================================= */
@@ -1222,11 +1178,46 @@ input[type="range"]::-webkit-slider-thumb {
     left: 0px;
     z-index: 10000002;
     background-color: rgba(0, 0, 0, 0.55);
-    transition: backdrop-filter 330ms ease-in-out, opacity 330ms ease-in-out;
 }
 
-.applyBackDropBlur {
-    backdrop-filter: blur(9px);
+.contentJanelas section {
+    border-radius: 10px;
+    padding: 20px;
+    font-size: 20px;
+}
+
+.contentJanelas p {
+    margin-bottom: 10px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.contentJanelas button {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    padding: 0px 15px;
+    min-width: 330px;
+    margin-top: 10px;
+    text-align: center;
+    line-height: 35px;
+    height: 35px;
+    font-size: 14px;
+    border-radius: 30px;
+    color: rgba(255, 255, 255, 0.55);
+    transition: background-color 150ms ease-in-out, box-shadow 150ms ease-in-out, color 150ms ease-in-out;
+}
+
+.contentJanelas button:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0px 5px 20px rgba(255, 255, 255, 0.25);
+}
+
+.janelaTransparente {
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    max-height: 92%;
+    overflow: auto;
 }
 
 .janelas {
@@ -1325,7 +1316,6 @@ input[type="range"]::-webkit-slider-thumb {
     top: 0px;
     left: 0px;
     overflow: hidden;
-    transition: backdrop-filter 350ms ease-in-out;
 }
 
 [data-id="notificacao"] {

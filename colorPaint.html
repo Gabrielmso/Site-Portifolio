@@ -231,7 +231,7 @@
         </div>
     </section>
     <section data-id="contentCriarAbrirProjeto" class="contentJanelas">
-        <section data-id="janelaCriarProjeto">
+        <section data-id="janelaCriarProjeto" class="janelaTransparente">
             <div class="noSelection">
                 <p>Propriedades para o novo projeto</p>
             </div>
@@ -302,12 +302,12 @@
         </div>
     </section>
     <section data-id="contentJanelaAtalhos" class="contentJanelas">
-        <div class="janelas">
-            <div class="tituloJanela noSelection">
+        <section class="janelaTransparente">
+            <div>
                 <p>Atalhos</p>
             </div>
-            <div class="atalhos conteudoJanela">
-                <ul>
+            <div class="conteudoJanela">
+                <ul style="width: 300px;">
                     <li>
                         <label>[ : Aumentar tamanho das ferramentas.</label>
                     </li>
@@ -339,18 +339,15 @@
                         <label>Barra de espaço: Movimentar a tela.</label>
                     </li>
                     <li>
-                        <label>Shift esquerdo: linhas retas verticais ou<br>horizontais,círculos e quadrados</label>
+                        <label>Shift esquerdo: linhas retas verticais ou horizontais, círculos e quadrados</label>
                     </li>
                     <li style="margin-bottom: 4px;">
-                        <label>Shift esquerdo + A ou S ou D: Alterar as<br> propriedades das ferramentas com o
-                            clicar<br>e mover do mouse no desenho.</label>
+                        <label>Shift esquerdo + A, S ou D: Alterar as propriedades das ferramentas com o
+                            clicar e mover do mouse no desenho.</label>
                     </li>
                 </ul>
             </div>
-            <div class="bttsJanela noSelection">
-                <button data-id="bttOkAtalhos" class="bttColorPaint cursor">Ok</button>
-            </div>
-        </div>
+        </section>
     </section>
 </body>
 

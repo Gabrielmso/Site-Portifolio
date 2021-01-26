@@ -1,4 +1,4 @@
-import { getElement, setStyle } from "../js/utils.js";
+import { delay, getElement, setStyle } from "../js/utils.js";
 
 export default function notificationsObject() {
     const status = { type: "", opened: false, mouseInWindow: false, timeToClose: 0 }, timeTransition = 360,
@@ -12,7 +12,7 @@ export default function notificationsObject() {
         },
         hideTransition = () => {
             setStyle(window, { opacity: "0", bottom: `-${window.offsetHeight + 10}px` });
-            contentWindow.classList.remove("applyBackDropBlur");
+            setStyle(contentWindow, { "backdrop-filter": null });
             setTimeout(() => setStyle(contentWindow, { display: null }), timeTransition);
         },
         mouseDownContentShowTransition = e => {
@@ -72,14 +72,15 @@ export default function notificationsObject() {
         }
 
     return {
-        open(properties, content) {
+        async open(properties, content) {
             title.innerText = content.title;
             text.innerText = content.text;
             status.type = properties.name;
             modeType[status.type](properties);
             addEventsToElements();
-            setStyle(contentWindow, { display: "block" });
-            setTimeout(() => contentWindow.classList.add("applyBackDropBlur"), 7);
+            setStyle(contentWindow, { display: "block", transition: "backdrop-filter 330ms ease-in-out" });
+            await delay(10);
+            setStyle(contentWindow, { "backdrop-filter": "blur(9px)" });
             showTransition();
             status.opened = true;
         }

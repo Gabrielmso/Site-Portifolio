@@ -1,4 +1,5 @@
 import { addMethodsGlobalObjects } from "../js/addMethodsGlobalObjects.js";
+import { preventDefaultAction, getMousePosition, getElement, setStyle, openWindowBackgroundBlur } from "../js/utils.js";
 import loadTopoMenu from "../topoMenu/topoMenu.js";
 import createProjectWindowObject from "./createProjectWindow.js";
 import projectObject from "./project.js";
@@ -9,7 +10,6 @@ import hotKeysObject from "./hotKeys.js";
 import createGridWindowObject from "./createGridWindow.js";
 import colorSelectionWindowObject from "./colorSelectionWindow.js";
 import notificationsObject from "./notifications.js";
-import { preventDefaultAction, getMousePosition, getElement, setStyle } from "../js/utils.js";
 
 let topoMenu;
 function loadApp() {
@@ -29,7 +29,7 @@ function loadApp() {
         txtPorcentagemZoom = getElement("txtPorcentagemZoom"),
         janelaPrincipal = getElement("colorPaintContent");
 
-    createProjectWindow.addDependencies({ project, notification, openWindowbackgroundBlur });
+    createProjectWindow.addDependencies({ project, notification, openWindowBackgroundBlur });
     project.addDependencies({
         corPrincipal, corSecundaria, drawingTools, previewFunctions,
         hotKeys, createGridWindow, colorSelectionWindow, notification,
@@ -89,9 +89,11 @@ function loadApp() {
             if (!isNaN(valor) && valor >= 1) { project.zoom("porcentagem", true, valor); }
         }
     });
-    const openHotKeysWindow = open => openWindowbackgroundBlur(getElement("contentJanelaAtalhos"), open)
-    getElement("bttAtalhos").addEventListener("mousedown", () => openHotKeysWindow(true));
-    getElement("bttOkAtalhos").addEventListener("mousedown", () => openHotKeysWindow(false));
+    const content = getElement("contentJanelaAtalhos");
+    content.addEventListener("mousedown", (e) => {
+        if (e.target === content) { openWindowBackgroundBlur(content, false) }
+    })
+    getElement("bttAtalhos").addEventListener("mousedown", openWindowBackgroundBlur.bind(null, content, true));
 
 
     janelaPrincipal.addEventListener("wheel", e => {//Zoom com o scroll do mouse.
@@ -120,26 +122,6 @@ function loadApp() {
             return false;
         }
     });
-
-    function openWindowbackgroundBlur(window, open) {
-        return new Promise((resolve) => {
-            if (open) {
-                setStyle(window, { display: "flex" });
-                setTimeout(() => {
-                    setStyle(window, { opacity: "1" });
-                    window.classList.add("applyBackDropBlur");
-                    resolve();
-                }, 10);
-            } else {
-                setStyle(window, { opacity: null });
-                window.classList.remove("applyBackDropBlur");
-                setTimeout(() => {
-                    setStyle(window, { display: null });
-                    resolve();
-                }, 340);
-            }
-        });
-    }
 
     function criarOuAbrirProjeto() {
         const carregar = getElement("carregamento"),

@@ -38,7 +38,7 @@ export default function createProjectWindowObject() {
             }
             removeEventsMode[state.mode]();
             content.removeEventListener("mousedown", clickContentToClose);
-            await D.openWindowbackgroundBlur(content, false);
+            await D.openWindowBackgroundBlur(content, false);
         },
         conclude = async () => {
             await new Promise((resolve) => setTimeout(resolve, 100));
@@ -135,7 +135,7 @@ export default function createProjectWindowObject() {
                 });
                 return;
             }
-            D.openWindowbackgroundBlur(content, true);
+            D.openWindowBackgroundBlur(content, true);
             const typeMode = {
                 create: () => {
                     setStyle(loadProject.window, { display: "none" });
