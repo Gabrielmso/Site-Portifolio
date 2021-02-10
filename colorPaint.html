@@ -210,7 +210,9 @@
         <div data-id="cursorComparaContaGotas" style="display: none;">
             <div data-id="comparaCoresContaGotas"></div>
         </div>
-        <div data-id="cursorFerramenta" class="bordaCursor noSelection"><div></div></div>
+        <div data-id="cursorFerramenta" class="bordaCursor noSelection">
+            <div></div>
+        </div>
     </main>
     <section data-id="contentCriarAbrirProjeto" class="contentJanelas">
         <section data-id="janelaCriarProjeto" class="janelaTransparente">
@@ -270,9 +272,13 @@
                         <label>Posição vertical:</label><input data-id="txtPosicaoVerticalGrid" type="number"
                             value="0"><label> px.</label>
                     </li>
-                    <li style="margin-bottom: 4px;">
+                    <li>
                         <label>Posição Horizontal:</label><input data-id="txtPosicaoHorizontalGrid" type="number"
                             value="0"><label> px.</label>
+                    </li>
+                    <li style="margin-bottom:4px;">
+                        <label>Opacidade:</label>
+                        <input data-id="barraOpacidadeGrid" type="range" min="0.01" max="1" step="0.01">
                     </li>
                 </ul>
             </div>

@@ -1,20 +1,26 @@
 import { getMousePosition, getElement, setStyle, createElement } from "../js/utils.js";
 
-export default function createGridWindowObject({ notification, project, contentTelas, adjustInVisualizationScreen, zoom }) {
-    const gridProperties = { screen: getElement("grid"), size: 80, position: { x: 0, y: 0 }, visible: false },
+export default function createGridWindowObject({ notification, project, contentTelas,
+    adjustInVisualizationScreen, zoom }) {
+    const gridProperties = { screen: getElement("grid"), size: 80, position: { x: 0, y: 0 }, opacity: 1, visible: false },
         previousVisualization = { scrollX: 0, scrollY: 0, zoom: 0 },
         contentWindow = getElement("contentJanelaMenuGrid"), insideWindow = {
             barMoveWindow: getElement("barraMoverJanelaMenuGrid"),
             inputs: {
                 size: getElement("txtTamanhoGrid"), horizontalPosition: getElement("txtPosicaoHorizontalGrid"),
-                verticalPosition: getElement("txtPosicaoVerticalGrid"),
+                verticalPosition: getElement("txtPosicaoVerticalGrid"), opacity: getElement("barraOpacidadeGrid")
             },
             buttons: { ok: getElement("bttOkGrid"), cancel: getElement("bttcancelarGrid") },
+        },
+        changeOpacity = value => {
+            setStyle(gridProperties.screen, { opacity: value });
+            gridProperties.opacity = insideWindow.inputs.opacity.value = value;
         },
         createGrid = (properties, create) => {
             const screen = gridProperties.screen, size = gridProperties.size = properties.size,
                 pos = gridProperties.position = properties.position,
                 numDeQuadrados = (Math.trunc((project.resolution.width / size) + 2.1)) * (Math.trunc((project.resolution.height / size) + 2.1));
+            changeOpacity(properties.opacity);
             if (numDeQuadrados > 5700) {
                 notification.open({
                     type: "notify", timeNotify: 1500, title: "Atenção!", message: "Aumente o tamanho da grade."
@@ -80,6 +86,7 @@ export default function createGridWindowObject({ notification, project, contentT
                 }
             return down;
         })(),
+        onInputChangeOpacity = e => changeOpacity(+(e.currentTarget.value)),
         addEventsToElements = () => {
             insideWindow.inputs.size.addEventListener("change", inputSizeChange);
             insideWindow.inputs.horizontalPosition.addEventListener("change", inputHorizontalPositionChange);
@@ -87,6 +94,7 @@ export default function createGridWindowObject({ notification, project, contentT
             insideWindow.buttons.ok.addEventListener("mousedown", close);
             insideWindow.buttons.cancel.addEventListener("mousedown", bttCancelMouseDown);
             insideWindow.barMoveWindow.addEventListener("mousedown", moveWindow);
+            insideWindow.inputs.opacity.addEventListener("input", onInputChangeOpacity);
         },
         removeEventsToElements = () => {
             insideWindow.buttons.ok.removeEventListener("mousedown", close);
@@ -95,6 +103,7 @@ export default function createGridWindowObject({ notification, project, contentT
             insideWindow.inputs.horizontalPosition.removeEventListener("change", inputHorizontalPositionChange);
             insideWindow.inputs.verticalPosition.removeEventListener("change", inputVerticalPositionChange);
             insideWindow.barMoveWindow.removeEventListener("mousedown", moveWindow);
+            insideWindow.inputs.opacity.removeEventListener("input", onInputChangeOpacity);
         },
         close = () => {
             removeEventsToElements();
@@ -125,7 +134,7 @@ export default function createGridWindowObject({ notification, project, contentT
         };
 
     return {
-        set createGrid({ size, position, visible }) { createGrid({ size, position }, visible) },
+        set createGrid({ size, position, visible, opacity }) { createGrid({ size, position, opacity }, visible) },
         get gridProperties() {
             const { size, position, visible } = gridProperties;
             return { size, position, visible };
