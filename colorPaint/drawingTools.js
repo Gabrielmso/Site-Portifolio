@@ -588,6 +588,11 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
             return { move, down, up }
         })(),
         infoChangeTool: { coordinate: { x: 0, y: 0 }, opacity: 0, size: 0, hardness: 0 },
+        changeToolMouseUp: () => {
+            project.eventLayer.clearRect(0, 0, project.resolution.width, project.resolution.height);
+            selectDrawingTool(drawingTools.selectedTool.name);
+            return { save: false, inUse: false };
+        },
         changeToolSize: (() => {
             const down = e => {
                 toolsFunctions.infoChangeTool.coordinate = getMousePosition(janelaPrincipal, e);
@@ -603,11 +608,7 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
                 strokeCoordinates.onlyFirst();
                 toolsFunctions.brush.down();
             }
-            const up = () => {
-                project.eventLayer.clearRect(0, 0, project.resolution.width, project.resolution.height);
-                selectDrawingTool(drawingTools.selectedTool.name);
-                return { save: false, inUse: false };
-            }
+            const up = () => toolsFunctions.changeToolMouseUp();
             return { down, move, up }
         })(),
         changeToolOpacity: (() => {
@@ -625,14 +626,10 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
                 strokeCoordinates.onlyFirst();
                 toolsFunctions.brush.down();
             }
-            const up = () => {
-                project.eventLayer.clearRect(0, 0, project.resolution.width, project.resolution.height);
-                selectDrawingTool(drawingTools.selectedTool.name);
-                return { save: false, inUse: false };
-            }
+            const up = () => toolsFunctions.changeToolMouseUp();
             return { move, down, up }
         })(),
-        changeToolOpacity: (() => {
+        changeToolHardness: (() => {
             const down = e => {
                 toolsFunctions.infoChangeTool.coordinate = getMousePosition(janelaPrincipal, e);
                 toolsFunctions.infoChangeTool.hardness = drawingTools.selectedTool.hardness;
@@ -647,11 +644,7 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
                 strokeCoordinates.onlyFirst();
                 toolsFunctions.brush.down();
             }
-            const up = () => {
-                project.eventLayer.clearRect(0, 0, project.resolution.width, project.resolution.height);
-                selectDrawingTool(drawingTools.selectedTool.name);
-                return { save: false, inUse: false };
-            }
+            const up = () => toolsFunctions.changeToolMouseUp();
             return { move, down, up }
         })(),
     }
@@ -682,7 +675,7 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
                 elCursor.classList.add("bordaCursor");
                 cursorTool.halfSize = size / 2;
                 setStyle(elCursor, {
-                    width: size + "px", height: size + "px", backgroundImage: size < 200 ? "none" : "",
+                    width: size + "px", height: size + "px", backgroundImage: size < 250 ? "none" : "",
                 });
             }
             cursorTool.currentSetPosition(cursorTool.position);
@@ -808,6 +801,21 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
     })();
     const onHotKeys = (() => {
         const info = { spacePressed: false, ctrlPressed: false, shiftPressed: false }
+        const ctrlDown = () => {
+            if (info.ctrlPressed) { return; }
+            info.ctrlPressed = true;
+            selectDrawingTool("eyeDropper");
+        }
+        const ctrlUp = () => {
+            info.ctrlPressed = false;
+            selectDrawingTool(drawingTools.previousToolName);
+            cursorTool.update();
+        }
+        const shiftDown = () => info.shiftPressed = true;
+        const shiftUp = () => {
+            project.toolInUse = info.shiftPressed = false;
+            selectDrawingTool(drawingTools.selectedTool.name);
+        }
         const keyDown = {
             Space: () => {
                 if (info.spacePressed) { return; }
@@ -818,48 +826,27 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
             Backslash: () => changeToolSize(drawingTools.selectedTool.size - 1),
             BracketRight: () =>
                 changeToolSize(drawingTools.selectedTool.size === 0.5 ? 1 : drawingTools.selectedTool.size + 1),
-            Ctrl: () => {
-                if (info.ctrlPressed) { return; }
-                info.ctrlPressed = true;
-                selectDrawingTool("eyeDropper");
-            },
+            ControlLeft: ctrlDown, ControlRight: ctrlDown, ShiftLeft: shiftDown, ShiftRight: shiftDown,
             Shift: e => {
                 if (info.shiftPressed) { return; }
                 info.shiftPressed = true;
                 selectDrawingTool(drawingTools.selectedTool.name);
-            }
+            },
+            KeyA: () => drawingTools.toolFunctionName = "changeToolSize",
+            KeyS: () => drawingTools.toolFunctionName = "changeToolOpacity",
+            KeyD: () => drawingTools.toolFunctionName = "changeToolHardness",
         }
         const keyUp = {
-            Ctrl: () => {
-                info.ctrlPressed = false;
-                selectDrawingTool(drawingTools.previousToolName);
-                cursorTool.update();
-            },
+            ControlLeft: ctrlUp, ControlRight: ctrlUp, ShiftLeft: shiftUp, ShiftRight: shiftUp,
+            KeyA: shiftUp, KeyS: shiftUp, KeyD: shiftUp,
             Space: () => {
                 project.toolInUse = info.spacePressed = false;
                 selectDrawingTool(drawingTools.selectedTool.name);
                 cursorTool.update();
             },
-            Shift: () => {
-                selectDrawingTool(drawingTools.selectedTool.name);
-            }
-        }
-        const withShift = {
-            KeyA: () => drawingTools.toolFunctionName = "changeToolSize",
-            KeyS: () => drawingTools.toolFunctionName = "changeToolOpacity",
-            KeyD: () => drawingTools.toolFunctionName = "changeToolHardness",
         }
         return ({ pressed, e }) => {
-            let fn = null;
-            // = pressed ? keyDown[e.code] : keyUp[e.code];
-            if (e.shiftKey) {
-                keyDown.Shift();
-                fn = withShift[e.code];
-            } else { keyUp.Shift(); }
-
-            if (e.ctrlKey) { keyDown.Ctrl(); }
-            else { keyUp.Ctrl(); }
-
+            let fn = pressed ? keyDown[e.code] : keyUp[e.code];
             if (!fn) { return; }
             preventDefaultAction(e);
             fn(e);

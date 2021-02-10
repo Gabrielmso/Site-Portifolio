@@ -1,4 +1,4 @@
-import { getElement, setStyle, createElement, openWindowBackgroundBlur, delay, createEventEmitterToObservers } from "../js/utils.js";
+import { getElement, setStyle, createElement, openWindowBackgroundBlur, delay, createEventEmitterToObservers, getAllElementsClass } from "../js/utils.js";
 
 export default function createProjectWindowObject({ notification, colors }) {
     const state = { created: false, mode: "create", dragEnterElement: null }
@@ -154,6 +154,7 @@ export default function createProjectWindowObject({ notification, colors }) {
             state.mode = mode;
             typeMode[state.mode]();
             content.addEventListener("mousedown", clickContentToClose);
+            Array.from(getAllElementsClass("bttLightAnimation")).map(e => e.classList.remove("bttLightAnimation"));
         },
         addObservers: observers.add, removeObservers: observers.remove
     }

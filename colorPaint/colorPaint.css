@@ -1305,3 +1305,15 @@ input[type="range"]::-webkit-slider-thumb {
 .atalhos ul li {
     margin-bottom: 3px;
 }
+
+.bttLightAnimation {
+    animation: light 1.9s infinite ease-in-out;
+}
+
+@keyframes light {
+    50% {
+        box-shadow: 0px 3px 22px rgba(213, 192, 107, 0.7);
+        background-color: var(--COR_BOTAO_HOVER);
+        color: rgba(213, 192, 107, 0.7);
+    }
+}
