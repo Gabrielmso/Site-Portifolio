@@ -1,8 +1,6 @@
 import loadTopoMenu from "../topoMenu/topoMenu.js";
 import { throttle, getElement } from "../js/utils.js";
 
-let topoMenu;
-
 function animationScrollTop(element, scrollValue, time) {
     const frameTime = 16, deltaScrollValue = scrollValue - element.scrollTop;
     const numberFrames = time / frameTime, addScrollValue = deltaScrollValue / numberFrames;
@@ -22,7 +20,13 @@ function animationScrollTop(element, scrollValue, time) {
     }
 }
 
-function homeFunctions() {
+export default async function homeFunctions() {
+    (await loadTopoMenu()).logoClick(() => {
+        if ((document.body.scrollTop || document.documentElement.scrollTop) > 3) {
+            animationScrollTop(document.documentElement, 0, 450);
+        } else { window.location.href = "index.html"; }
+    });
+
     let topo = true;
     const topoApresentacao = getElement("topoApresentacao"),
         sobreMim = getElement("sobreMim"),
@@ -53,12 +57,6 @@ function homeFunctions() {
         }
     }, 120, true));
 
-    topoMenu.logo.addEventListener("click", function () {
-        if ((document.body.scrollTop || document.documentElement.scrollTop) > 3) {
-            animationScrollTop(document.documentElement, 0, 450);
-        } else { window.location.href = "index.html"; }
-    });
-
     bttSobreMim.addEventListener("click", () => animationScrollTop(document.documentElement, window.innerHeight, 450))
 
     function carregamento() {
@@ -81,13 +79,4 @@ function homeFunctions() {
             }, 1100);
         }, 1000);
     }
-}
-
-export async function home() {
-    topoMenu = await loadTopoMenu();
-    if (topoMenu) {
-        homeFunctions();
-        return true;
-    }
-    return false;
 }

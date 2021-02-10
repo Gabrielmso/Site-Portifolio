@@ -2,8 +2,12 @@ import { getElement, getAllElementsClass, setStyle } from "../js/utils.js";
 import loadTopoMenu from "../topoMenu/topoMenu.js";
 import particlesAnimation from "../particulas/particles.js";
 
-let topoMenu;
-function traduSilentFunctions() {
+export default async function traduSilentFunctions() {
+    const topoMenu = (await loadTopoMenu()).logoClick(() => {
+        if (numSlide > 0) { voltaPrimeiroSlide(); }
+        else { window.location.href = "./"; }
+    });
+
     const titulo = getElement("titulo"), info = getElement("info"), traprogress = getElement("traprogress"),
         textos = getAllElementsClass("texto"), bttverdetalhes = getElement("bttverdetalhes"),
         telaSlideCarrosel = getAllElementsClass("telaslide"), imgTrad = getAllElementsClass("imgtrad"),
@@ -107,11 +111,6 @@ function traduSilentFunctions() {
         ajustarElementos();
         ajustarimgscomparacao();
         mudarMenu();
-    });
-
-    topoMenu.logo.addEventListener("click", () => {
-        if (numSlide > 0) { voltaPrimeiroSlide(); }
-        else { window.location.href = "./"; }
     });
 
     info.addEventListener("mouseenter", () => mouseTexto = true);
@@ -340,8 +339,8 @@ function traduSilentFunctions() {
     }
 
     function mudarMenu() {
-        if (numSlide === 0) { topoMenu.changeTheme(true); }
-        else { topoMenu.changeTheme(false); }
+        if (numSlide === 0) { topoMenu.changeTheme(1); }
+        else { topoMenu.changeTheme(2); }
     }
 
     function ajustarimgscomparacao() {
@@ -429,13 +428,4 @@ function traduSilentFunctions() {
     }
     ajustarimgscomparacao();
     setTimeout(carregamento, 800);
-}
-
-export default async function traduSilent() {
-    topoMenu = await loadTopoMenu();
-    if (topoMenu) {
-        traduSilentFunctions();
-        return true;
-    }
-    return false;
 }

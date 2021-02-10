@@ -20,7 +20,7 @@
         import particles from "./particulas/particles.js";
         import { fadeOutLoading, getElement } from "./js/utils.js";
         window.onload = async () => {
-            if (!(await loadTopoMenu())) { return; }
+            (await loadTopoMenu(false)).logoClick(() => window.location.href = "./");
             particles(getElement("particulas")).start();
             fadeOutLoading();
         };

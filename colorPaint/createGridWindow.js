@@ -1,10 +1,7 @@
-import { getMousePosition, getElement, setStyle } from "../js/utils.js";
+import { getMousePosition, getElement, setStyle, createElement } from "../js/utils.js";
 
-export default function createGridWindowObject() {
-    const D = {},
-        gridProperties = {
-            screen: getElement("grid"), size: 80, position: { x: 0, y: 0 }, visible: false,
-        },
+export default function createGridWindowObject({ notification, project, contentTelas, adjustInVisualizationScreen, zoom }) {
+    const gridProperties = { screen: getElement("grid"), size: 80, position: { x: 0, y: 0 }, visible: false },
         previousVisualization = { scrollX: 0, scrollY: 0, zoom: 0 },
         contentWindow = getElement("contentJanelaMenuGrid"), insideWindow = {
             barMoveWindow: getElement("barraMoverJanelaMenuGrid"),
@@ -17,19 +14,19 @@ export default function createGridWindowObject() {
         createGrid = (properties, create) => {
             const screen = gridProperties.screen, size = gridProperties.size = properties.size,
                 pos = gridProperties.position = properties.position,
-                numDeQuadrados = (Math.trunc((D.project.properties.resolution.width / size) + 2.1)) * (Math.trunc((D.project.properties.resolution.height / size) + 2.1));
+                numDeQuadrados = (Math.trunc((project.resolution.width / size) + 2.1)) * (Math.trunc((project.resolution.height / size) + 2.1));
             if (numDeQuadrados > 5700) {
-                D.notification.open({ name: "notify", time: 1400 },
-                    { title: "Atenção!", text: "Aumente o tamanho da grade." });
+                notification.open({
+                    type: "notify", timeNotify: 1500, title: "Atenção!", message: "Aumente o tamanho da grade."
+                });
                 return;
             } else if (numDeQuadrados > 1100) {
-                D.notification.open({ name: "notify", time: 1400 }, {
-                    title: "Atenção!",
-                    text: "O tamanho da grade está muito baixo, isso pode acarretar problemas de performance!"
+                notification.open({
+                    type: "notify", timeNotify: 1500, title: "Atenção!",
+                    message: "O tamanho da grade está muito baixo, isso pode acarretar problemas de performance!"
                 });
             }
-            let el = screen.firstElementChild;
-            while (el != null) {
+            for (let el = screen.firstElementChild; el != null;) {
                 el.remove();
                 el = screen.firstElementChild;
             }
@@ -39,34 +36,31 @@ export default function createGridWindowObject() {
                 }
                 if (position.x < 0) { position.x += size };
                 if (position.y < 0) { position.y += size };
-                const larguraTela = (D.project.properties.resolution.width + (size * 2)),
-                    alturaTela = (D.project.properties.resolution.height + (size * 2));
+                const larguraTela = (project.resolution.width + (size * 2)),
+                    alturaTela = (project.resolution.height + (size * 2));
                 const larguraQuadrado = ((size / larguraTela) * 100), alturaQuadrado = ((size / alturaTela) * 100);
                 const styleQuadrado = "width: " + larguraQuadrado + "%; height: " + alturaQuadrado + "%;";
                 setStyle(screen, {
-                    top: (-100 * ((size - position.y) / D.project.properties.resolution.height)) + "%",
-                    left: (-100 * ((size - position.x) / D.project.properties.resolution.width)) + "%",
-                    width: ((larguraTela / D.project.properties.resolution.width) * 100) + "%",
-                    height: ((alturaTela / D.project.properties.resolution.height) * 100) + "%"
+                    top: (-100 * ((size - position.y) / project.resolution.height)) + "%",
+                    left: (-100 * ((size - position.x) / project.resolution.width)) + "%",
+                    width: ((larguraTela / project.resolution.width) * 100) + "%",
+                    height: ((alturaTela / project.resolution.height) * 100) + "%"
                 });
-                const quadrado = document.createElement("div");
-                quadrado.setAttribute("class", "quadrado");
+                const quadrado = createElement("div", { class: "quadrado", style: styleQuadrado });
                 quadrado.innerHTML = "<div></div>";
-                quadrado.setAttribute("style", styleQuadrado);
                 for (let i = 0; i < numDeQuadrados; i++) { screen.appendChild(quadrado.cloneNode(true)); }
             }
             gridProperties.visible = create;
         },
         applyPreviousVisualization = () => {
-            D.project.zoom("porcentagem", false, previousVisualization.zoom);
-            D.contentTelas.scrollTop = previousVisualization.scrollY;
-            D.contentTelas.scrollLeft = previousVisualization.scrollX;
+            zoom("porcentagem", false, previousVisualization.zoom);
+            contentTelas.scrollTop = previousVisualization.scrollY;
+            contentTelas.scrollLeft = previousVisualization.scrollX;
         },
         moveWindow = (() => {
             let mousePositionMoveWindow = { x: 0, y: 0, };
             const window = getElement("janelaMenuGrid"),
                 move = e => {
-                    e.stopPropagation();
                     const { x, y } = getMousePosition(contentWindow, e), { x: bx, y: by } = mousePositionMoveWindow;
                     const left = x - bx, top = y - by;
                     const validateLeft = left < 0 ? 0 : left + window.offsetWidth > contentWindow.offsetWidth ?
@@ -109,24 +103,21 @@ export default function createGridWindowObject() {
         },
         inputSizeChange = e => {
             const num = parseInt(e.currentTarget.value);
-            if (!isNaN(num) && num > 0) {
-                gridProperties.size = num;
-                createGrid(gridProperties, true);
-            }
+            if (isNaN(num) && num <= 0) { return; }
+            gridProperties.size = num;
+            createGrid(gridProperties, true);
         },
         inputHorizontalPositionChange = e => {
             const num = parseInt(e.currentTarget.value);
-            if (!isNaN(num)) {
-                gridProperties.position.x = num;
-                createGrid(gridProperties, true);
-            }
+            if (isNaN(num)) { return; }
+            gridProperties.position.x = num;
+            createGrid(gridProperties, true);
         },
         inputVerticalPositionChange = e => {
             const num = parseInt(e.currentTarget.value);
-            if (!isNaN(num)) {
-                gridProperties.position.y = num;
-                createGrid(gridProperties, true);
-            }
+            if (isNaN(num)) { return; }
+            gridProperties.position.y = num;
+            createGrid(gridProperties, true);
         },
         bttCancelMouseDown = () => {
             createGrid(gridProperties, false);
@@ -140,20 +131,16 @@ export default function createGridWindowObject() {
             return { size, position, visible };
         },
         open() {
-            if (!D.project.notifyAnyCreatedProjects()) { return; }
-            previousVisualization.scrollX = D.contentTelas.scrollLeft;
-            previousVisualization.scrollY = D.contentTelas.scrollTop;
-            previousVisualization.zoom = parseFloat(((D.txtPorcentagemZoom.value).replace("%", "")).replace(",", "."));
+            previousVisualization.scrollX = contentTelas.scrollLeft;
+            previousVisualization.scrollY = contentTelas.scrollTop;
+            previousVisualization.zoom = project.zoom;
             insideWindow.inputs.size.value = gridProperties.size;
             insideWindow.inputs.horizontalPosition.value = gridProperties.position.x;
             insideWindow.inputs.verticalPosition.value = gridProperties.position.y;
             setStyle(contentWindow, { display: "block" });
             addEventsToElements();
-            D.project.adjustInVisualizationScreen();
+            adjustInVisualizationScreen();
             if (!gridProperties.visible) { createGrid(gridProperties, true); }
-        },
-        addDependencies(dependencies) {
-            for (const prop in dependencies) { D[prop] = dependencies[prop]; }
         }
     }
 }

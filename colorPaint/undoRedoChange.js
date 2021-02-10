@@ -1,73 +1,50 @@
-import { getElement, cloneElement } from "../js/utils.js";
+import { getElement, createCopyCanvas, createEventEmitterToObservers, preventDefaultAction } from "../js/utils.js";
 
-export default function undoRedoChangeObject() {
-    const D = {}, changeLimit = 20,
-        changes = { undone: [], redone: [] },
-        buttons = { undo: getElement("bttDesfazer"), redo: getElement("bttRefazer") },
-        createCopyLayer = layer => {
-            const ctxCanvas = cloneElement(layer).getContext("2d");
-            ctxCanvas.drawImage(layer, 0, 0);
-            return ctxCanvas.canvas;
-        },
-        enableButtons = () => {
-            if (changes.undone.length) { buttons.undo.classList.replace("semAlteracoes", "comAlteracoes"); }
-            else { buttons.undo.classList.replace("comAlteracoes", "semAlteracoes"); }
-            if (changes.redone.length) { buttons.redo.classList.replace("semAlteracoes", "comAlteracoes"); }
-            else { buttons.redo.classList.replace("comAlteracoes", "semAlteracoes"); }
-        },
-        applyChange = ({ numLayer, change }) => {
-            const { width, height } = D.project.properties.resolution;
-            D.drawingTools.eventLayer.clearRect(0, 0, width, height);
-            D.project.arrayLayers[numLayer].ctx.clearRect(0, 0, width, height);
-            D.project.arrayLayers[numLayer].ctx.drawImage(change, 0, 0);
-        },
-        undoChange = () => {
-            if (D.drawingTools.clickToCurve) {
-                D.drawingTools.selectDrawingTool("curve");
-                return;
-            }
-            if (changes.undone.length) {
-                const { numLayer, change } = changes.undone.pop();
-                D.project.clickIconLayer(numLayer);
-                if (!D.project.arrayLayers[numLayer].visible) {
-                    D.project.clickBttLook(numLayer);
-                    return;
-                }
-                changes.redone.push({ numLayer: numLayer, change: createCopyLayer(D.project.arrayLayers[numLayer].ctx.canvas) });
-                applyChange({ numLayer, change });
-                enableButtons();
-                D.project.drawInPreview(D.project.arrayLayers[numLayer]);
-            }
-        },
-        redoChange = () => {
-            if (changes.redone.length) {
-                if (D.drawingTools.clickToCurve) { D.drawingTools.selectDrawingTool("curve"); }
-                const { numLayer, change } = changes.redone.pop();
-                D.project.clickIconLayer(numLayer);
-                changes.undone.push({ numLayer: numLayer, change: createCopyLayer(D.project.arrayLayers[numLayer].ctx.canvas) });
-                applyChange({ numLayer, change });
-                enableButtons();
-                D.project.drawInPreview(D.project.arrayLayers[numLayer]);
-            }
-        },
-        saveChanges = () => {
-            changes.undone.push({ numLayer: D.project.selectedLayer, change: createCopyLayer(D.drawingTools.currentLayer.canvas) });
-            if (changes.undone.length > changeLimit) { changes.undone.shift(); }
-            changes.redone.clear();
-            enableButtons();
+export default function undoRedoChangeObject({ project }) {
+    const observers = createEventEmitterToObservers(["restoreChange"]);
+    const changeLimit = 20;
+    const changes = { undone: [], redone: [] }
+    const buttons = { undo: getElement("bttDesfazer"), redo: getElement("bttRefazer") };
+    const enableButtons = () => {
+        if (changes.undone.length) { buttons.undo.classList.replace("semAlteracoes", "comAlteracoes"); }
+        else { buttons.undo.classList.replace("comAlteracoes", "semAlteracoes"); }
+        if (changes.redone.length) { buttons.redo.classList.replace("semAlteracoes", "comAlteracoes"); }
+        else { buttons.redo.classList.replace("comAlteracoes", "semAlteracoes"); }
+    }
+    const undoChange = () => {
+        if (!changes.undone.length || project.toolInUse) { return; }
+        const { layerChanged, change } = changes.undone.pop();
+        changes.redone.push({ layerChanged, change: createCopyCanvas(layerChanged.layer.canvas) });
+        observers.notify("restoreChange", { layerChanged, change });
+        enableButtons();
+    }
+    const redoChange = () => {
+        if (!changes.redone.length || project.toolInUse) { return; }
+        const { layerChanged, change } = changes.redone.pop();
+        changes.undone.push({ layerChanged, change: createCopyCanvas(layerChanged.layer.canvas) });
+        observers.notify("restoreChange", { layerChanged, change });
+        enableButtons();
+    }
+    const saveChanges = () => {
+        if (changes.undone.length === changeLimit) { changes.undone.shift(); }
+        changes.undone.push({ layerChanged: project.selectedLayer, change: createCopyCanvas(project.selectedLayer.layer.canvas) });
+        changes.redone.clear();
+        enableButtons();
+    }
+    const onHotKeys = (() => {
+        const withCtrl = { KeyZ: undoChange, KeyY: redoChange }
+        return ({ pressed, e }) => {
+            if (!pressed) { return }
+            const fn = e.ctrlKey ? withCtrl[e.code] : false;
+            if (!fn) { return; }
+            preventDefaultAction(e);
+            fn();
         }
-
+    })();
+    buttons.redo.addEventListener("mousedown", redoChange);
+    buttons.undo.addEventListener("mousedown", undoChange);
     return {
-        get lastChange() { return changes.undone.last.change; },
-        addEventsToElements() {
-            buttons.redo.addEventListener("mousedown", redoChange);
-            buttons.undo.addEventListener("mousedown", undoChange);
-        },
-        saveChanges,
-        undoChange,
-        redoChange,
-        addDependencies(dependencies) {
-            for (const prop in dependencies) { D[prop] = dependencies[prop]; }
-        }
+        get lastChange() { return changes.undone.last.change; }, onHotKeys,
+        saveChanges, undoChange, redoChange, addObservers: observers.add
     }
 }

@@ -15,9 +15,9 @@
     <link rel="stylesheet" href="Home/Home.css">
     <script type="module">
         import { fadeOutLoading } from "./js/utils.js";
-        import { home } from "./Home/Home.js";
+        import home from "./Home/Home.js";
         window.onload = async () => {
-            if (!(await home())) { return; }
+            await home();
             fadeOutLoading();
         };
     </script>

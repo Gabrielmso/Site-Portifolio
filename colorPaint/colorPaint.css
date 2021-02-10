@@ -187,7 +187,7 @@ input[type="range"]::-webkit-slider-thumb {
     -webkit-transition: all 0.3s;
     border-radius: 10px;
     border-top-right-radius: 0px;
-    z-index: 1000;
+    z-index: 1002;
 }
 
 [data-id="menuColorPaint"] li:hover ul {
@@ -281,52 +281,52 @@ input[type="range"]::-webkit-slider-thumb {
 
 /* ===================================== FERRAMENTAS ========================================= */
 
-[data-id="pincel"] {
+[data-id="brush"] {
     background-image: url("../colorPaint/imagens/spriteIcons.png");
     background-position: 0px 1px;
 }
 
-[data-id="borracha"] {
+[data-id="eraser"] {
     background-image: url("../colorPaint/imagens/spriteIcons.png");
     background-position: -35px 1px;
 }
 
-[data-id="contaGotas"] {
+[data-id="eyeDropper"] {
     background-image: url("../colorPaint/imagens/spriteIcons.png");
     background-position: -315px 1px;
 }
 
-[data-id="linha"] {
+[data-id="line"] {
     background-image: url("../colorPaint/imagens/spriteIcons.png");
     background-position: -70px 0px;
 }
 
-[data-id="curva"] {
+[data-id="curve"] {
     background-image: url("../colorPaint/imagens/spriteIcons.png");
     background-position: -105px 0px;
 }
 
-[data-id="retangulo"] {
+[data-id="rectangle"] {
     background-image: url("../colorPaint/imagens/spriteIcons.png");
     background-position: -140px 0px;
 }
 
-[data-id="elipse"] {
+[data-id="ellipse"] {
     background-image: url("../colorPaint/imagens/spriteIcons.png");
     background-position: -175px 0px;
 }
 
-[data-id="baldeDeTinta"] {
+[data-id="paintBucket"] {
     background-image: url("../colorPaint/imagens/spriteIcons.png");
     background-position: -210px 0px;
 }
 
-[data-id="borrar"] {
+[data-id="smudge"] {
     background-image: url("../colorPaint/imagens/spriteIcons.png");
     background-position: -247px 0px;
 }
 
-[data-id="desfoque"] {
+[data-id="blur"] {
     background-image: url("../colorPaint/imagens/spriteIcons.png");
     background-position: -280px 0px;
 }
@@ -524,14 +524,7 @@ input[type="range"]::-webkit-slider-thumb {
     overflow: hidden;
     margin-right: 10px;
     margin-bottom: 3px;
-}
-
-[data-id="desenho"] {
-    z-index: -1;
-}
-
-[data-id="corFundo"] {
-    z-index: 0;
+    background: url('./imagens/fundoTela/transparente.png');
 }
 
 [data-id="pintar"] {
@@ -539,7 +532,6 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 [data-id="grid"] {
-    opacity: 0.85;
     z-index: 50;
 }
 
@@ -618,24 +610,20 @@ input[type="range"]::-webkit-slider-thumb {
 
 [data-id="contentPreview"] {
     position: relative;
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 256px;
     height: 150px;
 }
 
 [data-id="contentTelaPreview"] {
     position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    background: url('./imagens/fundoTela/transparenteMiniatura.png');
 }
 
 [data-id="telaPreview"] {
     z-index: -1;
-}
-
-[data-id="fundoPreview"] {
-    z-index: 0;
 }
 
 .preview {
@@ -657,10 +645,6 @@ input[type="range"]::-webkit-slider-thumb {
     outline-offset: -1px;
     width: 30px;
     height: 30px;
-}
-
-[data-id="janelaInfo"] {
-    height: 80px;
 }
 
 [data-id="contentInfo"] {
@@ -685,7 +669,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 [data-id="janelaCamadas"] {
-    height: calc(100% - 316px);
+    height: calc(100% - 296px);
 }
 
 [data-id="contentIconeCamadas"] {
@@ -894,9 +878,11 @@ input[type="range"]::-webkit-slider-thumb {
     border: 1px solid rgb(0, 0, 0);
 }
 
-.cursorSeletor div {
-    width: 100%;
-    height: 100%;
+.cursorSeletor::after {
+    content: "";
+    display: block;
+    width: calc(100% - 2px);
+    height: calc(100% - 2px);
     border-radius: 50%;
     border: 1px solid rgb(255, 255, 255);
 }
@@ -1021,17 +1007,10 @@ input[type="range"]::-webkit-slider-thumb {
     position: absolute;
     border-radius: 50%;
     z-index: 1001;
-    background-image: url("../colorPaint/imagens/cursor/centerCrossHair.png");
     background-position: center;
     background-repeat: no-repeat;
+    background-image: url("./imagens/cursor/centerCrossHair.png");
     cursor: none;
-}
-
-[data-id="cursorFerramenta"] div {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
 }
 
 .bordaCursor {
@@ -1039,10 +1018,13 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .bordaCursor div {
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
     border: 1px solid white;
 }
 
-.camadas {
+.iconeCamada {
     position: relative;
     width: 100%;
     height: 60px;
@@ -1054,7 +1036,7 @@ input[type="range"]::-webkit-slider-thumb {
     border-radius: 10px;
 }
 
-.camadaSelecionada {
+.iconeCamadaSelecionada {
     position: relative;
     width: 100%;
     height: 60px;
@@ -1066,27 +1048,27 @@ input[type="range"]::-webkit-slider-thumb {
     border-radius: 10px;
 }
 
-.camadaSelecionada:last-child {
+.iconeCamadaSelecionada:last-child {
     margin-bottom: 0px;
 }
 
-.camadas:last-child {
+.iconeCamada:last-child {
     margin-bottom: 0px;
 }
 
-.camadas input[type=text] {
+.iconeCamada input[type=text] {
     color: rgb(104, 104, 104);
 }
 
-.camadaSelecionada input[type=text] {
+.iconeCamadaSelecionada input[type=text] {
     color: rgb(0, 0, 0);
 }
 
-.camadas:hover {
+.iconeCamada:hover {
     background-color: var(--COR_PRIMARIA);
 }
 
-.camadas label {
+.iconeCamada label {
     position: absolute;
     top: 10px;
     left: 50px;
@@ -1094,7 +1076,7 @@ input[type="range"]::-webkit-slider-thumb {
     background-color: rgba(0, 0, 0, 0);
 }
 
-.camadaSelecionada label {
+.iconeCamadaSelecionada label {
     position: absolute;
     top: 10px;
     left: 50px;
@@ -1104,6 +1086,9 @@ input[type="range"]::-webkit-slider-thumb {
 
 .contentIcon {
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 80px;
     height: 60px;
     margin-right: 10px;
@@ -1159,10 +1144,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .iconTela {
-    position: relative;
-    top: 50%;
-    float: right;
-    transform: translateY(-50%);
+    background: url('./imagens/fundoTela/transparenteMiniatura.png');
 }
 
 .contentJanelas {
@@ -1305,27 +1287,4 @@ input[type="range"]::-webkit-slider-thumb {
 
 .atalhos ul li {
     margin-bottom: 3px;
-}
-
-[data-id="contentNotificacao"] {
-    position: absolute;
-    z-index: 10000001;
-    display: none;
-    width: 100%;
-    height: 100%;
-    top: 0px;
-    left: 0px;
-    overflow: hidden;
-}
-
-[data-id="notificacao"] {
-    position: absolute;
-    bottom: -150px;
-    right: 10px;
-    min-width: 276px;
-    max-width: 350px;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.4);
-    transition: bottom 350ms ease-in-out, opacity 450ms ease-in-out;
 }

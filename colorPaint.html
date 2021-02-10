@@ -2,7 +2,7 @@
 <html lang="pt-br">
 
 <head>
-    <title>GM - ColorPaint v1.1.1</title>
+    <title>GM - ColorPaint v2.0.0</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.75">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -11,12 +11,8 @@
     <meta name="Author" content="Gabriel Martins Soares de Oliveira">
     <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico">
     <link rel="stylesheet" href="css/styleGeral.css">
-    <link rel="stylesheet" href="topoMenu/topoMenu.css">
     <link rel="stylesheet" href="colorPaint/colorPaint.css">
-    <script type="module">
-        import colorPaint from "./colorPaint/colorPaint.js";
-        window.onload = colorPaint;
-    </script>
+    <script type="module" src="./colorPaint/main.js"></script>
 </head>
 
 <body>
@@ -26,7 +22,7 @@
     <main data-id="colorPaintContent">
         <section data-id="janelaPrincipal">
             <header data-id="barraSuperior">
-                <ul data-id="propriedadesFerramentas" class="noSelection">
+                <ul data-id="propriedadesFerramentas" style="display: none;" class="noSelection">
                     <li data-id="propriedadeTamanho">
                         <label>Tamanho &#9662; </label><input type="text" data-id="txtTamanhoFerramenta" readonly
                             value="5px" style="width: 40px;">
@@ -48,6 +44,13 @@
                             <input type="range" data-id="barraDureza" min="0" max="1" step="0.01" value="1">
                         </div>
                     </li>
+                    <li data-id="propriedadeForca">
+                        <label>Força &#9662; </label><input type="text" data-id="txtForcaFerramenta" readonly
+                            value="100%">
+                        <div data-id="contentBarraForca">
+                            <input type="range" data-id="barraForca" min="0" max="1" step="0.01" value="1">
+                        </div>
+                    </li>
                 </ul>
                 <ul data-id="menuColorPaint" class="noSelection">
                     <li><label>Visualizar <span style="font-size: 15px; line-height: 33px;">&#9662;</span></label>
@@ -62,7 +65,7 @@
                             <li data-id="bttMostrarAlteracaoPincel"
                                 title="Mostra um exemplo do pincel a partir das propriedades das ferramentas.">
                                 <label class="cursor" style="margin: 6px 0px; line-height: 19px;">Exibir amostra do
-                                    pincel : <span>Sim</span></label>
+                                    pincel : <span>Desativado</span></label>
                             </li>
                         </ul>
                     </li>
@@ -75,7 +78,7 @@
                                 title="Salva as propriedades do projeto, o conteúdo das camadas, em um arquivo no formato GM.">
                                 <label class="cursor">Salvar projeto</label>
                             </li>
-                            <li data-id="bttcarregarProjeto">
+                            <li data-id="bttCarregarProjeto">
                                 <label class="cursor">Carregar projeto</label>
                             </li>
                         </ul>
@@ -89,17 +92,17 @@
             <div data-id="contentTools" class="noSelection">
                 <aside data-id="barraLateralEsquerda">
                     <div data-id="ferramentas">
-                        <div data-id="pincel" class="bttFerramentasEscolhida cursor" title="Ferramenta Pincel"></div>
-                        <div data-id="borracha" class="bttFerramentas cursor" title="Ferramenta Borracha"></div>
-                        <div data-id="linha" class="bttFerramentas cursor" title="Ferramenta Linha"></div>
-                        <div data-id="curva" class="bttFerramentas cursor" title="Ferramenta Curva"></div>
-                        <div data-id="retangulo" class="bttFerramentas cursor" title="Ferramenta Retângulo"></div>
-                        <div data-id="elipse" class="bttFerramentas cursor" title="Ferramenta Elipse"></div>
-                        <div data-id="baldeDeTinta" class="bttFerramentas cursor" title="Ferramenta Balde de tinta">
+                        <div data-id="brush" class="bttFerramentas cursor" title="Ferramenta Pincel"></div>
+                        <div data-id="eraser" class="bttFerramentas cursor" title="Ferramenta Borracha"></div>
+                        <div data-id="line" class="bttFerramentas cursor" title="Ferramenta Linha"></div>
+                        <div data-id="curve" class="bttFerramentas cursor" title="Ferramenta Curva"></div>
+                        <div data-id="rectangle" class="bttFerramentas cursor" title="Ferramenta Retângulo"></div>
+                        <div data-id="ellipse" class="bttFerramentas cursor" title="Ferramenta Elipse"></div>
+                        <div data-id="paintBucket" class="bttFerramentas cursor" title="Ferramenta Balde de tinta">
                         </div>
-                        <div data-id="contaGotas" class="bttFerramentas cursor" title="Ferramenta Conta-gotas"></div>
-                        <div data-id="borrar" class="bttFerramentas cursor" title="Ferramenta Borrar (Beta)"></div>
-                        <div data-id="desfoque" class="bttFerramentas cursor" title="Ferramenta Desfoque (Beta)"></div>
+                        <div data-id="eyeDropper" class="bttFerramentas cursor" title="Ferramenta Conta-gotas"></div>
+                        <div data-id="smudge" class="bttFerramentas cursor" title="Ferramenta Borrar (Beta)"></div>
+                        <div data-id="blur" class="bttFerramentas cursor" title="Ferramenta Desfoque (Beta)"></div>
                         <div data-id="bttZoomMenos" class="bttFerramentas bttHover noSelection cursor"
                             title="Menos zoom">
                         </div>
@@ -127,8 +130,6 @@
                 <div data-id="contentCentro">
                     <div data-id="contentTelas">
                         <div data-id="telasCanvas">
-                            <canvas data-id="desenho" class="telaCanvas"></canvas>
-                            <div data-id="corFundo" class="telaCanvas"></div>
                             <canvas data-id="pintar" class="telaCanvas"></canvas>
                             <div data-id="grid" class="telaCanvas"></div>
                             <div data-id="sobrepor" class="telaCanvas"></div>
@@ -146,7 +147,6 @@
                             <div data-id="contentPreview">
                                 <div data-id="contentTelaPreview">
                                     <canvas data-id="telaPreview" class="preview"></canvas>
-                                    <div data-id="fundoPreview" class="preview"></div>
                                     <div data-id="moverScroll" style="cursor: grab"></div>
                                 </div>
                             </div>
@@ -157,13 +157,15 @@
                                 <label>Posição do cursor: </label><input data-id="txtPosicaoCursor" type="text"
                                     readonly><br>
                                 <label>Resolução: </label><input data-id="txtResolucao" type="text" readonly><br>
-                                <label>Cor do primeiro plano: </label><input data-id="txtCorEscolhida" type="text"
-                                    readonly><br>
                             </div>
                         </div>
                         <div data-id="janelaCamadas" class="janelasBarraLateralDireita">
                             <label class="titulosBarraDireita">Camadas:</label>
                             <div data-id="contentIconeCamadas">
+                                <div data-id="camadaPlanoDeFundo" class="iconeCamadas" style="display: none">
+                                    <label>Plano de fundo</label>
+                                    <div class="contentIcon"></div>
+                                </div>
                             </div>
                         </div>
                         <div data-id="contentBarraOpacidadeCamada" class="janelasBarraLateralDireita noSelection">
@@ -183,15 +185,11 @@
                 </div>
                 <div data-id="contentGradienteCor" class="noSelection">
                     <canvas data-id="gradienteCor" class="canvasSelecionarCor" width="440" height="255"></canvas>
-                    <div data-id="cursorGradiente" class="cursorSeletor">
-                        <div></div>
-                    </div>
+                    <div data-id="cursorGradiente" class="cursorSeletor"></div>
                 </div>
                 <div data-id="contentBarraeEspectroCor" class="noSelection">
                     <canvas data-id="barraeEspectroCor" class="canvasSelecionarCor" width="540" height="20"></canvas>
-                    <div data-id="cursorBarra" class="cursorSeletor">
-                        <div></div>
-                    </div>
+                    <div data-id="cursorBarra" class="cursorSeletor"></div>
                 </div>
                 <div data-id="InputsjanelaSelecionarCor">
                     <label class="noSelection">RGB:</label><input data-id="codRGB" type="text"
@@ -212,24 +210,8 @@
         <div data-id="cursorComparaContaGotas" style="display: none;">
             <div data-id="comparaCoresContaGotas"></div>
         </div>
-        <div data-id="cursorFerramenta" class="bordaCursor noSelection">
-            <div></div>
-        </div>
+        <div data-id="cursorFerramenta" class="bordaCursor noSelection"><div></div></div>
     </main>
-    <section data-id="contentNotificacao" class="noSelection">
-        <div data-id="notificacao">
-            <div class="tituloJanela noSelection">
-                <p data-id="tituloNotificacao"></p>
-            </div>
-            <div class="conteudoJanela">
-                <p data-id="textoNotificacao" class="noSelection"></p>
-            </div>
-            <div class="bttsJanela">
-                <button data-id="bttNotificacao1" class="bttColorPaint cursor noSelection"></button>
-                <button data-id="bttNotificacao2" class="bttColorPaint cursor noSelection"></button>
-            </div>
-        </div>
-    </section>
     <section data-id="contentCriarAbrirProjeto" class="contentJanelas">
         <section data-id="janelaCriarProjeto" class="janelaTransparente">
             <div class="noSelection">

@@ -1,781 +1,917 @@
 import {
-    getImage, preventDefaultAction, throttle, setStyle, getMousePosition, logarithm,
-    getDistanceCoordinates, getElement
+    getImage, preventDefaultAction, throttle, setStyle, getMousePosition, logarithm, getElement,
+    getDistanceCoordinates, createEventEmitterToObservers, createCopyCanvas, createElement,
 } from "../js/utils.js";
 
-export default function drawingToolsObject() {
-    const D = {}, tools = {
-        brush: { btt: getElement("pincel"), prop: { s: 5, o: 1, h: 1 } },
-        line: { btt: getElement("linha"), prop: { s: 5, o: 1, h: 1 } },
-        rectangle: { btt: getElement("retangulo"), prop: { s: 5, o: 1, h: 1 } },
-        ellipse: { btt: getElement("elipse"), prop: { s: 5, o: 1, h: 1 } },
-        eraser: { btt: getElement("borracha"), prop: { s: 50, o: 1, h: 1 } },
-        curve: { btt: getElement("curva"), prop: { s: 5, o: 1, h: 1 } },
-        paintBucket: { btt: getElement("baldeDeTinta") },
-        blur: { btt: getElement("desfoque"), prop: { s: 30, o: 0.7, h: 0.8 } },
-        smudge: { btt: getElement("borrar"), prop: { s: 30, o: 0.7, h: 0.8 } },
-        eyeDropper: { btt: getElement("contaGotas") }
-    },
-        infoTraceUsedShift = {
-            sizeX: 0, sizeY: 0,
-            clear() {
-                this.sizeX = 0;
-                this.sizeY = 0;
-            }
-        },
-        mousePosition = {
-            x: 0, y: 0, update(newX, newY) {
-                this.x = newX;
-                this.y = newY;
-            }
-        }, strokeCoordinates = {
-            x: [], y: [], length: 0,
-            add() {
-                if (this.x.last === mousePosition.x && this.y.last === mousePosition.y) { return; }
-                this.x.push(mousePosition.x);
-                this.y.push(mousePosition.y);
-                this.length++;
-                if (D.hotKeys.shiftPressed) {
-                    const deltaX = strokeCoordinates.x.last - strokeCoordinates.x.first,
-                        deltaY = strokeCoordinates.y.last - strokeCoordinates.y.first;
-                    if (infoTraceUsedShift.sizeX < Math.abs(deltaX)) { infoTraceUsedShift.sizeX = Math.abs(deltaX); }
-                    if (infoTraceUsedShift.sizeY < Math.abs(deltaY)) { infoTraceUsedShift.sizeY = Math.abs(deltaY); }
-                    if (D.drawingTools.selectedTool === "rectangle" || D.drawingTools.selectedTool === "ellipse") {
-                        if (Math.abs(deltaX) >= Math.abs(deltaY)) {
-                            if (deltaX < 0 && deltaY < 0 || deltaX > 0 && deltaY > 0) {
-                                strokeCoordinates.y.last = strokeCoordinates.y.first + (deltaX);
-                            } else if (deltaX < 0 && deltaY > 0 || deltaX > 0 && deltaY < 0) {
-                                strokeCoordinates.y.last = strokeCoordinates.y.first - (deltaX);
-                            }
-                        } else {
-                            if (deltaY < 0 && deltaX < 0 || deltaY > 0 && deltaX > 0) {
-                                strokeCoordinates.x.last = strokeCoordinates.x.first + (deltaY);
-                            } else if (deltaY < 0 && deltaX > 0 || deltaY > 0 && deltaX < 0) {
-                                strokeCoordinates.x.last = strokeCoordinates.x.first - (deltaY);
-                            }
-                        }
-                    } else if (infoTraceUsedShift.sizeX >= infoTraceUsedShift.sizeY) {
-                        for (let i = 0; i <= this.length; i++) { strokeCoordinates.y[i] = strokeCoordinates.y.first; }
-                    } else {
-                        for (let i = 0; i <= this.length; i++) { strokeCoordinates.x[i] = strokeCoordinates.x.first; }
-                    }
-                }
-            },
-            onlyStartEnd() {
-                this.x = [this.x.first, this.x.last];
-                this.y = [this.y.first, this.y.last];
-                this.length = 2;
-                return { start: { x: this.x[0], y: this.y[0] }, end: { x: this.x[1], y: this.y[1] } };
-            },
-            onlyFirst() {
-                this.x = [this.x.first];
-                this.y = [this.y.first];
-                this.length = 1;
-            },
-            center() {
-                const { offsetHeight, offsetWidth } = D.contentTelas, midWidth = offsetWidth / 2, midHeight = offsetHeight / 2;
-                this.x = [(D.project.properties.resolution.width / D.project.screen.offsetWidth) * ((midWidth - D.project.screen.offsetLeft) + D.contentTelas.scrollLeft)];
-                this.y = [(D.project.properties.resolution.height / D.project.screen.offsetHeight) * ((midHeight - D.project.screen.offsetTop) + D.contentTelas.scrollTop)];
-                this.length = 1;
-            },
-            clear() {
-                this.x.clear();
-                this.y.clear();
-                this.length = 0;
-            }
-        }, cursorTool = {
-            cursor: getElement("cursorFerramenta"), show: true, visible: false, halfSize: 20, position: { x: 0, y: 0 },
-            imgsCursor: {
-                paintBucket: getImage("/colorPaint/imagens/cursor/cursorBaldeDeTinta.png"),
-                eyeDropper: getImage("/colorPaint/imagens/cursor/cursorContaGotas.png"),
-                crossHair: getImage("/colorPaint/imagens/cursor/crossHair.png"),
-                centerCrossHair: getImage("/colorPaint/imagens/cursor/centerCrossHair.png"),
-                circle: getImage("/colorPaint/imagens/cursor/circle.png")
-            },
-            eyeDropper: {
-                cursor: getElement("cursorComparaContaGotas"), compareColors: getElement("comparaCoresContaGotas"),
-                position: null
-            },
-            changeSize(size) {
-                if (size < 13) {
-                    this.cursor.classList.remove("bordaCursor");
-                    setStyle(this.cursor, {
-                        width: "26px", height: "26px",
-                        backgroundImage: "url('/colorPaint/imagens/cursor/crossHair.png')",
-                    });
-                    this.halfSize = 13;
-                } else {
-                    this.cursor.classList.add("bordaCursor");
-                    this.halfSize = size / 2;
-                    setStyle(this.cursor, {
-                        width: size + "px", height: size + "px", backgroundImage: size < 200 ? "none" : "",
-                    });
-                }
-                this.changeCursorPosition(this.position);
-            },
-            changeCursorPosition({ x, y }) {
-                this.position.x = x;
-                this.position.y = y;
-                setStyle(this.cursor, { top: y - this.halfSize + "px", left: x - this.halfSize + "px" });
-            },
-            changeEyeDropperPosition({ x, y }) {
-                setStyle(this.eyeDropper.cursor, { top: y - 125 + "px", left: x - 125 + "px" });
-            },
-            invisibleCursor() {
-                this.visible = false;
-                setStyle(this.cursor, { display: "none" });
-            },
-            visibleCursor() {
-                this.visible = true;
-            },
-            wheel({ deltaY }) {
-                if (!D.hotKeys.shiftPressed) {
-                    D.contentTelas.scrollTop += deltaY < 0 ? -D.contentTelas.offsetHeight / 7 : D.contentTelas.offsetHeight / 7;
-                } else { D.contentTelas.scrollLeft += deltaY < 0 ? -D.contentTelas.offsetWidth / 7 : D.contentTelas.offsetWidth / 7; }
-            },
+const toolConstructor = (name = "", properties = false) =>
+    ({ btt: getElement(name), name, properties: properties ? properties : false });
+
+export default function drawingToolsObject({ project, screen, contentTelas, janelaPrincipal, notification }) {
+    const observers = createEventEmitterToObservers(["toolUsed", "drawInLayer", "setColor"]);
+    const elCursor = getElement("cursorFerramenta");
+    const mousePosition = {
+        txtCursorPosition: getElement("txtPosicaoCursor"),
+        x: 0, y: 0, update: e => {
+            const { x, y } = getMousePosition(screen, e);
+            mousePosition.x = +(((project.resolution.width / screen.offsetWidth) * x).toFixed(1));
+            mousePosition.y = +(((project.resolution.height / screen.offsetHeight) * y).toFixed(1));
+            mousePosition.txtCursorPosition.value = Math.ceil(mousePosition.x) + ", " + Math.ceil(mousePosition.y);
         }
-    let showDashSample = true, infoChangeTool;
-    return {
-        eventLayer: getElement("pintar").getContext("2d"),
-        get mousePosition() { return { x: mousePosition.x, y: mousePosition.y } },
-        invisibleCursor: () => cursorTool.invisibleCursor(),
-        currentLayer: null, selectedTool: "brush", mouseFunctionName: "brush", previousTool: "brush",
-        clickToCurve: false, txtPositionCursor: getElement("txtPosicaoCursor"),
-        infoMoveScreenWithSpace: { startCoordinate: null, scroolTop: null, scrollLeft: null },
-        painting: false, bttMouseUsed: false, clickPropertieBar: false,
-        toolProperties: {
-            elements: [{ property: getElement("propriedadeTamanho"), contentBar: getElement("contentBarraTamanho") },
-            { property: getElement("propriedadeOpacidade"), contentBar: getElement("contentBarraOpacidade") },
-            { property: getElement("propriedadeDureza"), contentBar: getElement("contentBarraDureza") }],
-            size: 5, opacity: 1, hardness: 1, color: { r: 0, g: 0, b: 0 }, brushCanvas: null, brushForm: null, halfSize: null,
-            filter: null,
+    };
+    const strokeCoordinates = {
+        x: [], y: [], length: 0,
+        add() {
+            this.x.push(mousePosition.x);
+            this.y.push(mousePosition.y);
+            this.length++;
         },
-        toolSizeBar: {
-            bar: getElement("barraTamanho"),
-            txt: getElement("txtTamanhoFerramenta"),
+        clear() {
+            this.x.clear();
+            this.y.clear();
+            this.length = 0;
         },
-        toolOpacityBar: {
-            bar: getElement("barraOpacidade"),
-            txt: getElement("txtOpacidadeFerramenta"),
+        onlyStartEnd() {
+            this.x = [this.x.first, this.x.last];
+            this.y = [this.y.first, this.y.last];
+            this.length = 2;
+            return { start: { x: this.x.first, y: this.y.first }, end: { x: this.x.last, y: this.y.last } };
         },
-        toolHardnessBar: {
-            bar: getElement("barraDureza"),
-            txt: getElement("txtDurezaFerramenta"),
+        onlyFirst() {
+            this.x = [this.x.first];
+            this.y = [this.y.first];
+            this.length = 1;
         },
-        addEventsToElements() {
-            D.contentTelas.addEventListener("contextmenu", preventDefaultAction);
-            D.janelaPrincipal.addEventListener("mouseleave", () => {
-                if (!this.painting) { cursorTool.invisibleCursor(); }
-            });
-            D.janelaPrincipal.addEventListener("mouseenter", () => this.changeCursorTool());
-            cursorTool.cursor.addEventListener("contextmenu", preventDefaultAction);
-            D.contentTelas.addEventListener("mousedown", (e) => this.mouseDownEventDrawing(e));
-            D.contentTelas.addEventListener("mousemove", () => this.txtPositionCursor.value = Math.ceil(mousePosition.x) + ", " + Math.ceil(mousePosition.y));
-            D.contentTelas.addEventListener("mouseleave", () => { if (!cursorTool.visible) { this.txtPositionCursor.value = "" } });
-            cursorTool.cursor.addEventListener("mousedown", (e) => this.mouseDownEventDrawing(e));
-            document.addEventListener("mousemove", throttle((e) => this.mouseMoveEventDrawing(e), 12));
-            document.addEventListener("mouseup", (e) => this.mouseUpEventDrawing(e));
-            cursorTool.cursor.addEventListener("wheel", (e) => cursorTool.wheel(e), { passive: true });
-            this.toolOpacityBar.bar.addEventListener("input", (e) => this.mouseDownToolOpacityBar(e));
-            this.toolSizeBar.bar.addEventListener("input", (e) => this.mouseDownToolSizeBar(e));
-            this.toolHardnessBar.bar.addEventListener("input", (e) => this.mouseDownToolHardnessBar(e));
-            for (let i = 0; i < this.toolProperties.elements.length; i++) {
-                let el = this.toolProperties.elements[i];
-                el.property.addEventListener("mouseover", () => {
-                    if (!this.painting && !this.clickToCurve && tools[this.selectedTool].prop) {
-                        setStyle(el.contentBar, { height: "33px" });
-                        cursorTool.invisibleCursor();
-                    }
-                });
-                el.property.addEventListener("mouseleave", () => {
-                    setStyle(el.contentBar, { height: null });
-                    this.changeCursorTool();
-                });
-                el.property.addEventListener("mouseup", () => {
-                    cursorTool.invisibleCursor();
-                    this.eventLayer.clearRect(0, 0, D.project.properties.resolution.width, D.project.properties.resolution.height);
-                });
-            }
-            for (const prop in tools) {
-                tools[prop].btt.addEventListener("mousedown", () => this.selectDrawingTool(prop));
+    }
+    let colorSelectionWindowOpened = false;
+    const drawingTools = {
+        tools: {
+            brush: toolConstructor("brush", { size: 5, opacity: 1, hardness: 1 }),
+            line: toolConstructor("line", { size: 5, opacity: 1, hardness: 1 }),
+            rectangle: toolConstructor("rectangle", { size: 5, opacity: 1, hardness: 1 }),
+            ellipse: toolConstructor("ellipse", { size: 5, opacity: 1, hardness: 1 }),
+            eraser: toolConstructor("eraser", { size: 50, opacity: 1, hardness: 1 }),
+            curve: toolConstructor("curve", { size: 5, opacity: 1, hardness: 1 }),
+            paintBucket: toolConstructor("paintBucket", { opacity: 1 }),
+            blur: toolConstructor("blur", { size: 30, force: 0.2, hardness: 0.7 }),
+            smudge: toolConstructor("smudge", { size: 30, force: 0.2, hardness: 0.7 }),
+            eyeDropper: toolConstructor("eyeDropper")
+        },
+        colorPlanes: [{ r: 0, g: 0, b: 0 }, { r: 255, g: 255, b: 255 }], planeInUse: 1,
+        selectedTool: { name: "brush", size: 5, opacity: 1, hardness: 1, color: { r: 0, g: 0, b: 0 } },
+        toolFunctionName: "brush", previousToolName: "brush", painting: false,
+        propertiesBar: {
+            size: {
+                property: getElement("propriedadeTamanho"), contentBar: getElement("contentBarraTamanho"),
+                bar: getElement("barraTamanho"), txt: getElement("txtTamanhoFerramenta")
+            },
+            opacity: {
+                property: getElement("propriedadeOpacidade"), contentBar: getElement("contentBarraOpacidade"),
+                bar: getElement("barraOpacidade"), txt: getElement("txtOpacidadeFerramenta")
+            },
+            hardness: {
+                property: getElement("propriedadeDureza"), contentBar: getElement("contentBarraDureza"),
+                bar: getElement("barraDureza"), txt: getElement("txtDurezaFerramenta")
+            },
+            force: {
+                property: getElement("propriedadeForca"), contentBar: getElement("contentBarraForca"),
+                bar: getElement("barraForca"), txt: getElement("txtForcaFerramenta")
             }
         },
-        getCursorPosition(e) {
-            const { x, y } = getMousePosition(D.project.screen, e);
-            mousePosition.update(+(((D.project.properties.resolution.width / D.project.screen.offsetWidth) * x).toFixed(1)),
-                +(((D.project.properties.resolution.height / D.project.screen.offsetHeight) * y).toFixed(1)));
-            if (cursorTool.visible) {
-                this.txtPositionCursor.value = Math.ceil(mousePosition.x) + ", " + Math.ceil(mousePosition.y);
-                if (!this.painting) {
-                    const { left, top, width, height } = D.contentTelas.getBoundingClientRect();
-                    if (e.pageX < left || e.pageX > left + width || e.pageY < top || e.pageY > top + height) {
-                        setStyle(cursorTool.cursor, { display: "none" });
-                        this.txtPositionCursor.value = "";
-                    } else { setStyle(cursorTool.cursor, { display: "block" }); }
-                }
-                cursorTool.changeCursorPosition(getMousePosition(D.janelaPrincipal, e));
+        setupLine: (x, y, targetX, targetY) => {
+            const deltaX = targetX - x;
+            const deltaY = targetY - y;
+            const deltaRow = Math.abs(deltaX);
+            const deltaCol = Math.abs(deltaY);
+            const counter = Math.max(deltaCol, deltaRow);
+            const axis = counter === deltaCol ? 1 : 0;
+            return {
+                position: [x, y],
+                delta: [deltaX, deltaY],
+                deltaPerp: [deltaRow, deltaCol],
+                inc: [Math.sign(deltaX), Math.sign(deltaY)],
+                accum: Math.floor(counter / 2),
+                counter: counter,
+                endPnt: counter,
+                axis: axis,
+            };
+        },
+        advanceLine: line => {
+            line.counter--;
+            if (line.counter <= 0) { return false; }
+            const axis = line.axis;
+            const perp = 1 - axis;
+            line.accum += line.deltaPerp[perp];
+            if (line.accum >= line.endPnt) {
+                line.accum -= line.endPnt;
+                line.position[perp] += line.inc[perp];
             }
+            line.position[axis] += line.inc[axis];
+            return true;
         },
-        mouseDownToolSizeBar(e) {
-            this.clickPropertieBar = true;
-            this.changeToolSizeBar(+((+(e.currentTarget.value)).toFixed(2)), true);
+        createFeatherGradient: (brush, radius) => {
+            const innerRadius = Math.min(radius * drawingTools.selectedTool.hardness, radius - 1);
+            const gradient = brush.createRadialGradient(radius, radius, innerRadius,
+                radius, radius, radius);
+            gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 1)');
+            return gradient;
         },
-        mouseDownToolOpacityBar(e) {
-            this.clickPropertieBar = true;
-            this.changeToolOpacity(+((+(e.currentTarget.value)).toFixed(2)), true);
-        },
-        mouseDownToolHardnessBar(e) {
-            this.clickPropertieBar = true;
-            this.changeToolHardness(+((+(e.currentTarget.value)).toFixed(2)), true);
-        },
-        selectDrawingTool(toolName) {
-            if (D.colorSelectionWindow.opened) { return; }
-            this.previousTool = this.previousTool === this.selectedTool ? this.previousTool : this.selectedTool;
-            this.selectedTool = this.mouseFunctionName = toolName;
-            this.setToolSelectedToolProperties(this.selectedTool);
-            strokeCoordinates.clear();
-            this.toolProperties.brushCanvas = this.toolProperties.brushForm = null;
-            this.painting = this.clickToCurve = false;
-            tools[this.previousTool].btt.classList.replace("bttFerramentasEscolhida", "bttFerramentas");
-            tools[this.selectedTool].btt.classList.replace("bttFerramentas", "bttFerramentasEscolhida");
-            this.changeCursorTool();
-            this.eventLayer.clearRect(0, 0, D.project.properties.resolution.width, D.project.properties.resolution.height);
-        },
-        setToolSelectedToolProperties(toolName) {
-            if (!(tools[toolName].prop)) { return; }
-            this.changeToolSize(tools[toolName].prop.s);
-            this.changeToolOpacity(tools[toolName].prop.o, false);
-            this.changeToolHardness(tools[toolName].prop.h, false);
-        },
-        changeToolSize(newSize) {
-            const res = D.project.properties.resolution,
-                expoente = logarithm(+(this.toolSizeBar.bar.max) - 50, Math.max(res.width, res.height)),
-                value = newSize <= 50 ? newSize : 50 + Math.pow(newSize - 50, 1 / expoente);
-            this.changeToolSizeBar(value, false);
-        },
-        changeToolSizeBar(value, show) {
-            if (!(tools[this.selectedTool].prop)) { return; }
-            const res = D.project.properties.resolution, maxSize = Math.max(res.width, res.height),
-                width = +(this.toolSizeBar.bar.max), expoente = logarithm(width - 50, maxSize);
-            value = this.toolSizeBar.bar.value = value >= width ? width : value;
-            const size = value < 1 ? 0.5 : value <= 50 ? Math.round(value) : Math.round((value - 50) ** expoente) + 50;
-            this.toolSizeBar.txt.value = size + "px";
-            tools[this.selectedTool].prop.s = this.toolProperties.size = size;
-            if (show) { this.showDashSample(); }
-            else { this.changeCursorTool(); }
-        },
-        changeToolOpacity(value, show) {
-            if (!(tools[this.selectedTool].prop)) { return; }
-            value = value <= 0.01 ? 0.01 : value >= 1 ? 1 : value;
-            const percentage = Math.round((value * 100));
-            this.toolOpacityBar.txt.value = percentage + "%";
-            this.toolOpacityBar.bar.value = tools[this.selectedTool].prop.o = this.toolProperties.opacity = +(value);
-            if (show) { this.showDashSample(); }
-        },
-        changeToolHardness(value, show) {
-            if (!(tools[this.selectedTool].prop)) { return; }
-            value = value <= 0 ? 0 : value >= 1 ? 1 : value;
-            const percentage = Math.round((value * 100));
-            this.toolHardnessBar.txt.value = percentage + "%";
-            this.toolHardnessBar.bar.value = tools[this.selectedTool].prop.h = this.toolProperties.hardness = +(value);
-            if (show) { this.showDashSample(); }
-        },
-        applyToolChanges() {
-            const maximoBlur = this.toolProperties.size / 6.2, color = this.toolProperties.color;
-            let dureza = maximoBlur - (maximoBlur * this.toolProperties.hardness);
-            if (this.toolProperties.size < 100) {
-                const proporcao = ((100 - this.toolProperties.size) / 180);
-                dureza += (dureza * proporcao);
-            }
-            this.eventLayer.clearRect(0, 0, D.project.properties.resolution.width, D.project.properties.resolution.height);
-            this.eventLayer.lineJoin = this.eventLayer.lineCap = "round";
-            this.eventLayer.filter = "blur(" + dureza + "px)";
-            this.eventLayer.lineWidth = (this.toolProperties.size - dureza);
-            this.eventLayer.strokeStyle = this.eventLayer.fillStyle = "rgba(" + color.r + ", " + color.g + ", " + color.b + ", " + this.toolProperties.opacity + ")";
-        },
-        showDashSample() {
-            if (!showDashSample) { return; }
-            this.changeCursorTool();
-            this.applyToolChanges();
-            this.eventLayer.strokeStyle = "rgba(0, 0, 255, " + this.toolProperties.opacity + ")";
-            strokeCoordinates.center();
-            this.brush("down");
-            strokeCoordinates.clear();
-        },
-        changeCursorTool() {
-            setStyle(cursorTool.eyeDropper.cursor, { display: null });
-            setStyle(D.contentTelas, { cursor: "" });
-            if (this.selectedTool === "eyeDropper") {
-                setStyle(D.contentTelas, { cursor: "url('" + cursorTool.imgsCursor.eyeDropper.src + "') 0 20, pointer" });
-                cursorTool.invisibleCursor();
-                return;
-            } else if (this.selectedTool === "paintBucket") {
-                setStyle(D.contentTelas, { cursor: "url('" + cursorTool.imgsCursor.paintBucket.src + "') 0 20, pointer" });
-                cursorTool.invisibleCursor();
-                return;
-            }
-            const size = this.toolProperties.size * ((D.project.screen.offsetWidth) / D.project.properties.resolution.width);
-            if (cursorTool.show) {
-                cursorTool.visibleCursor();
-                setStyle(D.contentTelas, { cursor: "none" });
-                cursorTool.changeSize(size);
-            } else {
-                cursorTool.invisibleCursor();
-                setStyle(D.contentTelas, {
-                    cursor: size < 20 ? "url('" + cursorTool.imgsCursor.crossHair.src + "') 12.5 12.5 , pointer" :
-                        "url('" + cursorTool.imgsCursor.circle.src + "') 10 10 , pointer"
-                });
-            }
-        },
-        mouseDownEventDrawing(e) {
-            preventDefaultAction(e);
-            if (!D.project.arrayLayers[D.project.selectedLayer].visible || this.painting) { return; }
-            this.bttMouseUsed = e.button;
-            this.toolProperties.color = D.project.selectedColors.get(this.bttMouseUsed);
-            if (this.bttMouseUsed === 1) { this.selectDrawingTool("eraser"); }
-            this.painting = true;
-            strokeCoordinates.add();
-            this.applyToolChanges();
-            this.currentLayer.globalCompositeOperation = "source-over";
-            if (cursorTool.show) { setStyle(D.janelaPrincipal, { cursor: "none" }); }
-            this[this.mouseFunctionName]("down", e);
-        },
-        mouseMoveEventDrawing(e) {
-            this.getCursorPosition(e);
-            if (this.painting) {
-                strokeCoordinates.add();
-                this.eventLayer.clearRect(0, 0, D.project.properties.resolution.width, D.project.properties.resolution.height);
-                this[this.mouseFunctionName]("move", e);
-            } else if (this.clickPropertieBar) {
-                const { width, height, left, top } = D.contentTelas.getBoundingClientRect(), midWidth = width / 2, midHeight = height / 2
-                cursorTool.changeCursorPosition({ x: left + midWidth, y: top + midHeight });
-            }
-        },
-        mouseUpEventDrawing(e) {
-            setStyle(D.janelaPrincipal, { cursor: "" });
-            if (this.painting) {
-                this.painting = false;
-                if (!this.completeToolUsage(e)) { return; };
-                strokeCoordinates.clear();
-                switch (this.selectedTool) {
-                    case "eraser": case "blur": case "smudge":
-                        D.project.drawInPreview(D.project.arrayLayers[D.project.selectedLayer]);
-                        break;
-                    default:
-                        D.project.drawInLayer();
-                }
-                if (this.bttMouseUsed === 1) { this.selectDrawingTool(this.previousTool) }
-                this.currentLayer.globalCompositeOperation = "source-over";
-            }
-            this.bttMouseUsed = this.clickPropertieBar = false;
-            infoTraceUsedShift.clear();
-        },
-        completeToolUsage(e) {
-            switch (this.mouseFunctionName) {
-                case "curve":
-                    this.clickToCurve = !this.clickToCurve;
-                    if (strokeCoordinates.x.length === 2) { return false; }
-                    return true;
-                case "moveScreen": case "eyeDropper": case "changeToolSizeCursor":
-                case "changeToolOpacityCursor": case "changeToolHardnessCursor":
-                    this[this.mouseFunctionName]("up", e);
-                    return false;
-                default:
-                    return true;
-            }
-        },
-        brush(eventName) {
-            let point1, point2;
-            this.eventLayer.beginPath();
-            this.eventLayer.moveTo(strokeCoordinates.x[0], strokeCoordinates.y[0]);
-            for (let i = 0; i < strokeCoordinates.length; i++) {
-                point1 = { x: strokeCoordinates.x[i], y: strokeCoordinates.y[i] };
-                point2 = { x: strokeCoordinates.x[i + 1], y: strokeCoordinates.y[i + 1] };
-                if (getDistanceCoordinates(point1, point2) >= 3) {
-                    const midPoint = { x: point1.x + (point2.x - point1.x) / 2, y: point1.y + (point2.y - point1.y) / 2 };
-                    this.eventLayer.quadraticCurveTo(point1.x, point1.y, midPoint.x, midPoint.y);
-                } else { this.eventLayer.lineTo(point2.x, point2.y); }
-            }
-            this.eventLayer.lineTo(point1.x, point1.y);
-            this.eventLayer.stroke();
-        },
-        eraser(eventName) {
-            if (eventName === "down") {
-                D.undoRedoChange.saveChanges();
-                this.eventLayer.strokeStyle = "rgba(0, 0, 0, " + this.toolProperties.opacity + ")";
-            }
-            this.brush(eventName);
-            this.currentLayer.clearRect(0, 0, D.project.properties.resolution.width, D.project.properties.resolution.height);
-            this.currentLayer.globalCompositeOperation = "source-over";
-            this.currentLayer.drawImage(D.undoRedoChange.lastChange, 0, 0, D.project.properties.resolution.width, D.project.properties.resolution.height);
-            this.currentLayer.globalCompositeOperation = "destination-out";
-            this.currentLayer.drawImage(this.eventLayer.canvas, 0, 0);
-            this.eventLayer.clearRect(0, 0, D.project.properties.resolution.width, D.project.properties.resolution.height);
-        },
-        line(eventName) {
-            if (eventName === "down") { return; }
-            const point = strokeCoordinates.onlyStartEnd();
-            this.eventLayer.beginPath();
-            this.eventLayer.moveTo(point.start.x, point.start.y);
-            this.eventLayer.lineTo(point.end.x, point.end.y);
-            this.eventLayer.stroke();
-        },
-        curve(eventName) {
-            if (!this.clickToCurve) { this.line(eventName); }
+
+    }
+    const changeToolSizeBar = (value, change = false) => {
+        const res = project.resolution, maxSize = Math.ceil(getDistanceCoordinates({ x: 1, y: 1 }, { x: res.width, y: res.height })),
+            width = +(drawingTools.propertiesBar.size.bar.max), expoente = logarithm(width - 50, maxSize);
+        value = drawingTools.propertiesBar.size.bar.value = value >= width ? width : value;
+        const size = value < 1 ? 0.5 : value <= 50 ? Math.round(value) : Math.round((value - 50) ** expoente) + 50;
+        drawingTools.propertiesBar.size.txt.value = size + "px";
+        drawingTools.tools[drawingTools.selectedTool.name].properties.size = drawingTools.selectedTool.size = size;
+        if (change) { cursorTool.update(); }
+    }
+    const changeToolSize = newSize => {
+        const { width, height } = project.resolution,
+            expoente = logarithm(+(drawingTools.propertiesBar.size.bar.max) - 50,
+                Math.ceil(getDistanceCoordinates({ x: 1, y: 1 }, { x: width, y: height }))),
+            value = newSize <= 50 ? newSize : 50 + Math.pow(newSize - 50, 1 / expoente);
+        changeToolSizeBar(value, true);
+    }
+    const changeToolOpacity = value => {
+        value = value <= 0.01 ? 0.01 : value >= 1 ? 1 : value;
+        const percentage = Math.round((value * 100));
+        drawingTools.propertiesBar.opacity.txt.value = percentage + "%";
+        drawingTools.tools[drawingTools.selectedTool.name].properties.opacity =
+            drawingTools.propertiesBar.opacity.bar.value = drawingTools.selectedTool.opacity = value;
+    }
+    const changeToolHardness = value => {
+        value = value <= 0 ? 0 : value >= 1 ? 1 : value;
+        const percentage = Math.round((value * 100));
+        drawingTools.propertiesBar.hardness.txt.value = percentage + "%";
+        drawingTools.tools[drawingTools.selectedTool.name].properties.hardness =
+            drawingTools.propertiesBar.hardness.bar.value = drawingTools.selectedTool.hardness = value;
+    }
+    const changeToolForce = value => {
+        value = value <= 0 ? 0 : value >= 1 ? 1 : value;
+        const percentage = Math.round((value * 100));
+        drawingTools.propertiesBar.force.txt.value = percentage + "%";
+        drawingTools.tools[drawingTools.selectedTool.name].properties.force =
+            drawingTools.propertiesBar.force.bar.value = drawingTools.selectedTool.force = value;
+    }
+    const onInputToolPropertiesBar = (() => {
+        const properties = {
+            size: e => changeToolSizeBar(+((+(e.currentTarget.value)).toFixed(2))),
+            opacity: e => changeToolOpacity(+((+(e.currentTarget.value)).toFixed(2))),
+            hardness: e => changeToolHardness(+((+(e.currentTarget.value)).toFixed(2))),
+            force: e => changeToolForce(+((+(e.currentTarget.value)).toFixed(2)))
+        }
+        return (propertyName, e) => properties[propertyName](e);
+    })();
+    const selectDrawingTool = (() => {
+        const contentToolProperties = getElement("propriedadesFerramentas");
+        const setSelectedToolProperties = properties => {
+            if (!properties) { setStyle(contentToolProperties, { display: "none" }); }
             else {
-                strokeCoordinates.x[2] = strokeCoordinates.x.pop();
-                strokeCoordinates.y[2] = strokeCoordinates.y.pop();
-                this.eventLayer.beginPath();
-                this.eventLayer.moveTo(strokeCoordinates.x[0], strokeCoordinates.y[0]);
-                this.eventLayer.quadraticCurveTo(strokeCoordinates.x[2], strokeCoordinates.y[2],
-                    strokeCoordinates.x[1], strokeCoordinates.y[1]);
-                this.eventLayer.stroke();
+                setStyle(contentToolProperties, { display: null });
+                const { size, opacity, hardness, force } = drawingTools.propertiesBar;
+                if (properties.size === undefined) { setStyle(size.property, { display: "none" }); }
+                else {
+                    setStyle(size.property, { display: null });
+                    changeToolSize(properties.size);
+                }
+                if (properties.opacity === undefined) { setStyle(opacity.property, { display: "none" }); }
+                else {
+                    setStyle(opacity.property, { display: null });
+                    changeToolOpacity(properties.opacity);
+                }
+                if (properties.hardness === undefined) { setStyle(hardness.property, { display: "none" }); }
+                else {
+                    setStyle(hardness.property, { display: null });
+                    changeToolHardness(properties.hardness);
+                }
+                if (properties.force === undefined) { setStyle(force.property, { display: "none" }); }
+                else {
+                    setStyle(force.property, { display: null });
+                    changeToolForce(properties.force);
+                }
             }
-        },
-        rectangle(eventName) {
-            if (eventName === "down") { return; }
-            const point = strokeCoordinates.onlyStartEnd();
-            this.eventLayer.beginPath();
-            this.eventLayer.strokeRect(point.start.x, point.start.y, point.end.x - point.start.x, point.end.y - point.start.y);
-        },
-        ellipse(eventName) {
-            if (eventName === "down") { return; }
-            const point = strokeCoordinates.onlyStartEnd();
-            const raioX = (point.end.x - point.start.x) / 2, raioY = (point.end.y - point.start.y) / 2;
-            const centroEixoX = point.start.x + raioX, centroEixoY = point.start.y + raioY;
-            const passoAngulo = 0.005;
-            let angulo = 0;
-            const voltaCompleta = Math.PI * 2 + passoAngulo;
-            this.eventLayer.beginPath();
-            this.eventLayer.moveTo(centroEixoX + raioX * Math.cos(angulo), centroEixoY + raioY * Math.sin(angulo));
-            for (; angulo < voltaCompleta; angulo += passoAngulo) {
-                this.eventLayer.lineTo(centroEixoX + raioX * Math.cos(angulo), centroEixoY + raioY * Math.sin(angulo));
+        }
+        return toolName => {
+            if (colorSelectionWindowOpened || project.toolInUse) { return; }
+            drawingTools.previousToolName = drawingTools.previousToolName === drawingTools.selectedTool.name ?
+                drawingTools.previousToolName : drawingTools.selectedTool.name;
+            drawingTools.selectedTool = {
+                name: toolName, ...drawingTools.tools[toolName].properties,
+                color: drawingTools.colorPlanes[drawingTools.planeInUse - 1]
             }
-            this.eventLayer.stroke();
-        },
-        eyeDropper(eventName, e) {
-            const cursorEyeDropper = cursorTool.eyeDropper.cursor, compareColors = cursorTool.eyeDropper.compareColors;
-            if (eventName === "down") {
-                setStyle(cursorEyeDropper, { display: "block" });
-                const { r, g, b } = this.toolProperties.color, current = `25px solid rgb( ${r}, ${g}, ${b})`;
-                setStyle(compareColors, { borderBottom: current, borderLeft: current });
-                D.project.createDrawComplete();
-                setStyle(D.project.screen, { imageRendering: "pixelated" });
+            drawingTools.toolFunctionName = drawingTools.selectedTool.name;
+            drawingTools.tools[drawingTools.previousToolName].btt.classList
+                .replace("bttFerramentasEscolhida", "bttFerramentas");
+            drawingTools.tools[drawingTools.selectedTool.name].btt.classList
+                .replace("bttFerramentas", "bttFerramentasEscolhida");
+            setSelectedToolProperties(drawingTools.tools[toolName].properties);
+            strokeCoordinates.clear();
+            cursorTool.update();
+            project.eventLayer.clearRect(0, 0, project.resolution.width, project.resolution.height);
+        }
+    })();
+    const applyToolProperties = () => {
+        const { size, opacity, hardness, color: { r, g, b } } = drawingTools.selectedTool;
+        const maximoBlur = size / 7;
+        let dureza = maximoBlur - (maximoBlur * hardness);
+        if (size < 100) {
+            const proporcao = ((100 - size) / 200);
+            dureza += (dureza * proporcao);
+        }
+        project.eventLayer.clearRect(0, 0, project.resolution.width, project.resolution.height);
+        project.eventLayer.lineJoin = project.eventLayer.lineCap = "round";
+        project.eventLayer.filter = "blur(" + dureza + "px)";
+        project.eventLayer.lineWidth = (size - (dureza * 2));
+        project.eventLayer.globalAlpha = opacity;
+        project.eventLayer.strokeStyle = project.eventLayer.fillStyle = "rgb(" + r + ", " + g + ", " + b + ")";
+    };
+    const toolsFunctions = {
+        brush: (() => {
+            const move = () => {
+                let point1, point2;
+                project.eventLayer.beginPath();
+                project.eventLayer.moveTo(strokeCoordinates.x.first, strokeCoordinates.y.first);
+                for (let i = 0; i < strokeCoordinates.length; i++) {
+                    point1 = { x: strokeCoordinates.x[i], y: strokeCoordinates.y[i] };
+                    point2 = { x: strokeCoordinates.x[i + 1], y: strokeCoordinates.y[i + 1] };
+                    if (getDistanceCoordinates(point1, point2) >= 3) {
+                        const midPoint = [point1.x + (point2.x - point1.x) / 2,
+                        point1.y + (point2.y - point1.y) / 2];
+                        project.eventLayer.quadraticCurveTo(point1.x, point1.y,
+                            midPoint.first, midPoint.last);
+                    } else { project.eventLayer.lineTo(point2.x, point2.y); }
+                }
+                project.eventLayer.lineTo(point1.x, point1.y);
+                project.eventLayer.stroke();
             }
-            cursorTool.changeEyeDropperPosition(getMousePosition(D.janelaPrincipal, e));
-            const pixel = D.project.drawComplete.getImageData(mousePosition.x, mousePosition.y, 1, 1).data,
-                newColor = pixel[3] === 0 ? "25px solid rgba(0, 0, 0, 0)" : `25px solid rgb( ${pixel[0]}, ${pixel[1]}, ${pixel[2]})`;
-            setStyle(compareColors, { borderTop: newColor, borderRight: newColor });
-            if (eventName === "up") {
-                strokeCoordinates.clear();
-                setStyle(cursorEyeDropper, { display: null });
-                setStyle(D.project.screen, { imageRendering: "auto" });
-                if (pixel[3] === 0) {
-                    D.notification.open({ name: "notify", time: 1500 }, {
-                        title: "Atenção!", text: "Nenhuma cor foi selecionada."
-                    });
+            const down = move;
+            const up = () => ({ save: true, inUse: false });
+            return { move, down, up }
+        })(),
+        eraser: (() => {
+            let copyLayer = null;
+            const move = () => {
+                toolsFunctions.brush.move();
+                const { width, height } = project.resolution;
+                project.selectedLayer.layer.clearRect(0, 0, width, height);
+                project.selectedLayer.layer.globalCompositeOperation = "source-over";
+                project.selectedLayer.layer.drawImage(copyLayer, 0, 0, width, height);
+                project.selectedLayer.layer.globalCompositeOperation = "destination-out";
+                project.selectedLayer.layer.drawImage(project.eventLayer.canvas, 0, 0);
+            }
+            const down = () => {
+                observers.notify("toolUsed", {});
+                setStyle(project.eventLayer.canvas, { display: "none" });
+                copyLayer = createCopyCanvas(project.selectedLayer.layer.canvas);
+                move();
+            }
+            const up = () => {
+                copyLayer = null;
+                project.eventLayer.clearRect(0, 0, project.resolution.width, project.resolution.height);
+                setStyle(project.eventLayer.canvas, { display: null });
+                return { save: false, inUse: false };
+            }
+            return { move, down, up }
+        })(),
+        line: (() => {
+            const move = () => {
+                const { start, end } = strokeCoordinates.onlyStartEnd();
+                project.eventLayer.beginPath();
+                project.eventLayer.moveTo(start.x, start.y);
+                project.eventLayer.lineTo(end.x, end.y);
+                project.eventLayer.stroke();
+            }
+            const down = () => { }
+            const up = () => ({ save: true, inUse: false });
+            return { move, down, up }
+        })(),
+        curve: (() => {
+            let clickToCurve = false;
+            const move = () => {
+                if (!clickToCurve) {
+                    toolsFunctions.line.move();
                     return;
                 }
-                if (D.colorSelectionWindow.opened) { D.colorSelectionWindow.currentColor = { r: pixel[0], g: pixel[1], b: pixel[2] }; }
-                else { D.project.selectedColors.set(this.bttMouseUsed, { r: pixel[0], g: pixel[1], b: pixel[2] }); }
+                strokeCoordinates.x[2] = strokeCoordinates.x.pop();
+                strokeCoordinates.y[2] = strokeCoordinates.y.pop();
+                project.eventLayer.beginPath();
+                project.eventLayer.moveTo(strokeCoordinates.x.first, strokeCoordinates.y.first);
+                project.eventLayer.quadraticCurveTo(strokeCoordinates.x[2], strokeCoordinates.y[2],
+                    strokeCoordinates.x[1], strokeCoordinates.y[1]);
+                project.eventLayer.stroke();
             }
-        },
-        smudge(eventName) {
-            if (eventName === "down") {
-                D.undoRedoChange.saveChanges();
-                this.start(strokeCoordinates.x.last, strokeCoordinates.y.last);
-                return;
+            const down = move;
+            const up = () => {
+                clickToCurve = !clickToCurve;
+                return { save: !clickToCurve, inUse: clickToCurve }
             }
-            this.updateSmudge(strokeCoordinates.x[strokeCoordinates.length - 2], strokeCoordinates.y[strokeCoordinates.length - 2],
-                strokeCoordinates.x.last, strokeCoordinates.y.last);
-        },
-        blur(eventName) {
-            const setBlurBlush = (brush, x, y) => {
-                const size = this.toolProperties.size;
-                brush.globalCompositeOperation = "source-over";
-                brush.clearRect(0, 0, size, size);
-                brush.filter = this.toolProperties.filter;
-                brush.drawImage(this.currentLayer.canvas, x, y, size, size, 0, 0, size, size);
-                brush.filter = "blur(0px)";
-                brush.save();
-                brush.fillStyle = this.toolProperties.brushForm;
-                brush.globalCompositeOperation = "destination-out";
-                brush.translate(this.toolProperties.halfSize, this.toolProperties.halfSize);
-                brush.fillRect(-this.toolProperties.halfSize, -this.toolProperties.halfSize, size, size);
-                brush.restore();
-                this.currentLayer.drawImage(this.toolProperties.brushCanvas.canvas, x, y);
-            }
-            if (eventName === "down") {
-                D.undoRedoChange.saveChanges();
-                this.toolProperties.brushCanvas = document.createElement("canvas").getContext("2d");
-                this.toolProperties.brushCanvas.canvas.width = this.toolProperties.brushCanvas.canvas.height = this.toolProperties.size;
-                this.toolProperties.halfSize = this.toolProperties.size / 2;
-                this.toolProperties.filter = "blur(" + ((0.1 * this.toolProperties.halfSize) * this.toolProperties.opacity).toFixed(2) + "px)";
-                this.toolProperties.brushForm = this.setBrushForm();
-                return;
-            }
-            const pos = {
-                x: strokeCoordinates.x.last - this.toolProperties.halfSize,
-                y: strokeCoordinates.y.last - this.toolProperties.halfSize
+            return { move, down, up }
+        })(),
+        rectangle: (() => {
+            const move = () => {
+                const { start, end } = strokeCoordinates.onlyStartEnd();
+                project.eventLayer.beginPath();
+                project.eventLayer.strokeRect(start.x, start.y, end.x - start.x, end.y - start.y);
             };
-            setBlurBlush(this.toolProperties.brushCanvas, pos.x, pos.y);
-        },
-        paintBucket(eventName) {
-            if (eventName === "move" || mousePosition.x < 0 || mousePosition.x > D.project.properties.resolution.width ||
-                mousePosition.y < 0 || mousePosition.y > D.project.properties.resolution.height) {
-                this.painting = false;
-                return;
+            const down = () => { }
+            const up = () => ({ save: true, inUse: false });
+            return { move, down, up }
+        })(),
+        ellipse: (() => {
+            const move = () => {
+                const { end, start } = strokeCoordinates.onlyStartEnd();
+                const raioX = (end.x - start.x) / 2, raioY = (end.y - start.y) / 2;
+                const centroEixoX = start.x + raioX, centroEixoY = start.y + raioY;
+                const passoAngulo = 0.005;
+                let angulo = 0;
+                const voltaCompleta = Math.PI * 2 + passoAngulo;
+                project.eventLayer.beginPath();
+                project.eventLayer.moveTo(centroEixoX + raioX * Math.cos(angulo),
+                    centroEixoY + raioY * Math.sin(angulo));
+                for (; angulo < voltaCompleta; angulo += passoAngulo) {
+                    project.eventLayer.lineTo(centroEixoX + raioX * Math.cos(angulo), centroEixoY + raioY * Math.sin(angulo));
+                }
+                project.eventLayer.stroke();
             }
-            const camada = this.currentLayer.getImageData(0, 0, D.project.properties.resolution.width, D.project.properties.resolution.height),
-                clearCanvas = this.currentLayer.createImageData(D.project.properties.resolution.width, D.project.properties.resolution.height),
-                selectedColor = {
-                    r: this.toolProperties.color.r, g: this.toolProperties.color.g,
-                    b: this.toolProperties.color.b, a: Math.round(this.toolProperties.opacity * 255)
-                },
-                preencher = (posClickX, posClickY, cor) => {
-                    let pixelsVerificados = [[posClickX, posClickY]];
-                    while (pixelsVerificados.length > 0) {
-                        const novaPosicao = pixelsVerificados.pop();
-                        let x = novaPosicao[0], y = novaPosicao[1];
-                        let posicaoPixel = (y * D.project.properties.resolution.width + x) * 4;
+            const down = () => { }
+            const up = () => ({ save: true, inUse: false });
+            return { move, down, up }
+        })(),
+        eyeDropper: (() => {
+            const cursor = getElement("cursorComparaContaGotas"), info = { drawComplete: null }
+            const compareColors = getElement("comparaCoresContaGotas");
+            const changeCursorPosition = ({ x, y }) =>
+                setStyle(cursor, { top: y - 125 + "px", left: x - 125 + "px" });
+            const move = e => {
+                changeCursorPosition(getMousePosition(janelaPrincipal, e));
+                const pixel = info.drawComplete.getImageData(mousePosition.x, mousePosition.y, 1, 1).data;
+                const newColor = !pixel[3] ? "25px solid rgba(0, 0, 0, 0)" :
+                    "25px solid rgb(" + pixel[0] + ", " + pixel[1] + ", " + pixel[2] + ")";
+                setStyle(compareColors, { borderTop: newColor, borderRight: newColor });
+                return { r: pixel[0], g: pixel[1], b: pixel[2], a: pixel[3] }
+            }
+            const down = e => {
+                setStyle(cursor, { display: "block" });
+                const { r, g, b } = drawingTools.selectedTool.color,
+                    current = "25px solid rgb(" + r + ", " + g + ", " + b + ")";
+                setStyle(compareColors, { borderBottom: current, borderLeft: current });
+                setStyle(screen, { imageRendering: "pixelated" });
+                info.drawComplete = project.drawComplete;
+                move(e);
+            }
+            const up = e => {
+                const { r, g, b, a } = move(e);
+                setStyle(cursor, { display: null });
+                setStyle(screen, { imageRendering: "auto" });
+                if (!a) {
+                    notification.open({
+                        type: "notify", timeNotify: 1500, title: "Atenção!",
+                        message: "Nenhuma cor foi selecionada."
+                    });
+                } else { observers.notify("setColor", { plane: drawingTools.planeInUse, color: { r, g, b } }); }
+                return { save: false, inUse: false };
+            }
+            return { move, down, up }
+        })(),
+        paintBucket: (() => {
+            const result = { save: true, inUse: false }
+            const move = () => { };
+            const down = () => {
+                const { width, height } = project.resolution;
+                if (mousePosition.x < 0 || mousePosition.x > width || mousePosition.y < 0 || mousePosition.y > height) {
+                    result.save = false;
+                    return;
+                }
+                const camada = project.selectedLayer.layer.getImageData(0, 0, width, height);
+                const clearCanvas = project.selectedLayer.layer.createImageData(width, height);
+                const selectedColor = {
+                    a: Math.round(drawingTools.selectedTool.opacity * 255), ...drawingTools.selectedTool.color
+                }
+                const pintarPixel = (pixelPos, cor) => {
+                    camada.data[pixelPos] = clearCanvas.data[pixelPos] = cor.r;
+                    camada.data[pixelPos + 1] = clearCanvas.data[pixelPos + 1] = cor.g;
+                    camada.data[pixelPos + 2] = clearCanvas.data[pixelPos + 2] = cor.b;
+                    camada.data[pixelPos + 3] = clearCanvas.data[pixelPos + 3] = cor.a;
+                }
+                const compararCorInicial = (pixelPos, cor) => {
+                    const r = camada.data[pixelPos], g = camada.data[pixelPos + 1], b = camada.data[pixelPos + 2],
+                        a = camada.data[pixelPos + 3];
+                    if (clearCanvas.data[pixelPos + 3] === 0) {
+                        if (cor.r === selectedColor.r && cor.g === selectedColor.g &&
+                            cor.b === selectedColor.b && cor.a === 255) { return false; }
+                        if (r === cor.r && g === cor.g && b === cor.b && a === cor.a) { return true; }
+                        if (r === selectedColor.r && g === selectedColor.g && b === selectedColor.b && a === selectedColor.a) {
+                            return false;
+                        }
+                    } else { return false; }
+                }
+                const preencher = (posClickX, posClickY, cor) => {
+                    const pixelsVerificados = [[posClickX, posClickY]];
+                    while (pixelsVerificados.length) {
+                        let [x, y] = pixelsVerificados.pop(), posicaoPixel = (y * width + x) * 4;
                         while (y >= 0 && compararCorInicial(posicaoPixel, cor)) {
                             y -= 1;
-                            posicaoPixel -= D.project.properties.resolution.width * 4;
+                            posicaoPixel -= width * 4;
                         }
-                        pintarPixel(posicaoPixel, selectedColor);
-                        posicaoPixel += D.project.properties.resolution.width * 4;
+                        posicaoPixel += width * 4;
                         y += 1;
                         let ladoEsquerdo = false, ladoDireito = false;
-                        while (y < D.project.properties.resolution.height - 1 && compararCorInicial(posicaoPixel, cor)) {
+                        while (y < height && compararCorInicial(posicaoPixel, cor)) {
                             pintarPixel(posicaoPixel, selectedColor);
                             y += 1;
                             if (x > 0) {
-                                if (compararCorInicial(posicaoPixel - 4, cor) === true) {
+                                if (compararCorInicial(posicaoPixel - 4, cor)) {
                                     if (!ladoEsquerdo) {
                                         ladoEsquerdo = true;
                                         pixelsVerificados.push([x - 1, y]);
                                     }
-                                } else {
-                                    pintarPixel(posicaoPixel - 4, selectedColor);
-                                    if (ladoEsquerdo) { ladoEsquerdo = false; }
-                                }
+                                } else if (ladoEsquerdo) { ladoEsquerdo = false; }
                             }
-                            if (x < D.project.properties.resolution.width - 1) {
-                                if (compararCorInicial(posicaoPixel + 4, cor) === true) {
+                            if (x < width - 1) {
+                                if (compararCorInicial(posicaoPixel + 4, cor)) {
                                     if (!ladoDireito) {
                                         ladoDireito = true;
                                         pixelsVerificados.push([x + 1, y]);
                                     }
-                                } else {
-                                    pintarPixel(posicaoPixel + 4, selectedColor);
-                                    if (ladoDireito) { ladoDireito = false; }
-                                }
+                                } else if (ladoDireito) { ladoDireito = false; }
                             }
-                            posicaoPixel += D.project.properties.resolution.width * 4;
+                            posicaoPixel += width * 4;
                         }
-                        pintarPixel(posicaoPixel, selectedColor);
                     }
-                    this.eventLayer.putImageData(clearCanvas, 0, 0);
-                },
-                pintar = (posX, posY) => {
-                    const pixelPos = (posY * D.project.properties.resolution.width + posX) * 4,
+                    project.eventLayer.putImageData(clearCanvas, 0, 0);
+                }
+                const pintar = (posX, posY) => {
+                    const pixelPos = (posY * width + posX) * 4,
                         cor = {
                             r: camada.data[pixelPos], g: camada.data[pixelPos + 1],
                             b: camada.data[pixelPos + 2], a: camada.data[pixelPos + 3]
                         }
                     if (cor.r === selectedColor.r && cor.g === selectedColor.g &&
-                        cor.b === selectedColor.b && cor.a === 255) {
-                        this.painting = false;
-                        return;
-                    }
+                        cor.b === selectedColor.b && cor.a === 255) { return false; }
                     preencher(posX, posY, cor);
+                    return true;
                 }
-
-            function compararCorInicial(pixelPos, cor) {
-                const r = camada.data[pixelPos], g = camada.data[pixelPos + 1], b = camada.data[pixelPos + 2],
-                    a = camada.data[pixelPos + 3];
-                if (clearCanvas.data[pixelPos + 3] === 0) {
-                    if (cor.r === selectedColor.r && cor.g === selectedColor.g &&
-                        cor.b === selectedColor.b && cor.a === 255) {
-                        return false;
-                    }
-                    if (r === cor.r && g === cor.g && b === cor.b && a === cor.a) { return true; }
-                    if (r === selectedColor.r && g === selectedColor.g && b === selectedColor.b && a === selectedColor.a) {
-                        return false;
-                    }
-                } else { return false; }
+                strokeCoordinates.x.first = Math.floor(strokeCoordinates.x.pop());
+                strokeCoordinates.y.first = Math.floor(strokeCoordinates.y.pop());
+                result.save = pintar(strokeCoordinates.x.first, strokeCoordinates.y.first);
             }
-            function pintarPixel(pixelPos, cor) {
-                camada.data[pixelPos] = clearCanvas.data[pixelPos] = cor.r;
-                camada.data[pixelPos + 1] = clearCanvas.data[pixelPos + 1] = cor.g;
-                camada.data[pixelPos + 2] = clearCanvas.data[pixelPos + 2] = cor.b;
-                camada.data[pixelPos + 3] = clearCanvas.data[pixelPos + 3] = cor.a;
-            }
-            strokeCoordinates.x[0] = Math.floor(strokeCoordinates.x.pop());
-            strokeCoordinates.y[0] = Math.floor(strokeCoordinates.y.pop());
-            pintar(strokeCoordinates.x[0], strokeCoordinates.y[0]);
-        },
-        setBrushBackground(x, y) {
-            const size = this.toolProperties.size, pos = { x: x - this.toolProperties.halfSize, y: y - this.toolProperties.halfSize },
-                ctx = this.toolProperties.brushCanvas;
-            ctx.clearRect(0, 0, size, size);
-            ctx.filter = "blur(" + (this.toolProperties.size / 6.2) - ((this.toolProperties.size / 6.2) * this.toolProperties.hardness) + "px)";
-            ctx.drawImage(this.currentLayer.canvas, pos.x, pos.y, size, size, 0, 0, size, size);
-            this.feather(ctx);
-        },
-        setBrushForm() {
-            let innerRadius = Math.min(this.toolProperties.halfSize * this.toolProperties.hardness,
-                this.toolProperties.halfSize - 1);
-            innerRadius = innerRadius < 1 ? 1 : innerRadius;
-            const gradient = this.toolProperties.brushCanvas.createRadialGradient(
-                0, 0, innerRadius, 0, 0, this.toolProperties.halfSize);
-            gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
-            gradient.addColorStop(1, 'rgba(0, 0, 0, 1)');
-            return gradient;
-        },
-        feather(ctx) {
-            ctx.save();
-            ctx.fillStyle = this.toolProperties.brushForm;
-            ctx.globalCompositeOperation = 'destination-out';
-            const { width, height } = ctx.canvas;
-            ctx.translate(width / 2, height / 2);
-            ctx.fillRect(-width / 2, -height / 2, width, height);
-            ctx.restore();
-        },
-        start(x, y) {
-            this.toolProperties.brushCanvas = document.createElement("canvas").getContext("2d");
-            this.toolProperties.brushCanvas.canvas.width = this.toolProperties.brushCanvas.canvas.height = this.toolProperties.size;
-            this.toolProperties.halfSize = this.toolProperties.size / 2;
-            this.toolProperties.brushForm = this.setBrushForm();
-            this.setBrushBackground(x, y);
-        },
-        updateSmudge(x, y, endX, endY) {
-            const line = setupLine();
-            for (let more = true; more;) {
-                this.currentLayer.globalAlpha = +((0.7 * this.toolProperties.opacity * line.u).toFixed(2));
-                this.currentLayer.drawImage(this.toolProperties.brushCanvas.canvas,
-                    line.pos[0] - this.toolProperties.halfSize,
-                    line.pos[1] - this.toolProperties.halfSize);
-                this.setBrushBackground(line.pos[0], line.pos[1]);
-                more = nextPosLine(line);
-            }
-            this.currentLayer.globalAlpha = 1;
-            function nextPosLine(line) {
-                --line.counter;
-                line.u = 1 - line.counter / line.endPnt;
-                if (line.counter <= 0) { return false; }
-                let posX = line.pos[0], posy = line.pos[1];
-                line.pos = [posX + line.plus[0], posy + line.plus[1]]
-                return true;
-            }
-            function setupLine() {
-                const deltaX = endX - x, deltaY = endY - y;
-                const counter = +((((deltaX ** 2) + (deltaY ** 2)) ** 0.5).toFixed(2));
-                return {
-                    pos: [x, y], plus: [deltaX / counter, deltaY / counter],
-                    counter: counter, endPnt: counter, u: 0,
-                };
-            };
-        },
-        moveScreen(eventName, e) {
-            const eventFunction = {
-                down: () => {
-                    this.infoMoveScreenWithSpace = { startCoordinate: getMousePosition(D.contentTelas, e), scroolTop: D.contentTelas.scrollTop, scrollLeft: D.contentTelas.scrollLeft };
-                    const style = { cursor: "grabbing" }
-                    setStyle(D.janelaPrincipal, style);
-                    setStyle(D.contentTelas, style);
-                },
-                move: () => {
-                    const { x, y } = getMousePosition(D.contentTelas, e);
-                    D.contentTelas.scrollLeft = this.infoMoveScreenWithSpace.scrollLeft + this.infoMoveScreenWithSpace.startCoordinate.x - x;
-                    D.contentTelas.scrollTop = this.infoMoveScreenWithSpace.scroolTop + this.infoMoveScreenWithSpace.startCoordinate.y - y;
-                },
-                up: () => {
-                    this.infoMoveScreenWithSpace = { startCoordinate: null, scroolTop: null, scrollLeft: null };
-                    setStyle(D.contentTelas, { cursor: "grab" });
+            const up = () => result;
+            return { move, down, up }
+        })(),
+        smudge: (() => {
+            const info = { lastX: 0, lastY: 0, radius: 0, feather: null }
+            const brush = createElement("canvas", { width: 20, height: 20 }).getContext("2d");
+            const updateBrush = (x, y) => {
+                let width = drawingTools.selectedTool.size;
+                let height = width;
+                let srcX = x, srcY = y;
+                let dstX = 0, dstY = 0;
+                brush.clearRect(0, 0, drawingTools.selectedTool.size, drawingTools.selectedTool.size);
+                if (srcX < 0) {
+                    width += srcX;
+                    dstX -= srcX;
+                    srcX = 0;
                 }
+                const overX = srcX + width - project.resolution.width;
+                if (overX > 0) { width -= overX; }
+                if (srcY < 0) {
+                    dstY -= srcY;
+                    height += srcY;
+                    srcY = 0;
+                }
+                const overY = srcY + height - project.resolution.height;
+                if (overY > 0) { height -= overY; }
+                brush.drawImage(project.selectedLayer.layer.canvas, srcX, srcY, width, height,
+                    dstX, dstY, width, height);
+                brush.save();
+                brush.fillStyle = info.feather;
+                brush.globalCompositeOperation = 'destination-out';
+                brush.fillRect(0, 0, drawingTools.selectedTool.size, drawingTools.selectedTool.size);
+                brush.restore();
             }
-            eventFunction[eventName]();
+            const down = () => {
+                observers.notify("toolUsed", {});
+                project.selectedLayer.layer.globalAlpha = drawingTools.selectedTool.force / 2;
+                const pos = { x: strokeCoordinates.x.last, y: strokeCoordinates.y.last }
+                info.radius = drawingTools.selectedTool.size / 2;
+                info.lastX = pos.x - info.radius;
+                info.lastY = pos.y - info.radius;
+                brush.canvas.height = brush.canvas.width = drawingTools.selectedTool.size;
+                info.feather = drawingTools.createFeatherGradient(brush, info.radius);
+                updateBrush(info.lastX, info.lastY);
+            }
+            const move = () => {
+                const pos = { x: strokeCoordinates.x.last - info.radius, y: strokeCoordinates.y.last - info.radius }
+                const line = drawingTools.setupLine(info.lastX, info.lastY, pos.x, pos.y);
+                for (let more = true; more;) {
+                    more = drawingTools.advanceLine(line);
+                    project.selectedLayer.layer.drawImage(brush.canvas, line.position[0], line.position[1]);
+                    updateBrush(line.position[0], line.position[1]);
+                }
+                info.lastX = pos.x;
+                info.lastY = pos.y;
+            }
+            const up = () => {
+                project.selectedLayer.layer.globalAlpha = 1;
+                return { save: false, inUse: false }
+            }
+            return { move, down, up }
+        })(),
+        blur: (() => {
+            const info = { radius: 0, info: "", lastX: 0, lastY: 0, feather: null, copyLayer: null }
+            const brush = createElement("canvas", { width: 20, height: 20 }).getContext("2d");
+            const updateBrush = (x, y) => {
+                const width = drawingTools.selectedTool.size;
+                brush.clearRect(0, 0, width, width);
+                brush.filter = info.filter
+                brush.drawImage(project.selectedLayer.layer.canvas, x, y, width, width, 0, 0, width, width);
+                brush.filter = "blur(0px)";
+                brush.save();
+                brush.fillStyle = info.feather;
+                brush.globalCompositeOperation = 'destination-out';
+                brush.fillRect(0, 0, width, width);
+                brush.restore();
+            }
+            const down = () => {
+                observers.notify("toolUsed", {});
+                const { force, size } = drawingTools.selectedTool;
+                brush.canvas.height = brush.canvas.width = size;
+                const maximoBlur = size / 25;
+                let dureza = maximoBlur * force;
+                if (size < 100) {
+                    const proporcao = ((100 - size) / 180);
+                    dureza += (dureza * proporcao);
+                }
+                info.filter = "blur(" + dureza + "px)";
+                info.radius = drawingTools.selectedTool.size / 2;
+                info.feather = drawingTools.createFeatherGradient(brush, info.radius);
+                info.lastX = Math.round(strokeCoordinates.x.last - info.radius);
+                info.lastY = Math.round(strokeCoordinates.y.last - info.radius);
+            }
+            const move = () => {
+                const point1 = { x: Math.round(strokeCoordinates.x.last - info.radius), y: Math.round(strokeCoordinates.y.last - info.radius) }
+                const line = drawingTools.setupLine(info.lastX, info.lastY, point1.x, point1.y);
+                for (let more = true; more;) {
+                    updateBrush(line.position[0], line.position[1]);
+                    project.selectedLayer.layer.drawImage(brush.canvas, line.position[0], line.position[1]);
+                    more = drawingTools.advanceLine(line);
+                }
+                info.lastX = point1.x;
+                info.lastY = point1.y;
+            }
+            const up = () => ({ save: false, inUse: false });
+            return { move, down, up }
+        })(),
+        moveScreen: (() => {
+            let info = null;
+            const down = e => {
+                info = { startCoordinate: getMousePosition(contentTelas, e), scroolTop: contentTelas.scrollTop, scrollLeft: contentTelas.scrollLeft };
+                const style = { cursor: "grabbing" }
+                setStyle(contentTelas, style);
+                setStyle(elCursor, style);
+            }
+            const move = e => {
+                const { x, y } = getMousePosition(contentTelas, e);
+                contentTelas.scrollLeft = info.scrollLeft + info.startCoordinate.x - x;
+                contentTelas.scrollTop = info.scroolTop + info.startCoordinate.y - y;
+            }
+            const up = () => {
+                info = null;
+                const style = { cursor: "grab" }
+                setStyle(contentTelas, style);
+                setStyle(elCursor, style);
+                strokeCoordinates.clear();
+                return { save: false, inUse: true };
+            }
+            return { move, down, up }
+        })(),
+        infoChangeTool: { coordinate: { x: 0, y: 0 }, opacity: 0, size: 0, hardness: 0 },
+        changeToolSize: (() => {
+            const down = e => {
+                toolsFunctions.infoChangeTool.coordinate = getMousePosition(janelaPrincipal, e);
+                toolsFunctions.infoChangeTool.size = drawingTools.selectedTool.size;
+                toolsFunctions.brush.down();
+            }
+            const move = e => {
+                const start = toolsFunctions.infoChangeTool.coordinate, end = getMousePosition(janelaPrincipal, e);
+                const distance = end.x - start.x < 0 ? -getDistanceCoordinates(start, end) :
+                    getDistanceCoordinates(start, end);
+                changeToolSize(toolsFunctions.infoChangeTool.size + Math.round(distance), false);
+                applyToolProperties();
+                strokeCoordinates.onlyFirst();
+                toolsFunctions.brush.down();
+            }
+            const up = () => {
+                project.eventLayer.clearRect(0, 0, project.resolution.width, project.resolution.height);
+                selectDrawingTool(drawingTools.selectedTool.name);
+                return { save: false, inUse: false };
+            }
+            return { down, move, up }
+        })(),
+        changeToolOpacity: (() => {
+            const down = e => {
+                toolsFunctions.infoChangeTool.coordinate = getMousePosition(janelaPrincipal, e);
+                toolsFunctions.infoChangeTool.opacity = drawingTools.selectedTool.opacity;
+                toolsFunctions.brush.down();
+            }
+            const move = e => {
+                const start = toolsFunctions.infoChangeTool.coordinate, end = getMousePosition(janelaPrincipal, e);
+                const distance = end.x - start.x < 0 ? -getDistanceCoordinates(start, end) :
+                    getDistanceCoordinates(start, end);
+                changeToolOpacity(+((toolsFunctions.infoChangeTool.opacity + ((distance * 0.01) / 2.5)).toFixed(2)), false);
+                applyToolProperties();
+                strokeCoordinates.onlyFirst();
+                toolsFunctions.brush.down();
+            }
+            const up = () => {
+                project.eventLayer.clearRect(0, 0, project.resolution.width, project.resolution.height);
+                selectDrawingTool(drawingTools.selectedTool.name);
+                return { save: false, inUse: false };
+            }
+            return { move, down, up }
+        })(),
+        changeToolOpacity: (() => {
+            const down = e => {
+                toolsFunctions.infoChangeTool.coordinate = getMousePosition(janelaPrincipal, e);
+                toolsFunctions.infoChangeTool.hardness = drawingTools.selectedTool.hardness;
+                toolsFunctions.brush.down();
+            }
+            const move = e => {
+                const start = toolsFunctions.infoChangeTool.coordinate, end = getMousePosition(janelaPrincipal, e);
+                const distance = end.x - start.x < 0 ? -getDistanceCoordinates(start, end) :
+                    getDistanceCoordinates(start, end);
+                changeToolHardness(+((toolsFunctions.infoChangeTool.hardness + ((distance * 0.01) / 2.5)).toFixed(2)), false);
+                applyToolProperties();
+                strokeCoordinates.onlyFirst();
+                toolsFunctions.brush.down();
+            }
+            const up = () => {
+                project.eventLayer.clearRect(0, 0, project.resolution.width, project.resolution.height);
+                selectDrawingTool(drawingTools.selectedTool.name);
+                return { save: false, inUse: false };
+            }
+            return { move, down, up }
+        })(),
+    }
+    const functionsMouseMove = {
+        arrayFunctions: [mousePosition.update],
+        onMouseMove: throttle(e => {
+            for (const func of functionsMouseMove.arrayFunctions) { func(e) }
+        }, 12),
+        add(func) {
+            for (let i = 0; i < this.arrayFunctions.length; i++) {
+                if (this.arrayFunctions[i] === func) { return; }
+            }
+            this.arrayFunctions.push(func);
         },
-        changeToolSizeCursor(eventName, e) {
-            const eventFunction = {
-                down: () => {
-                    cursorTool.visible = false;
-                    infoChangeTool = this.toolProperties.size;
-                    this.brush("down");
-                },
-                move: () => {
-                    const { start, end } = strokeCoordinates.onlyStartEnd(),
-                        distance = end.x - start.x < 0 ? -getDistanceCoordinates(start, end) : getDistanceCoordinates(start, end);
-                    this.changeToolSize(infoChangeTool + distance);
-                    cursorTool.visible = false;
-                    this.applyToolChanges();
-                    strokeCoordinates.onlyFirst();
-                    this.brush("down");
-                },
-                up: () => this.defaultFunctionChangeToolPropertieCursor(),
-            };
-            eventFunction[eventName]();
-        },
-        changeToolOpacityCursor(eventName, e) {
-            const eventFunction = {
-                down: () => {
-                    cursorTool.visible = false;
-                    infoChangeTool = {
-                        startCoordinate: getMousePosition(D.janelaPrincipal, e),
-                        beforeValue: +(this.toolOpacityBar.bar.value)
-                    }
-                    this.brush("down");
-                },
-                move: () => {
-                    const start = infoChangeTool.startCoordinate, end = getMousePosition(D.janelaPrincipal, e),
-                        distance = end.x - start.x < 0 ? -getDistanceCoordinates(start, end) : getDistanceCoordinates(start, end);
-                    this.changeToolOpacity(+((infoChangeTool.beforeValue + ((distance * 0.01) / 2.5)).toFixed(2)), false);
-                    this.applyToolChanges();
-                    strokeCoordinates.onlyFirst();
-                    this.brush("down");
-                },
-                up: () => this.defaultFunctionChangeToolPropertieCursor()
-            };
-            eventFunction[eventName]();
-        },
-        changeToolHardnessCursor(eventName, e) {
-            const eventFunction = {
-                down: () => {
-                    cursorTool.visible = false;
-                    infoChangeTool = {
-                        startCoordinate: getMousePosition(D.janelaPrincipal, e),
-                        beforeValue: +(this.toolHardnessBar.bar.value)
-                    }
-                    this.brush("down");
-                },
-                move: () => {
-                    const start = infoChangeTool.startCoordinate, end = getMousePosition(D.janelaPrincipal, e),
-                        distance = end.x - start.x < 0 ? -getDistanceCoordinates(start, end) : getDistanceCoordinates(start, end);
-                    this.changeToolHardness(+((infoChangeTool.beforeValue + ((distance * 0.01) / 2.5)).toFixed(2)), false);
-                    this.applyToolChanges();
-                    strokeCoordinates.onlyFirst();
-                    this.brush("down");
-                },
-                up: () => this.defaultFunctionChangeToolPropertieCursor()
-            };
-            eventFunction[eventName]();
-        },
-        defaultFunctionChangeToolPropertieCursor() {
-            this.selectDrawingTool(this.selectedTool);
-            infoChangeTool = null;
-        },
-        changeCursorMode(e) {
-            cursorTool.show = !cursorTool.show;
-            e.currentTarget.getElementsByTagName("span")[0].innerText = cursorTool.show ? "Padrão" : "Simples";
-            this.changeCursorTool();
-        },
-        changeShowDashSample(e) {
-            showDashSample = !showDashSample;
-            e.currentTarget.getElementsByTagName("span")[0].innerText = showDashSample ? "Sim" : "Não";
-        },
-        addDependencies(dependencies) {
-            for (const prop in dependencies) { D[prop] = dependencies[prop]; }
+        remove(func) {
+            for (let i = 0; i < this.arrayFunctions.length; i++) {
+                if (this.arrayFunctions[i] === func) { this.arrayFunctions.splice(i, 1); }
+            }
         }
     }
+    const cursorTool = {
+        mode: "default", position: { x: 0, y: 0 }, halfSize: 0, contentTelasInfo: contentTelas.getBoundingClientRect(),
+        setSize: size => {
+            if (size < 13) {
+                elCursor.classList.remove("bordaCursor");
+                setStyle(elCursor, { backgroundImage: "url('/colorPaint/imagens/cursor/crossHair.png')" });
+            } else {
+                elCursor.classList.add("bordaCursor");
+                cursorTool.halfSize = size / 2;
+                setStyle(elCursor, {
+                    width: size + "px", height: size + "px", backgroundImage: size < 200 ? "none" : "",
+                });
+            }
+            cursorTool.currentSetPosition(cursorTool.position);
+        },
+        setPositionNoPainting({ x, y }) {
+            this.position.x = x;
+            this.position.y = y;
+            setStyle(elCursor, { top: y - this.halfSize + "px", left: x - this.halfSize + "px" });
+            const { left, top, width, height } = cursorTool.contentTelasInfo;
+            if (x < left || x > left + width || y < top || y > top + height) {
+                setStyle(elCursor, { display: "none" });
+            }
+        },
+        setPositionPainting({ x, y }) {
+            this.position.x = x;
+            this.position.y = y;
+            setStyle(elCursor, { top: y - this.halfSize + "px", left: x - this.halfSize + "px" });
+        },
+        currentSetPosition: null,
+        changeMode: (() => {
+            const onMouseMove = e => cursorTool.currentSetPosition(getMousePosition(janelaPrincipal, e))
+            const onMouseEnter = e => {
+                setStyle(elCursor, { display: "block" });
+                onMouseMove(e);
+            }
+            return {
+                simple: () => {
+                    contentTelas.removeEventListener("mouseenter", onMouseEnter);
+                    functionsMouseMove.remove(onMouseMove);
+                },
+                default: () => {
+                    contentTelas.addEventListener("mouseenter", onMouseEnter);
+                    functionsMouseMove.add(onMouseMove);
+                }
+            }
+        })(),
+        invisibleCursor: () => setStyle(elCursor, { display: "none" }),
+        onClickBttChangeMode: e => {
+            cursorTool.mode = cursorTool.mode === "simple" ? "default" : "simple";
+            Array.from(e.currentTarget.getElementsByTagName("span")).first.innerText =
+                cursorTool.mode === "simple" ? "Simples" : "Padrão";
+            cursorTool.changeMode[cursorTool.mode]();
+            cursorTool.update();
+        },
+        update: () => {
+            setStyle(contentTelas, { cursor: "none" });
+            const size = drawingTools.selectedTool.size * (screen.offsetWidth / project.resolution.width);
+            if (cursorTool.mode === "default") {
+                elCursor.classList.remove("bordaCursor");
+                setStyle(elCursor, { width: "500px", height: "500px", backgroundImage: "none", cursor: "none" });
+                cursorTool.halfSize = 250;
+                if (drawingTools.toolFunctionName === "eyeDropper") {
+                    setStyle(elCursor, { cursor: "url('./colorPaint/imagens/cursor/cursorContaGotas.png') 0 20, pointer" });
+                    return;
+                } else if (drawingTools.toolFunctionName === "paintBucket") {
+                    setStyle(elCursor, { cursor: "url('./colorPaint/imagens/cursor/cursorBaldeDeTinta.png') 0 0, pointer" });
+                    return;
+                } else if (drawingTools.toolFunctionName === "moveScreen") {
+                    setStyle(elCursor, { cursor: "grab" });
+                    return;
+                }
+                cursorTool.setSize(size);
+            } else {
+                if (drawingTools.toolFunctionName === "eyeDropper") {
+                    setStyle(contentTelas, { cursor: "url('./colorPaint/imagens/cursor/cursorContaGotas.png') 0 20, pointer" });
+                    return;
+                } else if (drawingTools.toolFunctionName === "paintBucket") {
+                    setStyle(contentTelas, { cursor: "url('./colorPaint/imagens/cursor/cursorBaldeDeTinta.png') 0 0, pointer" });
+                    return;
+                } else if (drawingTools.toolFunctionName === "moveScreen") {
+                    setStyle(contentTelas, { cursor: "grab" });
+                    return;
+                }
+                setStyle(contentTelas, {
+                    cursor: size < 20 ? "url('./colorPaint/imagens/cursor/crossHair.png') 12.5 12.5 , pointer" :
+                        "url('./colorPaint/imagens/cursor/circle.png') 10 10 , pointer"
+                });
+            }
+        }
+    }
+
+    const onMouseDown = (() => {
+        const onMouseMove = e => {
+            strokeCoordinates.add();
+            project.eventLayer.clearRect(0, 0, project.resolution.width, project.resolution.height);
+            toolsFunctions[drawingTools.toolFunctionName].move(e);
+        }
+        const onMouseUp = e => {
+            project.selectedLayer.layer.globalCompositeOperation = "source-over";
+            const { save, inUse } = toolsFunctions[drawingTools.toolFunctionName].up(e);
+            if (!inUse) {
+                if (save) { observers.notify("toolUsed"); }
+                else { observers.notify("drawInLayer", project.selectedLayer); }
+                strokeCoordinates.clear();
+                project.eventLayer.clearRect(0, 0, project.resolution.width, project.resolution.height);
+            }
+            project.toolInUse = inUse;
+            drawingTools.painting = false;
+            cursorTool.currentSetPosition = cursorTool.setPositionNoPainting;
+            functionsMouseMove.remove(onMouseMove);
+            document.removeEventListener("mouseup", onMouseUp);
+        }
+        const mouseDown = e => {
+            if (!project.selectedLayer.visible || drawingTools.painting) { return; }
+            if (!project.toolInUse) {
+                drawingTools.planeInUse = e.button < 1 ? 1 : e.button > 2 ? 1 : e.button;
+                drawingTools.selectedTool.color = drawingTools.colorPlanes[drawingTools.planeInUse - 1];
+            }
+            drawingTools.painting = true;
+            cursorTool.currentSetPosition = cursorTool.setPositionPainting;
+            applyToolProperties();
+            strokeCoordinates.add();
+            if (drawingTools.selectedTool.size <= 1) {
+                strokeCoordinates.x.first = +(Math.floor(strokeCoordinates.x.first) + ".5");
+                strokeCoordinates.y.first = +(Math.floor(strokeCoordinates.y.first) + ".5");
+            }
+            toolsFunctions[drawingTools.toolFunctionName].down(e);
+            project.toolInUse = true;
+            functionsMouseMove.add(onMouseMove);
+            document.addEventListener("mouseup", onMouseUp);
+        }
+        return mouseDown;
+    })();
+    const onHotKeys = (() => {
+        const info = { spacePressed: false, ctrlPressed: false, shiftPressed: false }
+        const keyDown = {
+            Space: () => {
+                if (info.spacePressed) { return; }
+                project.toolInUse = info.spacePressed = true;
+                drawingTools.toolFunctionName = "moveScreen";
+                cursorTool.update();
+            },
+            Backslash: () => changeToolSize(drawingTools.selectedTool.size - 1),
+            BracketRight: () =>
+                changeToolSize(drawingTools.selectedTool.size === 0.5 ? 1 : drawingTools.selectedTool.size + 1),
+            Ctrl: () => {
+                if (info.ctrlPressed) { return; }
+                info.ctrlPressed = true;
+                selectDrawingTool("eyeDropper");
+            },
+            Shift: e => {
+                if (info.shiftPressed) { return; }
+                info.shiftPressed = true;
+                selectDrawingTool(drawingTools.selectedTool.name);
+            }
+        }
+        const keyUp = {
+            Ctrl: () => {
+                info.ctrlPressed = false;
+                selectDrawingTool(drawingTools.previousToolName);
+                cursorTool.update();
+            },
+            Space: () => {
+                project.toolInUse = info.spacePressed = false;
+                selectDrawingTool(drawingTools.selectedTool.name);
+                cursorTool.update();
+            },
+            Shift: () => {
+                selectDrawingTool(drawingTools.selectedTool.name);
+            }
+        }
+        const withShift = {
+            KeyA: () => drawingTools.toolFunctionName = "changeToolSize",
+            KeyS: () => drawingTools.toolFunctionName = "changeToolOpacity",
+            KeyD: () => drawingTools.toolFunctionName = "changeToolHardness",
+        }
+        return ({ pressed, e }) => {
+            let fn = null;
+            // = pressed ? keyDown[e.code] : keyUp[e.code];
+            if (e.shiftKey) {
+                keyDown.Shift();
+                fn = withShift[e.code];
+            } else { keyUp.Shift(); }
+
+            if (e.ctrlKey) { keyDown.Ctrl(); }
+            else { keyUp.Ctrl(); }
+
+            if (!fn) { return; }
+            preventDefaultAction(e);
+            fn(e);
+        }
+    })();
+    const onZoom = () => {
+        cursorTool.contentTelasInfo = contentTelas.getBoundingClientRect();
+        cursorTool.update();
+    };
+    const onColorChanged = ({ plane, color }) => { drawingTools.colorPlanes[plane - 1] = color; }
+    const onOpenColorSelectionWindow = open => {
+        colorSelectionWindowOpened = false;
+        if (open) { selectDrawingTool("eyeDropper"); }
+        else { selectDrawingTool(drawingTools.previousToolName); }
+        colorSelectionWindowOpened = open;
+    }
+    (function addEventsToElements() {
+        contentTelas.addEventListener("contextmenu", preventDefaultAction);
+        elCursor.addEventListener("contextmenu", preventDefaultAction);
+        contentTelas.addEventListener("mousedown", onMouseDown);
+        elCursor.addEventListener("mousedown", onMouseDown);
+        document.addEventListener("mousemove", functionsMouseMove.onMouseMove);
+        janelaPrincipal.addEventListener("mouseleave", cursorTool.invisibleCursor);
+        cursorTool.currentSetPosition = cursorTool.setPositionNoPainting;
+        getElement("bttModoCursor").addEventListener("mousedown", cursorTool.onClickBttChangeMode);
+        cursorTool.changeMode.default();
+        getElement("bttMostrarAlteracaoPincel").addEventListener("mousedown", e => {
+            // showDashSample = !showDashSample;
+            // Array.from(e.currentTarget.getElementsByTagName("span")).first.innerText = showDashSample ? "Sim" : "Não";
+        });
+
+        for (const prop in drawingTools.propertiesBar) {
+            const { property, contentBar, bar } = drawingTools.propertiesBar[prop];
+            property.addEventListener("mouseover", () => {
+                if (project.toolInUse) { return; }
+                setStyle(contentBar, { height: "33px" });
+            });
+            property.addEventListener("mouseleave", () => {
+                if (project.toolInUse) { return; }
+                setStyle(contentBar, { height: null });
+                cursorTool.update();
+            });
+            property.addEventListener("mouseup", () => {
+                if (project.toolInUse) { return; }
+                project.eventLayer.clearRect(0, 0, project.resolution.width, project.resolution.height);
+            });
+            bar.addEventListener("input", e => onInputToolPropertiesBar(prop, e));
+        }
+        for (const toolName in drawingTools.tools) {
+            drawingTools.tools[toolName].btt.addEventListener("mousedown", selectDrawingTool.bind(null, toolName));
+        }
+    })();
+    selectDrawingTool("brush");
+    return { onZoom, onHotKeys, onOpenColorSelectionWindow, onColorChanged, addObservers: observers.add }
 }

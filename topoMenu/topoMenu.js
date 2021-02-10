@@ -1,13 +1,18 @@
 import { throttle, getElement, getAllElements, setStyle, loadFile } from "../js/utils.js";
 
-function topMenuObject() {
-    return {
-        changeMenu: true,
-        scrollBody: 0,
-        menu: getElement("menu"),
-        logo: getElement("logoBlack"),
-        categories: getAllElements("opmenu"),
-        menuIcon: {
+const loadTopMenu = async () => {
+    const htmlMenu = await loadFile("./topoMenu/menuTopo.html");
+    if (htmlMenu) {
+        document.head.insertAdjacentHTML("beforeend", '<link rel="stylesheet" href="topoMenu/topoMenu.css">');
+        document.body.insertAdjacentHTML("afterbegin", await htmlMenu.text());
+    } else { window.location.reload(); }
+}
+
+export default async function topMenuObject(changeMenu = true, initialTheme = 1) {
+    await loadTopMenu();
+    let scrollBody = 0;
+    const menu = getElement("menu"), logo = getElement("logoBlack"), categories = getAllElements("opmenu"),
+        menuIcon = {
             btt: getElement("bttmenu"), traces: getAllElements("tracomenu"), lateralMenu: getElement("fundomenu"),
             focus: false,
             actionAnimation() {
@@ -25,8 +30,7 @@ function topMenuObject() {
             resizeMenu() {
                 setStyle(this.lateralMenu, { height: window.innerHeight + "px" });
             }
-        },
-        downArrow: {
+        }, downArrow = {
             btt: getElement("submenu"), icon: getElement("bttseta"),
             traces: getAllElements("tracoseta"),
             contentDrop: getElement("socials"),
@@ -41,73 +45,79 @@ function topMenuObject() {
                 const newHeight = this.focus ? "0px" : "200px";
                 setStyle(this.contentDrop, { height: newHeight });
                 this.focus = !this.focus;
-            },
-        },
-        changeTheme(top) {
-            if (this.downArrow.focus) { this.downArrow.actionAnimation(); }
-            if (this.menuIcon.focus) { this.menuIcon.actionAnimation(); }
-            if (!this.changeMenu) { return; }
-            if (!top) {
-                this.menu.classList.replace("iniciomenu", "mudamenu");
-                this.logo.classList.replace("iniciologoBlack", "mudalogoBlack");
-                this.downArrow.icon.classList.remove("inicioiconeblack");
-                for (let i = 0; i < this.categories.length; i++) {
-                    this.categories[i].classList.replace("inicioopcoes", "mudaopcoes");
+            }
+        }, changeTheme = numTheme => {
+            if (downArrow.focus) { downArrow.actionAnimation(); }
+            if (menuIcon.focus) { menuIcon.actionAnimation(); }
+            if (numTheme === 2) {
+                menu.classList.replace("iniciomenu", "mudamenu");
+                logo.classList.replace("iniciologoBlack", "mudalogoBlack");
+                downArrow.icon.classList.remove("inicioiconeblack");
+                for (let i = 0; i < categories.length; i++) {
+                    categories[i].classList.replace("inicioopcoes", "mudaopcoes");
                 }
-            } else {
-                this.menu.classList.replace("mudamenu", "iniciomenu");
-                this.logo.classList.replace("mudalogoBlack", "iniciologoBlack");
-                this.downArrow.icon.classList.add("inicioiconeblack");
-                for (let i = 0; i < this.categories.length; i++) {
-                    this.categories[i].classList.replace("mudaopcoes", "inicioopcoes");
+            } else if (numTheme === 1) {
+                menu.classList.replace("mudamenu", "iniciomenu");
+                logo.classList.replace("mudalogoBlack", "iniciologoBlack");
+                downArrow.icon.classList.add("inicioiconeblack");
+                for (let i = 0; i < categories.length; i++) {
+                    categories[i].classList.replace("mudaopcoes", "inicioopcoes");
                 }
             }
-        },
-        scrollMenu() {
-            this.scrollBody = document.body.scrollTop || document.documentElement.scrollTop;
-            if (this.scrollBody > 5) { this.changeTheme(false); }
-            else { this.changeTheme(true); }
-        },
-        screenResize() {
-            this.menuIcon.resizeMenu();
-            if (!this.changeMenu) { return; }
-            if (this.scrollBody > 5) {
-                this.menu.classList.replace("iniciomenu", "mudamenu");
-                this.logo.classList.replace("iniciologoBlack", "mudalogoBlack");
+        }, scrollMenu = throttle(() => {
+            scrollBody = document.body.scrollTop || document.documentElement.scrollTop;
+            if (scrollBody > 5) { changeTheme(2); }
+            else { changeTheme(1); }
+        }, 110),
+        screenResize = () => {
+            if (scrollBody > 5) {
+                menu.classList.replace("iniciomenu", "mudamenu");
+                logo.classList.replace("iniciologoBlack", "mudalogoBlack");
             } else {
-                this.menu.classList.replace("mudamenu", "iniciomenu");
-                this.logo.classList.replace("mudalogoBlack", "iniciologoBlack");
+                menu.classList.replace("mudamenu", "iniciomenu");
+                logo.classList.replace("mudalogoBlack", "iniciologoBlack");
             }
             if (window.innerWidth > 650) {
-                if (this.menuIcon.focus) { this.menuIcon.actionAnimation(); }
+                if (menuIcon.focus) { menuIcon.actionAnimation(); }
             }
         },
-        addEventsToElements() {
-            this.menuIcon.btt.addEventListener("mousedown", () => this.menuIcon.actionAnimation());
-            this.downArrow.btt.addEventListener("mousedown", () => this.downArrow.actionAnimation());
-            this.downArrow.btt.addEventListener("mouseleave", () => { if (this.downArrow.focus) { this.downArrow.actionAnimation(); } });
-            window.addEventListener("resize", () => this.screenResize());
-            window.addEventListener("scroll", throttle(() => this.scrollMenu(), 110));
+        addChangeThemeMenuEvents = async () => {
+            window.addEventListener("resize", screenResize);
+            window.addEventListener("scroll", scrollMenu);
         },
-        init() {
-            this.addEventsToElements();
-            this.screenResize();
-            delete this.init;
+        removeChangeThemeMenuEvents = async () => {
+            window.removeEventListener("resize", screenResize);
+            window.removeEventListener("scroll", scrollMenu);
+        }
+
+    changeTheme(initialTheme);
+    if (changeMenu) {
+        screenResize();
+        addChangeThemeMenuEvents();
+    } else {
+        setStyle(menu, { transition: "none" });
+    }
+
+    window.removeEventListener("resize", () => menuIcon.resizeMenu());
+    menuIcon.btt.addEventListener("mousedown", () => menuIcon.actionAnimation());
+    downArrow.btt.addEventListener("mousedown", () => downArrow.actionAnimation());
+    downArrow.btt.addEventListener("mouseleave", () => { if (downArrow.focus) { downArrow.actionAnimation(); } });
+
+    menuIcon.resizeMenu();
+
+    return {
+        changeTheme, change: change => {
+            if (change) {
+                addChangeThemeMenuEvents();
+                setStyle(menu, { transition: null });
+            } else {
+                removeChangeThemeMenuEvents();
+                setStyle(menu, { transition: "none" });
+            }
         },
+        logoClick(functionClick) {
+            logo.addEventListener("click", functionClick);
+            return this;
+        }
     }
-}
-
-function callTopMenuObject() {
-    const topMenu = topMenuObject();
-    topMenu.init();
-    return topMenu;
-}
-
-export default async function loadTopoMenu() {
-    const htmlMenu = await loadFile("./topoMenu/menuTopo.html");
-    if (htmlMenu) {
-        document.body.insertAdjacentHTML("afterbegin", await htmlMenu.text());
-        return callTopMenuObject();
-    }
-    return false;
 }

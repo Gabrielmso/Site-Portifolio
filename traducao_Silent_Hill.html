@@ -20,7 +20,7 @@
         import { fadeOutLoading } from "./js/utils.js";
         import traduSilent from "./ContTraduSilent/traduSilent.js";
         window.onload = async () => {
-            if (!(await traduSilent())) { return; }
+            await traduSilent();
             fadeOutLoading();
         };
     </script>

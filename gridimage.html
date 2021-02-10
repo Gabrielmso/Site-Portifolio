@@ -18,7 +18,7 @@
         import gridImage from "./gridImage/gridImage.js";
         import { fadeOutLoading } from "./js/utils.js";
         window.onload = async () => {
-            if (!(await gridImage())) { return; }
+            await gridImage();
             fadeOutLoading();
         };
     </script>
