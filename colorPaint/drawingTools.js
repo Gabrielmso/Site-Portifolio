@@ -6,7 +6,7 @@ import {
 const toolConstructor = (name = "", properties = false) =>
     ({ btt: getElement(name), name, properties: properties ? properties : false });
 
-export default function drawingToolsObject({ project, screen, contentTelas, janelaPrincipal, notification }) {
+export default function drawingToolsObject({ project, screen, contentTelas, janelaPrincipal, notification, zoom }) {
     const observers = createEventEmitterToObservers(["toolUsed", "drawInLayer", "setColor"]);
     const elCursor = getElement("cursorFerramenta");
     const mousePosition = {
@@ -823,15 +823,27 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
     })();
     const onHotKeys = (() => {
         const info = { spacePressed: false, ctrlPressed: false, shiftPressed: false }
+        const onWheelZoom = e => {
+            preventDefaultAction(e);
+            if (e.deltaY < 0) { zoom(true, false, 1.10); }
+            else { zoom(false, false, 1.10); }
+            const posContentTelas = getMousePosition(contentTelas, e);
+            const proporcaoPosY = mousePosition.y / project.resolution.height;
+            const proporcaoPosX = mousePosition.x / project.resolution.width;
+            contentTelas.scrollTop = (contentTelas.scrollHeight * proporcaoPosY) - posContentTelas.y;
+            contentTelas.scrollLeft = (contentTelas.scrollWidth * proporcaoPosX) - posContentTelas.x;
+        }
         const ctrlDown = () => {
             if (info.ctrlPressed) { return; }
             info.ctrlPressed = true;
             selectDrawingTool("eyeDropper");
+            janelaPrincipal.addEventListener("wheel", onWheelZoom);
         }
         const ctrlUp = () => {
             info.ctrlPressed = false;
             selectDrawingTool(drawingTools.previousToolName);
             cursorTool.update();
+            janelaPrincipal.removeEventListener("wheel", onWheelZoom);
         }
         const shiftDown = () => info.shiftPressed = true;
         const shiftUp = () => {

@@ -384,10 +384,9 @@ export default function appObject() {
     })();
     const readyProject = () => {
         const hotKeys = hotKeysObject();
-        const drawingTools = drawingToolsObject({ project, screen, contentTelas, janelaPrincipal, notification });
+        const drawingTools = drawingToolsObject({ project, screen, contentTelas, janelaPrincipal, notification, zoom });
         const previewFunctions = previewFunctionsObject({ project, contentTelasPreview, contentTelas, screen });
         const undoRedoChange = undoRedoChangeObject({ project });
-
 
         observers.add("zoom", [previewFunctions.onZoom, drawingTools.onZoom]);
         observers.add("drawingChanged", [undoRedoChange.saveChanges]);
