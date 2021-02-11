@@ -257,8 +257,8 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
         project.eventLayer.strokeStyle = project.eventLayer.fillStyle = "rgb(" + r + ", " + g + ", " + b + ")";
     };
     const toolsFunctions = toolsFunctionsObject({
-        project, drawingTools, screen, contentTelas, janelaPrincipal,
-        notification, strokeCoordinates, observers, mousePosition
+        project, drawingTools, screen, contentTelas, janelaPrincipal, elCursor, notification,
+        strokeCoordinates, observers, mousePosition,
     });
     const functionsMouseMove = {
         arrayFunctions: [mousePosition.update],

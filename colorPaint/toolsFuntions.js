@@ -3,7 +3,7 @@ import {
 } from "../js/utils.js";
 
 export default function toolsFunctionsObject({ project, drawingTools, screen, contentTelas, janelaPrincipal,
-    notification, strokeCoordinates, observers, mousePosition }) {
+    notification, strokeCoordinates, observers, mousePosition, elCursor }) {
     const toolsFunctions = {
         brush: (() => {
             const move = () => {
