@@ -136,8 +136,8 @@ export default function createGridWindowObject({ notification, project, contentT
     return {
         set createGrid({ size, position, visible, opacity }) { createGrid({ size, position, opacity }, visible) },
         get gridProperties() {
-            const { size, position, visible } = gridProperties;
-            return { size, position, visible };
+            const { size, position, visible, opacity } = gridProperties;
+            return { size, position, visible, opacity };
         },
         open() {
             previousVisualization.scrollX = contentTelas.scrollLeft;
