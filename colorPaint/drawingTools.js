@@ -41,6 +41,12 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
             this.y = [this.y.first];
             this.length = 1;
         },
+        center() {
+            const { offsetHeight, offsetWidth } = contentTelas, midWidth = offsetWidth / 2, midHeight = offsetHeight / 2;
+            this.x = [(project.resolution.width / screen.offsetWidth) * ((midWidth - screen.offsetLeft) + contentTelas.scrollLeft)];
+            this.y = [(project.resolution.height / screen.offsetHeight) * ((midHeight - screen.offsetTop) + contentTelas.scrollTop)];
+            this.length = 1;
+        }
     }
     let colorSelectionWindowOpened = false;
     const drawingTools = {
@@ -58,7 +64,7 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
         },
         colorPlanes: [{ r: 0, g: 0, b: 0 }, { r: 255, g: 255, b: 255 }], planeInUse: 1,
         selectedTool: { name: "brush", size: 5, opacity: 1, hardness: 1, color: { r: 0, g: 0, b: 0 } },
-        toolFunctionName: "brush", previousToolName: "brush", painting: false,
+        toolFunctionName: "brush", previousToolName: "brush", painting: false, showDashSample: true,
         propertiesBar: {
             size: {
                 property: getElement("propriedadeTamanho"), contentBar: getElement("contentBarraTamanho"),
@@ -155,15 +161,6 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
         drawingTools.tools[drawingTools.selectedTool.name].properties.force =
             drawingTools.propertiesBar.force.bar.value = drawingTools.selectedTool.force = value;
     }
-    const onInputToolPropertiesBar = (() => {
-        const properties = {
-            size: e => changeToolSizeBar(+((+(e.currentTarget.value)).toFixed(2))),
-            opacity: e => changeToolOpacity(+((+(e.currentTarget.value)).toFixed(2))),
-            hardness: e => changeToolHardness(+((+(e.currentTarget.value)).toFixed(2))),
-            force: e => changeToolForce(+((+(e.currentTarget.value)).toFixed(2)))
-        }
-        return (propertyName, e) => properties[propertyName](e);
-    })();
     const selectDrawingTool = (() => {
         const contentToolProperties = getElement("propriedadesFerramentas");
         const setSelectedToolProperties = properties => {
@@ -685,9 +682,7 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
             this.position.y = y;
             setStyle(elCursor, { top: y - this.halfSize + "px", left: x - this.halfSize + "px" });
             const { left, top, width, height } = cursorTool.contentTelasInfo;
-            if (x < left || x > left + width || y < top || y > top + height) {
-                setStyle(elCursor, { display: "none" });
-            }
+            if (x < left || x > left + width || y < top || y > top + height) { cursorTool.invisibleCursor(); }
         },
         setPositionPainting({ x, y }) {
             this.position.x = x;
@@ -713,6 +708,7 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
             }
         })(),
         invisibleCursor: () => setStyle(elCursor, { display: "none" }),
+        visibleCursor: () => setStyle(elCursor, { display: "block" }),
         onClickBttChangeMode: e => {
             cursorTool.mode = cursorTool.mode === "simple" ? "default" : "simple";
             Array.from(e.currentTarget.getElementsByTagName("span")).first.innerText =
@@ -754,9 +750,35 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
                         "url('./colorPaint/imagens/cursor/circle.png') 10 10 , pointer"
                 });
             }
+        },
+        center() {
+            if (cursorTool.mode === "simple") { return; }
+            const { width, height, left, top } = cursorTool.contentTelasInfo;
+            cursorTool.setPositionPainting({ x: left + (width / 2), y: top + (height / 2) });
         }
     }
-
+    const showDashSample = () => {
+        if (!drawingTools.showDashSample) { return; }
+        cursorTool.update();
+        applyToolProperties();
+        project.eventLayer.strokeStyle = "rgb(0, 0, 255)";
+        strokeCoordinates.center();
+        // cursorTool.center();
+        toolsFunctions.brush.down();
+        strokeCoordinates.clear();
+    }
+    const onInputToolPropertiesBar = (() => {
+        const properties = {
+            size: e => changeToolSizeBar(+((+(e.currentTarget.value)).toFixed(2))),
+            opacity: e => changeToolOpacity(+((+(e.currentTarget.value)).toFixed(2))),
+            hardness: e => changeToolHardness(+((+(e.currentTarget.value)).toFixed(2))),
+            force: e => changeToolForce(+((+(e.currentTarget.value)).toFixed(2)))
+        }
+        return (propertyName, e) => {
+            properties[propertyName](e);
+            showDashSample();
+        };
+    })();
     const onMouseDown = (() => {
         const onMouseMove = e => {
             strokeCoordinates.add();
@@ -874,8 +896,9 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
         getElement("bttModoCursor").addEventListener("mousedown", cursorTool.onClickBttChangeMode);
         cursorTool.changeMode.default();
         getElement("bttMostrarAlteracaoPincel").addEventListener("mousedown", e => {
-            // showDashSample = !showDashSample;
-            // Array.from(e.currentTarget.getElementsByTagName("span")).first.innerText = showDashSample ? "Sim" : "Não";
+            drawingTools.showDashSample = !drawingTools.showDashSample;
+            Array.from(e.currentTarget.getElementsByTagName("span")).first.innerText =
+                drawingTools.showDashSample ? "Ativado" : "Desativado";
         });
 
         for (const prop in drawingTools.propertiesBar) {
@@ -893,6 +916,8 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
                 if (project.toolInUse) { return; }
                 project.eventLayer.clearRect(0, 0, project.resolution.width, project.resolution.height);
             });
+            // bar.addEventListener("mousedown", () => cursorTool.changeMode.simple());
+            // bar.addEventListener("mouseup", () => cursorTool.changeMode[cursorTool.mode]());
             bar.addEventListener("input", e => onInputToolPropertiesBar(prop, e));
         }
         for (const toolName in drawingTools.tools) {
