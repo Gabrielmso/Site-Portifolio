@@ -1,6 +1,6 @@
 import {
     preventDefaultAction, setStyle, getElement, createElement, getImage,
-    createEventEmitterToObservers, cloneElement, delay
+    createEventEmitterToObservers, cloneElement, delay, openWindowBackgroundBlur
 } from "../js/utils.js";
 import hotKeysObject from "./hotKeys.js";
 import drawingToolsObject from "./drawingTools.js";
@@ -358,7 +358,6 @@ export default function appObject() {
         const json = JSON.stringify(objProjeto), a = createElement("a", {
             download: project.name + ".gm", href: URL.createObjectURL(new Blob([json], { type: "application/json" }))
         });
-        console.log(a.href);
         a.click();
         a.remove();
     }
@@ -398,7 +397,7 @@ export default function appObject() {
         colors.addObservers("openColorSelectionWindow", [drawingTools.onOpenColorSelectionWindow]);
         colors.addObservers("colorChanged", [drawingTools.onColorChanged]);
 
-        drawingTools.addObservers("setColor", [colors.set]);
+        drawingTools.addObservers("setColor", [colors.setColor]);
         drawingTools.addObservers("toolUsed", [applyToolChange]);
         drawingTools.addObservers("drawInLayer", [drawInSelectedLayer]);
 
@@ -436,6 +435,15 @@ export default function appObject() {
     getElement("bttCriarNovoProjeto").addEventListener("mousedown", createProjectWindow.open.bind(null, "create"));
     getElement("bttCarregarProjeto").addEventListener("mousedown", createProjectWindow.open.bind(null, "load"));
     createProjectWindow.addObservers("createProject", [onCreateProject]);
+
+    {//Abrir e Fechar a janela de Atalhos.
+        const content = getElement("contentJanelaAtalhos");
+        content.addEventListener("mousedown", (e) => {
+            if (e.target === content) { openWindowBackgroundBlur(content, false) }
+        })
+        getElement("bttAtalhos").addEventListener("mousedown", openWindowBackgroundBlur
+            .bind(null, content, true));
+    }
 
     {
         const carregar = getElement("carregamento"),

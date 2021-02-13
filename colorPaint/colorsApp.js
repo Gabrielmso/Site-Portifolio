@@ -1,6 +1,5 @@
 import {
-    getElement, createEventEmitterToObservers, createElement, preventDefaultAction,
-    setStyle
+    getElement, createEventEmitterToObservers, createElement, preventDefaultAction, setStyle
 } from "../js/utils.js";
 import colorSelectionWindowObject from "./colorSelectionWindow.js";
 
@@ -11,8 +10,7 @@ export default function colorsApp({ project, notification, janelaPrincipal }) {
     const backgroundPlane = { btt: getElement("corSecundaria"), color: { r: 255, g: 255, b: 255 } }
     const bttRemoveSavedColor = getElement("bttRemoverCorSalva");
     const contentElSavedColors = getElement("coresSalvas");
-    const get = plane =>
-        (plane < 1 ? 1 : plane > 2 ? 1 : plane) === 1 ? firstPlane.color : backgroundPlane.color;
+    const get = plane => (plane < 1 ? 1 : plane > 2 ? 1 : plane) === 1 ? firstPlane.color : backgroundPlane.color;
     const set = (() => {
         const apply = {
             color1: ({ r, g, b }) => {
@@ -29,7 +27,8 @@ export default function colorsApp({ project, notification, janelaPrincipal }) {
             if (colorSelectionWindow.opened) { colorSelectionWindow.currentColor = color; }
             else {
                 plane = plane < 1 ? 1 : plane > 2 ? 1 : plane;
-                apply["color" + plane](color); observers.notify("colorChanged", { plane, color: get(plane) });
+                apply["color" + plane](color);
+                observers.notify("colorChanged", { plane, color: get(plane) });
             }
         };
     })();
@@ -73,9 +72,8 @@ export default function colorsApp({ project, notification, janelaPrincipal }) {
             contentElSavedColors.appendChild(savedColorEl);
             savedColors.colors.push({ el: savedColorEl, rgb });
             savedColorEl.addEventListener("mousedown", (e) => {
-                if (colorSelectionWindow.opened) {
-                    colorSelectionWindow.currentColor = rgb
-                } else { savedColors.select(e); }
+                if (colorSelectionWindow.opened) { colorSelectionWindow.currentColor = rgb }
+                else { savedColors.select(e); }
             });
             savedColorEl.addEventListener("contextmenu", preventDefaultAction);
         },
@@ -103,6 +101,10 @@ export default function colorsApp({ project, notification, janelaPrincipal }) {
             }
         }
     })();
+    const setColor = ({ plane, color }) => {
+        if (!colorSelectionWindow.opened) { savedColors.deselectAll(); }
+        set({ plane, color });
+    }
 
     firstPlane.btt.addEventListener("mousedown", onClickOpenColorSelectionWindow.bind(null, 1));
     backgroundPlane.btt.addEventListener("mousedown", onClickOpenColorSelectionWindow.bind(null, 2));
@@ -121,12 +123,11 @@ export default function colorsApp({ project, notification, janelaPrincipal }) {
         set({ plane: 2, color });
     });
 
-    colorSelectionWindow.addObservers("open", [open =>
-        observers.notify("openColorSelectionWindow", open)]);
+    colorSelectionWindow.addObservers("open", [open => observers.notify("openColorSelectionWindow", open)]);
     colorSelectionWindow.addObservers("saveColor", [savedColors.save]);
 
     return {
-        set, get, save: savedColors.save, get savedColors() { return savedColors.colors },
+        setColor, get, save: savedColors.save, get savedColors() { return savedColors.colors },
         addObservers: observers.add
     }
 }

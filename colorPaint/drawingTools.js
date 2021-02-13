@@ -378,7 +378,6 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
         applyToolProperties();
         project.eventLayer.strokeStyle = "rgb(0, 0, 255)";
         strokeCoordinates.center();
-        // cursorTool.center();
         toolsFunctions.brush.down();
         strokeCoordinates.clear();
     }
@@ -549,8 +548,6 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
                 if (project.toolInUse) { return; }
                 project.eventLayer.clearRect(0, 0, project.resolution.width, project.resolution.height);
             });
-            // bar.addEventListener("mousedown", () => cursorTool.changeMode.simple());
-            // bar.addEventListener("mouseup", () => cursorTool.changeMode[cursorTool.mode]());
             bar.addEventListener("input", e => onInputToolPropertiesBar(prop, e));
         }
         for (const toolName in drawingTools.tools) {
