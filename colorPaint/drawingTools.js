@@ -264,7 +264,10 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
             if (cursorTool.mode === "simple") { return; }
             const { width, height, left, top } = cursorTool.contentTelasInfo;
             cursorTool.setPositionPainting({ x: left + (width / 2), y: top + (height / 2) });
-        }
+        },
+        onWheelWithShift({ deltaY }) { contentTelas.scrollLeft += deltaY < 0 ? -contentTelas.offsetWidth / 7 : contentTelas.offsetWidth / 7; },
+        onWheelNoShift({ deltaY }) { contentTelas.scrollTop += deltaY < 0 ? -contentTelas.offsetHeight / 7 : contentTelas.offsetHeight / 7; },
+        currentOnWheel: null,
     }
     const changeToolSizeBar = (value, change = false) => {
         const res = project.resolution, maxSize = Math.ceil(getDistanceCoordinates({ x: 1, y: 1 }, { x: res.width, y: res.height })),
@@ -440,11 +443,11 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
             preventDefaultAction(e);
             if (e.deltaY < 0) { zoom(true, false, 1.10); }
             else { zoom(false, false, 1.10); }
-            const posContentTelas = getMousePosition(contentTelas, e);
+            const { x, y } = getMousePosition(contentTelas, e);
             const proporcaoPosY = mousePosition.y / project.resolution.height;
             const proporcaoPosX = mousePosition.x / project.resolution.width;
-            contentTelas.scrollTop = (contentTelas.scrollHeight * proporcaoPosY) - posContentTelas.y;
-            contentTelas.scrollLeft = (contentTelas.scrollWidth * proporcaoPosX) - posContentTelas.x;
+            contentTelas.scrollTop = (contentTelas.scrollHeight * proporcaoPosY) - y;
+            contentTelas.scrollLeft = (contentTelas.scrollWidth * proporcaoPosX) - x;
         }
         const ctrlDown = () => {
             if (info.ctrlPressed) { return; }
@@ -462,11 +465,13 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
             if (info.shiftPressed) { return; }
             info.shiftPressed = true;
             strokeCoordinates.currentAdd = strokeCoordinates.addShiftPressed;
+            cursorTool.currentOnWheel = cursorTool.onWheelWithShift;
         };
         const shiftUp = () => {
             project.toolInUse = info.shiftPressed = false;
             selectDrawingTool(drawingTools.selectedTool.name);
             strokeCoordinates.currentAdd = strokeCoordinates.add;
+            cursorTool.currentOnWheel = cursorTool.onWheelNoShift;
         }
         const keyDown = {
             Space: () => {
@@ -521,7 +526,9 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
         contentTelas.addEventListener("mousedown", onMouseDown);
         elCursor.addEventListener("mousedown", onMouseDown);
         janelaPrincipal.addEventListener("mouseleave", cursorTool.invisibleCursor);
+        elCursor.addEventListener("wheel", e => cursorTool.currentOnWheel(e), { passive: true });
         cursorTool.currentSetPosition = cursorTool.setPositionNoPainting;
+        cursorTool.currentOnWheel = cursorTool.onWheelNoShift;
         strokeCoordinates.currentAdd = strokeCoordinates.add;
         getElement("bttModoCursor").addEventListener("mousedown", cursorTool.onClickBttChangeMode);
         cursorTool.changeMode.default();
