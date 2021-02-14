@@ -32,13 +32,11 @@ export default function createGridWindowObject({ notification, project, contentT
                     message: "O tamanho da grade está muito baixo, isso pode acarretar problemas de performance!"
                 });
             }
-            for (let el = screen.firstElementChild; el != null;) {
-                el.remove();
-                el = screen.firstElementChild;
-            }
+            screen.textContent = "";
             if (create) {
                 const position = {
-                    x: (((pos.x / size) - (Math.trunc(pos.x / size))) * size), y: (((pos.y / size) - (Math.trunc(pos.y / size))) * size)
+                    x: (((pos.x / size) - (Math.trunc(pos.x / size))) * size),
+                    y: (((pos.y / size) - (Math.trunc(pos.y / size))) * size)
                 }
                 if (position.x < 0) { position.x += size };
                 if (position.y < 0) { position.y += size };
@@ -53,7 +51,6 @@ export default function createGridWindowObject({ notification, project, contentT
                     height: ((alturaTela / project.resolution.height) * 100) + "%"
                 });
                 const quadrado = createElement("div", { class: "quadrado", style: styleQuadrado });
-                quadrado.innerHTML = "<div></div>";
                 for (let i = 0; i < numDeQuadrados; i++) { screen.appendChild(quadrado.cloneNode(true)); }
             }
             gridProperties.visible = create;

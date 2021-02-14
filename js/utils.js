@@ -74,8 +74,8 @@ export const preventDefaultAction = e => {
     e.stopPropagation();
 }
 
-export const createEventEmitterToObservers = (eventNames = []) => {
-    if (!eventNames.length) { throw new TypeError("eventNames is empty!"); }
+export const createEventEmitterToObservers = (eventNames = [""]) => {
+    if (eventNames.includes("") || !eventNames.length) { throw new TypeError("eventNames is empty!"); }
     const listeners = eventNames.reduce((ac, name) => {
         if (typeof name !== "string") { throw new TypeError("Event name is not a string!"); }
         ac[name] = [];
