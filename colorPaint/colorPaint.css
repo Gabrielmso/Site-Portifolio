@@ -1007,21 +1007,24 @@ input[type="range"]::-webkit-slider-thumb {
 [data-id="cursorComparaContaGotas"] {
     position: absolute;
     display: none;
-    width: 250px;
-    height: 250px;
+    width: 180px;
+    height: 180px;
     z-index: 100;
-    border: 25px solid rgb(127, 127, 127);
     border-radius: 50%;
+    transform: rotate(45deg);
     cursor: url("../colorPaint/imagens/cursor/cursorContaGotas.png") 0 20, pointer;
 }
 
-[data-id="comparaCoresContaGotas"] {
-    display: block;
+[data-id="cursorComparaContaGotas"]::before {
+    content: "";
     position: relative;
-    width: 100%;
-    height: 100%;
+    display: block;
+    width: 178px;
+    height: 178px;
+    top: -39px;
+    left: -39px;
     border-radius: 50%;
-    transform: rotate(45deg);
+    border: 20px solid rgb(127, 127, 127);
 }
 
 [data-id="cursorFerramenta"] {
@@ -1039,9 +1042,11 @@ input[type="range"]::-webkit-slider-thumb {
     border: 1px solid black;
 }
 
-.bordaCursor div {
-    height: 100%;
-    width: 100%;
+.bordaCursor::after {
+    content: "";
+    display: block;
+    height: calc(100% - 2px);
+    width: calc(100% - 2px);
     border-radius: 50%;
     border: 1px solid white;
 }

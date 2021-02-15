@@ -119,22 +119,21 @@ export default function toolsFunctionsObject({ project, drawingTools, screen, co
         })(),
         eyeDropper: (() => {
             const cursor = getElement("cursorComparaContaGotas"), info = { drawComplete: null }
-            const compareColors = getElement("comparaCoresContaGotas");
             const changeCursorPosition = ({ x, y }) =>
-                setStyle(cursor, { top: y - 125 + "px", left: x - 125 + "px" });
+                setStyle(cursor, { top: y - 90 + "px", left: x - 90 + "px" });
             const move = e => {
                 changeCursorPosition(getMousePosition(janelaPrincipal, e));
                 const pixel = info.drawComplete.getImageData(mousePosition.x, mousePosition.y, 1, 1).data;
-                const newColor = !pixel[3] ? "25px solid rgba(0, 0, 0, 0)" :
-                    "25px solid rgb(" + pixel[0] + ", " + pixel[1] + ", " + pixel[2] + ")";
-                setStyle(compareColors, { borderTop: newColor, borderRight: newColor });
+                const newColor = !pixel[3] ? "20px solid rgba(0, 0, 0, 0)" :
+                    "20px solid rgb(" + pixel[0] + ", " + pixel[1] + ", " + pixel[2] + ")";
+                setStyle(cursor, { borderTop: newColor, borderRight: newColor });
                 return { r: pixel[0], g: pixel[1], b: pixel[2], a: pixel[3] }
             }
             const down = e => {
                 setStyle(cursor, { display: "block" });
                 const { r, g, b } = drawingTools.selectedTool.color,
-                    current = "25px solid rgb(" + r + ", " + g + ", " + b + ")";
-                setStyle(compareColors, { borderBottom: current, borderLeft: current });
+                    current = "20px solid rgb(" + r + ", " + g + ", " + b + ")";
+                setStyle(cursor, { borderBottom: current, borderLeft: current });
                 setStyle(screen, { imageRendering: "pixelated" });
                 info.drawComplete = project.drawComplete;
                 move(e);

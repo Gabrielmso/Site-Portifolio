@@ -225,41 +225,47 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
             cursorTool.changeMode[cursorTool.mode]();
             cursorTool.update();
         },
-        update: () => {
-            setStyle(contentTelas, { cursor: "none" });
-            const size = drawingTools.selectedTool.size * (screen.offsetWidth / project.resolution.width);
-            if (cursorTool.mode === "default") {
-                elCursor.classList.remove("bordaCursor");
-                setStyle(elCursor, { width: "500px", height: "500px", backgroundImage: "none", cursor: "none" });
-                cursorTool.halfSize = 250;
-                if (drawingTools.toolFunctionName === "eyeDropper") {
-                    setStyle(elCursor, { cursor: "url('./colorPaint/imagens/cursor/cursorContaGotas.png') 0 20, pointer" });
-                    return;
-                } else if (drawingTools.toolFunctionName === "paintBucket") {
-                    setStyle(elCursor, { cursor: "url('./colorPaint/imagens/cursor/cursorBaldeDeTinta.png') 0 0, pointer" });
-                    return;
-                } else if (drawingTools.toolFunctionName === "moveScreen") {
-                    setStyle(elCursor, { cursor: "grab" });
-                    return;
+        update: (() => {
+            const paintBucket = getImage("./colorPaint/imagens/cursor/cursorBaldeDeTinta.png");
+            const eyeDropper = getImage("./colorPaint/imagens/cursor/cursorContaGotas.png");
+            const crossHair = getImage("./colorPaint/imagens/cursor/crossHair.png");
+            const circle = getImage("./colorPaint/imagens/cursor/circle.png");
+            return () => {
+                setStyle(contentTelas, { cursor: "none" });
+                const size = drawingTools.selectedTool.size * (screen.offsetWidth / project.resolution.width);
+                if (cursorTool.mode === "default") {
+                    elCursor.classList.remove("bordaCursor");
+                    setStyle(elCursor, { width: "500px", height: "500px", backgroundImage: "none", cursor: "none" });
+                    cursorTool.halfSize = 250;
+                    if (drawingTools.toolFunctionName === "eyeDropper") {
+                        setStyle(elCursor, { cursor: "url('" + eyeDropper.src + "') 0 20, pointer" });
+                        return;
+                    } else if (drawingTools.toolFunctionName === "paintBucket") {
+                        setStyle(elCursor, { cursor: "url('" + paintBucket.src + "') 0 0, pointer" });
+                        return;
+                    } else if (drawingTools.toolFunctionName === "moveScreen") {
+                        setStyle(elCursor, { cursor: "grab" });
+                        return;
+                    }
+                    cursorTool.setSize(size);
+                } else {
+                    if (drawingTools.toolFunctionName === "eyeDropper") {
+                        setStyle(contentTelas, { cursor: "url('" + eyeDropper.src + "') 0 20, pointer" });
+                        return;
+                    } else if (drawingTools.toolFunctionName === "paintBucket") {
+                        setStyle(contentTelas, { cursor: "url('" + paintBucket.src + "') 0 0, pointer" });
+                        return;
+                    } else if (drawingTools.toolFunctionName === "moveScreen") {
+                        setStyle(contentTelas, { cursor: "grab" });
+                        return;
+                    }
+                    setStyle(contentTelas, {
+                        cursor: size < 20 ? "url('" + crossHair.src + "') 12.5 12.5 , pointer" :
+                            "url('" + circle.src + "') 10 10 , pointer"
+                    });
                 }
-                cursorTool.setSize(size);
-            } else {
-                if (drawingTools.toolFunctionName === "eyeDropper") {
-                    setStyle(contentTelas, { cursor: "url('./colorPaint/imagens/cursor/cursorContaGotas.png') 0 20, pointer" });
-                    return;
-                } else if (drawingTools.toolFunctionName === "paintBucket") {
-                    setStyle(contentTelas, { cursor: "url('./colorPaint/imagens/cursor/cursorBaldeDeTinta.png') 0 0, pointer" });
-                    return;
-                } else if (drawingTools.toolFunctionName === "moveScreen") {
-                    setStyle(contentTelas, { cursor: "grab" });
-                    return;
-                }
-                setStyle(contentTelas, {
-                    cursor: size < 20 ? "url('./colorPaint/imagens/cursor/crossHair.png') 12.5 12.5 , pointer" :
-                        "url('./colorPaint/imagens/cursor/circle.png') 10 10 , pointer"
-                });
             }
-        },
+        })(),
         center() {
             if (cursorTool.mode === "simple") { return; }
             const { width, height, left, top } = cursorTool.contentTelasInfo;
