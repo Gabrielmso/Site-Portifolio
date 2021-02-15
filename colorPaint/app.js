@@ -280,6 +280,14 @@ export default function appObject() {
             selectLayer(getNumLayerByMouseInIcon(e.currentTarget));
             e.stopPropagation();
         }
+        const onDoubleClickIcon = e => {
+            const numLayer = getNumLayerByMouseInIcon(e.currentTarget)
+            if (project.layers[numLayer].visible || mouseInBttLook) { return; }
+            notification.open({
+                type: "notify", timeNotify: 2000, title: "Aviso!",
+                message: "Não é possível selecionar uma camada invisível."
+            });
+        }
         return () => {
             const numLayer = project.layers.length + 1;
             const layer = createLayer(numLayer);
@@ -294,6 +302,7 @@ export default function appObject() {
             objLayer.bttLook.addEventListener("mouseleave", onMouseLeaveBttLook);
             objLayer.icon.addEventListener("mouseenter", showLayerSample);
             objLayer.icon.addEventListener("mousedown", onClickIcon);
+            objLayer.icon.addEventListener("dblclick", onDoubleClickIcon);
             objLayer.icon.addEventListener("mouseleave", closeLayerSample);
             return objLayer;
         };
@@ -321,7 +330,7 @@ export default function appObject() {
                 const { data, opacity, visible } = objProjeto.layersData[i];
                 selectLayer(i);
                 changeOpacitySelectedLayer(opacity);
-                getImage(data, e => {
+                getImage("data:image/png;base64," + data, e => {
                     drawInLayer(project.layers[i], e.currentTarget);
                     if (!visible) { setLayerVisibility(i); };
                 });
@@ -345,7 +354,10 @@ export default function appObject() {
         const dadosCamadas = [], coresSalvasProjeto = [];
         for (let i = 0; i < project.numLayers; i++) {
             const { layer, visible, opacity } = project.layers[i];
-            dadosCamadas[i] = { data: layer.canvas.toDataURL("imagem/png"), opacity, visible };
+            dadosCamadas[i] = {
+                data: layer.canvas.toDataURL("imagem/png").replace("data:image/png;base64,", ""),
+                opacity, visible
+            };
         }
         const savedColors = colors.savedColors;
         for (let i = 0; i < savedColors.length; i++) { coresSalvasProjeto[i] = savedColors[i].rgb; }
@@ -355,11 +367,11 @@ export default function appObject() {
             grid: createGridWindow.gridProperties,
             numLayers: project.numLayers, layersData: dadosCamadas
         }
-        const json = JSON.stringify(objProjeto), a = createElement("a", {
-            download: project.name + ".gm", href: URL.createObjectURL(new Blob([json], { type: "application/json" }))
-        });
+        const url = URL.createObjectURL(new Blob([JSON.stringify(objProjeto)], { type: "application/json" }));
+        const a = createElement("a", { download: project.name + ".gm", href: url });
         a.click();
         a.remove();
+        URL.revokeObjectURL(url);
     }
     const saveDraw = () => project.drawComplete.canvas.toBlob(b => {
         const a = createElement("a", { download: project.name + ".png", href: URL.createObjectURL(b) });

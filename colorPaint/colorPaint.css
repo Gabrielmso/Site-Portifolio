@@ -1,9 +1,9 @@
 :root {
-    --COR_PRIMARIA: rgb(10, 11, 11);
-    --COR_SECUNDARIA: rgb(16, 18, 19);
-    --COR_TERCIARIA: rgb(20, 21, 22);
-    --COR_QUARTENARIA: rgb(27, 29, 30);
-    --COR_BOTAO: rgba(255, 255, 255, 0.07);
+    --COR_PRIMARIA: rgb(9, 10, 12);
+    --COR_SECUNDARIA: rgb(17, 18, 20);
+    --COR_TERCIARIA: rgb(20, 21, 23);
+    --COR_QUARTENARIA: rgb(27, 29, 31);
+    --COR_BOTAO: rgba(255, 255, 255, 0.075);
     --COR_BOTAO_HOVER: rgba(0, 0, 0, 0.5);
     --COR_BORDA: rgb(20, 21, 22);
 }
@@ -704,7 +704,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 [data-id="contentBarraOpacidadeCamada"] input[type="range"]::-webkit-slider-runnable-track {
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: var(--COR_PRIMARIA);
 }
 
 [data-id="contentBarraOpacidadeCamada"] input[type="range"]::-webkit-slider-thumb {
@@ -807,7 +807,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 [data-id="janelaMenuGrid"] li input[type="range"]::-webkit-slider-runnable-track {
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: var(--COR_PRIMARIA);
 }
 
 [data-id="janelaMenuGrid"] li input[type="range"]::-webkit-slider-thumb {
@@ -1053,7 +1053,7 @@ input[type="range"]::-webkit-slider-thumb {
     padding: 0px;
     font-weight: bold;
     margin-bottom: 7px;
-    background-color: rgb(0, 0, 0);
+    background-color: var(--COR_PRIMARIA);
     color: rgb(104, 104, 104);
     border-radius: 10px;
 }
@@ -1065,8 +1065,8 @@ input[type="range"]::-webkit-slider-thumb {
     padding: 0px;
     margin-bottom: 7px;
     font-weight: bold;
-    background-color: rgba(115, 99, 35, 0.8);
-    color: rgb(0, 0, 0);
+    background-color: rgb(36, 37, 40);
+    color: rgb(128, 128, 128);
     border-radius: 10px;
 }
 
@@ -1083,7 +1083,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .iconeCamadaSelecionada input[type=text] {
-    color: rgb(0, 0, 0);
+    color: rgb(128, 128, 128);
 }
 
 .iconeCamada:hover {
@@ -1129,24 +1129,22 @@ input[type="range"]::-webkit-slider-thumb {
 .iconVer {
     position: relative;
     float: left;
-    border-radius: 10px;
-    border: 1px solid var(--COR_PRIMARIA);
-    background-color: rgb(91, 91, 91);
-    height: 25px;
-    width: 25px;
-    top: 17px;
+    background-image: url("../colorPaint/imagens/spriteIcons.png");
+    background-position: -521px 1px;
+    height: 31px;
+    width: 31px;
+    top: 14px;
     left: 10px;
 }
 
 .iconNaoVer {
     position: relative;
     float: left;
-    border-radius: 10px;
-    border: 1px solid rgb(91, 91, 91);
-    background-color: rgb(15, 15, 15);
-    height: 25px;
-    width: 25px;
-    top: 17px;
+    background-image: url("../colorPaint/imagens/spriteIcons.png");
+    background-position: -556px 1px;
+    height: 31px;
+    width: 31px;
+    top: 14px;
     left: 10px;
 }
 
