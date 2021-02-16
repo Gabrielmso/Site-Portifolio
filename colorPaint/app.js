@@ -17,6 +17,7 @@ export default function appObject() {
         name: null, resolution: { width: 0, height: 0, proportion: 0 },
         background: false, numLayers: 0, layers: [], previousLayer: null, selectedLayer: null,
         zoom: 100, eventLayer: getElement("pintar").getContext("2d"), toolInUse: false,
+        barRightMode: "default",
         get drawComplete() {
             const ctxCanvas = cloneElement(project.eventLayer.canvas).getContext("2d");
             const { width, height } = project.resolution;
@@ -393,7 +394,33 @@ export default function appObject() {
             fn();
         }
     })();
+    const barSimple = getElement("barraLateralMini");
+    const barDefault = getElement("barraLateralCompleta");
+    const onMouseDownBttSwitchBarRight = e => {
+        const modeDefault = (project.barRightMode === "default");
+        project.barRightMode = modeDefault ? "simple" : "default";
+        e.currentTarget.innerHTML = !modeDefault ? "&#9658" : "&#9668";
+        setStyle(barSimple, { display: !modeDefault ? "none" : "block" });
+        setStyle(barDefault, { display: !modeDefault ? "block" : "none" });
+        adjustInVisualizationScreen();
+    }
+    const bttSwitchBarRight = getElement("bttAlternarBarraLateralDireita");
+    const onMouseLeaveBarRight = () => setStyle(bttSwitchBarRight, { display: "none" });
+    const onMouseEnterBarRight = () => {
+        if (project.toolInUse) { return; }
+        setStyle(bttSwitchBarRight, { display: "block" });
+    };
+    const barRight = getElement("barraLateralDireita");
+    const onCLickCreateProject = createProjectWindow.open.bind(null, "create");
+    const bttCreateNewProject = getElement("bttCriarNovoProjeto");
+    const replaceBttCreateNewProject = () => {
+        bttCreateNewProject.remove();
+        const bttCreateProject = getElement("bttNovoProjeto");
+        setStyle(bttCreateProject, { display: null });
+        bttCreateProject.addEventListener("mousedown", onCLickCreateProject);
+    }
     const readyProject = () => {
+        replaceBttCreateNewProject();
         const hotKeys = hotKeysObject();
         const drawingTools = drawingToolsObject({ project, screen, contentTelas, janelaPrincipal, notification, zoom });
         const previewFunctions = previewFunctionsObject({ project, contentTelasPreview, contentTelas, screen });
@@ -428,6 +455,9 @@ export default function appObject() {
 
         getElement("bttCriarGrade").addEventListener("mousedown", createGridWindow.open);
 
+        barRight.addEventListener("mouseenter", onMouseEnterBarRight);
+        barRight.addEventListener("mouseleave", onMouseLeaveBarRight);
+        bttSwitchBarRight.addEventListener("mousedown", onMouseDownBttSwitchBarRight);
         setStyle(layerOpacityBar.content, { display: "flex" });
 
         layerOpacityBar.bar.addEventListener("input", e =>
@@ -444,7 +474,7 @@ export default function appObject() {
         }
     })();
 
-    getElement("bttCriarNovoProjeto").addEventListener("mousedown", createProjectWindow.open.bind(null, "create"));
+    bttCreateNewProject.addEventListener("mousedown", onCLickCreateProject);
     getElement("bttCarregarProjeto").addEventListener("mousedown", createProjectWindow.open.bind(null, "load"));
     createProjectWindow.addObservers("createProject", [onCreateProject]);
 

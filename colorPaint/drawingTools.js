@@ -276,6 +276,7 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
         currentOnWheel: null,
     }
     const changeToolSizeBar = (value, change = false) => {
+        if (drawingTools.selectedTool.size === undefined) { return; }
         const res = project.resolution, maxSize = Math.ceil(getDistanceCoordinates({ x: 1, y: 1 }, { x: res.width, y: res.height })),
             width = +(drawingTools.propertiesBar.size.bar.max), expoente = logarithm(width - 50, maxSize);
         value = drawingTools.propertiesBar.size.bar.value = value >= width ? width : value;
@@ -292,6 +293,7 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
         changeToolSizeBar(value, true);
     }
     const changeToolOpacity = value => {
+        if (drawingTools.selectedTool.opacity === undefined) { return; }
         value = value <= 0.01 ? 0.01 : value >= 1 ? 1 : value;
         const percentage = Math.round((value * 100));
         drawingTools.propertiesBar.opacity.txt.value = percentage + "%";
@@ -299,6 +301,7 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
             drawingTools.propertiesBar.opacity.bar.value = drawingTools.selectedTool.opacity = value;
     }
     const changeToolHardness = value => {
+        if (drawingTools.selectedTool.hardness === undefined) { return; }
         value = value <= 0 ? 0 : value >= 1 ? 1 : value;
         const percentage = Math.round((value * 100));
         drawingTools.propertiesBar.hardness.txt.value = percentage + "%";
@@ -306,6 +309,7 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
             drawingTools.propertiesBar.hardness.bar.value = drawingTools.selectedTool.hardness = value;
     }
     const changeToolForce = value => {
+        if (drawingTools.selectedTool.force === undefined) { return; }
         value = value <= 0 ? 0 : value >= 1 ? 1 : value;
         const percentage = Math.round((value * 100));
         drawingTools.propertiesBar.force.txt.value = percentage + "%";
@@ -313,32 +317,27 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
             drawingTools.propertiesBar.force.bar.value = drawingTools.selectedTool.force = value;
     }
     const selectDrawingTool = (() => {
-        const contentToolProperties = getElement("propriedadesFerramentas");
         const setSelectedToolProperties = properties => {
-            if (!properties) { setStyle(contentToolProperties, { display: "none" }); }
+            const { size, opacity, hardness, force } = drawingTools.propertiesBar;
+            if (properties.size === undefined) { setStyle(size.property, { display: "none" }); }
             else {
-                setStyle(contentToolProperties, { display: null });
-                const { size, opacity, hardness, force } = drawingTools.propertiesBar;
-                if (properties.size === undefined) { setStyle(size.property, { display: "none" }); }
-                else {
-                    setStyle(size.property, { display: null });
-                    changeToolSize(properties.size);
-                }
-                if (properties.opacity === undefined) { setStyle(opacity.property, { display: "none" }); }
-                else {
-                    setStyle(opacity.property, { display: null });
-                    changeToolOpacity(properties.opacity);
-                }
-                if (properties.hardness === undefined) { setStyle(hardness.property, { display: "none" }); }
-                else {
-                    setStyle(hardness.property, { display: null });
-                    changeToolHardness(properties.hardness);
-                }
-                if (properties.force === undefined) { setStyle(force.property, { display: "none" }); }
-                else {
-                    setStyle(force.property, { display: null });
-                    changeToolForce(properties.force);
-                }
+                setStyle(size.property, { display: null });
+                changeToolSize(properties.size);
+            }
+            if (properties.opacity === undefined) { setStyle(opacity.property, { display: "none" }); }
+            else {
+                setStyle(opacity.property, { display: null });
+                changeToolOpacity(properties.opacity);
+            }
+            if (properties.hardness === undefined) { setStyle(hardness.property, { display: "none" }); }
+            else {
+                setStyle(hardness.property, { display: null });
+                changeToolHardness(properties.hardness);
+            }
+            if (properties.force === undefined) { setStyle(force.property, { display: "none" }); }
+            else {
+                setStyle(force.property, { display: null });
+                changeToolForce(properties.force);
             }
         }
         return toolName => {
@@ -368,8 +367,10 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
             const proporcao = ((100 - size) / 200);
             dureza += (dureza * proporcao);
         }
+        dureza = dureza < 0.06 ? 0 : dureza;
         project.eventLayer.clearRect(0, 0, project.resolution.width, project.resolution.height);
         project.eventLayer.lineJoin = project.eventLayer.lineCap = "round";
+        console.log(dureza);
         project.eventLayer.filter = "blur(" + dureza + "px)";
         project.eventLayer.lineWidth = (size - (dureza * 2));
         project.eventLayer.globalAlpha = opacity;

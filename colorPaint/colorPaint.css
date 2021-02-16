@@ -58,7 +58,7 @@ input[type="range"]::-webkit-slider-thumb {
     position: relative;
     width: 100%;
     height: 100%;
-    min-width: 900px;
+    min-width: 677px;
     min-height: 623px;
     overflow: hidden;
 }
@@ -92,9 +92,9 @@ input[type="range"]::-webkit-slider-thumb {
     position: relative;
     display: block;
     float: left;
-    padding: 5px;
+    padding: 4px;
     height: 36px;
-    border-right: 3px solid var(--COR_TERCIARIA);
+    border-right: 3px solid var(--COR_BORDA);
     list-style: none;
 }
 
@@ -112,7 +112,6 @@ input[type="range"]::-webkit-slider-thumb {
     color: rgb(173, 173, 173);
     text-align: center;
     font-size: 12px;
-    margin-left: 3px;
     margin-right: 3px;
 }
 
@@ -191,7 +190,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 [data-id="menuColorPaint"] li:hover ul {
-    max-height: 150px;
+    max-height: 144px;
 }
 
 [data-id="menuColorPaint"] li ul li {
@@ -605,7 +604,27 @@ input[type="range"]::-webkit-slider-thumb {
     background-color: var(--COR_QUARTENARIA);
 }
 
+[data-id="bttAlternarBarraLateralDireita"] {
+    position: absolute;
+    display: none;
+    width: 31px;
+    height: 36px;
+    background-color: var(--COR_BORDA);
+    z-index: 1001;
+    left: -31px;
+    top: 0;
+    border-radius: 10px 0 0 10px;
+    text-align: center;
+    line-height: 36px;
+    cursor: pointer;
+}
+
 [data-id="barraLateralCompleta"] {
+    height: 100%;
+}
+
+[data-id="barraLateralMini"] {
+    display: none;
     height: 100%;
 }
 
@@ -791,7 +810,7 @@ input[type="range"]::-webkit-slider-thumb {
     left: 50%;
     transform: translate(-50%, -50%);
     width: 276px;
-    background-color: var(--COR_TERCIARIA);
+    background-color: var(--COR_SECUNDARIA);
     border-radius: 10px;
     padding: 10px;
     box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.4);
@@ -823,7 +842,7 @@ input[type="range"]::-webkit-slider-thumb {
     top: 100px;
     left: 106px;
     border-top: 1px solid rgba(255, 255, 255, 0.15);
-    background-color: var(--COR_TERCIARIA);
+    background-color: var(--COR_SECUNDARIA);
     width: 560px;
     border-radius: 10px;
     padding: 10px;
@@ -1290,7 +1309,7 @@ input[type="range"]::-webkit-slider-thumb {
     font-size: 14px;
     padding: 2px;
     text-align: center;
-    background-color: var(--COR_TERCIARIA);
+    background-color: var(--COR_SECUNDARIA);
     color: rgb(200, 200, 200);
     margin-left: 8px;
     border: 2px solid rgba(255, 255, 255, 0.15);
