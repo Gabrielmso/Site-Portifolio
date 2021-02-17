@@ -102,9 +102,11 @@ export default function appObject() {
         if (!project.layers[numLayer].visible || project.toolInUse) { return; }
         project.selectedLayer = project.layers[numLayer];
         project.selectedLayer.icons.first.classList.replace("iconeCamada", "iconeCamadaSelecionada");
+        project.selectedLayer.icons.last.classList.replace("iconeCamadaMini", "iconeCamadaMiniSelecionada");
         for (let i = 0; i < project.numLayers; i++) {
             if (i !== numLayer) {
                 project.layers[i].icons.first.classList.replace("iconeCamadaSelecionada", "iconeCamada");
+                project.layers[i].icons.last.classList.replace("iconeCamadaMiniSelecionada", "iconeCamadaMini");
             }
         }
         setStyle(project.eventLayer.canvas, { zIndex: ((numLayer + 1) * 2) + 1 });

@@ -624,7 +624,7 @@ input[type="range"]::-webkit-slider-thumb {
 [data-id="barraLateralMini"] {
     display: none;
     height: calc(100% - 36px);
-    padding: 10px;
+    padding-top: 10px;
     overflow: auto;
 }
 
@@ -1177,6 +1177,20 @@ input[type="range"]::-webkit-slider-thumb {
     position: relative;
     background: url('./imagens/fundoTela/transparenteMiniatura.png');
     margin-bottom: 10px;
+    border-left: solid 10px var(--COR_QUARTENARIA);
+    border-right: solid 10px var(--COR_QUARTENARIA);
+    border-radius: 10px;
+    min-width: 44px;
+    min-height: 44px;
+}
+
+.iconeCamadaMiniSelecionada {
+    position: relative;
+    background: url('./imagens/fundoTela/transparenteMiniatura.png');
+    margin-bottom: 10px;
+    border-left: solid 10px rgb(153, 138, 76);
+    border-right: solid 10px rgb(153, 138, 76);
+    border-radius: 10px;
     min-width: 44px;
     min-height: 44px;
 }
@@ -1194,6 +1208,7 @@ input[type="range"]::-webkit-slider-thumb {
     border-radius: 0px 0px 10px 0px;
     top: 0px;
     left: 0px;
+    filter: brightness(1.6);
     z-index: 2;
 }
 
