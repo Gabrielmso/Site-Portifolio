@@ -35,6 +35,7 @@ export default function appObject() {
         }
     }
     const txtPorcentagemZoom = getElement("txtPorcentagemZoom");
+    const barRight = getElement("barraLateralDireita");
     const janelaPrincipal = getElement("colorPaintContent");
     const contentTelas = getElement("contentTelas");
     const screen = getElement("telasCanvas");
@@ -82,7 +83,9 @@ export default function appObject() {
         const style = { background: color ? "rgb(" + color.r + ", " + color.g + ", " + color.b + ")" : null }
         setStyle(screen, style);
         setStyle(contentTelasPreview, style);
-        for (const { canvasIcon: { canvas } } of project.layers) { setStyle(canvas, style); }
+        for (const { canvasIcons } of project.layers) {
+            for (const { canvas } of canvasIcons) { setStyle(canvas.parentElement, style) }
+        }
     }
     const changeOpacitySelectedLayer = value => {
         if (!project.selectedLayer.visible || project.toolInUse) { return; }
@@ -90,15 +93,18 @@ export default function appObject() {
         project.selectedLayer.txtOpacity.value = Math.floor((value * 100)) + "%";
         setStyle(project.selectedLayer.layer.canvas, { opacity: value });
         setStyle(project.selectedLayer.layerPreview.canvas, { opacity: value });
+        for (const canvasIcon of project.selectedLayer.canvasIcons) {
+            setStyle(canvasIcon.canvas, { opacity: value });
+        }
         project.selectedLayer.opacity = value;
     }
     const selectLayer = numLayer => {
         if (!project.layers[numLayer].visible || project.toolInUse) { return; }
         project.selectedLayer = project.layers[numLayer];
-        project.selectedLayer.icon.classList.replace("iconeCamada", "iconeCamadaSelecionada");
+        project.selectedLayer.icons.first.classList.replace("iconeCamada", "iconeCamadaSelecionada");
         for (let i = 0; i < project.numLayers; i++) {
             if (i !== numLayer) {
-                project.layers[i].icon.classList.replace("iconeCamadaSelecionada", "iconeCamada");
+                project.layers[i].icons.first.classList.replace("iconeCamadaSelecionada", "iconeCamada");
             }
         }
         setStyle(project.eventLayer.canvas, { zIndex: ((numLayer + 1) * 2) + 1 });
@@ -110,13 +116,17 @@ export default function appObject() {
         if (project.layers[numLayer].visible) {
             setStyle(project.layers[numLayer].layer.canvas, { display: "block" });
             setStyle(project.layers[numLayer].layerPreview.canvas, { display: "block" });
-            project.layers[numLayer].bttLook.classList.replace("iconNaoVer", "iconVer");
+            for (const bttLook of project.layers[numLayer].bttsLook) {
+                bttLook.classList.replace("invisivel", "visivel");
+            }
             selectLayer(numLayer);
         } else {
             setStyle(project.layers[numLayer].layer.canvas, { display: "none" });
             setStyle(project.layers[numLayer].layerPreview.canvas, { display: "none" });
-            project.layers[numLayer].bttLook.classList.replace("iconVer", "iconNaoVer");
-            project.layers[numLayer].icon.classList.replace("iconeCamadaSelecionada", "iconeCamada");
+            for (const bttLook of project.layers[numLayer].bttsLook) {
+                bttLook.classList.replace("visivel", "invisivel");
+            }
+            project.layers[numLayer].icons.first.classList.replace("iconeCamadaSelecionada", "iconeCamada");
             for (let i = 0; i < project.numLayers; i++) {
                 if (i != numLayer && project.layers[numLayer] === project.selectedLayer && project.layers[i].visible) {
                     selectLayer(i);
@@ -125,17 +135,18 @@ export default function appObject() {
             }
         }
     }
-    const drawInIcon = layer => {
-        const { width, height } = layer.canvasIcon.canvas
-        layer.canvasIcon.clearRect(0, 0, width, height);
-        layer.canvasIcon.globalAlpha = layer.opacity;
-        layer.canvasIcon.drawImage(layer.layerPreview.canvas, 0, 0, width, height);
+    const drawInIcons = layer => {
+        for (const canvasIcon of layer.canvasIcons) {
+            const { width, height } = canvasIcon.canvas
+            canvasIcon.clearRect(0, 0, width, height);
+            canvasIcon.drawImage(layer.layerPreview.canvas, 0, 0, width, height);
+        }
     }
     const drawInPreview = layer => {
         const { width, height } = layer.layerPreview.canvas
         layer.layerPreview.clearRect(0, 0, width, height);
         layer.layerPreview.drawImage(layer.layer.canvas, 0, 0, width, height);
-        drawInIcon(layer);
+        drawInIcons(layer);
     }
     const drawInLayer = (layer, draw) => {
         const { width, height } = project.resolution;
@@ -173,8 +184,10 @@ export default function appObject() {
             },
             open(layer, icon) {
                 const { top, height } = icon.getBoundingClientRect();
+                const { left } = barRight.getBoundingClientRect();
                 setStyle(this.window, {
-                    display: "block", top: top - (this.screen.canvas.height + 20 - height) + "px"
+                    display: "block", top: top - (this.screen.canvas.height + 20 - height) + "px",
+                    left: left - (this.screen.canvas.width + 20) + "px"
                 });
                 this.screen.clearRect(0, 0, this.screen.canvas.width, this.screen.canvas.height);
                 this.screen.drawImage(layer, 0, 0, this.screen.canvas.width, this.screen.canvas.height);
@@ -205,6 +218,7 @@ export default function appObject() {
         })();
         const createIconLayer = (() => {
             const contentIconLayers = getElement("contentIconeCamadas"), proportionMaxSpace = 80 / 60;
+            const contentMiniIconLayers = getElement("barraLateralMini"), proportioMaxSizeMini = 100 / 75;
             return numLayer => {
                 const makeId = id => id + numLayer;
                 const idIcon = makeId("camadaIcone");
@@ -215,26 +229,50 @@ export default function appObject() {
                 const { width, height } = project.resolution.proportion >= proportionMaxSpace ?
                     { width: 80, height: Math.round(80 / project.resolution.proportion) } :
                     { width: Math.round(60 * project.resolution.proportion), height: 60 };
-                const styleSizeCanvasIcon = "width: " + width + "px; height: " + height + "px; ";
-
+                const styleSizeCanvasIcon = "width: " + width + "px; height: " + height + "px;";
                 contentIconLayers.insertAdjacentHTML("afterbegin",
                     `<div data-id="${idIcon}" class="iconeCamada">
-                            <div data-id="${idBttLook}" class="iconVer cursor"></div>
-                            <label>
-                                <span data-id="${idTxtNameLayer}">Camada ${numLayer}</span><br>
-                                <span>Opacidade: </span>
-                                <input type="text" data-id="${idTxtOpacity}" readonly="true" class="opacidadeCamada" value="100%">
-                            </label>
-                            <div class="contentIcon">
-                                <canvas data-id="${idCanvasIcon}" style="${styleSizeCanvasIcon}" class="iconTela" width="${width * 2}" height="${height * 2}"></canvas>
-                                <div></div>
+                        <div data-id="${idBttLook}" class="iconVer visivel cursor"></div>
+                        <label>
+                            <span data-id="${idTxtNameLayer}">Camada ${numLayer}</span><br>
+                            <span>Opacidade: </span>
+                            <input type="text" data-id="${idTxtOpacity}" readonly="true" class="opacidadeCamada" value="100%">
+                        </label>
+                        <div class="contentIcon">
+                            <div>
+                                <canvas data-id="${idCanvasIcon}" style="${styleSizeCanvasIcon}" class="iconTela" 
+                                width="${width * 2}" height="${height * 2}"></canvas>
                             </div>
-                        </div>`);
+                        </div>
+                    </div>`);
                 contentIconLayers.scrollTop = contentIconLayers.scrollHeight;
-                const icon = getElement(idIcon), bttLook = getElement(idBttLook),
-                    txtLayerName = getElement(idTxtNameLayer), txtOpacity = getElement(idTxtOpacity),
-                    canvasIcon = getElement(idCanvasIcon);
-                return { icon, bttLook, txtLayerName, txtOpacity, canvasIcon: canvasIcon ? canvasIcon.getContext("2d") : null }
+
+                const { widthMini, heightMini } = project.resolution.proportion >= proportioMaxSizeMini ?
+                    { widthMini: 100, heightMini: Math.round(100 / project.resolution.proportion) } :
+                    { widthMini: Math.round(75 * project.resolution.proportion), heightMini: 75 };
+                const idIconMini = makeId("camadaIconeMini");
+                const idBttLookMini = makeId("visivelMini");
+                const idCanvasIconMini = makeId("canvasIconeMini");
+                const styleSizeCanvasIconMini = "width: " + widthMini + "px; height: " + heightMini + "px;";
+                contentMiniIconLayers.insertAdjacentHTML("afterbegin",
+                    `<div data-id="${idIconMini}" class="iconeCamadaMini">
+                        <div data-id="${idBttLookMini}" class="iconVerMini visivel cursor"></div>
+                        <canvas data-id="${idCanvasIconMini}" style="${styleSizeCanvasIconMini}"
+                        width="${widthMini * 2}" height="${heightMini * 2}"></canvas>
+                    </div>`);
+                contentMiniIconLayers.scrollTop = contentMiniIconLayers.scrollHeight;
+
+                const icon = getElement(idIcon), iconMini = getElement(idIconMini),
+                    bttLook = getElement(idBttLook), bttLookMini = getElement(idBttLookMini),
+                    canvasIcon = getElement(idCanvasIcon), canvasIconMini = getElement(idCanvasIconMini),
+                    txtLayerName = getElement(idTxtNameLayer), txtOpacity = getElement(idTxtOpacity);
+
+                return {
+                    icons: icon && iconMini ? [icon, iconMini] : null,
+                    bttsLook: bttLook && bttLookMini ? [bttLook, bttLookMini] : null,
+                    canvasIcons: canvasIcon && canvasIconMini ? [canvasIcon.getContext("2d"),
+                    canvasIconMini.getContext("2d")] : null, txtLayerName, txtOpacity,
+                }
             }
         })();
         const createLayer = numLayer => {
@@ -248,15 +286,16 @@ export default function appObject() {
         }
         const getNumLayerByMouseInIcon = elIcon => {
             for (let i = 0; i < project.numLayers; i++) {
-                if (elIcon === project.layers[i].icon) { return i; }
+                if (project.layers[i].icons.includes(elIcon)) { return i; }
             }
         }
         const showLayerSample = e => {
-            const numLayer = getNumLayerByMouseInIcon(e.currentTarget);
+            const el = e.currentTarget;
+            const numLayer = getNumLayerByMouseInIcon(el);
             project.layers[numLayer].cursorInIcon = true;
             idIntervalToShowLayerSample = setTimeout(() => {
                 if (mouseInBttLook || !project.layers[numLayer].cursorInIcon) { return; }
-                layerSampleWindow.open(project.layers[numLayer].layer.canvas, project.layers[numLayer].icon);
+                layerSampleWindow.open(project.layers[numLayer].layer.canvas, el);
             }, 750)
         }
         const closeLayerSample = e => {
@@ -270,7 +309,7 @@ export default function appObject() {
         const onClickBttLook = e => {
             const bttLook = e.currentTarget;
             for (let i = 0; i < project.numLayers; i++) {
-                if (bttLook === project.layers[i].bttLook) {
+                if (project.layers[i].bttsLook.includes(bttLook)) {
                     setLayerVisibility(i);
                     break;
                 }
@@ -294,17 +333,19 @@ export default function appObject() {
             const layer = createLayer(numLayer);
             const newIcon = createIconLayer(numLayer);
             const layerPreview = createLayerPreview(numLayer);
-            const objLayer = {
-                ...newIcon, layer, layerPreview, opacity: 1, visible: true, cursorInIcon: false
-            }
+            const objLayer = { ...newIcon, layer, layerPreview, opacity: 1, visible: true, cursorInIcon: false }
             for (const prop in objLayer) { if (objLayer[prop] === null) { return false; } }
-            objLayer.bttLook.addEventListener("mouseenter", onMouseEnterBttLook);
-            objLayer.bttLook.addEventListener("mousedown", onClickBttLook);
-            objLayer.bttLook.addEventListener("mouseleave", onMouseLeaveBttLook);
-            objLayer.icon.addEventListener("mouseenter", showLayerSample);
-            objLayer.icon.addEventListener("mousedown", onClickIcon);
-            objLayer.icon.addEventListener("dblclick", onDoubleClickIcon);
-            objLayer.icon.addEventListener("mouseleave", closeLayerSample);
+            for (const bttLook of objLayer.bttsLook) {
+                bttLook.addEventListener("mouseenter", onMouseEnterBttLook);
+                bttLook.addEventListener("mousedown", onClickBttLook);
+                bttLook.addEventListener("mouseleave", onMouseLeaveBttLook);
+            }
+            for (const icon of objLayer.icons) {
+                icon.addEventListener("mouseenter", showLayerSample);
+                icon.addEventListener("mousedown", onClickIcon);
+                icon.addEventListener("dblclick", onDoubleClickIcon);
+                icon.addEventListener("mouseleave", closeLayerSample);
+            }
             return objLayer;
         };
     })();
@@ -402,15 +443,9 @@ export default function appObject() {
         e.currentTarget.innerHTML = !modeDefault ? "&#9658" : "&#9668";
         setStyle(barSimple, { display: !modeDefault ? "none" : "block" });
         setStyle(barDefault, { display: !modeDefault ? "block" : "none" });
-        adjustInVisualizationScreen();
+        zoom("porcentagem", false, project.zoom)
     }
     const bttSwitchBarRight = getElement("bttAlternarBarraLateralDireita");
-    const onMouseLeaveBarRight = () => setStyle(bttSwitchBarRight, { display: "none" });
-    const onMouseEnterBarRight = () => {
-        if (project.toolInUse) { return; }
-        setStyle(bttSwitchBarRight, { display: "block" });
-    };
-    const barRight = getElement("barraLateralDireita");
     const onCLickCreateProject = createProjectWindow.open.bind(null, "create");
     const bttCreateNewProject = getElement("bttCriarNovoProjeto");
     const replaceBttCreateNewProject = () => {
@@ -455,14 +490,12 @@ export default function appObject() {
 
         getElement("bttCriarGrade").addEventListener("mousedown", createGridWindow.open);
 
-        barRight.addEventListener("mouseenter", onMouseEnterBarRight);
-        barRight.addEventListener("mouseleave", onMouseLeaveBarRight);
         bttSwitchBarRight.addEventListener("mousedown", onMouseDownBttSwitchBarRight);
         setStyle(layerOpacityBar.content, { display: "flex" });
 
         layerOpacityBar.bar.addEventListener("input", e =>
             changeOpacitySelectedLayer(+((+(e.currentTarget.value)).toFixed(2))));
-        window.addEventListener("resize", adjustInVisualizationScreen);
+        window.addEventListener("resize", () => zoom("porcentagem", false, project.zoom));
     }
     const onCreateProject = (() => {
         const modeFunction = { create: createProject, load: loadProject }

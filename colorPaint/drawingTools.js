@@ -370,7 +370,6 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
         dureza = dureza < 0.06 ? 0 : dureza;
         project.eventLayer.clearRect(0, 0, project.resolution.width, project.resolution.height);
         project.eventLayer.lineJoin = project.eventLayer.lineCap = "round";
-        console.log(dureza);
         project.eventLayer.filter = "blur(" + dureza + "px)";
         project.eventLayer.lineWidth = (size - (dureza * 2));
         project.eventLayer.globalAlpha = opacity;

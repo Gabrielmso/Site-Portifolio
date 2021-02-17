@@ -93,6 +93,10 @@ body {
     font-size: 40px;
 }
 
+canvas {
+    vertical-align: top;
+}
+
 .centraliza {
     position: absolute;
     top: 50%;
