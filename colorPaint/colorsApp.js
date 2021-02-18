@@ -32,7 +32,6 @@ export default function colorsApp({ project, notification, janelaPrincipal }) {
             }
         };
     })();
-
     const savedColors = {
         selected: -1, colors: [],
         select: e => {

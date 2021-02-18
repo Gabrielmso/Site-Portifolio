@@ -6,8 +6,7 @@ export const fadeOutLoading = () => {
 
 export const setStyle = (element, style) => {
     for (const property in style) {
-        const value = style[property];
-        element.style[property] = value ? value : "";
+        element.style[property] = style[property];
     }
 }
 

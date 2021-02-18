@@ -15,27 +15,24 @@ export default function previewFunctionsObject({ project, contentTelasPreview, c
     }
     const mouseMoveMoverScroll = ({ x, y }) => {
         const midWidth = moverScroll.offsetWidth / 2, midHeight = moverScroll.offsetHeight / 2;
-        let left, top;
-        if (x <= midWidth) { left = 0; }
-        else if (x >= contentTelasPreview.offsetWidth - (Math.floor(midWidth))) {
-            left = contentTelasPreview.offsetWidth - (midWidth * 2);
-        } else { left = x - (Math.floor(midWidth)); }
-        if (y <= midHeight) { top = 0; }
-        else if (y >= contentTelasPreview.offsetHeight - (Math.floor(midHeight))) {
-            top = contentTelasPreview.offsetHeight - (midHeight * 2);
-        } else { top = y - (Math.floor(midHeight)); }
+        const left = (x <= midWidth) ? 0 : (x >= contentTelasPreview.offsetWidth - (Math.floor(midWidth))) ?
+            contentTelasPreview.offsetWidth - (midWidth * 2) : x - (Math.floor(midWidth));
+        const top = (y <= midHeight) ? 0 : (y >= contentTelasPreview.offsetHeight - (Math.floor(midHeight))) ?
+            contentTelasPreview.offsetHeight - (midHeight * 2) : y - (Math.floor(midHeight));
         setStyle(moverScroll, { top: top + "px", left: left + "px" });
         changeScrollsContentTelas(top, left);
     }
     const mouseMovePreview = e => mouseMoveMoverScroll(getMousePosition(contentTelasPreview, e));
     const mouseUpPreview = () => {
         setStyle(moverScroll, { cursor: "grab" });
+        setStyle(contentTelasPreview, { cursor: null });
         document.removeEventListener("mousemove", mouseMovePreview);
         document.removeEventListener("mouseup", mouseUpPreview);
     }
     const mouseDownPreview = e => {
         if (project.toolInUse) { return; }
         setStyle(moverScroll, { cursor: "grabbing" });
+        setStyle(contentTelasPreview, { cursor: "grabbing" });
         mouseMoveMoverScroll(getMousePosition(contentTelasPreview, e));
         document.addEventListener("mousemove", mouseMovePreview);
         document.addEventListener("mouseup", mouseUpPreview);

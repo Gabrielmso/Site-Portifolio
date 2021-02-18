@@ -1338,7 +1338,7 @@ input[type="range"]::-webkit-slider-thumb {
 .conteudoJanela ul li label, .conteudoJanela p {
     font-size: 14px;
     text-align: center;
-    color: rgba(255, 255, 255, 0.55);
+    color: rgba(255, 255, 255, 0.65);
 }
 
 .conteudoJanela input, select {

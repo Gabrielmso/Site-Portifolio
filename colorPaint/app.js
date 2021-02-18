@@ -449,7 +449,11 @@ export default function appObject() {
         e.currentTarget.innerHTML = !modeDefault ? "&#9658" : "&#9668";
         setStyle(barSimple, { display: !modeDefault ? "none" : "block" });
         setStyle(barDefault, { display: !modeDefault ? "block" : "none" });
-        zoom("porcentagem", false, project.zoom)
+        setTimeout(() => {
+            zoom("porcentagem", false, project.zoom);
+            contentTelas.scrollTop = contentTelas.scrollTop - 1;
+            contentTelas.scrollTop = contentTelas.scrollTop + 1;
+        }, 5);
     }
     const bttSwitchBarRight = getElement("bttAlternarBarraLateralDireita");
     const onCLickCreateProject = createProjectWindow.open.bind(null, "create");
