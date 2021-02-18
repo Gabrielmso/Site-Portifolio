@@ -54,7 +54,7 @@
 
 [data-id="bttsNotificacao"] button:hover {
     background-color: var(--COR_BOTAO_HOVER);
-    color: rgba(213, 192, 107, 0.7);
+    color: rgb(160, 140, 60);
 }
 
 [data-id="bttsNotificacao"] button:focus {

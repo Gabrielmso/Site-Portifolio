@@ -191,9 +191,9 @@ export default function appObject() {
                 const { top: topBar } = barRight.getBoundingClientRect();
                 let topWindow = (top - (this.height - height));
                 topWindow = topWindow < topBar ? topBar : topWindow;
-                setStyle(this.arrow, { top: (-13 + top - topWindow + (height / 2)) + "px" });
+                setStyle(this.arrow, { top: (-14 + top - topWindow + (height / 2)) + "px" });
                 setStyle(this.window, {
-                    display: "block", top: topWindow + "px", left: (left - (this.width + 10)) + "px"
+                    display: "block", top: topWindow + "px", left: (left - (this.width + 13)) + "px"
                 });
                 this.screen.clearRect(0, 0, this.screen.canvas.width, this.screen.canvas.height);
                 this.screen.drawImage(layer, 0, 0, this.screen.canvas.width, this.screen.canvas.height);

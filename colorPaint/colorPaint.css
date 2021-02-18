@@ -139,11 +139,11 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 [data-id="propriedadesFerramentas"] li div input[type="range"]::-webkit-slider-runnable-track {
-    background-color: rgba(213, 192, 107, 0.8)
+    background-color: rgb(160, 140, 60)
 }
 
 [data-id="propriedadesFerramentas"] li div input[type="range"]::-webkit-slider-thumb {
-    border: 2px solid rgba(213, 192, 107, 0.6);
+    border: 2px solid rgb(160, 140, 60);
     background-color: rgb(0, 0, 0)
 }
 
@@ -247,7 +247,7 @@ input[type="range"]::-webkit-slider-thumb {
 
 .bttColorPaint:hover {
     background-color: var(--COR_BOTAO_HOVER);
-    color: rgba(213, 192, 107, 0.7);
+    color: rgb(160, 140, 60);
 }
 
 .bttColorPaint:focus {
@@ -477,7 +477,7 @@ input[type="range"]::-webkit-slider-thumb {
 
 [data-id="bttRemoverCorSalva"]:hover {
     background-color: var(--COR_BOTAO_HOVER);
-    color: rgba(213, 192, 107, 0.7);
+    color: rgb(160, 140, 60);
 }
 
 [data-id="bttAtalhos"] {
@@ -502,7 +502,7 @@ input[type="range"]::-webkit-slider-thumb {
 
 [data-id="bttAtalhos"]:hover {
     background-color: var(--COR_BOTAO_HOVER);
-    color: rgba(213, 192, 107, 0.7);
+    color: rgb(160, 140, 60);
 }
 
 [data-id="contentCentro"] {
@@ -612,7 +612,7 @@ input[type="range"]::-webkit-slider-thumb {
     bottom: 0px;
     text-align: center;
     line-height: 16px;
-    color: rgb(153, 138, 76);
+    color: rgb(160, 140, 60);
     cursor: pointer;
 }
 
@@ -728,7 +728,7 @@ input[type="range"]::-webkit-slider-thumb {
 
 [data-id="contentBarraOpacidadeCamada"] input[type="range"]::-webkit-slider-thumb {
     border: 2px solid rgba(0, 0, 0, 0.9);
-    background-color: rgb(153, 138, 76);
+    background-color: rgb(160, 140, 60);
 }
 
 .cursorPropriedadeCamada {
@@ -831,7 +831,7 @@ input[type="range"]::-webkit-slider-thumb {
 
 [data-id="janelaMenuGrid"] li input[type="range"]::-webkit-slider-thumb {
     border: 2px solid rgba(0, 0, 0, 0.9);
-    background-color: rgb(153, 138, 76);
+    background-color: rgb(160, 140, 60);
 }
 
 /* ============================================= Seletor de cores ============================================= */
@@ -950,12 +950,13 @@ input[type="range"]::-webkit-slider-thumb {
 
 [data-id="setaJanelaDeAmostra"] {
     position: absolute;
-    width: 25px;
-    height: 25px;
-    z-index: -1;
-    background-color: var(--COR_PRIMARIA);
-    right: -9px;
-    transform: rotate(-45deg);
+    width: 0px;
+    height: 0px;
+    z-index: -9998;
+    border-left: 13px solid rgb(160, 140, 60);
+    border-top: 13px solid transparent;
+    border-bottom: 13px solid transparent;
+    right: -13px;
 }
 
 /* ============================================= Criar/abrir projeto ============================================= */
@@ -1187,8 +1188,8 @@ input[type="range"]::-webkit-slider-thumb {
     position: relative;
     background: url('./imagens/fundoTela/transparenteMiniatura.png');
     margin-bottom: 10px;
-    border-left: solid 10px rgb(153, 138, 76);
-    border-right: solid 10px rgb(153, 138, 76);
+    border-left: solid 10px rgb(160, 140, 60);
+    border-right: solid 10px rgb(160, 140, 60);
     border-radius: 10px;
     min-width: 44px;
     min-height: 44px;
@@ -1376,6 +1377,6 @@ input[type="range"]::-webkit-slider-thumb {
     50% {
         box-shadow: 0px 3px 22px rgba(213, 192, 107, 0.7);
         background-color: var(--COR_BOTAO_HOVER);
-        color: rgba(213, 192, 107, 0.7);
+        color: rgb(160, 140, 60);
     }
 }
