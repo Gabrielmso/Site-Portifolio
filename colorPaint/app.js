@@ -14,10 +14,9 @@ import createGridWindowObject from "./createGridWindow.js";
 export default function appObject() {
     const observers = createEventEmitterToObservers(["zoom", "readyProject", "drawingChanged"]);
     const project = {
-        name: null, resolution: { width: 0, height: 0, proportion: 0 },
+        name: null, resolution: { width: 0, height: 0, proportion: 0 }, barRightMode: "default",
         background: false, numLayers: 0, layers: [], previousLayer: null, selectedLayer: null,
         zoom: 100, eventLayer: getElement("pintar").getContext("2d"), toolInUse: false,
-        barRightMode: "default",
         get drawComplete() {
             const ctxCanvas = cloneElement(project.eventLayer.canvas).getContext("2d");
             const { width, height } = project.resolution;
@@ -129,6 +128,7 @@ export default function appObject() {
                 bttLook.classList.replace("visivel", "invisivel");
             }
             project.layers[numLayer].icons.first.classList.replace("iconeCamadaSelecionada", "iconeCamada");
+            project.layers[numLayer].icons.last.classList.replace("iconeCamadaMiniSelecionada", "iconeCamadaMini");
             for (let i = 0; i < project.numLayers; i++) {
                 if (i != numLayer && project.layers[numLayer] === project.selectedLayer && project.layers[i].visible) {
                     selectLayer(i);
@@ -177,19 +177,23 @@ export default function appObject() {
         const layerSampleWindow = {
             window: getElement("janelaDeAmostraDaCamada"), timeTransition: 160,
             screen: getElement("canvasAmostraDacamada").getContext("2d"),
+            arrow: getElement("setaJanelaDeAmostra"),
+            width: 0, height: 0,
             adjustSize({ width, height }) {
-                this.screen.canvas.width = Math.floor(width * 2.3);
-                this.screen.canvas.height = Math.floor(height * 2.3);
-                setStyle(this.screen.canvas, {
-                    width: this.screen.canvas.width + "px", height: this.screen.canvas.height + "px"
-                });
+                this.width = (Math.floor(width * 2.3)) + 20;
+                this.height = (Math.floor(height * 2.3)) + 20;
+                this.screen.canvas.width = this.width * 2;
+                this.screen.canvas.height = this.height * 2;
+                setStyle(this.screen.canvas, { width: (this.width - 20) + "px", height: (this.height - 20) + "px" });
             },
             open(layer, icon) {
-                const { top, height } = icon.getBoundingClientRect();
-                const { left } = barRight.getBoundingClientRect();
+                const { top, left, height } = icon.getBoundingClientRect();
+                const { top: topBar } = barRight.getBoundingClientRect();
+                let topWindow = (top - (this.height - height));
+                topWindow = topWindow < topBar ? topBar : topWindow;
+                setStyle(this.arrow, { top: (-13 + top - topWindow + (height / 2)) + "px" });
                 setStyle(this.window, {
-                    display: "block", top: top - (this.screen.canvas.height + 20 - height) + "px",
-                    left: left - (this.screen.canvas.width + 20) + "px"
+                    display: "block", top: topWindow + "px", left: (left - (this.width + 10)) + "px"
                 });
                 this.screen.clearRect(0, 0, this.screen.canvas.width, this.screen.canvas.height);
                 this.screen.drawImage(layer, 0, 0, this.screen.canvas.width, this.screen.canvas.height);

@@ -186,7 +186,7 @@ input[type="range"]::-webkit-slider-thumb {
     -webkit-transition: all 0.3s;
     border-radius: 10px;
     border-top-right-radius: 0px;
-    z-index: 1002;
+    z-index: 1000;
 }
 
 [data-id="menuColorPaint"] li:hover ul {
@@ -553,7 +553,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 [data-id="sobrepor"] {
-    z-index: 1000;
+    z-index: 100;
 }
 
 .telaCanvas {
@@ -943,18 +943,17 @@ input[type="range"]::-webkit-slider-thumb {
     transition: opacity 150ms ease-in-out;
 }
 
-[data-id="janelaDeAmostraDaCamada"] canvas {
+[data-id="canvasAmostraDacamada"] {
     background-image: url("/colorPaint/imagens/fundoTela/transparente.png");
     position: relative;
 }
 
-[data-id="janelaDeAmostraDaCamada"] div {
+[data-id="setaJanelaDeAmostra"] {
     position: absolute;
     width: 25px;
     height: 25px;
     z-index: -1;
     background-color: var(--COR_PRIMARIA);
-    bottom: 19px;
     right: -9px;
     transform: rotate(-45deg);
 }
