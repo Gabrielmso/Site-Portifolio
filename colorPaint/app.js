@@ -5,6 +5,7 @@ import {
 import hotKeysObject from "./hotKeys.js";
 import drawingToolsObject from "./drawingTools.js";
 import undoRedoChangeObject from "./undoRedoChange.js";
+import scrollsContentTelasObject from "./scrollsContentTelas.js";
 import previewFunctionsObject from "./previewFunctions.js";
 import colorsAppObject from "./colorsApp.js";
 import notificationObject from "../notifications/notifications.js";
@@ -52,22 +53,23 @@ export default function appObject() {
         const previousWidth = screen.offsetWidth, { width, proportion } = project.resolution;
         let larguraAtual = zoom === "porcentagem" ? width * value / 100 : zoom ? previousWidth * value : previousWidth / value;
         larguraAtual = larguraAtual <= 25 ? 25 : larguraAtual >= width * 32 ? width * 32 : larguraAtual;
-        const alturaAtual = (larguraAtual / proportion), { offsetWidth, offsetHeight } = contentTelas
+        const alturaAtual = (larguraAtual / proportion), offsetWidth = contentTelas.offsetWidth - 10,
+            offsetHeight = contentTelas.offsetHeight - 10;
         screen.style.width = larguraAtual + "px";
         screen.style.height = alturaAtual + "px";
-        screen.style.left = larguraAtual >= (offsetWidth - 12) ? "6px" : (offsetWidth / 2) - (larguraAtual / 2) + "px";
-        screen.style.top = alturaAtual >= (offsetHeight - 12) ? "6px" : (offsetHeight / 2) - (alturaAtual / 2) + "px";
+        screen.style.left = larguraAtual >= offsetWidth ? "0px" : (offsetWidth / 2) - (larguraAtual / 2) + "px";
+        screen.style.top = alturaAtual >= offsetHeight ? "0px" : (offsetHeight / 2) - (alturaAtual / 2) + "px";
         if (centralize) {
-            contentTelas.scrollTop = ((alturaAtual / 2) + 12) - (offsetHeight / 2);
-            contentTelas.scrollLeft = ((larguraAtual / 2) + 12) - (offsetWidth / 2);
+            contentTelas.scrollTop = (alturaAtual / 2) - (offsetHeight / 2);
+            contentTelas.scrollLeft = (larguraAtual / 2) - (offsetWidth / 2);
         }
         project.zoom = ((larguraAtual * 100) / width);
         txtPorcentagemZoom.value = project.zoom.toFixed(2).replace(".", ",") + "%";
         observers.notify("zoom", project.zoom);
     }
     const adjustInVisualizationScreen = () => {
-        const { width, height, proportion } = project.resolution, maxWidth = contentTelas.offsetWidth - 12,
-            maxHeight = contentTelas.offsetHeight - 12, proportionContent = maxWidth / maxHeight,
+        const { width, height, proportion } = project.resolution, maxWidth = contentTelas.offsetWidth - 10,
+            maxHeight = contentTelas.offsetHeight - 10, proportionContent = maxWidth / maxHeight,
             zoomAdjusted = proportion >= proportionContent ? +(((maxWidth * 100) / width).toFixed(2)) : +(((maxHeight * 100) / height).toFixed(2));
         zoom("porcentagem", false, zoomAdjusted);
     }
@@ -468,10 +470,11 @@ export default function appObject() {
         replaceBttCreateNewProject();
         const hotKeys = hotKeysObject();
         const drawingTools = drawingToolsObject({ project, screen, contentTelas, janelaPrincipal, notification, zoom });
+        const scrollsContentTelas = scrollsContentTelasObject({ contentTelas, screen });
         const previewFunctions = previewFunctionsObject({ project, contentTelasPreview, contentTelas, screen });
         const undoRedoChange = undoRedoChangeObject({ project });
 
-        observers.add("zoom", [previewFunctions.onZoom, drawingTools.onZoom]);
+        observers.add("zoom", [previewFunctions.onZoom, drawingTools.onZoom, scrollsContentTelas.onZoom]);
         observers.add("drawingChanged", [undoRedoChange.saveChanges]);
 
         hotKeys.addObservers("hotKey", [onHotKeys, drawingTools.onHotKeys, undoRedoChange.onHotKeys]);

@@ -508,26 +508,79 @@ input[type="range"]::-webkit-slider-thumb {
 [data-id="contentCentro"] {
     position: relative;
     overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: 1fr auto 15px;
+    grid-template-areas: "c bv" "bh ." "bi bi";
 }
 
 [data-id="contentTelas"] {
     position: relative;
-    height: calc(100% - 15px);
-    overflow: auto;
-    scrollbar-width: thin;
+    overflow: hidden;
+    padding: 5px;
+}
+
+[data-id="barraVertical"] {
+    grid-area: bv;
+}
+
+[data-id="scrollVertical"] {
+    display: none;
+    position: relative;
+    background-color: rgb(77, 78, 80);
+    border-radius: 7px;
+    width: 7px;
+}
+
+[data-id="barraHorizontal"] {
+    grid-area: bh;
+}
+
+[data-id="scrollHorizontal"] {
+    display: none;
+    position: relative;
+    background-color: rgb(77, 78, 80);
+    border-radius: 7px;
+    height: 7px;
 }
 
 [data-id="telasCanvas"] {
     position: relative;
     display: inline-block;
+    margin-bottom: -6px;
     overflow: hidden;
-    margin-right: 10px;
-    margin-bottom: 3px;
     background: url('./imagens/fundoTela/transparente.png');
 }
 
-[data-id="pintar"] {
-    z-index: 3;
+[data-id="barraInferior"] {
+    display: block;
+    /* width: 100%;
+    height: 15px; */
+    grid-area: bi;
+    background-color: var(--COR_TERCIARIA);
+}
+
+[data-id="barraInferior"] input {
+    width: 70px;
+    height: 15px;
+    float: left;
+    background: var(--COR_SECUNDARIA);
+    color: rgb(131, 131, 131);
+    border-right: 2px solid rgb(60, 60, 60);
+    text-align: center;
+    font-size: 11px;
+    line-height: 20px;
+    padding: 2px;
+    text-transform: uppercase;
+    margin-right: 5px;
+}
+
+[data-id="barraInferior"] label {
+    color: rgb(145, 145, 145);
+    line-height: 16px;
+    float: left;
+    font-size: 11px;
+    margin-left: 10px;
 }
 
 [data-id="grid"] {
@@ -563,36 +616,6 @@ input[type="range"]::-webkit-slider-thumb {
     left: 0px;
     width: 100%;
     height: 100%;
-}
-
-[data-id="barraInferior"] {
-    display: block;
-    width: 100%;
-    height: 15px;
-    background-color: var(--COR_TERCIARIA);
-}
-
-[data-id="barraInferior"] input {
-    width: 70px;
-    height: 15px;
-    float: left;
-    background: var(--COR_SECUNDARIA);
-    color: rgb(131, 131, 131);
-    border-right: 2px solid rgb(60, 60, 60);
-    text-align: center;
-    font-size: 11px;
-    line-height: 20px;
-    padding: 2px;
-    text-transform: uppercase;
-    margin-right: 5px;
-}
-
-[data-id="barraInferior"] label {
-    color: rgb(145, 145, 145);
-    line-height: 16px;
-    float: left;
-    font-size: 11px;
-    margin-left: 10px;
 }
 
 [data-id="barraLateralDireita"] {

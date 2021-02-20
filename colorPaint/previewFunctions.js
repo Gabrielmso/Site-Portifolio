@@ -3,8 +3,8 @@ import { getMousePosition, getElement, setStyle } from "../js/utils.js";
 export default function previewFunctionsObject({ project, contentTelasPreview, contentTelas, screen }) {
     const moverScroll = getElement("moverScroll");
     const scrollEventMoveMoverScroll = () => {
-        const mult = (contentTelas.scrollHeight - 12) / contentTelasPreview.offsetHeight;
-        const mult2 = (contentTelas.scrollWidth - 12) / contentTelasPreview.offsetWidth;
+        const mult = (contentTelas.scrollHeight - 10) / contentTelasPreview.offsetHeight;
+        const mult2 = (contentTelas.scrollWidth - 10) / contentTelasPreview.offsetWidth;
         setStyle(moverScroll, {
             top: (contentTelas.scrollTop / mult) + "px", left: (contentTelas.scrollLeft / mult2) + "px"
         });
@@ -39,19 +39,19 @@ export default function previewFunctionsObject({ project, contentTelasPreview, c
     }
     const changeMoverScrollSizeZoom = () => {
         const sizeTelasCanvas = { x: screen.offsetWidth, y: screen.offsetHeight },
-            sizeContentTelas = { x: contentTelas.offsetWidth, y: contentTelas.offsetHeight },
+            sizeContentTelas = { x: contentTelas.offsetWidth - 10, y: contentTelas.offsetHeight - 10 },
             sizeContentTelaPreview = { x: contentTelasPreview.offsetWidth, y: contentTelasPreview.offsetHeight };
-        if (sizeTelasCanvas.x <= (sizeContentTelas.x - 10) && sizeTelasCanvas.y <= (sizeContentTelas.y - 10)) {
+        if (sizeTelasCanvas.x <= sizeContentTelas.x && sizeTelasCanvas.y <= sizeContentTelas.y) {
             setStyle(moverScroll, { display: null });
             return;
         }
         let newWidth = sizeContentTelaPreview.x + "px", newHeight = sizeContentTelaPreview.y + "px";
-        if (sizeTelasCanvas.x > (sizeContentTelas.x - 10)) {
-            const proportionX = (sizeContentTelas.x - 6) / (sizeTelasCanvas.x + 12);
+        if (sizeTelasCanvas.x > sizeContentTelas.x) {
+            const proportionX = sizeContentTelas.x / sizeTelasCanvas.x;
             newWidth = Math.floor(sizeContentTelaPreview.x * proportionX) + "px";
         }
-        if (sizeTelasCanvas.y > (sizeContentTelas.y - 10)) {
-            const proportionY = (sizeContentTelas.y - 6) / (sizeTelasCanvas.y + 12);
+        if (sizeTelasCanvas.y > sizeContentTelas.y) {
+            const proportionY = sizeContentTelas.y / sizeTelasCanvas.y;
             newHeight = Math.floor(sizeContentTelaPreview.y * proportionY) + "px";
         }
         setStyle(moverScroll, { display: "block", width: newWidth, height: newHeight });
