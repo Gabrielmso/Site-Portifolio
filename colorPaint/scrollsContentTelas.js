@@ -69,12 +69,9 @@ export default function scrollsContentTelas({ contentTelas, screen }) {
         setStyle(verticalBar.bar, { height: height + "px" });
     }
     const updateBars = () => {
-        const contentTelasSize = { x: contentTelas.offsetWidth - 10, y: contentTelas.offsetHeight - 10 }
-        const screenSize = { x: screen.offsetWidth, y: screen.offsetHeight };
-        if (screenSize.x > contentTelasSize.x) { setStyle(horizontalBar.bar, { display: "block" }); }
-        else { setStyle(horizontalBar.bar, { display: null }); }
-        if (screenSize.y > contentTelasSize.y) { setStyle(verticalBar.bar, { display: "block" }); }
-        else { setStyle(verticalBar.bar, { display: null }); }
+        const { scrollHeight, offsetHeight, scrollWidth, offsetWidth } = contentTelas;
+        setStyle(horizontalBar.bar, { display: scrollWidth > offsetWidth ? "block" : null });
+        setStyle(verticalBar.bar, { display: scrollHeight > offsetHeight ? "block" : null });
         adjustVerticalBar();
         adjustHorizontalBar();
         adjustPositionBars();

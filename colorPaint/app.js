@@ -53,29 +53,31 @@ export default function appObject() {
         const previousWidth = screen.offsetWidth, { width, proportion } = project.resolution;
         let larguraAtual = zoom === "porcentagem" ? width * value / 100 : zoom ? previousWidth * value : previousWidth / value;
         larguraAtual = larguraAtual <= 25 ? 25 : larguraAtual >= width * 32 ? width * 32 : larguraAtual;
-        const alturaAtual = (larguraAtual / proportion), offsetWidth = contentTelas.offsetWidth - 10,
-            offsetHeight = contentTelas.offsetHeight - 10;
-        screen.style.width = larguraAtual + "px";
-        screen.style.height = alturaAtual + "px";
-        screen.style.left = larguraAtual >= offsetWidth ? "0px" : (offsetWidth / 2) - (larguraAtual / 2) + "px";
-        screen.style.top = alturaAtual >= offsetHeight ? "0px" : (offsetHeight / 2) - (alturaAtual / 2) + "px";
+        const alturaAtual = (larguraAtual / proportion);
+        setStyle(screen, { width: larguraAtual + "px", height: alturaAtual + "px" });
+        const { offsetHeight, offsetWidth } = contentTelas;
+        const [scrollHeight, scrollWidth] = [screen.offsetHeight + 12, screen.offsetWidth + 12];
+        setStyle(screen, scrollWidth > offsetWidth ? { left: "0px", marginBottom: "0px" } :
+            { left: (((offsetWidth - 6) / 2) - (larguraAtual / 2)) + "px", marginBottom: null });
+        setStyle(screen, scrollHeight > offsetHeight ? { top: "0px", marginRight: "6px" } :
+            { top: (((offsetHeight - 6) / 2) - (alturaAtual / 2)) + "px", marginRight: null });
         if (centralize) {
-            contentTelas.scrollTop = (alturaAtual / 2) - (offsetHeight / 2);
-            contentTelas.scrollLeft = (larguraAtual / 2) - (offsetWidth / 2);
+            contentTelas.scrollTop = (scrollHeight / 2) - (offsetHeight / 2);
+            contentTelas.scrollLeft = (scrollWidth / 2) - (offsetWidth / 2);
         }
         project.zoom = ((larguraAtual * 100) / width);
         txtPorcentagemZoom.value = project.zoom.toFixed(2).replace(".", ",") + "%";
         observers.notify("zoom", project.zoom);
     }
     const adjustInVisualizationScreen = () => {
-        const { width, height, proportion } = project.resolution, maxWidth = contentTelas.offsetWidth - 10,
-            maxHeight = contentTelas.offsetHeight - 10, proportionContent = maxWidth / maxHeight,
+        const { width, height, proportion } = project.resolution, maxWidth = contentTelas.offsetWidth - 7,
+            maxHeight = contentTelas.offsetHeight - 7, proportionContent = maxWidth / maxHeight,
             zoomAdjusted = proportion >= proportionContent ? +(((maxWidth * 100) / width).toFixed(2)) : +(((maxHeight * 100) / height).toFixed(2));
         zoom("porcentagem", false, zoomAdjusted);
     }
     const createGridWindow = createGridWindowObject({ notification, project, contentTelas, adjustInVisualizationScreen, zoom });
     const adjustScreen = () => {
-        const maxWidth = contentTelas.offsetWidth - 12, maxHeight = contentTelas.offsetHeight - 12;
+        const maxWidth = contentTelas.offsetWidth - 7, maxHeight = contentTelas.offsetHeight - 7;
         if (project.resolution.width >= maxWidth || project.resolution.height >= maxHeight) {
             adjustInVisualizationScreen();
         } else { zoom("porcentagem", false, 100); }
@@ -471,7 +473,7 @@ export default function appObject() {
         const hotKeys = hotKeysObject();
         const drawingTools = drawingToolsObject({ project, screen, contentTelas, janelaPrincipal, notification, zoom });
         const scrollsContentTelas = scrollsContentTelasObject({ contentTelas, screen });
-        const previewFunctions = previewFunctionsObject({ project, contentTelasPreview, contentTelas, screen });
+        const previewFunctions = previewFunctionsObject({ project, contentTelasPreview, contentTelas });
         const undoRedoChange = undoRedoChangeObject({ project });
 
         observers.add("zoom", [previewFunctions.onZoom, drawingTools.onZoom, scrollsContentTelas.onZoom]);

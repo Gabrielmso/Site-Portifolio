@@ -271,8 +271,8 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
             const { width, height, left, top } = cursorTool.contentTelasInfo;
             cursorTool.setPositionPainting({ x: left + (width / 2), y: top + (height / 2) });
         },
-        onWheelWithShift({ deltaY }) { contentTelas.scrollLeft += deltaY < 0 ? -contentTelas.offsetWidth / 7 : contentTelas.offsetWidth / 7; },
-        onWheelNoShift({ deltaY }) { contentTelas.scrollTop += deltaY < 0 ? -contentTelas.offsetHeight / 7 : contentTelas.offsetHeight / 7; },
+        onWheelWithShift({ deltaY }) { contentTelas.scrollLeft += deltaY < 0 ? -contentTelas.offsetWidth / 9 : contentTelas.offsetWidth / 9; },
+        onWheelNoShift({ deltaY }) { contentTelas.scrollTop += deltaY < 0 ? -contentTelas.offsetHeight / 9 : contentTelas.offsetHeight / 9; },
         currentOnWheel: null,
     }
     const changeToolSizeBar = (value, change = false) => {
@@ -533,6 +533,7 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
         elCursor.addEventListener("mousedown", onMouseDown);
         janelaPrincipal.addEventListener("mouseleave", cursorTool.invisibleCursor);
         elCursor.addEventListener("wheel", e => cursorTool.currentOnWheel(e), { passive: true });
+        contentTelas.addEventListener("wheel", e => cursorTool.currentOnWheel(e), { passive: true });
         cursorTool.currentSetPosition = cursorTool.setPositionNoPainting;
         cursorTool.currentOnWheel = cursorTool.onWheelNoShift;
         strokeCoordinates.currentAdd = strokeCoordinates.add;
