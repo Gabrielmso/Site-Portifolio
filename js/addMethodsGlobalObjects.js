@@ -1,5 +1,8 @@
 const methodsArray = () => {
     Array.prototype.clear = function () { this.length = 0; }
+    Array.prototype.move = function (from, to) {
+        this.splice(to, 0, this.splice(from, 1)[0]);
+    }
     Object.defineProperty(Array.prototype, "first", {
         get: function () {
             return this[0];

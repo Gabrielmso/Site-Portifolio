@@ -131,8 +131,8 @@ export default function appObject() {
             for (const bttLook of project.layers[numLayer].bttsLook) {
                 bttLook.classList.replace("visivel", "invisivel");
             }
-            project.layers[numLayer].icons.first.classList.replace("iconeCamadaSelecionada", "iconeCamada");
-            project.layers[numLayer].icons.last.classList.replace("iconeCamadaMiniSelecionada", "iconeCamadaMini");
+            project.layers[numLayer].icons.first.classList.remove("camadaSelecionada");
+            project.layers[numLayer].icons.last.classList.remove("camadaSelecionadaMini");
             for (let i = 0; i < project.numLayers; i++) {
                 if (i != numLayer && project.layers[numLayer] === project.selectedLayer && project.layers[i].visible) {
                     selectLayer(i);
@@ -178,6 +178,7 @@ export default function appObject() {
     }
     const createNewLayer = (() => {
         let mouseInBttLook = false, idIntervalToShowLayerSample = 0;
+        const contentIconLayers = getElement("contentIconeCamadas"), contentMiniIconLayers = getElement("barraLateralMini");
         const layerSampleWindow = {
             window: getElement("janelaDeAmostraDaCamada"), timeTransition: 160,
             screen: getElement("canvasAmostraDacamada").getContext("2d"),
@@ -208,6 +209,17 @@ export default function appObject() {
                 setTimeout(() => setStyle(this.window, { display: null }), this.timeTransition);
             },
         }
+        const changeOrderLayers = (from, to) => {
+            project.layers.move(from, to);
+            contentMiniIconLayers.textContent = contentIconLayers.textContent = "";
+            for (let i = 1; i <= project.numLayers; i++) {
+                const { layer, layerPreview, icons: [icon, iconMini] } = project.layers[i - 1];
+                setStyle(layer.canvas, { zIndex: (i * 2) });
+                setStyle(layerPreview.canvas, { zIndex: (i * 2) });
+                contentIconLayers.insertBefore(icon, contentIconLayers.firstElementChild);
+                contentMiniIconLayers.insertBefore(iconMini, contentMiniIconLayers.firstElementChild);
+            }
+        }
         const createLayerPreview = (() => {
             const proportionMaxSpace = 256 / 150;
             return numLayer => {
@@ -227,8 +239,7 @@ export default function appObject() {
             }
         })();
         const createIconLayer = (() => {
-            const contentIconLayers = getElement("contentIconeCamadas"), proportionMaxSpace = 80 / 60;
-            const contentMiniIconLayers = getElement("barraLateralMini"), proportioMaxSizeMini = 100 / 75;
+            const proportionMaxSpace = 80 / 60, proportioMaxSizeMini = 100 / 75;
             return numLayer => {
                 const makeId = id => id + numLayer;
                 const idIcon = makeId("camadaIcone");
@@ -241,7 +252,7 @@ export default function appObject() {
                     { width: Math.round(60 * project.resolution.proportion), height: 60 };
                 const styleSizeCanvasIcon = "width: " + width + "px; height: " + height + "px;";
                 contentIconLayers.insertAdjacentHTML("afterbegin",
-                    `<div data-id="${idIcon}" class="iconeCamada">
+                    `<div data-id="${idIcon}" class="iconeCamada" draggable="true">
                         <div data-id="${idBttLook}" class="iconVer visivel cursor"></div>
                         <label>
                             <span data-id="${idTxtNameLayer}">Camada ${numLayer}</span><br>
@@ -265,7 +276,7 @@ export default function appObject() {
                 const idCanvasIconMini = makeId("canvasIconeMini");
                 const styleSizeCanvasIconMini = "width: " + widthMini + "px; height: " + heightMini + "px;";
                 contentMiniIconLayers.insertAdjacentHTML("afterbegin",
-                    `<div data-id="${idIconMini}" class="iconeCamadaMini">
+                    `<div data-id="${idIconMini}" class="iconeCamadaMini" draggable="true">
                         <div data-id="${idBttLookMini}" class="iconVerMini visivel cursor"></div>
                         <canvas data-id="${idCanvasIconMini}" style="${styleSizeCanvasIconMini}"
                         width="${widthMini * 2}" height="${heightMini * 2}"></canvas>
@@ -298,6 +309,7 @@ export default function appObject() {
             for (let i = 0; i < project.numLayers; i++) {
                 if (project.layers[i].icons.includes(elIcon)) { return i; }
             }
+            return -1;
         }
         const showLayerSample = e => {
             const el = e.currentTarget;
@@ -309,8 +321,8 @@ export default function appObject() {
             }, 750)
         }
         const closeLayerSample = e => {
-            const numLayer = getNumLayerByMouseInIcon(e.currentTarget);
             clearTimeout(idIntervalToShowLayerSample);
+            const numLayer = getNumLayerByMouseInIcon(e.currentTarget);
             project.layers[numLayer].cursorInIcon = false;
             layerSampleWindow.close();
         }
@@ -338,6 +350,20 @@ export default function appObject() {
                 message: "Não é possível selecionar uma camada invisível."
             });
         }
+        const onDropIcon = e => {
+            const txt = e.dataTransfer.getData("text/plain");
+            if (!txt.includes("layer")) { return; }
+            const numFrom = +(txt.replace("layer", ""));
+            const numTo = getNumLayerByMouseInIcon(e.currentTarget);
+            if (isNaN(numFrom) || numFrom < 0 || numTo < 0 || numFrom > project.numLayers ||
+                numTo > project.numLayers || numFrom === numTo) { return; }
+            changeOrderLayers(numFrom, numTo);
+        }
+        const onDragStartIcon = e => {
+            closeLayerSample(e);
+            e.dataTransfer.dropEffect = e.dataTransfer.effectAllowed = "move";
+            e.dataTransfer.setData("text/plain", ("layer" + getNumLayerByMouseInIcon(e.currentTarget)));
+        }
         return () => {
             const numLayer = project.layers.length + 1;
             const layer = createLayer(numLayer);
@@ -355,6 +381,8 @@ export default function appObject() {
                 icon.addEventListener("mousedown", onClickIcon);
                 icon.addEventListener("dblclick", onDoubleClickIcon);
                 icon.addEventListener("mouseleave", closeLayerSample);
+                icon.addEventListener("dragstart", onDragStartIcon);
+                icon.addEventListener("drop", onDropIcon);
             }
             return objLayer;
         };
