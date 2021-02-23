@@ -104,12 +104,12 @@ export default function appObject() {
     const selectLayer = numLayer => {
         if (!project.layers[numLayer].visible || project.toolInUse) { return; }
         project.selectedLayer = project.layers[numLayer];
-        project.selectedLayer.icons.first.classList.replace("iconeCamada", "iconeCamadaSelecionada");
-        project.selectedLayer.icons.last.classList.replace("iconeCamadaMini", "iconeCamadaMiniSelecionada");
+        project.selectedLayer.icons.first.classList.add("camadaSelecionada");
+        project.selectedLayer.icons.last.classList.add("camadaSelecionadaMini");
         for (let i = 0; i < project.numLayers; i++) {
             if (i !== numLayer) {
-                project.layers[i].icons.first.classList.replace("iconeCamadaSelecionada", "iconeCamada");
-                project.layers[i].icons.last.classList.replace("iconeCamadaMiniSelecionada", "iconeCamadaMini");
+                project.layers[i].icons.first.classList.remove("camadaSelecionada");
+                project.layers[i].icons.last.classList.remove("camadaSelecionadaMini");
             }
         }
         setStyle(project.eventLayer.canvas, { zIndex: ((numLayer + 1) * 2) + 1 });
