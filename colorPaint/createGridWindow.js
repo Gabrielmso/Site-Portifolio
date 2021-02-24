@@ -8,15 +8,16 @@ export default function createGridWindowObject({ notification, project, contentT
             barMoveWindow: getElement("barraMoverJanelaMenuGrid"),
             inputs: {
                 size: getElement("txtTamanhoGrid"), horizontalPosition: getElement("txtPosicaoHorizontalGrid"),
-                verticalPosition: getElement("txtPosicaoVerticalGrid"), opacity: getElement("barraOpacidadeGrid")
+                verticalPosition: getElement("txtPosicaoVerticalGrid"), opacity: getElement("barraOpacidadeGrid"),
+                cbxVisualizar: { content: getElement("contentCbxVisualizar"), cbx: getElement("cbxVisualizar") }
             },
-            buttons: { ok: getElement("bttOkGrid"), cancel: getElement("bttcancelarGrid") },
+            buttons: { ok: getElement("bttOkGrid"), /*cancel: getElement("bttcancelarGrid")*/ },
         },
         changeOpacity = value => {
             setStyle(gridProperties.screen, { opacity: value });
             gridProperties.opacity = insideWindow.inputs.opacity.value = value;
         },
-        createGrid = (properties, create) => {
+        createGrid = (properties) => {
             const screen = gridProperties.screen, size = gridProperties.size = properties.size,
                 pos = gridProperties.position = properties.position,
                 numDeQuadrados = (Math.trunc((project.resolution.width / size) + 2.1)) * (Math.trunc((project.resolution.height / size) + 2.1));
@@ -33,7 +34,7 @@ export default function createGridWindowObject({ notification, project, contentT
                 });
             }
             screen.textContent = "";
-            if (create) {
+            if (properties.visible) {
                 const position = {
                     x: (((pos.x / size) - (Math.trunc(pos.x / size))) * size),
                     y: (((pos.y / size) - (Math.trunc(pos.y / size))) * size)
@@ -52,8 +53,9 @@ export default function createGridWindowObject({ notification, project, contentT
                 });
                 const quadrado = createElement("div", { class: "quadrado", style: styleQuadrado });
                 for (let i = 0; i < numDeQuadrados; i++) { screen.appendChild(quadrado.cloneNode(true)); }
-            }
-            gridProperties.visible = create;
+                insideWindow.inputs.cbxVisualizar.cbx.classList.replace("cbxDesmarcado", "cbxMarcado");
+            } else { insideWindow.inputs.cbxVisualizar.cbx.classList.replace("cbxMarcado", "cbxDesmarcado"); }
+            gridProperties.visible = properties.visible;
         },
         applyPreviousVisualization = () => {
             zoom("porcentagem", false, previousVisualization.zoom);
@@ -84,20 +86,42 @@ export default function createGridWindowObject({ notification, project, contentT
             return down;
         })(),
         onInputChangeOpacity = e => changeOpacity(+(e.currentTarget.value)),
+        inputSizeChange = e => {
+            const num = parseInt(e.currentTarget.value);
+            if (isNaN(num) && num <= 0) { return; }
+            gridProperties.size = num;
+            createGrid(gridProperties);
+        },
+        inputHorizontalPositionChange = e => {
+            const num = parseInt(e.currentTarget.value);
+            if (isNaN(num)) { return; }
+            gridProperties.position.x = num;
+            createGrid(gridProperties);
+        },
+        inputVerticalPositionChange = e => {
+            const num = parseInt(e.currentTarget.value);
+            if (isNaN(num)) { return; }
+            gridProperties.position.y = num;
+            createGrid(gridProperties);
+        },
+        onMouseDownCbxVisualizar = e => {
+            gridProperties.visible = !gridProperties.visible;
+            createGrid(gridProperties);
+        },
         addEventsToElements = () => {
             insideWindow.inputs.size.addEventListener("change", inputSizeChange);
             insideWindow.inputs.horizontalPosition.addEventListener("change", inputHorizontalPositionChange);
             insideWindow.inputs.verticalPosition.addEventListener("change", inputVerticalPositionChange);
+            insideWindow.inputs.cbxVisualizar.content.addEventListener("mousedown", onMouseDownCbxVisualizar);
             insideWindow.buttons.ok.addEventListener("mousedown", close);
-            insideWindow.buttons.cancel.addEventListener("mousedown", bttCancelMouseDown);
             insideWindow.barMoveWindow.addEventListener("mousedown", moveWindow);
             insideWindow.inputs.opacity.addEventListener("input", onInputChangeOpacity);
         },
         removeEventsToElements = () => {
             insideWindow.buttons.ok.removeEventListener("mousedown", close);
-            insideWindow.buttons.cancel.removeEventListener("mousedown", bttCancelMouseDown);
             insideWindow.inputs.size.removeEventListener("change", inputSizeChange);
             insideWindow.inputs.horizontalPosition.removeEventListener("change", inputHorizontalPositionChange);
+            insideWindow.inputs.cbxVisualizar.content.addEventListener("mousedown", onMouseDownCbxVisualizar);
             insideWindow.inputs.verticalPosition.removeEventListener("change", inputVerticalPositionChange);
             insideWindow.barMoveWindow.removeEventListener("mousedown", moveWindow);
             insideWindow.inputs.opacity.removeEventListener("input", onInputChangeOpacity);
@@ -106,32 +130,10 @@ export default function createGridWindowObject({ notification, project, contentT
             removeEventsToElements();
             setStyle(contentWindow, { display: null });
             applyPreviousVisualization();
-        },
-        inputSizeChange = e => {
-            const num = parseInt(e.currentTarget.value);
-            if (isNaN(num) && num <= 0) { return; }
-            gridProperties.size = num;
-            createGrid(gridProperties, true);
-        },
-        inputHorizontalPositionChange = e => {
-            const num = parseInt(e.currentTarget.value);
-            if (isNaN(num)) { return; }
-            gridProperties.position.x = num;
-            createGrid(gridProperties, true);
-        },
-        inputVerticalPositionChange = e => {
-            const num = parseInt(e.currentTarget.value);
-            if (isNaN(num)) { return; }
-            gridProperties.position.y = num;
-            createGrid(gridProperties, true);
-        },
-        bttCancelMouseDown = () => {
-            createGrid(gridProperties, false);
-            close();
-        };
+        }
 
     return {
-        set createGrid({ size, position, visible, opacity }) { createGrid({ size, position, opacity }, visible) },
+        set createGrid({ size, position, visible, opacity }) { createGrid({ size, position, opacity, visible }) },
         get gridProperties() {
             const { size, position, visible, opacity } = gridProperties;
             return { size, position, visible, opacity };
@@ -146,7 +148,7 @@ export default function createGridWindowObject({ notification, project, contentT
             setStyle(contentWindow, { display: "block" });
             addEventsToElements();
             adjustInVisualizationScreen();
-            if (!gridProperties.visible) { createGrid(gridProperties, true); }
+            createGrid(gridProperties);
         }
     }
 }

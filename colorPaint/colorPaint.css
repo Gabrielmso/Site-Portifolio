@@ -846,6 +846,10 @@ input[type="range"]::-webkit-slider-thumb {
     border-top: 1px solid rgba(255, 255, 255, 0.15);
 }
 
+[data-id="janelaMenuGrid"] li {
+   text-align: center;
+}
+
 [data-id="janelaMenuGrid"] li input[type="range"] {
     position: relative;
     width: 142px;
@@ -855,12 +859,57 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 [data-id="janelaMenuGrid"] li input[type="range"]::-webkit-slider-runnable-track {
-    background-color: var(--COR_PRIMARIA);
+    background-color: rgb(160, 140, 60);
 }
 
 [data-id="janelaMenuGrid"] li input[type="range"]::-webkit-slider-thumb {
-    border: 2px solid rgba(0, 0, 0, 0.9);
+    border: 2px solid rgb(160, 140, 60);
+    background-color: rgb(0, 0, 0);
+}
+
+[data-id="janelaMenuGrid"] li:last-child {
+    margin-bottom: 4px;
+}
+
+/* ================================CHECKBOX========================================= */
+
+.checkbox {
+    position: relative;
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    top: 3px;
+    margin-left: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 250ms ease-in-out, box-shadow 250ms ease-in-out;
+}
+
+.checkbox div {
+    position: relative;
+    width: 13px;
+    height: 9px;
+    border-bottom: 3px solid rgba(0, 0, 0, 0.85);
+    border-left: 3px solid rgba(0, 0, 0, 0.85);
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    transition: opacity 150ms ease-in-out;
+}
+
+.cbxMarcado {
     background-color: rgb(160, 140, 60);
+    box-shadow: 0px 5px 10px rgba(160, 140, 60, 0.6);
+    border: 1px solid rgb(160, 140, 60);
+}
+
+.cbxDesmarcado {
+    background-color: var(--COR_SECUNDARIA);
+    border: 1px solid rgb(160, 140, 60);
+}
+
+.cbxDesmarcado div {
+    opacity: 0;
 }
 
 /* ============================================= Seletor de cores ============================================= */

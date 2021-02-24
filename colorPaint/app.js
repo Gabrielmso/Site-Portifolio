@@ -185,8 +185,8 @@ export default function appObject() {
             arrow: getElement("setaJanelaDeAmostra"),
             width: 0, height: 0,
             adjustSize({ width, height }) {
-                this.width = (Math.floor(width * 2.3)) + 20;
-                this.height = (Math.floor(height * 2.3)) + 20;
+                this.width = (Math.floor(width * 2.1)) + 20;
+                this.height = (Math.floor(height * 2.1)) + 20;
                 this.screen.canvas.width = this.width * 2;
                 this.screen.canvas.height = this.height * 2;
                 setStyle(this.screen.canvas, { width: (this.width - 20) + "px", height: (this.height - 20) + "px" });
@@ -202,7 +202,7 @@ export default function appObject() {
                 });
                 this.screen.clearRect(0, 0, this.screen.canvas.width, this.screen.canvas.height);
                 this.screen.drawImage(layer, 0, 0, this.screen.canvas.width, this.screen.canvas.height);
-                setTimeout(() => setStyle(this.window, { opacity: "1" }), 10);
+                setTimeout(() => setStyle(this.window, { opacity: "1" }), 5);
             },
             close() {
                 setStyle(this.window, { opacity: null });
