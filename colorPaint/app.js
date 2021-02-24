@@ -219,6 +219,7 @@ export default function appObject() {
                 contentIconLayers.insertBefore(icon, contentIconLayers.firstElementChild);
                 contentMiniIconLayers.insertBefore(iconMini, contentMiniIconLayers.firstElementChild);
             }
+            selectLayer(to);
         }
         const createLayerPreview = (() => {
             const proportionMaxSpace = 256 / 150;
@@ -300,7 +301,7 @@ export default function appObject() {
             const style = "z-index: " + (numLayer * 2) + ";";
             const { height, width } = project.resolution;
             const layer = createElement("canvas", {
-                "data-id": "telaCamada" + numLayer, class: "telaCanvas", style, height, width
+                "data-id": ("telaCamada" + numLayer), class: "telaCanvas", style, height, width
             });
             screen.appendChild(layer);
             return layer.getContext("2d");
