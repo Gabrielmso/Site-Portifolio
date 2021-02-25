@@ -48,28 +48,32 @@ export default function createProjectWindowObject({ notification, colors }) {
         content.remove();
     }
     const fileValidation = file => {
-        if (file) {
-            const extencao = file.name.split('.').pop().toLowerCase();
-            if (extencao === "gm") {
-                observers.notify("createProject", { mode: "load", obj: file });
-                conclude();
-            } else {
-                notification.open({
-                    type: "notify", timeNotify: 2500, title: "Erro!", message: "Arquivo selecionado inválido!"
-                });
-                close();
-            }
-        } else {
+        const erro = async () => {
+            await close();
             notification.open({
-                type: "notify", timeNotify: 2500, title: "Erro!",
-                message: "Falha ao carregar projeto, tente novamente."
+                type: "notify", timeNotify: 4000, title: "Erro!", message: "Arquivo selecionado inválido!"
             });
-            close();
         }
+        if (!file || !file.name || file.name.split('.').pop().toLowerCase() !== "gm") {
+            erro();
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+            let obj = null;
+            try { obj = JSON.parse(reader.result); }
+            catch (e) {
+                erro();
+                return;
+            }
+            observers.notify("createProject", { mode: "load", obj });
+            conclude();
+        };
+        reader.readAsText(file, "utf-8");
     }
     const getFile = () => {
         const input = createElement("input", { type: "file", accept: ".gm" });
-        input.addEventListener("change", (e) => fileValidation(e.currentTarget.files[0]));
+        input.addEventListener("change", e => fileValidation(e.currentTarget.files[0]));
         input.click();
     }
     const validateProperties = () => {

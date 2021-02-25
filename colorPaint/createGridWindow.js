@@ -11,7 +11,7 @@ export default function createGridWindowObject({ notification, project, contentT
                 verticalPosition: getElement("txtPosicaoVerticalGrid"), opacity: getElement("barraOpacidadeGrid"),
                 cbxVisualizar: { content: getElement("contentCbxVisualizar"), cbx: getElement("cbxVisualizar") }
             },
-            buttons: { ok: getElement("bttOkGrid"), /*cancel: getElement("bttcancelarGrid")*/ },
+            buttons: { ok: getElement("bttOkGrid") },
         },
         changeOpacity = value => {
             setStyle(gridProperties.screen, { opacity: value });

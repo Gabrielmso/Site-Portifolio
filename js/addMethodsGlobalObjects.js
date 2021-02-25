@@ -1,6 +1,10 @@
 const methodsArray = () => {
     Array.prototype.clear = function () { this.length = 0; }
     Array.prototype.move = function (from, to) {
+        const lastIndex = this.length - 1;
+        const parametersIsInvalid = [isNaN(from), isNaN(to), from === to, from < 0,
+        from > lastIndex, to < 0, to > lastIndex].includes(true);
+        if (parametersIsInvalid) { return; }
         this.splice(to, 0, this.splice(from, 1)[0]);
     }
     Object.defineProperty(Array.prototype, "first", {

@@ -403,33 +403,36 @@ export default function appObject() {
         project.eventLayer.canvas.height = height;
         getElement("txtResolucao").value = width + ", " + height;
         selectLayer(0);
+        return true;
     }
-    const loadProject = file => {
-        const createSavedProject = objProjeto => {
-            createProject(objProjeto);
-            for (let i = 0; i < project.numLayers; i++) {
-                const { data, opacity, visible } = objProjeto.layersData[i];
-                selectLayer(i);
-                changeOpacitySelectedLayer(opacity);
-                getImage("data:image/png;base64," + data, e => {
-                    drawInLayer(project.layers[i], e.currentTarget);
-                    if (!visible) { setLayerVisibility(i); };
-                });
+    const loadProject = objProjeto => {
+        const erro = () => notification.open({
+            type: "notify", timeNotify: 4000, title: "Erro!",
+            message: "Não foi possível carregar o projeto!"
+        });
+        const arrayPropertiesNames =
+            ["name", "resolution", "background", "savedColors", "grid", "numLayers", "layersData"];
+        for (const propName of arrayPropertiesNames) {
+            if (!objProjeto[propName]) {
+                erro();
+                return false;
             }
-            selectLayer(0);
-            for (let i = 0; i < objProjeto.savedColors.length; i++) { colors.save(objProjeto.savedColors[i]); }
-            createGridWindow.createGrid = objProjeto.grid;
         }
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            if (e.currentTarget.result === "") {
-                notification.open({
-                    type: "notify", timeNotify: 2000, title: "Erro!",
-                    message: "Este arquivo não possui projeto salvo."
-                });
-            } else { createSavedProject(JSON.parse(e.currentTarget.result)); }
-        };
-        reader.readAsText(file, "utf-8");
+        createProject(objProjeto);
+        for (let i = 0; i < project.numLayers; i++) {
+            const { data, opacity, visible } = objProjeto.layersData[i];
+            if ([data, opacity, visible].includes(undefined)) { erro(); return false; }
+            selectLayer(i);
+            changeOpacitySelectedLayer(opacity);
+            getImage("data:image/png;base64," + data, e => {
+                drawInLayer(project.layers[i], e.currentTarget);
+                if (!visible) { setLayerVisibility(i); };
+            });
+        }
+        selectLayer(0);
+        for (let i = 0; i < objProjeto.savedColors.length; i++) { colors.save(objProjeto.savedColors[i]); }
+        createGridWindow.createGrid = objProjeto.grid;
+        return true;
     }
     const saveProject = () => {
         const dadosCamadas = [], coresSalvasProjeto = [];
@@ -451,7 +454,6 @@ export default function appObject() {
         const url = URL.createObjectURL(new Blob([JSON.stringify(objProjeto)], { type: "application/json" }));
         const a = createElement("a", { download: project.name + ".gm", href: url });
         a.click();
-        a.remove();
         URL.revokeObjectURL(url);
     }
     const saveDraw = () => project.drawComplete.canvas.toBlob(b => {
@@ -540,14 +542,16 @@ export default function appObject() {
         layerOpacityBar.bar.addEventListener("input", e =>
             changeOpacitySelectedLayer(+((+(e.currentTarget.value)).toFixed(2))));
         window.addEventListener("resize", () => zoom("porcentagem", false, project.zoom));
+        window.addEventListener("beforeunload", e => {
+            preventDefaultAction(e);
+            e.returnValue = 'Tem certeza que quer sair da página?';
+        });
     }
     const onCreateProject = (() => {
         const modeFunction = { create: createProject, load: loadProject }
         return ({ mode, obj }) => {
             const fn = modeFunction[mode];
-            if (!fn) { return; }
-            fn(obj);
-            readyProject();
+            if (fn && fn(obj)) { readyProject(); }
         }
     })();
 

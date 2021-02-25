@@ -4,8 +4,7 @@ import {
 } from "../js/utils.js";
 import toolsFunctionsObject from "./toolsFuntions.js";
 
-const toolConstructor = (name = "", properties = false) =>
-    ({ btt: getElement(name), name, properties: properties ? properties : false });
+const toolConstructor = (name = "", properties = false) => ({ btt: getElement(name), name, properties });
 
 export default function drawingToolsObject({ project, screen, contentTelas, janelaPrincipal, notification, zoom }) {
     const observers = createEventEmitterToObservers(["toolUsed", "drawInLayer", "setColor"]);
