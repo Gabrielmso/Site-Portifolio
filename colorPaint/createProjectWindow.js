@@ -1,7 +1,12 @@
-import { getElement, setStyle, createElement, openWindowBackgroundBlur, delay, createEventEmitterToObservers, getAllElementsClass } from "../js/utils.js";
+import {
+    getElement, setStyle, createElement, openWindowBackgroundBlur, delay, createEventEmitterToObservers,
+    getAllElementsClass
+} from "../js/utils.js";
+
+const MAX_NUM_LAYERS = 5;
 
 export default function createProjectWindowObject({ notification, colors }) {
-    const state = { created: false, mode: "create", dragEnterElement: null }
+    const state = { mode: "create", dragEnterElement: null }
     const observers = createEventEmitterToObservers(["createProject"]);
     const content = getElement("contentCriarAbrirProjeto");
     const createProject = {
@@ -42,35 +47,74 @@ export default function createProjectWindowObject({ notification, colors }) {
         await openWindowBackgroundBlur(content, false);
     }
     const conclude = async () => {
-        state.created = true;
         await delay(100);
         await close();
         content.remove();
     }
-    const fileValidation = file => {
-        const erro = async () => {
-            await close();
-            notification.open({
-                type: "notify", timeNotify: 4000, title: "Erro!", message: "Arquivo selecionado inválido!"
-            });
+    const fileValidation = (() => {
+        const isInvalidObjRGB = obj => {
+            const propInvalid = ["r", "g", "b"].some(p => typeof obj[p] !== "number");
+            if (propInvalid) { return true; }
+            return ["r", "g", "b"].some(p => obj[p] < 0 || obj[p] > 255);
         }
-        if (!file || !file.name || file.name.split('.').pop().toLowerCase() !== "gm") {
-            erro();
-            return;
-        }
-        const reader = new FileReader();
-        reader.onload = () => {
-            let obj = null;
-            try { obj = JSON.parse(reader.result); }
-            catch (e) {
+        const isInvalidObjProject = obj => [
+            () => typeof obj !== "object",
+            () => ["name", "resolution", "background", "savedColors", "grid", "numLayers", "layersData"]
+                .some(prop => !obj[prop]),
+            () => typeof obj.name !== "string",
+            () => typeof obj.resolution !== "object",
+            () => ["width", "height"].some(p => !obj.resolution[p]),
+            () => ["width", "height"].some(p => typeof obj.resolution[p] !== "number"),
+            () => {
+                const type = typeof obj.background;
+                if (type === "object") { return isInvalidObjRGB(obj.background); }
+                else if (type === "boolean") { return obj.background !== false; }
+                return true;
+            },
+            () => !(Array.isArray(obj.savedColors)),
+            () => {
+                if (!obj.savedColors.length) { return false; }
+                return obj.savedColors.some(rgb => isInvalidObjRGB(rgb));
+            },
+            () => typeof obj.grid !== "object",
+            () => ["size", "position", "visible", "opacity"].some(p => !(obj.grid.hasOwnProperty(p))),
+            () => typeof obj.grid.size !== "number" || obj.grid.size < 0,
+            () => typeof obj.grid.position !== "object",
+            () => ["x", "y"].some(p =>
+                !obj.grid.position.hasOwnProperty(p) || typeof obj.grid.position[p] !== "number"),
+            () => typeof obj.grid.visible !== "boolean",
+            () => typeof obj.grid.opacity !== "number" || obj.grid.opacity < 0.01 || obj.grid.opacity > 1,
+            () => typeof obj.numLayers !== "number" || obj.numLayers < 1 || obj.numLayers > MAX_NUM_LAYERS,
+            () => !(Array.isArray(obj.layersData)) || !obj.layersData.length || obj.layersData.length !== obj.numLayers,
+            () => obj.layersData.some(obj => (["data", "opacity", "visible"].some(p => !obj.hasOwnProperty(p)))
+                || typeof obj.data !== "string" || typeof obj.opacity !== "number" ||
+                typeof obj.visible !== "boolean" || obj.opacity < 0.01 || obj.opacity > 1)
+        ].some(fn => fn());
+
+        return file => {
+            const erro = async () => {
+                await close();
+                notification.open({
+                    type: "notify", timeNotify: 4000, title: "Erro!", message: "Arquivo selecionado inválido!"
+                });
+            }
+            if (!file || !file.name || file.name.split('.').pop().toLowerCase() !== "gm") {
                 erro();
                 return;
             }
-            observers.notify("createProject", { mode: "load", obj });
-            conclude();
-        };
-        reader.readAsText(file, "utf-8");
-    }
+            const reader = new FileReader();
+            reader.addEventListener("load", async () => {
+                let obj = {};
+                try { obj = JSON.parse(reader.result); }
+                catch (e) { }
+                if (!isInvalidObjProject(obj)) {
+                    await conclude();
+                    observers.notify("createProject", { mode: "load", obj });
+                } else { erro(); }
+            });
+            reader.readAsText(file, "utf-8");
+        }
+    })()
     const getFile = () => {
         const input = createElement("input", { type: "file", accept: ".gm" });
         input.addEventListener("change", e => fileValidation(e.currentTarget.files[0]));
@@ -104,7 +148,7 @@ export default function createProjectWindowObject({ notification, colors }) {
         } else if (valueCor > 4 || valueCor < 1) {
             campoInvalido(txtBackground);
             return;
-        } else if (numLayers > 5 || numLayers < 1) {
+        } else if (numLayers > MAX_NUM_LAYERS || numLayers < 1) {
             campoInvalido(txtNumLayers);
             return;
         }
@@ -127,39 +171,39 @@ export default function createProjectWindowObject({ notification, colors }) {
         loadProject.window.classList.replace("dragEnter", "dragLeave");
     }
     const dropFileWindowLoad = e => fileValidation(e.dataTransfer.files[0]);
-
-    return {
-        open: mode => {
-            if (state.created) {
-                notification.open({
-                    type: "confirm", title: "Projeto em andamento!",
-                    message: "Todo o progresso não salvo será perdido, deseja continuar?",
-                    functionConfirm: () => {
-                        sessionStorage.setItem("loadMode", mode);
-                        window.location.reload();
-                    }
-                });
-                return;
+    const openBeforeProjectCreated = mode => {
+        openWindowBackgroundBlur(content, true);
+        const typeMode = {
+            create: () => {
+                setStyle(loadProject.window, { display: "none" });
+                setStyle(createProject.window, { display: "block" });
+                createProject.addEventsToElements();
+            },
+            load: () => {
+                loadProject.window.classList.replace("dragEnter", "dragLeave");
+                setStyle(createProject.window, { display: "none" });
+                setStyle(loadProject.window, { display: "flex" });
+                loadProject.addEventsToElements();
             }
-            openWindowBackgroundBlur(content, true);
-            const typeMode = {
-                create: () => {
-                    setStyle(loadProject.window, { display: "none" });
-                    setStyle(createProject.window, { display: "block" });
-                    createProject.addEventsToElements();
-                },
-                load: () => {
-                    loadProject.window.classList.replace("dragEnter", "dragLeave");
-                    setStyle(createProject.window, { display: "none" });
-                    setStyle(loadProject.window, { display: "flex" });
-                    loadProject.addEventsToElements();
+        }
+        state.mode = mode;
+        typeMode[state.mode]();
+        content.addEventListener("mousedown", clickContentToClose);
+        Array.from(getAllElementsClass("bttLightAnimation")).map(e => e.classList.remove("bttLightAnimation"));
+    };
+    const open = {
+        currentOpen: openBeforeProjectCreated,
+        open: mode => open.currentOpen(mode), addObservers: observers.add, removeObservers: observers.remove,
+        onReadyProject: () => {
+            open.currentOpen = mode => notification.open({
+                type: "confirm", title: "Projeto em andamento!",
+                message: "Todo o progresso não salvo será perdido, deseja continuar?",
+                functionConfirm: () => {
+                    sessionStorage.setItem("loadMode", mode);
+                    window.location.reload();
                 }
-            }
-            state.mode = mode;
-            typeMode[state.mode]();
-            content.addEventListener("mousedown", clickContentToClose);
-            Array.from(getAllElementsClass("bttLightAnimation")).map(e => e.classList.remove("bttLightAnimation"));
-        },
-        addObservers: observers.add, removeObservers: observers.remove
+            });
+        }
     }
+    return open;
 }

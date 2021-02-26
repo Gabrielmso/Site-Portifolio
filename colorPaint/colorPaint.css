@@ -847,7 +847,7 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 [data-id="janelaMenuGrid"] li {
-   text-align: center;
+    text-align: center;
 }
 
 [data-id="janelaMenuGrid"] li input[type="range"] {
@@ -1084,7 +1084,7 @@ input[type="range"]::-webkit-slider-thumb {
 /* ================================================= carregamento ================================================= */
 
 [data-id="logoCarregamento"] {
-    position: relative;
+    position: absolute;
     background-image: url(../topoMenu/imagens/LogoGMwhite.svg);
     background-position: 50%;
     background-repeat: no-repeat;

@@ -1,6 +1,7 @@
 export const fadeOutLoading = () => {
     const content = document.querySelector(`[data-id="carregamento"]`);
-    content.style.opacity = 0;
+    const circle = document.querySelector(`[data-id="circle"]`);
+    circle.style.opacity = content.style.opacity = 0;
     setTimeout(() => content.remove(), 800);
 }
 
@@ -41,12 +42,22 @@ export const loadFile = async url => {
     return response.ok ? response : false;
 }
 
+export const loadImage = (url, fnOnLoad = false) => new Promise((resolve) => {
+    const image = new Image();
+    image.addEventListener("load", e => {
+        if (fnOnLoad) { fnOnLoad(e); }
+        resolve(image);
+    });
+    image.addEventListener("error", () => resolve(false));
+    image.src = url;
+});
+
 export const getImage = (url, fnOnLoad = false) => {
     const image = new Image();
-    if (fnOnLoad) { image.onload = fnOnLoad; }
+    if (fnOnLoad) { image.addEventListener("load", fnOnLoad(e)); }
     image.src = url;
     return image;
-}
+};
 
 export const getMousePosition = (element, mouseEvent) => {
     const { left, top } = element.getBoundingClientRect();

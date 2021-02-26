@@ -1,5 +1,5 @@
 import {
-    preventDefaultAction, setStyle, getElement, createElement, getImage,
+    preventDefaultAction, setStyle, getElement, createElement, loadImage, fadeOutLoading,
     createEventEmitterToObservers, cloneElement, delay, openWindowBackgroundBlur
 } from "../js/utils.js";
 import hotKeysObject from "./hotKeys.js";
@@ -89,6 +89,7 @@ export default function appObject() {
         for (const { canvasIcons } of project.layers) {
             for (const { canvas } of canvasIcons) { setStyle(canvas.parentElement, style) }
         }
+        project.background = color;
     }
     const changeOpacitySelectedLayer = value => {
         if (!project.selectedLayer.visible || project.toolInUse) { return; }
@@ -391,7 +392,6 @@ export default function appObject() {
     const createProject = ({ name, resolution: { width, height }, background, numLayers }) => {
         txtProjectName.innerText = project.name = name;
         project.resolution = { width, height, proportion: (width / height) };
-        project.background = background;
         project.numLayers = numLayers;
         while (project.numLayers > project.layers.length) {
             const objLayer = createNewLayer();
@@ -405,29 +405,23 @@ export default function appObject() {
         selectLayer(0);
         return true;
     }
-    const loadProject = objProjeto => {
+    const loadProject = async objProjeto => {
         const erro = () => notification.open({
-            type: "notify", timeNotify: 4000, title: "Erro!",
-            message: "Não foi possível carregar o projeto!"
+            type: "notify", timeNotify: 4000, title: "Erro!", message: "Não foi possível carregar projeto!"
         });
-        const arrayPropertiesNames =
-            ["name", "resolution", "background", "savedColors", "grid", "numLayers", "layersData"];
-        for (const propName of arrayPropertiesNames) {
-            if (!objProjeto[propName]) {
-                erro();
-                return false;
-            }
+        const arrayLayerDrawings = [];
+        for (let i = 0; i < objProjeto.numLayers; i++) {
+            const layerDrawing = await loadImage("data:image/png;base64," + objProjeto.layersData[i].data);
+            if (!layerDrawing) { erro(); return; }
+            arrayLayerDrawings.push(layerDrawing);
         }
         createProject(objProjeto);
         for (let i = 0; i < project.numLayers; i++) {
-            const { data, opacity, visible } = objProjeto.layersData[i];
-            if ([data, opacity, visible].includes(undefined)) { erro(); return false; }
+            const { opacity, visible } = objProjeto.layersData[i];
             selectLayer(i);
             changeOpacitySelectedLayer(opacity);
-            getImage("data:image/png;base64," + data, e => {
-                drawInLayer(project.layers[i], e.currentTarget);
-                if (!visible) { setLayerVisibility(i); };
-            });
+            drawInLayer(project.layers[i], arrayLayerDrawings[i]);
+            if (!visible) { setLayerVisibility(i); };
         }
         selectLayer(0);
         for (let i = 0; i < objProjeto.savedColors.length; i++) { colors.save(objProjeto.savedColors[i]); }
@@ -446,10 +440,9 @@ export default function appObject() {
         const savedColors = colors.savedColors;
         for (let i = 0; i < savedColors.length; i++) { coresSalvasProjeto[i] = savedColors[i].rgb; }
         const objProjeto = {
-            name: project.name, resolution: project.resolution,
+            name: project.name, resolution: { width: project.resolution.width, height: project.resolution.height },
             background: project.background, savedColors: coresSalvasProjeto,
-            grid: createGridWindow.gridProperties,
-            numLayers: project.numLayers, layersData: dadosCamadas
+            grid: createGridWindow.gridProperties, numLayers: project.numLayers, layersData: dadosCamadas
         }
         const url = URL.createObjectURL(new Blob([JSON.stringify(objProjeto)], { type: "application/json" }));
         const a = createElement("a", { download: project.name + ".gm", href: url });
@@ -546,18 +539,20 @@ export default function appObject() {
             preventDefaultAction(e);
             e.returnValue = 'Tem certeza que quer sair da página?';
         });
+        observers.notify("readyProject");
     }
     const onCreateProject = (() => {
         const modeFunction = { create: createProject, load: loadProject }
-        return ({ mode, obj }) => {
+        return async ({ mode, obj }) => {
             const fn = modeFunction[mode];
-            if (fn && fn(obj)) { readyProject(); }
+            if (fn && await fn(obj)) { readyProject(); }
         }
     })();
 
     bttCreateNewProject.addEventListener("mousedown", onCLickCreateProject);
     getElement("bttCarregarProjeto").addEventListener("mousedown", createProjectWindow.open.bind(null, "load"));
     createProjectWindow.addObservers("createProject", [onCreateProject]);
+    observers.add("readyProject", [createProjectWindow.onReadyProject]);
 
     {//Abrir e Fechar a janela de Atalhos.
         const content = getElement("contentJanelaAtalhos");
@@ -569,32 +564,26 @@ export default function appObject() {
     }
 
     {
-        const carregar = getElement("carregamento"),
-            loadMode = sessionStorage.getItem("loadMode"),
-            fadeOut = async () => {
-                setStyle(carregar, { opacity: "0" });
-                await delay(700);
-                carregar.remove();
-            },
+        const loadMode = sessionStorage.getItem("loadMode"),
             carregamento = async () => {
+                setStyle(getElement("circle"), { opacity: "0" });
+                await delay(300);
                 const logoCarregamento = getElement("logoCarregamento");
-                setStyle(logoCarregamento, { transition: "opacity 1.5s linear" });
-                await delay(200);
-                setStyle(logoCarregamento, { opacity: "1" });
-                await delay(1500);
+                setStyle(logoCarregamento, { transition: "opacity 1s ease-in-out", opacity: "1" });
+                await delay(1000);
                 const { left, top } = getElement("logoBlack").getBoundingClientRect();
                 setStyle(logoCarregamento, {
-                    transition: "width 500ms ease-out, height 500ms ease-out, opacity 500ms ease-out, top 500ms ease-out, left 500ms ease-out",
+                    transition: "width 400ms ease-in-out, height 400ms ease-in-out, opacity 400ms ease-in-out, top 400ms ease-in-out, left 400ms ease-in-out",
                     width: "90px", height: "50px", opacity: "0.75",
                     left: left + 45 + "px", top: top + 25 + "px"
                 });
-                await delay(350);
-                fadeOut();
+                await delay(450);
+                fadeOutLoading();
             }
         if (loadMode) {
             createProjectWindow.open(loadMode);
             sessionStorage.removeItem("loadMode");
-            fadeOut();
+            fadeOutLoading();
         } else { carregamento(); }
     }
 }
