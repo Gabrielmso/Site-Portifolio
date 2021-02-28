@@ -211,14 +211,14 @@ export default function appObject() {
             },
         }
         const changeOrderLayers = (from, to) => {
-            project.layers.move(from, to);
-            contentMiniIconLayers.textContent = contentIconLayers.textContent = "";
+            if (!project.layers.move(from, to)) { return; }
+            const [icon, iconMini] = project.layers[to].icons;
+            contentIconLayers.insertBefore(icon, to > 0 ? project.layers[to - 1].icons.first : null);
+            contentMiniIconLayers.insertBefore(iconMini, to > 0 ? project.layers[to - 1].icons.last : null);
             for (let i = 1; i <= project.numLayers; i++) {
-                const { layer, layerPreview, icons: [icon, iconMini] } = project.layers[i - 1];
+                const { layer, layerPreview } = project.layers[i - 1];
                 setStyle(layer.canvas, { zIndex: (i * 2) });
                 setStyle(layerPreview.canvas, { zIndex: (i * 2) });
-                contentIconLayers.insertBefore(icon, contentIconLayers.firstElementChild);
-                contentMiniIconLayers.insertBefore(iconMini, contentMiniIconLayers.firstElementChild);
             }
             selectLayer(to);
         }
@@ -357,8 +357,6 @@ export default function appObject() {
             if (!txt.includes("layer")) { return; }
             const numFrom = +(txt.replace("layer", ""));
             const numTo = getNumLayerByMouseInIcon(e.currentTarget);
-            if (isNaN(numFrom) || numFrom < 0 || numTo < 0 || numFrom > project.numLayers ||
-                numTo > project.numLayers || numFrom === numTo) { return; }
             changeOrderLayers(numFrom, numTo);
         }
         const onDragStartIcon = e => {

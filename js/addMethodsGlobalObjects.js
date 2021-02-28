@@ -4,8 +4,8 @@ const methodsArray = () => {
         const lastIndex = this.length - 1;
         const parametersIsInvalid = [isNaN(from), isNaN(to), from === to, from < 0,
         from > lastIndex, to < 0, to > lastIndex].includes(true);
-        if (parametersIsInvalid) { return; }
-        this.splice(to, 0, this.splice(from, 1)[0]);
+        if (!parametersIsInvalid) { this.splice(to, 0, this.splice(from, 1)[0]); }
+        return !parametersIsInvalid;
     }
     Object.defineProperty(Array.prototype, "first", {
         get: function () {
