@@ -48,6 +48,39 @@ export default function appObject() {
         content: getElement("contentBarraOpacidadeCamada"),
         bar: getElement("barraOpacidadeCamada"), mousedown: false,
     }
+    const layerSampleWindow = {
+        window: getElement("janelaDeAmostraDaCamada"), timeTransition: 160,
+        screen: getElement("canvasAmostraDacamada").getContext("2d"),
+        arrow: getElement("setaJanelaDeAmostra"), maxProportion: 530 / 400,
+        width: 0, height: 0,
+        adjustSize() {
+            const [width, height] = project.resolution.proportion >= this.maxProportion ?
+                [530, Math.round(530 / project.resolution.proportion)] :
+                [Math.round(400 * project.resolution.proportion), 400];
+            this.width = width + 20;
+            this.height = height + 20;
+            this.screen.canvas.width = width;
+            this.screen.canvas.height = height;
+            setStyle(this.screen.canvas, { width: width + "px", height: height + "px" });
+        },
+        open(layer, icon) {
+            const { top, left, height } = icon.getBoundingClientRect();
+            const { top: topBar } = barRight.getBoundingClientRect();
+            let topWindow = (top - (this.height - height));
+            topWindow = topWindow < topBar ? topBar : topWindow;
+            setStyle(this.arrow, { top: (-14 + top - topWindow + (height / 2)) + "px" });
+            setStyle(this.window, {
+                display: "block", top: topWindow + "px", left: (left - (this.width + 13)) + "px"
+            });
+            this.screen.clearRect(0, 0, this.screen.canvas.width, this.screen.canvas.height);
+            this.screen.drawImage(layer, 0, 0, this.screen.canvas.width, this.screen.canvas.height);
+            setTimeout(() => setStyle(this.window, { opacity: "1" }), 5);
+        },
+        close() {
+            setStyle(this.window, { opacity: null });
+            setTimeout(() => setStyle(this.window, { display: null }), this.timeTransition);
+        },
+    }
     const zoom = (zoom, centralize, value) => {
         if (project.toolInUse) { return; }
         const previousWidth = screen.offsetWidth, { width, proportion } = project.resolution;
@@ -82,6 +115,63 @@ export default function appObject() {
             adjustInVisualizationScreen();
         } else { zoom("porcentagem", false, 100); }
     }
+    const setResolutionProject = (() => {
+        const setResolutionEventLayer = () => {
+            project.eventLayer.canvas.width = project.resolution.width;
+            project.eventLayer.canvas.height = project.resolution.height;
+        }
+        const setResolutionLayers = () => {
+            const { width, height } = project.resolution;
+            for (const { layer } of project.layers) {
+                layer.canvas.width = width;
+                layer.canvas.height = height;
+            }
+        }
+        const setResolutionLayerPreview = (() => {
+            const proportionMaxSpace = 256 / 150;
+            return () => {
+                const [width, height] = project.resolution.proportion >= proportionMaxSpace ?
+                    [256, Math.round(256 / project.resolution.proportion)] :
+                    [Math.round(150 * project.resolution.proportion), 150]
+                for (const { layerPreview } of project.layers) {
+                    layerPreview.canvas.width = width * 2;
+                    layerPreview.canvas.height = height * 2;
+                }
+                setStyle(contentTelasPreview, { width: width + "px", height: height + "px" });
+            }
+        })()
+        const setResolutionIcons = (() => {
+            const proportionMaxSpace = 80 / 60, proportioMaxSizeMini = 100 / 75;
+            return () => {
+                const [width, height] = project.resolution.proportion >= proportionMaxSpace ?
+                    [80, Math.round(80 / project.resolution.proportion)] :
+                    [Math.round(60 * project.resolution.proportion), 60];
+                const styleSizeCanvasIcon = { width: width + "px", height: height + "px" };
+                const [widthMini, heightMini] = project.resolution.proportion >= proportioMaxSizeMini ?
+                    [100, Math.round(100 / project.resolution.proportion)] :
+                    [Math.round(75 * project.resolution.proportion), 75];
+                const styleSizeCanvasIconMini = { width: widthMini + "px", height: heightMini + "px" };
+                for (const { canvasIcons: [icon, iconMini] } of project.layers) {
+                    setStyle(icon.canvas, styleSizeCanvasIcon);
+                    icon.canvas.width = width * 2;
+                    icon.canvas.height = height * 2;
+                    setStyle(iconMini.canvas, styleSizeCanvasIconMini);
+                    iconMini.canvas.width = widthMini * 2;
+                    iconMini.canvas.height = heightMini * 2;
+                }
+            }
+        })();
+        const txtResolution = getElement("txtResolucao")
+        return (width, height) => {
+            project.resolution = { width, height, proportion: (width / height) };
+            setResolutionEventLayer();
+            setResolutionLayers();
+            setResolutionLayerPreview();
+            setResolutionIcons();
+            layerSampleWindow.adjustSize();
+            txtResolution.value = width + ", " + height;
+        }
+    })();
     const setBackgroundColorProject = color => {
         const style = { background: color ? "rgb(" + color.r + ", " + color.g + ", " + color.b + ")" : null }
         setStyle(screen, style);
@@ -180,36 +270,6 @@ export default function appObject() {
     const createNewLayer = (() => {
         let mouseInBttLook = false, idIntervalToShowLayerSample = 0;
         const contentIconLayers = getElement("contentIconeCamadas"), contentMiniIconLayers = getElement("barraLateralMini");
-        const layerSampleWindow = {
-            window: getElement("janelaDeAmostraDaCamada"), timeTransition: 160,
-            screen: getElement("canvasAmostraDacamada").getContext("2d"),
-            arrow: getElement("setaJanelaDeAmostra"),
-            width: 0, height: 0,
-            adjustSize({ width, height }) {
-                this.width = (Math.floor(width * 2.1)) + 20;
-                this.height = (Math.floor(height * 2.1)) + 20;
-                this.screen.canvas.width = this.width * 2;
-                this.screen.canvas.height = this.height * 2;
-                setStyle(this.screen.canvas, { width: (this.width - 20) + "px", height: (this.height - 20) + "px" });
-            },
-            open(layer, icon) {
-                const { top, left, height } = icon.getBoundingClientRect();
-                const { top: topBar } = barRight.getBoundingClientRect();
-                let topWindow = (top - (this.height - height));
-                topWindow = topWindow < topBar ? topBar : topWindow;
-                setStyle(this.arrow, { top: (-14 + top - topWindow + (height / 2)) + "px" });
-                setStyle(this.window, {
-                    display: "block", top: topWindow + "px", left: (left - (this.width + 13)) + "px"
-                });
-                this.screen.clearRect(0, 0, this.screen.canvas.width, this.screen.canvas.height);
-                this.screen.drawImage(layer, 0, 0, this.screen.canvas.width, this.screen.canvas.height);
-                setTimeout(() => setStyle(this.window, { opacity: "1" }), 5);
-            },
-            close() {
-                setStyle(this.window, { opacity: null });
-                setTimeout(() => setStyle(this.window, { display: null }), this.timeTransition);
-            },
-        }
         const changeOrderLayers = (from, to) => {
             if (!project.layers.move(from, to)) { return; }
             const [icon, iconMini] = project.layers[to].icons;
@@ -222,39 +282,22 @@ export default function appObject() {
             }
             selectLayer(to);
         }
-        const createLayerPreview = (() => {
-            const proportionMaxSpace = 256 / 150;
-            return numLayer => {
-                const { width, height } = project.resolution.proportion >= proportionMaxSpace ?
-                    { width: 256, height: Math.round(256 / project.resolution.proportion) } :
-                    { width: Math.round(150 * project.resolution.proportion), height: 150 }
+        const createLayerPreview = numLayer => {
+            const layerPreview = createElement("canvas", { class: "preview" });
+            contentTelasPreview.appendChild(layerPreview);
+            setStyle(layerPreview, { zIndex: (numLayer * 2) });
+            return layerPreview.getContext("2d");
+        };
+        const createIconLayer = numLayer => {
+            const makeId = id => id + numLayer;
+            const idIcon = makeId("camadaIcone");
+            const idBttLook = makeId("visivel");
+            const idTxtNameLayer = makeId("nomeCamada");
+            const idTxtOpacity = makeId("txtOpacidade");
+            const idCanvasIcon = makeId("canvasIcone");
 
-                const style = "z-index: " + (numLayer * 2) + "; width: " + width + "px; height: " + height + "px; ";
-                const layerPreview = createElement("canvas", {
-                    "data-id": "previewLayer" + numLayer,
-                    class: "preview", style, width: Math.round(width * 2), height: Math.round(height * 2)
-                });
-                contentTelasPreview.appendChild(layerPreview);
-                setStyle(contentTelasPreview, { width: width + "px", height: height + "px" });
-                layerSampleWindow.adjustSize({ width, height });
-                return layerPreview.getContext("2d");
-            }
-        })();
-        const createIconLayer = (() => {
-            const proportionMaxSpace = 80 / 60, proportioMaxSizeMini = 100 / 75;
-            return numLayer => {
-                const makeId = id => id + numLayer;
-                const idIcon = makeId("camadaIcone");
-                const idBttLook = makeId("visivel");
-                const idTxtNameLayer = makeId("nomeCamada");
-                const idTxtOpacity = makeId("txtOpacidade");
-                const idCanvasIcon = makeId("canvasIcone");
-                const { width, height } = project.resolution.proportion >= proportionMaxSpace ?
-                    { width: 80, height: Math.round(80 / project.resolution.proportion) } :
-                    { width: Math.round(60 * project.resolution.proportion), height: 60 };
-                const styleSizeCanvasIcon = "width: " + width + "px; height: " + height + "px;";
-                contentIconLayers.insertAdjacentHTML("afterbegin",
-                    `<div data-id="${idIcon}" class="iconeCamada" draggable="true">
+            contentIconLayers.insertAdjacentHTML("afterbegin",
+                `<div data-id="${idIcon}" class="iconeCamada" draggable="true">
                         <div data-id="${idBttLook}" class="iconVer visivel cursor"></div>
                         <label>
                             <span data-id="${idTxtNameLayer}">Camada ${numLayer}</span><br>
@@ -262,49 +305,37 @@ export default function appObject() {
                             <input type="text" data-id="${idTxtOpacity}" readonly="true" class="opacidadeCamada" value="100%">
                         </label>
                         <div class="contentIcon">
-                            <div>
-                                <canvas data-id="${idCanvasIcon}" style="${styleSizeCanvasIcon}" class="iconTela" 
-                                width="${width * 2}" height="${height * 2}"></canvas>
-                            </div>
+                            <div><canvas data-id="${idCanvasIcon}" class="iconTela"></canvas></div>
                         </div>
                     </div>`);
-                contentIconLayers.scrollTop = contentIconLayers.scrollHeight;
+            contentIconLayers.scrollTop = contentIconLayers.scrollHeight;
 
-                const { widthMini, heightMini } = project.resolution.proportion >= proportioMaxSizeMini ?
-                    { widthMini: 100, heightMini: Math.round(100 / project.resolution.proportion) } :
-                    { widthMini: Math.round(75 * project.resolution.proportion), heightMini: 75 };
-                const idIconMini = makeId("camadaIconeMini");
-                const idBttLookMini = makeId("visivelMini");
-                const idCanvasIconMini = makeId("canvasIconeMini");
-                const styleSizeCanvasIconMini = "width: " + widthMini + "px; height: " + heightMini + "px;";
-                contentMiniIconLayers.insertAdjacentHTML("afterbegin",
-                    `<div data-id="${idIconMini}" class="iconeCamadaMini" draggable="true">
+            const idIconMini = makeId("camadaIconeMini");
+            const idBttLookMini = makeId("visivelMini");
+            const idCanvasIconMini = makeId("canvasIconeMini");
+            contentMiniIconLayers.insertAdjacentHTML("afterbegin",
+                `<div data-id="${idIconMini}" class="iconeCamadaMini" draggable="true">
                         <div data-id="${idBttLookMini}" class="iconVerMini visivel cursor"></div>
-                        <canvas data-id="${idCanvasIconMini}" style="${styleSizeCanvasIconMini}"
-                        width="${widthMini * 2}" height="${heightMini * 2}"></canvas>
+                        <canvas data-id="${idCanvasIconMini}"></canvas>
                     </div>`);
-                contentMiniIconLayers.scrollTop = contentMiniIconLayers.scrollHeight;
+            contentMiniIconLayers.scrollTop = contentMiniIconLayers.scrollHeight;
 
-                const icon = getElement(idIcon), iconMini = getElement(idIconMini),
-                    bttLook = getElement(idBttLook), bttLookMini = getElement(idBttLookMini),
-                    canvasIcon = getElement(idCanvasIcon), canvasIconMini = getElement(idCanvasIconMini),
-                    txtLayerName = getElement(idTxtNameLayer), txtOpacity = getElement(idTxtOpacity);
+            const icon = getElement(idIcon), iconMini = getElement(idIconMini),
+                bttLook = getElement(idBttLook), bttLookMini = getElement(idBttLookMini),
+                canvasIcon = getElement(idCanvasIcon), canvasIconMini = getElement(idCanvasIconMini),
+                txtLayerName = getElement(idTxtNameLayer), txtOpacity = getElement(idTxtOpacity);
 
-                return {
-                    icons: icon && iconMini ? [icon, iconMini] : null,
-                    bttsLook: bttLook && bttLookMini ? [bttLook, bttLookMini] : null,
-                    canvasIcons: canvasIcon && canvasIconMini ? [canvasIcon.getContext("2d"),
-                    canvasIconMini.getContext("2d")] : null, txtLayerName, txtOpacity,
-                }
+            return {
+                icons: icon && iconMini ? [icon, iconMini] : null,
+                bttsLook: bttLook && bttLookMini ? [bttLook, bttLookMini] : null,
+                canvasIcons: canvasIcon && canvasIconMini ? [canvasIcon.getContext("2d"),
+                canvasIconMini.getContext("2d")] : null, txtLayerName, txtOpacity,
             }
-        })();
+        };
         const createLayer = numLayer => {
-            const style = "z-index: " + (numLayer * 2) + ";";
-            const { height, width } = project.resolution;
-            const layer = createElement("canvas", {
-                "data-id": ("telaCamada" + numLayer), class: "telaCanvas", style, height, width
-            });
+            const layer = createElement("canvas", { class: "telaCanvas" });
             screen.appendChild(layer);
+            setStyle(layer, { zIndex: (numLayer * 2) });
             return layer.getContext("2d");
         }
         const getNumLayerByMouseInIcon = elIcon => {
@@ -320,7 +351,7 @@ export default function appObject() {
             idIntervalToShowLayerSample = setTimeout(() => {
                 if (mouseInBttLook || !project.layers[numLayer].cursorInIcon) { return; }
                 layerSampleWindow.open(project.layers[numLayer].layer.canvas, el);
-            }, 750)
+            }, 650)
         }
         const closeLayerSample = e => {
             clearTimeout(idIntervalToShowLayerSample);
@@ -389,23 +420,20 @@ export default function appObject() {
     })();
     const createProject = ({ name, resolution: { width, height }, background, numLayers }) => {
         txtProjectName.innerText = project.name = name;
-        project.resolution = { width, height, proportion: (width / height) };
         project.numLayers = numLayers;
         while (project.numLayers > project.layers.length) {
             const objLayer = createNewLayer();
             if (objLayer) { project.layers.push(objLayer); }
         }
+        setResolutionProject(width, height);
         setBackgroundColorProject(background);
         adjustScreen();
-        project.eventLayer.canvas.width = width;
-        project.eventLayer.canvas.height = height;
-        getElement("txtResolucao").value = width + ", " + height;
         selectLayer(0);
         return true;
     }
     const loadProject = async objProjeto => {
         const erro = () => notification.open({
-            type: "notify", timeNotify: 4000, title: "Erro!", message: "Não foi possível carregar projeto!"
+            type: "notify", timeNotify: 4000, title: "Erro!", message: "Não foi possível carregar o projeto!"
         });
         const arrayLayerDrawings = [];
         for (let i = 0; i < objProjeto.numLayers; i++) {
