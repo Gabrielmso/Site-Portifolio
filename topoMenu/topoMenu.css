@@ -7,6 +7,9 @@
     width: 100%;
     font-size: 15px;
     z-index: 1000000;
+}
+
+.transitionTopoMenu {
     transition: background-color 0.5s ease-in-out, border 0.5s ease-out, height 0.5s ease-in-out;
 }
 
@@ -36,6 +39,9 @@
     height: calc(100% + 2px);
     float: left;
     opacity: 0.8;
+}
+
+.transitionTopoMenu [data-id="bttLogoMenu"] {
     transition: width 0.5s ease-in-out, height 0.5s ease-in-out, opacity 0.2s ease-in-out;
 }
 
@@ -67,6 +73,9 @@
     height: 100%;
     padding: 0 11px 0 12px;
     border-bottom: 2px solid rgba(0, 0, 0, 0);
+}
+
+.transitionTopoMenu [data-id="opcoesMenu"] li {
     transition: line-height 0.4s ease-in-out, border 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
@@ -111,6 +120,9 @@
     color: black;
     background-color: rgba(213, 192, 107, 0.9);
     border-bottom: none;
+}
+
+.transitionTopoMenu [data-id="opcoesMenu"] li ul li {
     transition: background-color 0.2s ease-in-out;
 }
 
@@ -136,6 +148,9 @@
     width: 50px;
     height: calc(100% + 2px);
     float: right;
+}
+
+.transitionTopoMenu [data-id="bttSeta"] {
     transition: padding 0.4s ease-in-out;
 }
 
@@ -352,6 +367,7 @@
     line-height: 48px;
     padding: 0px 12px;
     transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+    color: white;
 }
 
 [data-id="opcoesMenu2"] li:hover a {

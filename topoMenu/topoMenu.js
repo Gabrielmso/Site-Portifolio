@@ -1,4 +1,4 @@
-import { delay, throttle, getElement, getAllElements, setStyle, loadFile } from "../js/utils.js";
+import { getElement, loadFile } from "../js/utils.js";
 
 const loadTopMenu = async () => {
     const htmlMenu = await loadFile("./topoMenu/menuTopo.html");
@@ -49,7 +49,7 @@ export default async function topMenuObject(changeMenu = true, initialTheme = 1)
     changeTheme(initialTheme);
     window.addEventListener("resize", screenResize);
     if (changeMenu) { window.addEventListener("scroll", scrollMenu); }
-    await delay(400);
+    setTimeout(() => menuBar.classList.add("transitionTopoMenu"), 350);
     return {
         changeTheme,
         logoClick(functionClick) {
