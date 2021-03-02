@@ -1,513 +1,414 @@
-[data-id="menu"] {
+[data-id="topoMenu"] {
     position: fixed;
-    top: 0%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    top: 0px;
     width: 100%;
-    transition: all 0.5s ease;
-    -webkit-transition: all 0.5s ease;
+    font-size: 15px;
     z-index: 1000000;
+    transition: background-color 0.5s ease-in-out, border 0.5s ease-out, height 0.5s ease-in-out;
 }
 
-[data-id="larguramenu"] {
-    width: 100%;
-    max-width: 1400px;
-    margin-left: auto;
-    margin-right: auto;
+.topoMenu1 {
+    height: 60px;
+    border-bottom: solid 2px rgba(255, 255, 255, 0.10);
 }
 
-.iniciomenu {
-    height: 62px;
-    background-color: rgba(0, 0, 0, 0);
-    border-bottom: solid 2px rgba(255, 255, 255, 0.12);
-}
-
-.mudamenu {
+.topoMenu2 {
     height: 50px;
-    background-color: rgba(0, 0, 0, 0.65);
-    border-bottom: solid 0px rgba(255, 255, 255, 0.12);
+    background-color: rgba(0, 0, 0, 0.618);
+    border-bottom: solid 2px rgba(0, 0, 0, 0);
 }
 
-#icons {
+[data-id="contentMenu"] {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 1400px;
+}
+
+/* ========================================  BTTLOGO  ======================================== */
+
+[data-id="bttLogoMenu"] {
+    background: url("./imagens/LogoGMwhite.svg") no-repeat 50%;
+    background-size: 75%;
+    height: calc(100% + 2px);
+    float: left;
+    opacity: 0.8;
+    transition: width 0.5s ease-in-out, height 0.5s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+[data-id="bttLogoMenu"]:hover {
+    opacity: 1;
+}
+
+.topoMenu1 [data-id="bttLogoMenu"] {
+    width: 120px;
+}
+
+.topoMenu2 [data-id="bttLogoMenu"] {
+    width: 100px;
+}
+
+/* ========================================  OPCOESMENU  ======================================== */
+
+[data-id="opcoesMenu"] {
+    display: inline-block;
     position: absolute;
-    margin-top: 180px;
+    left: 50%;
+    transform: translateX(-50%);
+    height: calc(100% + 2px);
 }
 
-.traco {
+[data-id="opcoesMenu"] li {
+    position: relative;
+    float: left;
+    height: 100%;
+    padding: 0 11px 0 12px;
+    border-bottom: 2px solid rgba(0, 0, 0, 0);
+    transition: line-height 0.4s ease-in-out, border 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.topoMenu1 [data-id="opcoesMenu"] li {
+    line-height: 58px;
+}
+
+.topoMenu2 [data-id="opcoesMenu"] li, .topoMenu1 [data-id="opcoesMenu"] li ul li {
+    line-height: 48px;
+}
+
+[data-id="opcoesMenu"] li:hover {
+    color: rgb(213, 192, 107);
+    border-bottom: 2px solid rgb(213, 192, 107);
+}
+
+[data-id="opcoesMenu"] li ul {
+    width: 220px;
+    border-radius: 0 0 10px 10px;
+    position: absolute;
+    left: 0px;
+    top: calc(100% + 2px);
+    overflow: hidden;
+    max-height: 0;
+    box-shadow: 7px 7px 5px rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    transition: max-height 0.2s ease-in-out;
+}
+
+[data-id="opcoesMenu"] li:hover ul {
+    max-height: 150px;
+}
+
+[data-id="opcoesMenu"] li ul:hover {
+    overflow: auto;
+}
+
+[data-id="opcoesMenu"] li ul li {
+    height: 50px;
+    width: 100%;
+    line-height: 48px;
+    color: black;
+    background-color: rgba(213, 192, 107, 0.9);
+    border-bottom: none;
+    transition: background-color 0.2s ease-in-out;
+}
+
+[data-id="opcoesMenu"] li ul li:hover {
+    background-color: rgba(100, 70, 10, 0.9);
+    border-bottom: none;
+    color: rgb(213, 192, 107);
+}
+
+[data-id="opcoesMenu"] li ul li a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    width: 100%;
+    height: 100%;
+    transition: color 0.2s ease-in-out;
+}
+
+/* ========================================  BTTSETA  ======================================== */
+
+[data-id="bttSeta"] {
+    position: relative;
+    width: 50px;
+    height: calc(100% + 2px);
+    float: right;
+    transition: padding 0.4s ease-in-out;
+}
+
+[data-id="tracosSeta"] {
+    position: relative;
+    opacity: 0.8;
+    transition: opacity 0.2s ease-in-out;
+}
+
+[data-id="bttSeta"]:hover [data-id="tracosSeta"] {
+    opacity: 1;
+}
+
+.topoMenu1 [data-id="bttSeta"] {
+    padding-top: 5px;
+}
+
+[data-id="bttSeta"] span {
+    position: absolute;
+    width: 22px;
+    height: 3px;
+    background-color: #fff;
+    transition: transform 0.2s ease-in-out, left 0.2s ease-in-out, top 0.2s ease-in-out;
+}
+
+.inicioBttSeta .tracoseta1 {
+    transform: rotate(50grad);
+    left: 7px;
+    top: 17px;
+}
+
+.inicioBttSeta .tracoseta2 {
+    transform: rotate(-50grad);
+    left: 21px;
+    top: 17px;
+}
+
+.inicioBttSeta .tracoseta3 {
+    transform: rotate(50grad);
+    left: 7px;
+    top: 30px;
+}
+
+.inicioBttSeta .tracoseta4 {
+    transform: rotate(-50grad);
+    left: 21px;
+    top: 30px;
+}
+
+.mudaBttSeta .tracoseta1 {
+    transform: rotate(-250grad);
+    top: 16px;
+    left: 7px;
+}
+
+.mudaBttSeta .tracoseta2 {
+    transform: rotate(250grad);
+    top: 16px;
+    left: 21px;
+}
+
+.mudaBttSeta .tracoseta3 {
+    transform: rotate(-250grad);
+    top: 29px;
+    left: 7px;
+}
+
+.mudaBttSeta .tracoseta4 {
+    transform: rotate(250grad);
+    top: 29px;
+    left: 21px;
+}
+
+[data-id="bttSeta"] ul {
+    position: absolute;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.618);
+    width: 100%;
+    height: 300px;
+    left: 0;
+    top: 100%;
+    transition: max-height 0.2s ease-in-out;
+}
+
+[data-id="bttSeta"] ul li {
+    width: 50px;
+    height: 50px;
+}
+
+[data-id="bttSeta"] ul li a {
+    display: block;
+    width: 50px;
+    height: 50px;
+}
+
+.inicioBttSeta ul {
+    max-height: 0px;
+}
+
+.mudaBttSeta ul {
+    max-height: 200px;
+}
+
+[data-id="logoinsta"] {
+    background: url("./imagens/icones/instagramLogoWhite.svg") no-repeat 50%;
+    background-size: 35px;
+}
+
+[data-id="logoyoutube"] {
+    background: url("./imagens/icones/youtubeLogoWhite.svg") no-repeat 50%;
+    background-size: 41px;
+}
+
+[data-id="logoGitHub"] {
+    background: url("./imagens/icones/githubLogoWhite.svg") no-repeat 50%;
+    background-size: 36px;
+}
+
+[data-id="logoLinkedin"] {
+    background: no-repeat url("./imagens/icones/linkedinLogo.svg") 50%;
+    background-size: 34px;
+}
+
+.iconeSociais {
+    opacity: 0.8;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.iconeSociais:hover {
+    opacity: 1;
+}
+
+/* ========================================= BTTMENU ========================================== */
+
+[data-id="bttMenuOpcoesMenu2"] {
+    display: none;
+    position: relative;
+    float: left;
+    width: 50px;
+    height: 50px;
+}
+
+[data-id="tracosBttMenuOpcoesMenu2"] {
+    position: relative;
+    opacity: 0.8;
+    width: 50px;
+    height: 50px;
+    transition: opacity 0.2s ease-in-out;
+}
+
+[data-id="bttMenuOpcoesMenu2"]:hover [data-id="tracosBttMenuOpcoesMenu2"] {
+    opacity: 1;
+}
+
+[data-id="tracosBttMenuOpcoesMenu2"] span {
+    position: absolute;
     left: 10px;
     width: 30px;
     height: 3px;
     background-color: #fff;
-    position: absolute;
-    -webkit-transition: all 0.4s ease;
-    transition: all 0.4s ease;
+    transition: width 0.2s ease-in-out, left 0.2s ease-in-out, top 0.2s ease-in-out, transform 0.2s ease-in-out;
 }
 
-.movertraco1 {
-    -webkit-transform: rotate(250grad);
+.opcoesMenu2Aberto .traco1 {
     transform: rotate(250grad);
     top: 24px;
 }
 
-.movertraco2 {
+.opcoesMenu2Aberto .traco2 {
     width: 0px;
     left: 24px;
     top: 23px;
 }
 
-.movertraco3 {
-    -webkit-transform: rotate(-250grad);
+.opcoesMenu2Aberto .traco3 {
     transform: rotate(-250grad);
     top: 24px;
 }
 
-.iniciotraco1 {
+.opcoesMenu2Fechado .traco1 {
     top: 12px;
 }
 
-.iniciotraco2 {
+.opcoesMenu2Fechado .traco2 {
     top: 23px;
 }
 
-.iniciotraco3 {
+.opcoesMenu2Fechado .traco3 {
     top: 34px;
 }
 
-.abrefundomenu {
-    left: 0px;
+/* ========================================= OPCOESMENU2 ========================================== */
+
+[data-id="fundomenu"] {
+    position: absolute;
+    height: 5000px;
+    background-color: rgba(0, 0, 0, 0.618);
+    width: 240px;
+    top: 50px;
+    transition: left 0.2s ease-in-out;
 }
 
-.fechafundomenu {
+.opcoesMenu2Fechado [data-id="fundomenu"] {
     left: -250px;
 }
 
-[data-id="logoBlack"] {
-    position: relative;
+.opcoesMenu2Aberto [data-id="fundomenu"] {
+    left: 0px;
+}
+
+[data-id="opcoesMenu2"] li a {
     display: block;
-    background-image: url("./imagens/LogoGMwhite.svg");
-    background-position: 50%;
-    background-repeat: no-repeat;
-    opacity: 0.75;
-    float: left;
-    z-index: 2;
-    transition: background-size 0.35s ease, width 0.35s ease, height 0.35s ease, left 0.3s ease;
-    -webkit-transition: background-size 0.35s ease, width 0.35s ease, height 0.35s ease, left 0.3s ease;
-}
-
-.iniciologoBlack {
-    width: 120px;
-    height: 62px;
-    background-size: 80px;
-}
-
-.mudalogoBlack {
-    width: 90px;
     height: 50px;
-    background-size: 65px;
+    line-height: 48px;
+    padding: 0px 12px;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
-[data-id="logoinsta"] {
-    background-image: url("./imagens/icones/instagramLogoWhite.svg");
-    background-size: 35px;
-    background-position: 50%;
+[data-id="opcoesMenu2"] li:hover a {
+    color: rgb(213, 192, 107);
+    background-color: rgba(255, 255, 255, 0.0618);
 }
 
-[data-id="logoyoutube"] {
-    background-image: url("./imagens/icones/youtubeLogoWhite.svg");
-    background-size: 41px;
-    background-position: 50% 25%;
-}
-
-[data-id="logoGitHub"] {
-    background-image: url("./imagens/icones/githubLogoWhite.svg");
-    background-size: 36px;
-    background-position: 50%;
-}
-
-[data-id="logoLinkedin"] {
-    background-image: url("./imagens/icones/linkedinLogo.svg");
-    background-size: 34px;
-    background-position: 50% 40%;
-}
-
-.iconeSociais {
-    position: relative;
-    background-repeat: no-repeat;
-    width: 50px;
-    opacity: 0.80;
-    height: 50px;
-}
-
-.iconeSociais:hover, [data-id="logoBlack"]:hover, [data-id="bttseta"]:hover, [data-id="bttmenu"]:hover {
-    opacity: 1;
-}
-
-[data-id="bttseta"] {
-    position: relative;
-    display: block;
-    width: 50px;
-    opacity: 0.75;
-    transition: height 0.35s ease, padding-top 0.35s ease;
-    -webkit-transition: height 0.35s ease, padding-top 0.35s ease;
-}
-
-[data-id="bttmenu"] {
-    position: relative;
-    display: none;
-    float: left;
-    width: 50px;
-    opacity: 0.75;
-}
-
-.inicioiconeblack {
-    padding-top: 6px;
-    height: 62px;
-}
-
-.mudaiconeblack {
-    padding-top: 0px;
-    height: 50px;
-}
-
-.tracos {
-    position: relative;
-    width: 50px;
-    height: 50px;
-    -webkit-transition: all 0.5 ease;
-    transition: all 0.5s ease;
-}
-
-.tracoseta {
-    position: absolute;
-    width: 22px;
-    height: 3px;
-    background-color: #fff;
-    -webkit-transition: all 0.35 ease;
-    transition: all 0.35s ease;
-}
-
-.iniciotracoseta0 {
-    -webkit-transform: rotate(50grad);
-    transform: rotate(50grad);
-    left: 7px;
-    top: 17px;
-}
-
-.iniciotracoseta1 {
-    -webkit-transform: rotate(-50grad);
-    transform: rotate(-50grad);
-    left: 21px;
-    top: 17px;
-}
-
-.iniciotracoseta2 {
-    -webkit-transform: rotate(50grad);
-    transform: rotate(50grad);
-    left: 7px;
-    top: 30px;
-}
-
-.iniciotracoseta3 {
-    -webkit-transform: rotate(-50grad);
-    transform: rotate(-50grad);
-    left: 21px;
-    top: 30px;
-}
-
-.movertracoseta0 {
-    -webkit-transform: rotate(-250grad);
-    transform: rotate(-250grad);
-    top: 16px;
-    left: 7px;
-}
-
-.movertracoseta1 {
-    -webkit-transform: rotate(250grad);
-    transform: rotate(250grad);
-    top: 16px;
-    left: 21px;
-}
-
-.movertracoseta2 {
-    -webkit-transform: rotate(-250grad);
-    transform: rotate(-250grad);
-    top: 29px;
-    left: 7px;
-}
-
-.movertracoseta3 {
-    -webkit-transform: rotate(250grad);
-    transform: rotate(250grad);
-    top: 29px;
-    left: 21px;
-}
-
-[data-id="submenu"] {
-    position: relative;
-    width: 50px;
-    height: 50px;
-    float: right;
-}
-
-[data-id="socials"] {
-    background-color: rgba(0, 0, 0, 0.60);
-    position: relative;
-    display: block;
-    height: 0px;
-    transition: height 200ms ease-in-out;
-    overflow: hidden;
-}
-
-.cursor {
-    cursor: pointer;
-}
-
-.link {
-    display: block;
-    width: 100%;
-    height: 100%;
-}
-
-.clearfix:after {
-    content: "";
-    display: table;
-    clear: both;
-}
-
-[data-id="opcoesmenu"] {
-    display: inline-block;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    list-style: none;
-    -webkit-transition: all 0.3 ease;
-    transition: all 0.3s ease;
-}
-
-[data-id="fundomenu"] {
-    display: none;
-    margin-top: 50px;
-    position: absolute;
-    backdrop-filter: blur(5px);
-    background-color: rgba(0, 0, 0, 0.60);
-    width: 240px;
-    -webkit-transition: left 0.3s;
-    transition: all 0.3s;
-    z-index: 100000;
-}
-
-[data-id="opcoesmenu2"] {
-    overflow: auto;
-    width: 240px;
-    display: block;
-    list-style: none;
-    line-height: 24px;
-}
-
-[data-id="opcoesmenu"] li {
-    float: left;
-    margin-right: 2px;
-    line-height: 24px;
-}
-
-[data-id="opcoesmenu"] a {
-    padding-left: 12px;
-    padding-right: 12px;
-    display: block;
-    font-size: 15px;
+[data-id="opcoesMenu2"] li ul li a, [data-id="opcoesMenu2"] li:hover ul li a {
+    color: black;
+    background-color: transparent;
     text-decoration: none;
-    text-align: left;
-    border-bottom: none;
-    color: white;
-    transition: all 0.5s ease;
-    -webkit-transition: all 0.5s ease;
-    border-bottom: 3px solid rgba(213, 192, 107, 0);
+    background-color: rgb(213, 192, 107);
 }
 
-[data-id="opcoesmenu"] ul a {
-    padding-bottom: 13px;
-    padding-top: 13px;
-    padding-left: 12px;
-    padding-right: 12px;
-    display: block;
-    text-decoration: none;
-    text-align: left;
-    border-bottom: none;
-    color: white;
-}
-
-.mudaopcoes {
-    padding-bottom: 11px;
-    padding-top: 12px;
-}
-
-.inicioopcoes {
-    padding-bottom: 17px;
-    padding-top: 18px;
-}
-
-[data-id="opcoesmenu"] li a:hover, [data-id="opcoesmenu"] li p:hover {
-    border-bottom: solid 3px rgba(213, 192, 107, 0.83);
-    color: rgb(213, 192, 107);
-    transition: all 0.35s;
-    -webkit-transition: all 0.35s;
-}
-
-[data-id="opcoesmenu"] ul li a:hover, [data-id="opcoesmenu"] ul li p:hover {
-    background-color: rgba(100, 68, 8, 0.83);
-    color: rgb(213, 192, 107);
-    transition: all 0.35s;
-    -webkit-transition: all 0.35s;
-    border-bottom: none;
-}
-
-[data-id="opcoesmenu2"] li a:hover, [data-id="opcoesmenu2"] li p:hover {
-    background-color: rgba(80, 80, 80, 0.486);
+[data-id="opcoesMenu2"] li ul li a:hover {
+    background-color: rgba(100, 70, 10);
     color: rgb(213, 192, 107);
 }
 
-[data-id="opcoesmenu2"] ul li a:hover, [data-id="opcoesmenu2"] ul li p:hover {
-    background-color: rgba(100, 68, 8, 0.83);
-    color: rgb(213, 192, 107);
-}
-
-[data-id="opcoesmenu"] ul {
-    width: 220px;
-    position: absolute;
+[data-id="opcoesMenu2"] li ul {
+    border-radius: 0 0 10px 10px;
     overflow: hidden;
     max-height: 0;
-    list-style: none;
-    box-shadow: 7px 7px 5px rgba(0, 0, 0, 0.349);
-    transition: all 0.35s;
-    -webkit-transition: all 0.35s;
     z-index: 10000;
+    transition: max-height 0.2s ease-in-out;
 }
 
-[data-id="opcoesmenu2"] li p {
-    padding-top: 13px;
-    padding-bottom: 13px;
-    margin-bottom: 0;
-    padding-left: 12px;
-    padding-right: 12px;
-    display: block;
-    text-decoration: none;
-    text-align: left;
-    color: white;
-}
-
-[data-id="opcoesmenu2"] a {
-    padding-top: 13px;
-    padding-bottom: 13px;
-    padding-left: 12px;
-    padding-right: 12px;
-    font-size: 15px;
-    display: block;
-    text-decoration: none;
-    text-align: left;
-    color: white;
-    transition: all 0.3s;
-}
-
-[data-id="opcoesmenu2"] li:hover ul {
+[data-id="opcoesMenu2"] li:hover ul {
     max-height: 150px;
 }
 
-[data-id="opcoesmenu"] li:hover ul {
-    max-height: 150px;
-}
-
-[data-id="opcoesmenu"] li ul:hover {
-    overflow-y: auto;
-}
-
-[data-id="opcoesmenu2"] ul {
-    position: static;
-    overflow: hidden;
-    max-height: 0px;
-    list-style: none;
-    transition: all 0.35s;
-    -webkit-transition: all 0.35s;
-}
-
-[data-id="opcoesmenu2"] ul li {
-    background-color: rgba(213, 192, 107, 0.83);
-    transition: all 0.35s;
-    -webkit-transition: all 0.35s;
-}
-
-[data-id="opcoesmenu2"] ul a, [data-id="opcoesmenu2"] ul p {
-    color: #000;
-}
-
-[data-id="opcoesmenu"] ul a, [data-id="opcoesmenu"] ul p {
-    color: #000;
-}
-
-[data-id="opcoesmenu"] p:hover {
-    color: rgb(213, 192, 107);
-    transition: all 0.35s;
-    -webkit-transition: all 0.35s;
-}
-
-[data-id="opcoesmenu"] ul li {
-    width: 220px;
-    text-align: left;
-    list-style: none;
-    background-color: rgba(213, 192, 107, 0.83);
-    transition: all 0.35s;
-    -webkit-transition: all 0.35s;
-}
-
-[data-id="opcoesmenu"] ul li a {
-    padding-left: 10px;
-    padding-right: 4px;
+[data-id="opcoesMenu2"] li ul:hover {
+    overflow: auto;
 }
 
 @media screen and (max-width: 650px) {
-    [data-id="opcoesmenu"] {
+    [data-id="opcoesMenu"] {
         display: none;
     }
-    [data-id="fundomenu"] {
+    [data-id="bttMenuOpcoesMenu2"] {
         display: block;
     }
-    .iniciomenu {
+    .topoMenu1 {
         height: 50px;
         background-color: rgba(0, 0, 0, 0);
         border-bottom: solid 2px rgba(255, 255, 255, 0.12);
     }
-    .mudamenu {
-        height: 50px;
-        background-color: rgba(0, 0, 0, 0.60);
-        border-bottom: solid 0px rgba(255, 255, 255, 0.12);
+    .topoMenu1 [data-id="bttLogoMenu"] {
+        width: 100px;
     }
-    .inicioiconeblack {
-        padding-top: 0px;
-        height: 50px;
-    }
-    .mudaiconeblack {
-        padding-top: 0px;
-        height: 50px;
-    }
-    .iniciologoBlack {
-        width: 90px;
-        height: 50px;
-        background-size: 65px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    .mudalogoBlack {
-        width: 90px;
-        height: 50px;
-        background-size: 65px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    [data-id="bttmenu"] {
-        display: block;
-    }
-    [data-id="logoBlack"] {
-        width: 90px;
-        height: 50px;
+    [data-id="bttLogoMenu"] {
+        position: absolute;
         float: none;
-        margin-left: auto;
-        margin-right: auto;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    .topoMenu1 [data-id="bttSeta"] {
+        padding-top: 0px;
     }
 }

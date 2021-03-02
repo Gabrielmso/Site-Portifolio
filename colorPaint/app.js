@@ -597,11 +597,11 @@ export default function appObject() {
                 const logoCarregamento = getElement("logoCarregamento");
                 setStyle(logoCarregamento, { transition: "opacity 1s ease-in-out", opacity: "1" });
                 await delay(1000);
-                const { left, top } = getElement("logoBlack").getBoundingClientRect();
+                const { left, top } = getElement("bttLogoMenu").getBoundingClientRect();
                 setStyle(logoCarregamento, {
                     transition: "width 400ms ease-in-out, height 400ms ease-in-out, opacity 400ms ease-in-out, top 400ms ease-in-out, left 400ms ease-in-out",
-                    width: "90px", height: "50px", opacity: "0.75",
-                    left: left + 45 + "px", top: top + 25 + "px"
+                    width: "100px", height: "50px", opacity: "0.8",
+                    left: (left + 50) + "px", top: (top + 25) + "px"
                 });
                 await delay(450);
                 fadeOutLoading();

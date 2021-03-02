@@ -114,10 +114,18 @@ canvas {
     user-select: none;
 }
 
+.cursor {
+    cursor: pointer;
+}
+
 p {
     line-height: 26px;
     margin-top: 0;
     margin-bottom: 16px;
+}
+
+ul {
+    list-style: none;
 }
 
 li {
