@@ -1,4 +1,4 @@
-import { getElement, loadFile } from "../js/utils.js";
+import { throttle, getElement, loadFile } from "../js/utils.js";
 
 const loadTopMenu = async () => {
     const htmlMenu = await loadFile("./topoMenu/menuTopo.html");
@@ -15,34 +15,36 @@ export default async function topMenuObject(changeMenu = true, initialTheme = 1)
     const bttLogo = getElement("bttLogoMenu");
     const bttSeta = getElement("bttSeta");
     const bttMenu = getElement("bttMenuOpcoesMenu2");
-    const changeTheme = numTheme =>
-        menuBar.classList.replace(...(numTheme === 1 ? ["topoMenu2", "topoMenu1"] : ["topoMenu1", "topoMenu2"]));
+    const changeTheme = (() => {
+        const classNames = ["topoMenu2", "topoMenu1"]
+        return numTheme => menuBar.classList.replace(...(numTheme === 1 ? classNames : [...classNames].reverse()))
+    })();
     const onClickBttSeta = (() => {
         let opened = false;
+        const classNames = ["inicioBttSeta", "mudaBttSeta"]
         return (open = null) => {
             opened = open !== null ? open : !opened;
-            bttSeta.classList.replace(...(opened ? ["inicioBttSeta", "mudaBttSeta"] :
-                ["mudaBttSeta", "inicioBttSeta"]));
+            bttSeta.classList.replace(...(opened ? classNames : [...classNames].reverse()));
         }
     })();
     bttSeta.addEventListener("click", onClickBttSeta.bind(null, null));
     bttSeta.addEventListener("mouseleave", onClickBttSeta.bind(null, false));
     const onClickBttMenu = (() => {
         let opened = false;
+        const classNames = ["opcoesMenu2Fechado", "opcoesMenu2Aberto"]
         return (open = null) => {
             opened = open !== null ? open : !opened;
-            bttMenu.classList.replace(...(opened ? ["opcoesMenu2Fechado", "opcoesMenu2Aberto"] :
-                ["opcoesMenu2Aberto", "opcoesMenu2Fechado"]));
+            bttMenu.classList.replace(...(opened ? classNames : [...classNames].reverse()));
         }
     })();
     getElement("tracosBttMenuOpcoesMenu2").addEventListener("click", onClickBttMenu.bind(null, null));
     getElement("fundomenu").addEventListener("mouseleave", onClickBttMenu.bind(null, false));
 
-    const scrollMenu = () => {
+    const scrollMenu = throttle(() => {
         scrollBody = document.body.scrollTop || document.documentElement.scrollTop;
         if (scrollBody > 5) { changeTheme(2); }
         else { changeTheme(1); }
-    }
+    }, 100);
     const screenResize = () => {
         if (window.innerWidth > 650) { onClickBttMenu(false); }
     }

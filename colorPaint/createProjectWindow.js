@@ -120,7 +120,7 @@ export default function createProjectWindowObject({ notification, colors }) {
         input.addEventListener("change", e => fileValidation(e.currentTarget.files[0]));
         input.click();
     }
-    const validateProperties = () => {
+    const validateProperties = async () => {
         const campoInvalido = campo => {
             campo.focus();
             setStyle(campo, {
@@ -154,11 +154,10 @@ export default function createProjectWindowObject({ notification, colors }) {
         }
         const background = valueCor === 1 ? { r: 255, g: 255, b: 255 } : valueCor === 2 ? { r: 0, g: 0, b: 0 } :
             valueCor === 3 ? false : colors.get(1);
+        await conclude();
         observers.notify("createProject", {
-            mode: "create",
-            obj: { name, resolution: { width, height }, background, numLayers }
+            mode: "create", obj: { name, resolution: { width, height }, background, numLayers }
         });
-        conclude();
     }
     const clickContentToClose = e => { if (e.currentTarget === e.target) { close(); } }
     const mouseLeaveWindowLoad = () => loadProject.window.classList.replace("dragEnter", "dragLeave")
