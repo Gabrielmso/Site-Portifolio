@@ -2,7 +2,7 @@ import {
     setStyle, getMousePosition, getElement, getDistanceCoordinates, createCopyCanvas, createElement,
 } from "../js/utils.js";
 
-export default function toolsFunctionsObject({ project, drawingTools, screen, contentTelas, janelaPrincipal,
+export default function ToolsFunctions({ project, drawingTools, screen, contentTelas, janelaPrincipal,
     notification, strokeCoordinates, observers, mousePosition, elCursor, selectDrawingTool, changeToolSize,
     changeToolOpacity, changeToolHardness, applyToolProperties }) {
     const toolsFunctions = {

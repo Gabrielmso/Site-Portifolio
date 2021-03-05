@@ -2,11 +2,11 @@ import {
     getImage, preventDefaultAction, throttle, setStyle, getMousePosition, logarithm, getElement,
     getDistanceCoordinates, createEventEmitterToObservers,
 } from "../js/utils.js";
-import toolsFunctionsObject from "./toolsFuntions.js";
+import ToolsFunctions from "./toolsFuntions.js";
 
 const toolConstructor = (name = "", properties = false) => ({ btt: getElement(name), name, properties });
 
-export default function drawingToolsObject({ project, screen, contentTelas, janelaPrincipal, notification, zoom }) {
+export default function DrawingTools({ project, screen, contentTelas, janelaPrincipal, notification, zoom }) {
     const observers = createEventEmitterToObservers(["toolUsed", "drawInLayer", "setColor"]);
     const elCursor = getElement("cursorFerramenta");
     const mousePosition = {
@@ -374,7 +374,7 @@ export default function drawingToolsObject({ project, screen, contentTelas, jane
         project.eventLayer.globalAlpha = opacity;
         project.eventLayer.strokeStyle = project.eventLayer.fillStyle = "rgb(" + r + ", " + g + ", " + b + ")";
     };
-    const toolsFunctions = toolsFunctionsObject({
+    const toolsFunctions = ToolsFunctions({
         project, drawingTools, screen, contentTelas, janelaPrincipal, elCursor, notification,
         strokeCoordinates, observers, mousePosition, selectDrawingTool, changeToolSize, changeToolOpacity,
         changeToolHardness, applyToolProperties

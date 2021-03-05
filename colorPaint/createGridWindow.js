@@ -1,6 +1,6 @@
 import { getMousePosition, getElement, setStyle, createElement } from "../js/utils.js";
 
-export default function createGridWindowObject({ notification, project, contentTelas,
+export default function CreateGridWindow({ notification, project, contentTelas,
     adjustInVisualizationScreen, zoom }) {
     const gridProperties = { screen: getElement("grid"), size: 80, position: { x: 0, y: 0 }, opacity: 1, visible: false },
         previousVisualization = { scrollX: 0, scrollY: 0, zoom: 0 },

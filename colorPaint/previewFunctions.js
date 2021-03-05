@@ -1,6 +1,6 @@
 import { getMousePosition, getElement, setStyle } from "../js/utils.js";
 
-export default function previewFunctionsObject({ project, contentTelasPreview, contentTelas }) {
+export default function PreviewFunctions({ project, contentTelasPreview, contentTelas }) {
     const moverScroll = getElement("moverScroll");
     const scrollEventMoveMoverScroll = () => {
         const mult = contentTelas.scrollHeight / contentTelasPreview.offsetHeight;

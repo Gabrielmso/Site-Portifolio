@@ -1,6 +1,6 @@
 import { getMousePosition, getElement, setStyle, createEventEmitterToObservers } from "../js/utils.js";
 
-export default function colorSelectionWindowObject({ janelaPrincipal }) {
+export default function ColorSelectionWindow({ janelaPrincipal }) {
     const status = { opened: false, functionWhenSelecting: () => { } }
     const observers = createEventEmitterToObservers(["open", "saveColor", "selectedColor"]);
     const selectedColor = {

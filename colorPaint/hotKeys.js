@@ -1,6 +1,6 @@
 import { createEventEmitterToObservers } from "../js/utils.js";
 
-export default function hotKeysObject() {
+export default function HotKeys() {
     const observers = createEventEmitterToObservers(["hotKey"]);
     const keyDownEvent = e => observers.notify("hotKey", { pressed: true, e })
     const keyUpEvent = e => observers.notify("hotKey", { pressed: false, e })

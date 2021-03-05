@@ -1,12 +1,12 @@
 import {
-    getElement, setStyle, createElement, openWindowBackgroundBlur, delay, createEventEmitterToObservers,
-    getAllElementsClass
+    getElement, setStyle, createElement, openWindowBackgroundBlur, delay, createEventEmitterToObservers
 } from "../js/utils.js";
 
 const MAX_NUM_LAYERS = 5;
 
-export default function createProjectWindowObject({ notification, colors }) {
+export default function CreateProjectWindow({ notification, colors }) {
     const state = { mode: "create", dragEnterElement: null }
+    const bttCreateNewProject = getElement("bttCriarNovoProjeto");
     const observers = createEventEmitterToObservers(["createProject"]);
     const content = getElement("contentCriarAbrirProjeto");
     const createProject = {
@@ -47,7 +47,8 @@ export default function createProjectWindowObject({ notification, colors }) {
         await openWindowBackgroundBlur(content, false);
     }
     const conclude = async () => {
-        await delay(100);
+        bttCreateNewProject.remove();
+        await delay(50);
         await close();
         content.remove();
     }
@@ -78,7 +79,7 @@ export default function createProjectWindowObject({ notification, colors }) {
             },
             () => typeof obj.grid !== "object",
             () => ["size", "position", "visible", "opacity"].some(p => !(obj.grid.hasOwnProperty(p))),
-            () => typeof obj.grid.size !== "number" || obj.grid.size < 0,
+            () => typeof obj.grid.size !== "number" || obj.grid.size < 1,
             () => typeof obj.grid.position !== "object",
             () => ["x", "y"].some(p =>
                 !obj.grid.position.hasOwnProperty(p) || typeof obj.grid.position[p] !== "number"),
@@ -170,8 +171,7 @@ export default function createProjectWindowObject({ notification, colors }) {
         loadProject.window.classList.replace("dragEnter", "dragLeave");
     }
     const dropFileWindowLoad = e => fileValidation(e.dataTransfer.files[0]);
-    const openBeforeProjectCreated = mode => {
-        openWindowBackgroundBlur(content, true);
+    const openBeforeProjectCreated = (() => {
         const typeMode = {
             create: () => {
                 setStyle(loadProject.window, { display: "none" });
@@ -185,24 +185,32 @@ export default function createProjectWindowObject({ notification, colors }) {
                 loadProject.addEventsToElements();
             }
         }
-        state.mode = mode;
-        typeMode[state.mode]();
-        content.addEventListener("mousedown", clickContentToClose);
-        Array.from(getAllElementsClass("bttLightAnimation")).map(e => e.classList.remove("bttLightAnimation"));
-    };
+        return mode => {
+            openWindowBackgroundBlur(content, true);
+            state.mode = mode;
+            typeMode[state.mode]();
+            content.addEventListener("mousedown", clickContentToClose);
+            bttCreateNewProject.classList.remove("bttLightAnimation");
+        }
+    })();
+    const onBeforeUnload = e => e.returnValue = 'Todo o progresso não salvo será perdido, deseja continuar?';
     const open = {
         currentOpen: openBeforeProjectCreated,
         open: mode => open.currentOpen(mode), addObservers: observers.add, removeObservers: observers.remove,
         onReadyProject: () => {
+            window.addEventListener("beforeunload", onBeforeUnload);
             open.currentOpen = mode => notification.open({
                 type: "confirm", title: "Projeto em andamento!",
                 message: "Todo o progresso não salvo será perdido, deseja continuar?",
                 functionConfirm: () => {
+                    window.removeEventListener("beforeunload", onBeforeUnload);
                     sessionStorage.setItem("loadMode", mode);
                     window.location.reload();
                 }
             });
         }
     }
+    bttCreateNewProject.addEventListener("mousedown", openBeforeProjectCreated.bind(null, "create"));
+    getElement("bttCarregarProjeto").addEventListener("mousedown", open.open.bind(null, "load"));
     return open;
 }

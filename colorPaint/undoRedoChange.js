@@ -1,6 +1,6 @@
 import { getElement, createCopyCanvas, createEventEmitterToObservers, preventDefaultAction } from "../js/utils.js";
 
-export default function undoRedoChangeObject({ project }) {
+export default function UndoRedoChange({ project }) {
     const observers = createEventEmitterToObservers(["restoreChange"]);
     const changeLimit = 20;
     const changes = { undone: [], redone: [] }

@@ -1,11 +1,11 @@
 import {
     getElement, createEventEmitterToObservers, createElement, preventDefaultAction, setStyle
 } from "../js/utils.js";
-import colorSelectionWindowObject from "./colorSelectionWindow.js";
+import ColorSelectionWindow from "./colorSelectionWindow.js";
 
-export default function colorsApp({ project, notification, janelaPrincipal }) {
+export default function ColorsApp({ project, notification, janelaPrincipal }) {
     const observers = createEventEmitterToObservers(["openColorSelectionWindow", "colorChanged"]);
-    const colorSelectionWindow = colorSelectionWindowObject({ janelaPrincipal })
+    const colorSelectionWindow = ColorSelectionWindow({ janelaPrincipal })
     const firstPlane = { btt: getElement("corPrincipal"), color: { r: 0, g: 0, b: 0 } };
     const backgroundPlane = { btt: getElement("corSecundaria"), color: { r: 255, g: 255, b: 255 } }
     const bttRemoveSavedColor = getElement("bttRemoverCorSalva");

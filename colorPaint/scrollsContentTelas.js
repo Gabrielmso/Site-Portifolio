@@ -1,6 +1,6 @@
 import { getElement, setStyle, getMousePosition } from "../js/utils.js"
 
-export default function scrollsContentTelas({ contentTelas, screen }) {
+export default function ScrollsContentTelas({ contentTelas }) {
     const verticalBar = { bar: getElement("scrollVertical"), content: getElement("barraVertical") };
     const horizontalBar = { bar: getElement("scrollHorizontal"), content: getElement("barraHorizontal") };
     const changeTopScrollContentTelas = top => {
