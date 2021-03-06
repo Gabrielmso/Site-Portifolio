@@ -1,6 +1,5 @@
 import {
-    getMousePosition, getElement, setStyle, createEventEmitterToObservers, rgbTohex,
-    hexToRgb, hsvToRgb, rgbToHsv
+    getMousePosition, getElement, setStyle, createEventEmitterToObservers, rgbTohex, hexToRgb, hsvToRgb, rgbToHsv
 } from "../js/utils.js";
 
 export default function ColorSelectionWindow({ janelaPrincipal }) {
@@ -43,7 +42,6 @@ export default function ColorSelectionWindow({ janelaPrincipal }) {
     }
     const paintSpectrum = () => {
         const spectrum = insideWindow.canvas.spectrum, { width, height } = spectrum.canvas;
-        spectrum.rect(0, 0, width, height);
         const gradient = spectrum.createLinearGradient(0, 0, width, 0);
         gradient.addColorStop(0, "rgb(255, 0, 0)");
         gradient.addColorStop(0.1666666666666667, "rgb(255, 255, 0)");
@@ -53,17 +51,15 @@ export default function ColorSelectionWindow({ janelaPrincipal }) {
         gradient.addColorStop(0.8333333333333335, "rgb(255, 0, 255)");
         gradient.addColorStop(1, "rgb(255, 0, 0)");
         spectrum.fillStyle = gradient;
-        spectrum.fill();
+        spectrum.fillRect(0, 0, width, height);
     }
     const paintGradient = () => {
         const color = hsvToRgb({ h: colorHsv.h, s: 100, v: 100 });
         const { gradient } = insideWindow.canvas, { width, height } = gradient.canvas;
-        gradient.clearRect(0, 0, width, height);
-        gradient.fillStyle = "rgb(" + color.r + ", " + color.g + ", " + color.b + ")";
-        gradient.fillRect(0, 0, width, height);
+        const colorString = "rgb(" + color.r + ", " + color.g + ", " + color.b + ")";
         const gradientWhite = gradient.createLinearGradient(0, 0, width, 0);
-        gradientWhite.addColorStop(0, "rgba(255, 255, 255, 1)");
-        gradientWhite.addColorStop(1, "rgba(255, 255, 255, 0)");
+        gradientWhite.addColorStop(0, "rgb(255, 255, 255)");
+        gradientWhite.addColorStop(1, colorString);
         gradient.fillStyle = gradientWhite;
         gradient.fillRect(0, 0, width, height);
         const gradientBlack = gradient.createLinearGradient(0, 0, 0, height);
@@ -71,6 +67,7 @@ export default function ColorSelectionWindow({ janelaPrincipal }) {
         gradientBlack.addColorStop(1, "rgba(0, 0, 0, 1)");
         gradient.fillStyle = gradientBlack;
         gradient.fillRect(0, 0, width, height);
+        setStyle(insideWindow.cursors.spectrum, { backgroundColor: colorString });
     }
     const paintSaturation = () => {
         const initial = hsvToRgb({ h: colorHsv.h, s: 0, v: colorHsv.v });
@@ -87,7 +84,7 @@ export default function ColorSelectionWindow({ janelaPrincipal }) {
         const canvas = insideWindow.canvas.brightness, { width, height } = canvas.canvas;
         const gradientBlack = canvas.createLinearGradient(0, 0, 0, height);
         gradientBlack.addColorStop(0, "rgb(" + color.r + ", " + color.g + ", " + color.b + ")");
-        gradientBlack.addColorStop(1, "rgb(0, 0, 0, 1)");
+        gradientBlack.addColorStop(1, "rgb(0, 0, 0)");
         canvas.fillStyle = gradientBlack;
         canvas.fillRect(0, 0, width, height);
     }
@@ -104,10 +101,7 @@ export default function ColorSelectionWindow({ janelaPrincipal }) {
     }
     const moveCursorSpectrum = () => {
         const position = insideWindow.canvas.spectrum.canvas.offsetWidth * (colorHsv.h / 360);
-        const color = hsvToRgb({ h: colorHsv.h, s: 100, v: 100 });
-        setStyle(insideWindow.cursors.spectrum, {
-            left: position + "px", backgroundColor: "rgb(" + color.r + ", " + color.g + ", " + color.b + ")"
-        });
+        setStyle(insideWindow.cursors.spectrum, { left: position + "px" });
     }
     const moveCursorSaturation = () => {
         const position = insideWindow.canvas.saturation.canvas.offsetWidth * (colorHsv.s / 100);
