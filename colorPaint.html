@@ -2,7 +2,7 @@
 <html lang="pt-br">
 
 <head>
-    <title>GM - ColorPaint v2.3.8</title>
+    <title>GM - ColorPaint v2.3.9</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.75">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -193,17 +193,30 @@
         <section data-id="janelaSelecionarCor">
             <div data-id="moverJanelaSelecionarCor" class="barraMoverJanela noSelection"></div>
             <div>
-                <div data-id="comparaCorAtualEEscolhida">
-                    <div data-id="corSelecionada" class="comparacores noSelection"></div>
-                    <div data-id="corAtual" class="comparacores noSelection"></div>
-                </div>
-                <div data-id="contentGradienteCor" class="noSelection">
-                    <canvas data-id="gradienteCor" class="canvasSelecionarCor" width="440" height="255"></canvas>
-                    <div data-id="cursorGradiente" class="cursorSeletor"></div>
-                </div>
-                <div data-id="contentBarraeEspectroCor" class="noSelection">
-                    <canvas data-id="barraeEspectroCor" class="canvasSelecionarCor" width="540" height="20"></canvas>
-                    <div data-id="cursorBarra" class="cursorSeletor"></div>
+                <div data-id="contentInternoJanelaSelecionar">
+                    <div data-id="contentBarraEspectroCor" class="noSelection">
+                        <canvas data-id="barraEspectroCor" class="canvasSelecionarCor" width="570" height="20"></canvas>
+                        <div data-id="cursorBarra" class="cursorSeletor"></div>
+                    </div>
+                    <div data-id="contentComparaGradiente">
+                        <div data-id="comparaCorAtualEEscolhida">
+                            <div data-id="corSelecionada" class="comparacores noSelection"></div>
+                            <div data-id="corAtual" class="comparacores noSelection"></div>
+                        </div>
+                        <div data-id="contentGradienteCor" class="noSelection">
+                            <canvas data-id="gradienteCor" class="canvasSelecionarCor" width="440"
+                                height="255"></canvas>
+                            <div data-id="cursorGradiente" class="cursorSeletor"></div>
+                        </div>
+                    </div>
+                    <div data-id="contentBarraBrilho" class="noSelection">
+                        <canvas data-id="barraBrilho" class="canvasSelecionarCor" width="20" height="285"></canvas>
+                        <div data-id="cursorBarraBrilho" class="cursorSeletor"></div>
+                    </div>
+                    <div data-id="contentBarraSaturacao" class="noSelection">
+                        <canvas data-id="barraSaturacao" class="canvasSelecionarCor" width="560" height="20"></canvas>
+                        <div data-id="cursorBarraSaturacao" class="cursorSeletor"></div>
+                    </div>
                 </div>
                 <div data-id="InputsjanelaSelecionarCor">
                     <label class="noSelection">RGB:</label><input data-id="codRGB" type="text"

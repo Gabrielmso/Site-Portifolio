@@ -118,6 +118,49 @@ export const createEventEmitterToObservers = (eventNames = [""]) => {
     }
 }
 
+export const rgbTohex = ({ r, g, b }) => {
+    const rgb = b | (g << 8) | (r << 16);
+    return ("#" + (0x1000000 + rgb).toString(16).slice(1));
+}
+export const hexToRgb = hex => {
+    const resul = hex.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
+    if (resul) { return resul.slice(1, 4).map(x => parseInt(x, 16)); }
+    return null;
+}
+export const rgbToHsv = ({ r, g, b }) => {
+    let rabs = r / 255, gabs = g / 255, babs = b / 255, h, s, v = Math.max(rabs, gabs, babs),
+        diff = v - Math.min(rabs, gabs, babs), diffc = c => (v - c) / 6 / diff + 1 / 2,
+        percentRoundFn = num => (num * 100) / 100;
+    if (diff === 0) { h = s = 0; }
+    else {
+        const rr = diffc(rabs), gg = diffc(gabs), bb = diffc(babs);
+        s = diff / v;
+        if (rabs === v) { h = bb - gg; }
+        else if (gabs === v) { h = (1 / 3) + rr - bb; }
+        else if (babs === v) { h = (2 / 3) + gg - rr; }
+        if (h < 0) { h += 1; }
+        else if (h > 1) { h -= 1; }
+    }
+    return { h: (h * 360), s: percentRoundFn(s * 100), v: percentRoundFn(v * 100) };
+}
+export const hsvToRgb = hsvCode => {
+    if (hsvCode.h === 360) { hsvCode.h = 0; }
+    const h = (Math.max(0, Math.min(360, hsvCode.h))) / 60,
+        s = (Math.max(0, Math.min(100, hsvCode.s))) / 100,
+        v = (Math.max(0, Math.min(100, hsvCode.v))) / 100;
+    if (s === 0) {
+        const silver = Math.round(v * 255);
+        return { r: silver, g: silver, b: silver };
+    }
+    const i = Math.floor(h), f = h - i, p = v * (1 - s), q = v * (1 - s * f), t = v * (1 - s * (1 - f)),
+        getCodeRgb = {
+            case0: [v, t, p], case1: [q, v, p], case2: [p, v, t],
+            case3: [p, q, v], case4: [t, p, v], case5: [v, p, q]
+        }
+    const codeRgb = getCodeRgb["case" + i].map(value => Math.round(value * 255));
+    return { r: codeRgb[0], g: codeRgb[1], b: codeRgb[2] };
+}
+
 export const logarithm = (base, log) => Math.log(log) / Math.log(base);
 export const getDistanceCoordinates = (p1, p2) => (((p2.x - p1.x) ** 2 + (p2.y - p1.y) ** 2) ** 0.5);
 export const randomNumber = (min, max) => (Math.random() * (max - min) + min);

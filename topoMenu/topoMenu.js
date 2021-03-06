@@ -51,7 +51,7 @@ export default async function topMenuObject(changeMenu = true, initialTheme = 1)
     changeTheme(initialTheme);
     window.addEventListener("resize", screenResize);
     if (changeMenu) { window.addEventListener("scroll", scrollMenu); }
-    setTimeout(() => menuBar.classList.add("transitionTopoMenu"), 350);
+    setTimeout(() => menuBar.classList.add("transitionTopoMenu"), 500);
     return {
         changeTheme,
         logoClick(functionClick) {
